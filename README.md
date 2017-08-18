@@ -14,10 +14,14 @@ Files in this package are intended to be used to analyze data of the Daya Bay re
           ldist_eh3.pdf
           ldist_6Det.pdf
 
-2. Execute root macro db_ntuple.C (requires PRL112_data.root)
+2. Execute root macro db_ntuple.C (requires "PRL112_data.root")
 
   > root -b -n -q db_ntuple.C
 
    Output: db-ntuple.root
 
+3. Execute root macro db_osc_rate.C (requires "rate_SurvProb.C")
 
+  > root -b -n -q db_osc_rate.C
+
+  Output: 
