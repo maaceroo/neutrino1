@@ -31,7 +31,7 @@ void db_ntuple()
     //-------------------
     // Distance Histogram
     //-------------------
-    TFile *fpathl = new TFile("../Docs_Visita-AAquilar-nov2015/daya-bay/baselines/daya-bay-ldist.root","read");
+    TFile *fpathl = new TFile("daya-bay-ldist.root","read");
     //Only 6 detectors (PRL112 061801, 2014)
     TH1F *histo_ldist_6Det = (TH1F*) fpathl->Get("histo_ldist_6Det");
 

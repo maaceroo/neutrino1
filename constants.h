@@ -6,3 +6,6 @@ double Mp = 938.272;        //Proton mass in MeV
 double DeltaMnp = 1.2933;   //MeV
 double mel = 0.510998928;   //Electron mass in(MeV)
 
+double avg_nRecoilE = 10.0e-3; //MeV
+double avg_constE = 0.78; //MeV
+
