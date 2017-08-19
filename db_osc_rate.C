@@ -1,20 +1,16 @@
-//---------------------------------------------------------------------//
-//-- db_osc_rate.C - By M.A. Acero O. & A.A. Aguilar-A. - 2017-01-02 --//
-//---------------------------------------------------------------------//
-// This macro can be executed under ROOT typing                        //
-//"root[0] .x db_osc_rate.C"                                           //
-// For the rate-only analysis, using information from F.P. An et al.,  //
-// PRL 112 061801 (2014)                                               //
-//---------------------------------------------------------------------//
-// 2017-01-31                                                          //
-// Modifications to perform a rate-only analysis by computing and using//
-// average values for the survival probability and taking sin2(2th) as //
-// the only free parameter (to bi fitted).                             //
-// 2017-02-03                                                          //
-// This macro performs a simple chi^2 analysis of the Daya Bay data by //
-// comparing the IBD rate at the six AD reported in PRL 112 061801     //
-// (2014)                                                              //
-//---------------------------------------------------------------------//
+//------------------------------------------------------------------------------------------//
+//------------ db_osc_rate.C - By M.A. Acero O. & A.A. Aguilar-A. - 2017-01-02 -------------//
+//------------------------------------------------------------------------------------------//
+// This macro can be executed under ROOT typing   "root[0] .x db_osc_rate.C"                //
+// For the rate-only analysis, using information from F.P. An et al., PRL 112 061801 (2014) //
+//------------------------------------------------------------------------------------------//
+// 2017-01-31                                                                               //
+// Modifications to perform a rate-only analysis by computing and using average values for  //
+// the survival probability and taking sin2(2th) as the only free parameter (to bi fitted). //
+// 2017-02-03                                                                               //
+// This macro performs a simple chi^2 analysis of the Daya Bay data by comparing the IBD    //
+// rate at the six AD reported in PRL 112 061801 (2014)                                     //
+//------------------------------------------------------------------------------------------//
 
 #include <constants.h>
 #include <iostream>
@@ -110,7 +106,7 @@ void db_osc_rate()
     };
 
     int sel;
-    double avgPosc_AD[nAD]; //<POsc(s2t_BF,dm2_31)>
+    double avgPosc_AD[nAD];           //<POsc(s2t_BF,dm2_31)>
     double noOsc_IBDrate_perday[nAD]; //IBD rate per day w/o oscillations
     double integ;
     for (int iAD = 0 ; iAD < nAD ; iAD++)
@@ -227,9 +223,7 @@ void db_osc_rate()
             //s2t_pt = lo_s2t + double(is2t)*DeltaLin_s2t;
             
             SurvP = SurvProb->Eval(s2t_pt);
-            //IBDrate_osc[is2t] = (SurvP * noOsc_IBDrate_perday[iAD])*emuem[iAD] + totalBgd[iAD][0];
             IBDrate_osc[is2t] = (SurvP * noOsc_IBDrate_perday[iAD] + totalBgd[iAD][0])*emuem[iAD];
-            //cout << IBDrate_osc[is2t] << "   " << IBDrate_data[iAD][0] << "  " << SurvP << "   " << noOsc_IBDrate_perday[iAD] << endl;
             
             double sqrerror = (IBDrate_data[iAD][1])**2 + (totalBgd[iAD][1])**2;
             
@@ -237,8 +231,6 @@ void db_osc_rate()
             
         }//for iAD
         file << s2t_pt << "\t" << SurvP << "\t" << chi2[is2t] << endl;
-        //cout << endl;
-        //chi2 = 0.0;
     }//for is2t
     file << endl;
 
@@ -256,11 +248,7 @@ void db_osc_rate()
     }
     cout << "chi2_min = " << chi2_min << ", for jj = " << sel << endl;
     
-   //break;
     //---------------------------------------------------
-    //---------------------------------------------------
-    
-    
     //---------------------------------------------------
     // Drawing section
 
@@ -278,7 +266,6 @@ void db_osc_rate()
         //leg_spect->AddEntry(wosc_spect_histo[i],Form("Spectra %d ",i));
     }
     
-    
     //frame_spectra->Draw();
     BFit_spect_histo[0]->Draw("");
 //    wosc_spect_histo[0]->Draw("same");
@@ -287,9 +274,6 @@ void db_osc_rate()
 //        wosc_spect_histo[i]->Draw("same");
 //    }
     leg_spect->Draw();
-    //break;
-    
-    cout << endl << "Mean value: " << BFit_spect_histo[0]->GetMean() << endl;
 
     //canv0->Print("osc_test.pdf");
 
