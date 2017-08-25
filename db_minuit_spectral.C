@@ -88,8 +88,8 @@ TH1F *bfit_spect_hist[nAD];
 
 //---*****************************************************---//
 //-- Chi-square function to be minimized --------------------//
-//-- It has 18 pull parameters, 1 oscillation parameter and--//
-//-- a normalization factor. The last two are to be fitted. -//
+//-- It has 19 pull parameters and 2 oscillation parameter --//
+//-- which are to be fitted.                                -//
 //---*****************************************************---//
 double chi2(const double *xx)
 {

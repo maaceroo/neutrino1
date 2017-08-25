@@ -137,8 +137,7 @@ double chi2(const double *xx)
             wrd += wrd_array[iAD][iNR]*alpha[iNR];
         
         //-- Testing a fake normalization factor
-        double test = 0.0;
-        sqr_chi += pow( (Md - Td*(1.0 + epsilon - test + eps_d[iAD] + wrd) + eta_d[iAD]) ,2 )/sqrerror;
+        sqr_chi += pow( (Md - Td*(1.0 + epsilon + eps_d[iAD] + wrd) + eta_d[iAD]) ,2 )/sqrerror;
         
     }
     
@@ -163,7 +162,7 @@ int db_minuit(const char * minName = "Minuit",
 {
     cout << "Let's begin..." << endl;
     
-    TFile *wrd_File = new TFile("../Docs_Visita-AAquilar-nov2015/daya-bay/baselines/daya-bay-ldist_6x6.root","READ");
+    TFile *wrd_File = new TFile("daya-bay-ldist_6x6.root","READ");
     TH1F *wrd_histo = ((TH1F*)(wrd_File->Get("histo_ldist_6x6")));;
     
 //---*****************************************************---//
