@@ -31,23 +31,15 @@ Files in this package are intended to be used to analyze data of the Daya Bay re
           POsc_avg.pdf (this is not really necessary)
 
   'db_chi2_rate.txt' contains three columns: sin^2(2th) Surv_Prob chi^2
-  whic allows to plot the marginalized plot sin^2(2th) vs. chi^2, showing the BF for this oscillation parameter. You can use your prefered plotting software.
+  which allows to plot the marginalized plot sin^2(2th) vs. chi^2, showing the BF for this oscillation parameter. You can use your prefered plotting software.
 
 ############################
 ## Rate-Only analysis (2D results)
 ############################
 
-1. Execute root macro ldist.C:
+1. Execute root macro db_minuit.C
 
-   > root -b -l -n -q ldist_6x6.C
+   > root -b -l -n -q db_minuit.C
 
-   Output: daya-bay-ldist_6x6.root
-        ldist_6x6.pdf (this is not really needed)
-        ldist_6x6.eps (this is not really needed)
-
-2. Execute root macro db_ntuple.C (requires "PRL112_data.root")
-
-   > root -b -l -n -q db_ntuple.C
-
-   Output: db-ntuple.root
+   Output: chi2_s2t-eps_surface_RATE.txt
 
