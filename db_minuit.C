@@ -162,19 +162,8 @@ int db_minuit(const char * minName = "Minuit",
 {
     cout << "Let's begin..." << endl;
     
-    TFile *wrd_File = new TFile("daya-bay-ldist_6x6.root","READ");
-    TH1F *wrd_histo = ((TH1F*)(wrd_File->Get("histo_ldist_6x6")));;
-    
-//---*****************************************************---//
-/*    //Random fluctuation to the data in order to try to get larger values of chi^2 (By A.Aguilar-Arevalo 2016-02-12)
-    TF1 *gg = new TF1("gg","exp(-0.5*(x/1.5)^2)",-10,10);
-    for (int i=0;i<nAD;i++)
-    {
-        noOsc_IBDrate_perday[i] += gg->GetRandom();
-        cout << noOsc_IBDrate_perday[i]<<"  ";
-    }
-*/
-//---*****************************************************---//
+    TFile *wrd_File = new TFile("daya-bay-ldist.root","READ");
+    TH1F *wrd_histo = ((TH1F*)(wrd_File->Get("histo_ldist_6Det")));;
     
     for (int blid = 0 ; blid < nAD*nNR ; blid++)
     {
@@ -198,14 +187,15 @@ int db_minuit(const char * minName = "Minuit",
     
     //-- File to print oscillation parameters and chi2 values
     ofstream chi2Surface_file;
-    string s2t_eps = "chi2_s2t-eps_surface_RATE.txt";  //(sin^2(2th13), epsilon, chi^2_min)
-    //string s2t_eps = "chi2_s2t_curve.txt"; //(sin^2(2th13), chi^2_min)
+    string s2t_eps = "files_data/chi2_s2t-eps_surface_RATE.txt";  //(sin^2(2th13), epsilon, chi^2_min)
+    //string s2t_eps = "files_data/chi2_s2t_curve.txt"; //(sin^2(2th13), chi^2_min)
     chi2Surface_file.open((s2t_eps).c_str());
 
+    //-- Uncomment if you want to print the pull parameters (also Line 279)
     //-- File to print minimized pull parameters
 /*
     ofstream minimPullT_file;
-    string PullT = "chi2_pullT_surface.txt";
+    string PullT = "files_data/chi2_pullT_surface.txt";
     minimPullT_file.open((PullT).c_str());
 */
     
@@ -274,10 +264,13 @@ int db_minuit(const char * minName = "Minuit",
     
             chi2Surface_file << s2th_13 << "\t" << epsilon << "\t" << min->MinValue() << endl;
             
+            //-- Uncomment if you want to print the pull parameters (also Line 205)
             //minimPullT_file  << s2th_13 << "\t" << epsilon << "\t" << xs[0] << "\t" << xs[1] << "\t" << xs[2] << "\t" << xs[3] << "\t" << xs[4] << "\t" << xs[5] << "\t" << xs[6] << "\t" << xs[7] << "\t" << xs[8] << "\t" << xs[9] << "\t" << xs[10] << "\t" << xs[11] << "\t" << xs[12] << "\t" << xs[13] << "\t" << xs[14] << "\t" << xs[15] << "\t" << xs[16] << "\t" << xs[17] << "\t" << min->MinValue() << endl;
         }
         chi2Surface_file << endl;
+        //-- Uncomment if you want to print the pull parameters
         //minimPullT_file  << endl;
+
         if (is2t%10 == 0)
             std::cout << "Succesful run for sin^2(th13) = " << s2th_13 << "!! \t" << min->MinValue() << endl;
     }
