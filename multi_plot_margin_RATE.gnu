@@ -45,7 +45,7 @@ set arrow 1 from 1.00,ymin to 1.00,ymax nohead lt 4 lw 2
 set arrow 3 from 4.00,ymin to 4.00,ymax nohead lt 3 lw 2
 set arrow 5 from 9.00,ymin to 9.00,ymax nohead lt 2 lw 2
 
-plot 'db_eps_chi2_RATE.txt' u 2:1 w l lw 1
+plot 'files_data/db_eps_chi2_RATE.txt' u 2:1 w l lw 1
 
 reset
 ######################################
@@ -73,7 +73,7 @@ set ylabel "{/Symbol D}{/Symbol c}^{2}"
 
 set key at 0.77,5
 
-plot 'db_s2t_chi2_RATE.txt' u 1:2 w l lw 1 t "", \
+plot 'files_data/db_s2t_chi2_RATE.txt' u 1:2 w l lw 1 t "", \
      9.0 lt 2 lw 2 t "99.73% C.L. (3{/Symbol s})", \
      4.0 lt 3 lw 2 t "95.45% C.L. (2{/Symbol s})", \
      1.0 lt 4 lw 2 t "68.27% C.L. (1{/Symbol s})"
@@ -128,7 +128,7 @@ unset ztics
 set clabel
 unset key
 
-splot 'chi2_s2t-eps_surface_RATE.txt' u 1:2:(($3)-min) w l lw 2
+splot 'files_data/chi2_s2t-eps_surface_RATE.txt' u 1:2:(($3)-min) w l lw 2
 
 ########################################################################################
 
