@@ -14,14 +14,13 @@ Files in this package are intended to be used to analyze data of the Daya Bay re
 
    Output:  daya-bay-ldist.root
             ldist.pdf (this is not really needed)
-            ldist_eh3.pdf (this is not really needed)
             ldist_6Det.pdf (this is not really needed)
 
 2. Execute root macro db_ntuple.C (requires "PRL112_data.root")
 
    > root -b -l -n -q db_ntuple.C
 
-   Output: db-ntuple.root
+   Output: files_data/db-ntuple.root
 
 3. Execute root macro db_minuit.C
    NOTE: the number of grid points are hard-coded in the statements at
@@ -30,7 +29,7 @@ Files in this package are intended to be used to analyze data of the Daya Bay re
 
    > root -b -l -n -q db_minuit.C
 
-   Output: chi2_s2t-eps_surface_RATE.txt
+   Output: files_data/chi2_s2t-eps_surface_RATE.txt
 
    'chi2_s2t-eps_surface_RATE.txt' contains three columns: sin^2(2th), epsilon, chi^2.
 
@@ -49,7 +48,7 @@ Files in this package are intended to be used to analyze data of the Daya Bay re
 
    > ./db_margin.exe 200 200 ./
 
-   Output: 
+   Output: in files_data/
    db_s2t_chi2_RATE.txt (chi2 vs. s2th, where chi2 is marginalized over all the pull terms and epsilon)
    db_eps_chi2_RATE.txt (chi2 vs. epsilon, where chi2 is marginalized over all the pull terms and s2t)
 
@@ -57,7 +56,7 @@ Files in this package are intended to be used to analyze data of the Daya Bay re
    
    > gnuplot multi_plot_margin_RATE.gnu
 
-   Output: db_plots_RATE.eps (Contour plot of s2t vs. epsilon and marginalized chi2 plots)
+   Output: files_data/db_plots_RATE.eps (Contour plot of s2t vs. epsilon and marginalized chi2 plots)
 
 
 
