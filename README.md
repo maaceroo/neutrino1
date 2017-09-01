@@ -54,7 +54,7 @@ Files in this package are intended to be used to analyze data of the Daya Bay re
    db_eps_chi2_RATE.txt (chi2 vs. epsilon, where chi2 is marginalized over all the pull terms and s2t)
 
 5. Execute the gnuplot macro multi_plot_margin_RATE.gnu (requiresthe three .txt output files from step 4)
-   First create files_plots directory
+   First create files_plots directory :
 
    > mkdir files_plots
    > gnuplot multi_plot_margin_RATE.gnu
