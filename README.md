@@ -56,7 +56,7 @@ Files in this package are intended to be used to analyze data of the Daya Bay re
 5. Execute the gnuplot macro multi_plot_margin_RATE.gnu (requiresthe three .txt output files from step 4)
    First create files_plots directory :
 
-   > mkdir files_plots
+   > mkdir files_plots 
    > gnuplot multi_plot_margin_RATE.gnu
 
    Output: db_plots_RATE.eps (Contour plot of s2t vs. epsilon and marginalized chi2 plots)
