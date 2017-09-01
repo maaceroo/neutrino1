@@ -9,7 +9,7 @@ set terminal postscript color "CharterBT-Roman" 12 enhanced size 7,7
 
 ########################################################################################
 ## Figure File
-set output "db_plots_RATE.eps"
+set output "files_plots/db_plots_RATE.eps"
 ########################################################################################
 
 set multiplot
