@@ -19,7 +19,7 @@ Files in this package are intended to be used to analyze data of the Daya Bay re
 
 2. Execute root macro db_ntuple.C (requires "PRL112_data.root")
 
-  > root -b -l -n -q db_ntuple.C
+   > root -b -l -n -q db_ntuple.C
 
    Output: db-ntuple.root
 
