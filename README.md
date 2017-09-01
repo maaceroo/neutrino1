@@ -8,14 +8,15 @@ Files in this package are intended to be used to analyze data of the Daya Bay re
 ## Rate-Only analysis (1D results)
 ############################
 
+
 1. Execute root macro ldist.C:
 
-  > root -b -l -n -q ldist.C
+   > root -b -l -n -q ldist.C
 
-  Output: daya-bay-ldist.root
-          ldist.pdf (this is not really needed)
-          ldist_eh3.pdf (this is not really needed)
-          ldist_6Det.pdf (this is not really needed)
+   Output: daya-bay-ldist.root
+           ldist.pdf (this is not really needed)
+           ldist_eh3.pdf (this is not really needed)
+           ldist_6Det.pdf (this is not really needed)
 
 2. Execute root macro db_ntuple.C (requires "PRL112_data.root")
 
@@ -55,7 +56,7 @@ Files in this package are intended to be used to analyze data of the Daya Bay re
 
 5. Execute the gnuplot macro multi_plot_margin_RATE.gnu (requiresthe three .txt output files from step 4)
    First create files_plots directory :
-
+   
    > mkdir files_plots 
    > gnuplot multi_plot_margin_RATE.gnu
 
