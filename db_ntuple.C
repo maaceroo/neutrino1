@@ -19,7 +19,7 @@ void db_ntuple()
     //-------------------
     // Energy Histograms
     //-------------------
-    TFile *fenergy = new TFile("files_data/PRL112_data.root","read");
+    TFile *fenergy = new TFile("PRL112_data.root","read");
     //Three sets of histograms one for each Experimental Hall
     const int nEH = 3;
     TH1F *data_spect_histo[nEH];
