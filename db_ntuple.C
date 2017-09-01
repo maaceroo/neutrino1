@@ -19,7 +19,7 @@ void db_ntuple()
     //-------------------
     // Energy Histograms
     //-------------------
-    TFile *fenergy = new TFile("PRL112_data.root","read");
+    TFile *fenergy = new TFile("files_data/PRL112_data.root","read");
     //Three sets of histograms one for each Experimental Hall
     const int nEH = 3;
     TH1F *data_spect_histo[nEH];
@@ -31,7 +31,7 @@ void db_ntuple()
     //-------------------
     // Distance Histogram
     //-------------------
-    TFile *fpathl = new TFile("daya-bay-ldist.root","read");
+    TFile *fpathl = new TFile("files_data/daya-bay-ldist.root","read");
     //Only 6 detectors (PRL112 061801, 2014)
     TH1F *histo_ldist_6Det = (TH1F*) fpathl->Get("histo_ldist_6Det");
 
@@ -54,7 +54,7 @@ void db_ntuple()
     };
 
     //make ntuple
-    TFile *fout = new TFile("db-ntuple.root","RECREATE");
+    TFile *fout = new TFile("files_data/db-ntuple.root","RECREATE");
     TTree *T = new TTree("T","Monte Carlo neutrino events");
 
     float Ep, En, Ln;

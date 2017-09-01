@@ -162,7 +162,7 @@ int db_minuit(const char * minName = "Minuit",
 {
     cout << "Let's begin..." << endl;
     
-    TFile *wrd_File = new TFile("daya-bay-ldist.root","READ");
+    TFile *wrd_File = new TFile("files_data/daya-bay-ldist.root","READ");
     TH1F *wrd_histo = ((TH1F*)(wrd_File->Get("histo_ldist_6Det")));;
     
     for (int blid = 0 ; blid < nAD*nNR ; blid++)
