@@ -2,11 +2,8 @@
 Oscillation analysis of Daya-Bay data.
 Files in this package are intended to be used to analyze data of the Daya Bay reactor antineutrino experiment. There are codes to do a rate-only analysis and others to make a spectral analysis.
 
-############################
-# quick reference (How-To):
-############################
+# Quick Reference (How-To):
 ## Rate-Only analysis (1D results)
-############################
 
 **1.** Execute root macro ldist.C:
 
@@ -29,6 +26,7 @@ _Output_:
 _NOTE_: the number of grid points are hard-coded in the statements at
 - Line 43: #define N_s2t  200
 - Line 48: #define N_eps  200
+
 
     > root -b -l -n -q db_minuit.C
 
