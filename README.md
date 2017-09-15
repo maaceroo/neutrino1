@@ -21,21 +21,31 @@ _Output_:
 _Output_:  
 - files_data/db-ntuple.root
 
-**3.** Execute root macro db_minuit.C [_NOTE: the number of grid points are hard-coded in the statements at Line 43 (`#define N_s2t  200`) and Line 48 (`#define N_eps  200`)_]
+**3.** Execute macro db_osc_rate.C (_requires `db_ntuple.root`_)
+
+    > root -b -l -n -q db_osc_rate.C
+
+_Output_:
+- Declaration of arrays (needed in Step 4): 
+    - noOsc_IBDrate_perday[nAD] 
+    - avgSinDelta21[nAD] 
+    - avgSinDelta31[nAD] 
+
+**4.** Execute root macro db_minuit.C [_NOTE: the number of grid points are hard-coded in the statements at Line 43 (`#define N_s2t  200`) and Line 48 (`#define N_eps  200`)_]
 
     > root -b -l -n -q db_minuit.C
 
 _Output_:  
 - files_data/chi2_s2t-eps_surface_RATE.txt (_contains three columns: `sin^2(2th)`, `epsilon`, `chi2`_)
 
-**4.** Compile and execute db_chi2_min.cpp and db_margin.cpp
+**5.** Compile and execute db_chi2_min.cpp and db_margin.cpp
 
-4.1. Compile
+5.1. Compile
 
     > g++ -o db_chi2_min.exe db_chi2_min.cpp
     > g++ -o db_margin.exe db_margin.cpp
 
-4.2. Execute: arguments are the number of grid points and the path to the file `chi2_s2t-eps_surface_RATE.txt`
+5.2. Execute: arguments are the number of grid points and the path to the file `chi2_s2t-eps_surface_RATE.txt`
 
     > ./db_chi2_min.exe 200 200 ./
     > ./db_margin.exe 200 200 ./
@@ -45,7 +55,7 @@ _Output_:
 - files_data/db_s2t_chi2_RATE.txt (_chi2 vs. s2th, where chi2 is marginalized over all the pull terms and epsilon_)
 - files_data/db_eps_chi2_RATE.txt (_chi2 vs. epsilon, where chi2 is marginalized over all the pull terms and s2t_)
 
-**5.** Execute the gnuplot macro multi_plot_margin_RATE.gnu (_requires the three `.txt` output files from step **4**_)
+**6.** Execute the gnuplot macro multi_plot_margin_RATE.gnu (_requires the three `.txt` output files from step **4**_)
 
     > gnuplot multi_plot_margin_RATE.gnu
 

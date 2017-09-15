@@ -1,16 +1,20 @@
-//------------------------------------------------------------------------------------------//
-//------------ db_osc_rate.C - By M.A. Acero O. & A.A. Aguilar-A. - 2017-01-02 -------------//
-//------------------------------------------------------------------------------------------//
-// This macro can be executed under ROOT typing   "root[0] .x db_osc_rate.C"                //
-// For the rate-only analysis, using information from F.P. An et al., PRL 112 061801 (2014) //
-//------------------------------------------------------------------------------------------//
-// 2017-01-31                                                                               //
-// Modifications to perform a rate-only analysis by computing and using average values for  //
-// the survival probability and taking sin2(2th) as the only free parameter (to bi fitted). //
-// 2017-02-03                                                                               //
-// This macro performs a simple chi^2 analysis of the Daya Bay data by comparing the IBD    //
-// rate at the six AD reported in PRL 112 061801 (2014)                                     //
-//------------------------------------------------------------------------------------------//
+//---------------------------------------------------------------------//
+//-- db_osc_rate.C - By M.A. Acero O. & A.A. Aguilar-A. - 2017-01-02 --//
+//---------------------------------------------------------------------//
+// This macro can be executed under ROOT typing                        //
+//"root[0] .x db_osc_rate.C"                                           //
+// For the rate-only analysis, using information from F.P. An et al.,  //
+// PRL 112 061801 (2014)                                               //
+//---------------------------------------------------------------------//
+// 2017-01-31                                                          //
+// Modifications to perform a rate-only analysis by computing and using//
+// average values for the survival probability and taking sin2(2th) as //
+// the only free parameter (to bi fitted).                             //
+// 2017-02-03                                                          //
+// This macro performs a simple chi^2 analysis of the Daya Bay data by //
+// comparing the IBD rate at the six AD reported in PRL 112 061801     //
+// (2014)                                                              //
+//---------------------------------------------------------------------//
 
 #include <constants.h>
 #include <iostream>
@@ -32,7 +36,7 @@ void db_osc_rate()
 
     //---------------------------------------------------
     // Open ntuple file to read simulated data (Ep, En, Ln) for the 6 AD
-    TFile *fntuple = new TFile("db-ntuple.root","READ");
+    TFile *fntuple = new TFile("files_data/db-ntuple.root","READ");
     TTree *T = (TTree*)fntuple->Get("T");
     TCut cutBF;
     //---------------------------------------------------
@@ -106,7 +110,7 @@ void db_osc_rate()
     };
 
     int sel;
-    double avgPosc_AD[nAD];           //<POsc(s2t_BF,dm2_31)>
+    double avgPosc_AD[nAD]; //<POsc(s2t_BF,dm2_31)>
     double noOsc_IBDrate_perday[nAD]; //IBD rate per day w/o oscillations
     double integ;
     for (int iAD = 0 ; iAD < nAD ; iAD++)
@@ -124,8 +128,8 @@ void db_osc_rate()
         //No-oscillation IDB rate (per day)
         noOsc_IBDrate_perday[iAD] = IBDrate_perday[iAD][0]/avgPosc_AD[iAD];
         //Printing results
-        cout << "(avgPosc_AD,noOsc_IBDrate_perday)_" << sel << " = (" << avgPosc_AD[iAD]
-             << ", " << noOsc_IBDrate_perday[iAD] << ") " << endl;
+        //cout << "(avgPosc_AD,noOsc_IBDrate_perday)_" << sel << " = (" << avgPosc_AD[iAD]
+        //     << ", " << noOsc_IBDrate_perday[iAD] << ") " << endl;
         //------------------------------------------------
 
         //------------------------------------------------
@@ -161,10 +165,10 @@ void db_osc_rate()
         integ = SinDelta31[iAD]->Integral();
         SinDelta31[iAD]->Scale(1.0/integ); //Used to plot
         avgSinDelta31[iAD] = SinDelta31[iAD]->GetMean();
-        cout << "avgSinDelta21_" << iAD << " = " << avgSinDelta21[iAD] << "\t"
-             << "avgSinDelta31_" << iAD << " = " << avgSinDelta31[iAD] << endl;
+        //cout << "avgSinDelta21_" << iAD << " = " << avgSinDelta21[iAD] << "\t"
+             //<< "avgSinDelta31_" << iAD << " = " << avgSinDelta31[iAD] << endl;
     }
-    //---------------------------------------------------
+    
 
     //---------------------------------------------------
     //Survival probability for different values of sin2(2th_13)
@@ -180,10 +184,9 @@ void db_osc_rate()
     for(int i = 0 ; i < nAD ; i++){
         SurvProb->SetParameters(avgSinDelta21[i],avgSinDelta31[i]);
         double test = SurvProb->Eval(0.090);
-        cout << i << "test = " << test << endl;
+        //cout << i << "test = " << test << endl;
     }
     
-    //break;
     
     double s2t_pt;
     
@@ -208,7 +211,7 @@ void db_osc_rate()
     
     //File to print the chi-square results
     ofstream file;
-    string result = "db_chi2_rate.txt";
+    string result = "files_data/db_chi2_rate.txt";
     file.open (result.c_str());
     file << setprecision(5);
 
@@ -223,7 +226,9 @@ void db_osc_rate()
             //s2t_pt = lo_s2t + double(is2t)*DeltaLin_s2t;
             
             SurvP = SurvProb->Eval(s2t_pt);
+            //IBDrate_osc[is2t] = (SurvP * noOsc_IBDrate_perday[iAD])*emuem[iAD] + totalBgd[iAD][0];
             IBDrate_osc[is2t] = (SurvP * noOsc_IBDrate_perday[iAD] + totalBgd[iAD][0])*emuem[iAD];
+            //cout << IBDrate_osc[is2t] << "   " << IBDrate_data[iAD][0] << "  " << SurvP << "   " << noOsc_IBDrate_perday[iAD] << endl;
             
             double sqrerror = (IBDrate_data[iAD][1])**2 + (totalBgd[iAD][1])**2;
             
@@ -231,6 +236,8 @@ void db_osc_rate()
             
         }//for iAD
         file << s2t_pt << "\t" << SurvP << "\t" << chi2[is2t] << endl;
+        //cout << endl;
+        //chi2 = 0.0;
     }//for is2t
     file << endl;
 
@@ -250,6 +257,47 @@ void db_osc_rate()
     
     //---------------------------------------------------
     //---------------------------------------------------
+
+    printf("******************************************************************************************\n");
+    printf("* Declaration of arrays needed for db_minuit.C lines 66, 68 and 70. Copy and paste there. *\n");
+    printf("******************************************************************************************\n\n");
+    //-- Printing out for db_minuit.C
+    printf("noOsc_IBDrate_perday[nAD] = {");
+    for (int iAD = 0 ; iAD < nAD ; iAD++)
+    {
+        printf("%7.2f",noOsc_IBDrate_perday[iAD]);
+        if(iAD < nAD-1)
+            printf(",");
+        else
+            printf("};\n");
+    }
+    
+    printf("double avgSinDelta21[nAD] = {");
+    for (int iAD = 0 ; iAD < nAD ; iAD++)
+    {
+        printf("%12.9f",avgSinDelta21[iAD]);
+        if(iAD < nAD-1)
+            printf(",");
+        else
+            printf("};\n");
+    }
+    
+    printf("double avgSinDelta31[nAD] = {");
+    for (int iAD = 0 ; iAD < nAD ; iAD++)
+    {
+        printf("%12.9f",avgSinDelta31[iAD]);
+        if(iAD < nAD-1)
+            printf(",");
+        else
+            printf("};\n\n");
+    }
+    printf("******************************************************************************************\n");
+    
+    //---------------------------------------------------
+
+    
+    
+    //---------------------------------------------------
     // Drawing section
 
     TH2F *frame_spectra = new TH2F("frame_spectra","",NB,lo,hi,10,0,18);
@@ -266,6 +314,7 @@ void db_osc_rate()
         //leg_spect->AddEntry(wosc_spect_histo[i],Form("Spectra %d ",i));
     }
     
+    
     //frame_spectra->Draw();
     BFit_spect_histo[0]->Draw("");
 //    wosc_spect_histo[0]->Draw("same");
@@ -274,6 +323,9 @@ void db_osc_rate()
 //        wosc_spect_histo[i]->Draw("same");
 //    }
     leg_spect->Draw();
+    //break;
+    
+    //cout << endl << "Mean value: " << BFit_spect_histo[0]->GetMean() << endl;
 
     //canv0->Print("osc_test.pdf");
 
@@ -307,7 +359,7 @@ void db_osc_rate()
     }
     leg_avgs->Draw();
     
-    canv0->Print("POsc_avg.pdf");
+    canv0->Print("files_plots/POsc_avg.pdf");
     //---------------------------------------------------
 
 } //end
