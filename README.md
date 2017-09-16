@@ -31,7 +31,7 @@ _Output_:
     - avgSinDelta21[nAD] 
     - avgSinDelta31[nAD] 
 
-**4.** Execute root macro db_minuit.C [_NOTE: the number of grid points are hard-coded in the statements at Line 43 (`#define N_s2t  200`) and Line 48 (`#define N_eps  200`)_]
+**4.** Execute root macro db_minuit.C [_NOTE: the number of grid points are hard-coded in the statements at Line 43 (`#define N_s2t  200`) and Line 48 (`#define N_eps  200`). Change those numbers at you prefer._]
 
     > root -b -l -n -q db_minuit.C
 
