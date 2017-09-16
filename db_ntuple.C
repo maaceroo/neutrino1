@@ -67,7 +67,7 @@ void db_ntuple()
     T->Branch("ir", &ir, "ir/s"); //reactor
     T->Branch("id", &id, "id/s"); //detector
 
-    int Nevents = 10000000;
+    int Nevents = 500000000;
         for (int i = 0 ; i < Nevents ; i++)
         {
             // generate a baseline (blid uniquely identifies the baseline)

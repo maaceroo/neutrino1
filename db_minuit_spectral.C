@@ -61,9 +61,9 @@ double daqTime[nAD]         = {191.001,191.001,189.645,189.779,189.779,189.779};
 //IBD rate per day w/o oscillations
 double noOsc_IBDrate_perday[nAD] = {663.15,673.95,591.86,78.75,78.46,77.58};
 //<sin^2(1.267 dm2_21 L/E)> for each AD
-double avgSinDelta21[nAD]        = {0.000225897,0.000220442,0.000244761,0.00194541,0.00193977,0.00195247};
+//double avgSinDelta21[nAD]        = {0.000225897,0.000220442,0.000244761,0.00194541,0.00193977,0.00195247};
 //<sin^2(1.267 dm2_31 L/E)> for each AD
-double avgSinDelta31[nAD]        = {0.162935,0.159482,0.183415,0.750218,0.75162,0.752462};
+//double avgSinDelta31[nAD]        = {0.162935,0.159482,0.183415,0.750218,0.75162,0.752462};
 //---*****************************************************---//
 //const int dim = N_s2t*N_dm2;
 double s2th_13;     //oscillation parameter to be fitted
@@ -191,8 +191,8 @@ int db_minuit_spectral(const char * minName = "Minuit",
 {
     cout << "Let's begin..." << endl;
   
-    TFile *wrd_File = new TFile("../Docs_Visita-AAquilar-nov2015/daya-bay/baselines/daya-bay-ldist_6x6.root","READ");
-    TH1F *wrd_histo = (TH1F*)(wrd_File->Get("histo_ldist_6x6"));
+    TFile *wrd_File = new TFile("files_data/daya-bay-ldist.root","READ");
+    TH1F *wrd_histo = (TH1F*)(wrd_File->Get("histo_ldist_6Det"));
   
     //-------------------
     // Energy Histograms
@@ -261,17 +261,17 @@ int db_minuit_spectral(const char * minName = "Minuit",
   
     //-- File to print oscillation parameters and chi2 values
     ofstream chi2Surface_file;
-    string s2t_eps = "chi2_s2t-eps_surface_SPEC.txt";  //(sin^2(2th13), epsilon, chi^2_min)
+    string s2t_eps = "files_data/chi2_s2t-eps_surface_SPEC.txt";  //(sin^2(2th13), epsilon, chi^2_min)
     //string s2t_eps = "chi2_s2t_curve.txt"; //(sin^2(2th13), chi^2_min)
     chi2Surface_file.open((s2t_eps).c_str());
   
     //-- File to print minimized pull parameters
   
     ofstream minimPullT_file;
-    string PullT = "chi2_pullT_surface.txt";
+    string PullT = "files_data/chi2_pullT_surface.txt";
     minimPullT_file.open((PullT).c_str());
   
-    ifstream file("db_SurvParams_V2.txt");
+    ifstream file("db_gridOscSpectra.txt");
     cout << "Reading file - Loop in progress..." << endl;
     int iad = 0;
     int first6 = 1;
@@ -372,6 +372,8 @@ int db_minuit_spectral(const char * minName = "Minuit",
         }//file loop END
     std::cout << "Succesful run!!" << endl;
 
+    //------------------------------------------------------------------------------
+    //------------------------------------------------------------------------------
     //Drawing no-oscillated spectra
     TCanvas *canv0 = new TCanvas("canv0","",3*700,2*500);
     canv0->Divide(3,2);
@@ -381,6 +383,64 @@ int db_minuit_spectral(const char * minName = "Minuit",
         nosc_spect_hist[iAD]->Draw("");
     }
     canv0->Print("canv0.pdf");
+    
+    TH1F *data_spect_EHhisto[nEH];
+    //-- ADs 0, 1 -> EH 0
+    data_spect_EHhisto[0] = (TH1F*)data_spect_histo[0]->Clone();
+    data_spect_EHhisto[0]->Scale(IBDrate_data[0][0]);
+    data_spect_EHhisto[0]->Add(data_spect_histo[0],IBDrate_data[1][0]);
+    //-- AD 2 -> EH 1
+    data_spect_EHhisto[1] = (TH1F*)data_spect_histo[1]->Clone();
+    data_spect_EHhisto[1]->Scale(IBDrate_data[2][0]);
+    //-- ADs 3, 4, 5 -> EH 2
+    data_spect_EHhisto[2] = (TH1F*)data_spect_histo[2]->Clone();
+    data_spect_EHhisto[2]->Scale(IBDrate_data[3][0]);
+    data_spect_EHhisto[2]->Add(data_spect_histo[2],IBDrate_data[4][0]);
+    data_spect_EHhisto[2]->Add(data_spect_histo[2],IBDrate_data[5][0]);
+    
+    
+    TH1F *nosc_spect_EHhist[nEH];
+    //-- ADs 0, 1 -> EH 0
+    nosc_spect_EHhist[0] = (TH1F*)nosc_spect_hist[0]->Clone();
+    nosc_spect_EHhist[0]->Add(nosc_spect_hist[1],1);
+    //-- AD 2 -> EH 1
+    nosc_spect_EHhist[1] = (TH1F*)nosc_spect_hist[2]->Clone();
+    //-- ADs 3, 4, 5 -> EH 2
+    nosc_spect_EHhist[2] = (TH1F*)nosc_spect_hist[3]->Clone();
+    nosc_spect_EHhist[2]->Add(nosc_spect_hist[4],1);
+    nosc_spect_EHhist[2]->Add(nosc_spect_hist[5],1);
+
+    TCanvas *canv1 = new TCanvas("canv1","Events",3*700,1*500);
+    canv1->Divide(3,1);
+    for(int iEH = 0 ; iEH < nEH ; iEH++)
+    {
+        canv1->cd(iEH+1);
+        nosc_spect_EHhist[iEH]->Draw("h");
+        data_spect_EHhisto[iEH]->Draw("p same");
+    }
+    canv1->Print("canv1.pdf");
+
+    //---------------------------------------
+    TCanvas *canv2 = new TCanvas("canv2","Events/MeV",3*700,1*500);
+    canv2->Divide(3,1);
+    TH1F *nosc_spect_EHhist_EvtperMeV[nEH];
+    for(int iEH = 0 ; iEH < nEH ; iEH++)
+    {
+        nosc_spect_EHhist_EvtperMeV[iEH] = new TH1F(Form("nosc_spect_EHhist_EvtperMeV_%d",iEH),"",NB,xbins);
+        for(int ibin = 0 ; ibin < NB ; ibin++)
+        {
+            double binw = nosc_spect_EHhist[iEH]->GetBinWidth(ibin+1);
+            double binc = nosc_spect_EHhist[iEH]->GetBinContent(ibin+1);
+            cout << iEH << "  binw = " << binw << "\t binc = " << binc << endl;
+            nosc_spect_EHhist_EvtperMeV[iEH]->SetBinContent(ibin+1,binc/binw);
+        }
+        canv2->cd(iEH+1);
+        nosc_spect_EHhist_EvtperMeV[iEH]->Draw("h");
+    }
+    canv2->Print("canv2.pdf");
+
+    //------------------------------------------------------------------------------
+    //------------------------------------------------------------------------------
 
     return 0;
 }

@@ -5,7 +5,7 @@
 #include <fstream>
 #include <string>
 
-void db_osc_spec_V2()
+void db_osc_spec()
 { //begin
 
     //------------- Style --------------
@@ -33,7 +33,7 @@ void db_osc_spec_V2()
     }
     //---------------------------------------------------
     // Open ntuple file to read simulated data
-    TFile *fntuple = new TFile("db-ntuple.root","READ");
+    TFile *fntuple = new TFile("files_data/db-ntuple_500M.root","READ");
     TTree *T = (TTree*)fntuple->Get("T");
     TCut cutBF;
     //---------------------------------------------------
@@ -169,7 +169,7 @@ void db_osc_spec_V2()
     //file << setprecision(5);
     
     FILE *file;
-    file = fopen("db_SurvParams_V2.txt","w");
+    file = fopen("files_data/db_gridOscSpectra_500M.txt","w");
     
     //write non-oscillated spectra for each AD to file
     for (int iAD = 0 ; iAD < nAD ; iAD++)
@@ -256,7 +256,7 @@ void db_osc_spec_V2()
     //file.close();
     fclose(file);
     
-    break;
+    //break;
     //---------------------------------------------------
     //---------------------------------------------------
     
