@@ -280,10 +280,10 @@ int db_minuit_spectral(const char * minName = "Minuit",
     while (file >> iAD >> s2th_13 >> dm2_31 >> spc[iad][0] >> spc[iad][1] >> spc[iad][2] >> spc[iad][3] >> spc[iad][4] >> spc[iad][5] >> spc[iad][6] >> spc[iad][7] >> spc[iad][8] >> spc[iad][9] >> spc[iad][10] >> spc[iad][11] >> spc[iad][12] >> spc[iad][13] >> spc[iad][14] >> spc[iad][15] >> spc[iad][16] >> spc[iad][17] >> spc[iad][18] >> spc[iad][19] >> spc[iad][20] >> spc[iad][21] >> spc[iad][22] >> spc[iad][23] >> spc[iad][24] >> spc[iad][25] >> NoscTot[iad])
         {//file loop
             if(first6 <= 6) //Must go up to 6 to take the 6 ADs (I think) ---- 2017-08-07
-            {
+            {//** CHECK HERE the BINING: error in line 286 in spc second index (corrected?)
                 for(int ibin = 1 ; ibin <= 26 ; ibin++)
                 {
-                    double bincont = spc[iad][ibin]*(noOsc_IBDrate_perday[iAD-1]/NoscTot[iad])*emuem[iAD-1]*daqTime[iAD-1];
+                    double bincont = spc[iad][ibin-1]*(noOsc_IBDrate_perday[iAD-1]/NoscTot[iad])*emuem[iAD-1]*daqTime[iAD-1];
                     nosc_spect_hist[iAD-1]->SetBinContent(ibin,bincont);
                 }
                 cout << "iad = " << iad << "   iAD = " << iAD  << "   first6 = " << first6 << endl; // ---- 2017-08-07
