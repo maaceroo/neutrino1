@@ -1,6 +1,6 @@
 //For the spectral analysis, using information from
 //F.P. An et al., PRL 112 061801 (2014)
-#include <constants.h>
+#include "constants.h"
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -135,7 +135,7 @@ void db_osc_spec()
     //---------------------------------------------------
     //Definition of the grid of oscillation parameters
     double s2t_pt, dm2_pt;
-    int   sel;
+    //int   sel;
 
     const int     N_s2t = 10;
     const int     N_dm2 = 10;
