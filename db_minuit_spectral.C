@@ -135,7 +135,7 @@ double chi2(const double *xx)
         
             //-- Predicted IBD from neutrino oscillations of the dth Antineutrino Detector
             //Td = (SurvP * noOsc_IBDrate_perday[iAD])*emuem[iAD]*daqTime[iAD];
-            Td = spc[iAD][iBIN]*(SurvPavg[iAD]*noOsc_IBDrate_perday[iAD]/NoscTot[iAD])*emuem[iAD]*daqTime[iAD];
+            Td = spc[iAD][iBIN]*(SurvPavg*noOsc_IBDrate_perday[iAD]/NoscTot[iAD])*emuem[iAD]*daqTime[iAD];
             //-- Measured IDB events of the dth Antineutrino Detector (background is substracted)
             //Md = (IBDrate_data[iAD][0] - totalBgd[iAD][0]*emuem[iAD])*daqTime[iAD];
             int idx = -1;

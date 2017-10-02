@@ -16,38 +16,38 @@ void db_PRL112_plots()
 
     //---------------------------------------------------------------------------------------------------
     //get data from digitized files - EH1
-    TGraph *DB_specEH1_Data  = new TGraph("data_files/EH1/DB_specEH1_Data.csv","%lg,%lg","");
-    TGraph *DB_specEH1_NoOsc = new TGraph("data_files/EH1/DB_specEH1_NoOsc.csv","%lg,%lg","");
-    TGraph *DB_specEH1_BF    = new TGraph("data_files/EH1/DB_specEH1_BF.csv","%lg,%lg","");
-    TGraph *DB_specEH1_BG    = new TGraph("data_files/EH1/DB_specEH1_BG.csv","%lg,%lg","");
+    TGraph *DB_specEH1_Data  = new TGraph("files_data/EH1/DB_specEH1_Data.csv","%lg,%lg","");
+    TGraph *DB_specEH1_NoOsc = new TGraph("files_data/EH1/DB_specEH1_NoOsc.csv","%lg,%lg","");
+    TGraph *DB_specEH1_BF    = new TGraph("files_data/EH1/DB_specEH1_BF.csv","%lg,%lg","");
+    TGraph *DB_specEH1_BG    = new TGraph("files_data/EH1/DB_specEH1_BG.csv","%lg,%lg","");
     
-    TGraph *DB_ratioEH1_BF   = new TGraph("data_files/EH1/DB_ratioEH1_BF.csv","%lg,%lg","");
-    TGraph *DB_ratioEH1_Data = new TGraph("data_files/EH1/DB_ratioEH1_Data.csv","%lg,%lg","");
-    TGraph *DB_ratioEH1_Erro = new TGraph("data_files/EH1/DB_ratioEH1_Erro.csv","%lg,%lg","");
+    TGraph *DB_ratioEH1_BF   = new TGraph("files_data/EH1/DB_ratioEH1_BF.csv","%lg,%lg","");
+    TGraph *DB_ratioEH1_Data = new TGraph("files_data/EH1/DB_ratioEH1_Data.csv","%lg,%lg","");
+    TGraph *DB_ratioEH1_Erro = new TGraph("files_data/EH1/DB_ratioEH1_Erro.csv","%lg,%lg","");
     
     //Note: "DB_ratioEH1_NoOsc" is not digitized. Trivial horizontal line
     //---------------------------------------------------------------------------------------------------
     //get data from digitized files - EH2
-    TGraph *DB_specEH2_Data  = new TGraph("data_files/EH2/DB_specEH2_Data.csv","%lg,%lg","");
-    TGraph *DB_specEH2_NoOsc = new TGraph("data_files/EH2/DB_specEH2_NoOsc.csv","%lg,%lg","");
-    TGraph *DB_specEH2_BF    = new TGraph("data_files/EH2/DB_specEH2_BF.csv","%lg,%lg","");
-    TGraph *DB_specEH2_BG    = new TGraph("data_files/EH2/DB_specEH2_BG.csv","%lg,%lg","");
+    TGraph *DB_specEH2_Data  = new TGraph("files_data/EH2/DB_specEH2_Data.csv","%lg,%lg","");
+    TGraph *DB_specEH2_NoOsc = new TGraph("files_data/EH2/DB_specEH2_NoOsc.csv","%lg,%lg","");
+    TGraph *DB_specEH2_BF    = new TGraph("files_data/EH2/DB_specEH2_BF.csv","%lg,%lg","");
+    TGraph *DB_specEH2_BG    = new TGraph("files_data/EH2/DB_specEH2_BG.csv","%lg,%lg","");
     
-    TGraph *DB_ratioEH2_BF   = new TGraph("data_files/EH2/DB_ratioEH2_BF.csv","%lg,%lg","");
-    TGraph *DB_ratioEH2_Data = new TGraph("data_files/EH2/DB_ratioEH2_Data.csv","%lg,%lg","");
-    TGraph *DB_ratioEH2_Erro = new TGraph("data_files/EH2/DB_ratioEH2_Erro.csv","%lg,%lg","");
+    TGraph *DB_ratioEH2_BF   = new TGraph("files_data/EH2/DB_ratioEH2_BF.csv","%lg,%lg","");
+    TGraph *DB_ratioEH2_Data = new TGraph("files_data/EH2/DB_ratioEH2_Data.csv","%lg,%lg","");
+    TGraph *DB_ratioEH2_Erro = new TGraph("files_data/EH2/DB_ratioEH2_Erro.csv","%lg,%lg","");
     
     //Note: "DB_ratioEH1_NoOsc" is not digitized. Trivial horizontal line
     //---------------------------------------------------------------------------------------------------
     //get data from digitized files - EH3
-    TGraph *DB_specEH3_Data  = new TGraph("data_files/EH3/DB_specEH3_Data.csv","%lg,%lg","");
-    TGraph *DB_specEH3_NoOsc = new TGraph("data_files/EH3/DB_specEH3_NoOsc.csv","%lg,%lg","");
-    TGraph *DB_specEH3_BF    = new TGraph("data_files/EH3/DB_specEH3_BF.csv","%lg,%lg","");
-    TGraph *DB_specEH3_BG    = new TGraph("data_files/EH3/DB_specEH3_BG.csv","%lg,%lg","");
+    TGraph *DB_specEH3_Data  = new TGraph("files_data/EH3/DB_specEH3_Data.csv","%lg,%lg","");
+    TGraph *DB_specEH3_NoOsc = new TGraph("files_data/EH3/DB_specEH3_NoOsc.csv","%lg,%lg","");
+    TGraph *DB_specEH3_BF    = new TGraph("files_data/EH3/DB_specEH3_BF.csv","%lg,%lg","");
+    TGraph *DB_specEH3_BG    = new TGraph("files_data/EH3/DB_specEH3_BG.csv","%lg,%lg","");
     
-    TGraph *DB_ratioEH3_BF   = new TGraph("data_files/EH3/DB_ratioEH3_BF.csv","%lg,%lg","");
-    TGraph *DB_ratioEH3_Data = new TGraph("data_files/EH3/DB_ratioEH3_Data.csv","%lg,%lg","");
-    TGraph *DB_ratioEH3_Erro = new TGraph("data_files/EH3/DB_ratioEH3_Erro.csv","%lg,%lg","");
+    TGraph *DB_ratioEH3_BF   = new TGraph("files_data/EH3/DB_ratioEH3_BF.csv","%lg,%lg","");
+    TGraph *DB_ratioEH3_Data = new TGraph("files_data/EH3/DB_ratioEH3_Data.csv","%lg,%lg","");
+    TGraph *DB_ratioEH3_Erro = new TGraph("files_data/EH3/DB_ratioEH3_Erro.csv","%lg,%lg","");
     
     //Note: "DB_ratioEH1_NoOsc" is not digitized. Trivial horizontal line
     //---------------------------------------------------------------------------------------------------
@@ -93,7 +93,7 @@ void db_PRL112_plots()
         data_spect_histoPerMeV[i]->SetMarkerSize(1.1);
         
         nosc_spect_histoPerMeV[i] = new TH1F(Form("nosc_spect_histoPerMeV_%d",i),"",NB,xbins);
-        nosc_spect_histoPerMeV[i]->SetLineWidth(1.5);
+        nosc_spect_histoPerMeV[i]->SetLineWidth(1);
         nosc_spect_histoPerMeV[i]->SetLineColor(4);
         
         BFit_spect_histoPerMeV[i] = new TH1F(Form("BFit_spect_histoPerMeV_%d",i),"",NB,xbins);
@@ -112,7 +112,7 @@ void db_PRL112_plots()
         data_spect_histo[i]->SetMarkerSize(1.1);
         
         nosc_spect_histo[i] = new TH1F(Form("nosc_spect_histo_%d",i),"",NB,xbins);
-        nosc_spect_histo[i]->SetLineWidth(1.5);
+        nosc_spect_histo[i]->SetLineWidth(1);
         nosc_spect_histo[i]->SetLineColor(4);
         
         BFit_spect_histo[i] = new TH1F(Form("BFit_spect_histo_%d",i),"",NB,xbins);
@@ -296,7 +296,7 @@ void db_PRL112_plots()
     gPad->RedrawAxis();
     gPad->SetTicks(1,1);
 
-    canv0->Print("canv_DB-EH1.pdf");
+    canv0->Print("files_plots/canv_DB-EH1.pdf");
 
     canv0->Clear("D");
     
@@ -318,7 +318,7 @@ void db_PRL112_plots()
     gPad->SetTicks(1,1);
     gPad->RedrawAxis();
     
-    canv0->Print("canv_DB-EH2.pdf");
+    canv0->Print("files_plots/canv_DB-EH2.pdf");
     
     canv0->Clear("D");
     
@@ -340,7 +340,7 @@ void db_PRL112_plots()
     gPad->SetTicks(1,1);
     gPad->RedrawAxis();
     
-    canv0->Print("canv_DB-EH3.pdf");
+    canv0->Print("files_plots/canv_DB-EH3.pdf");
     
     //---------------------------------------------------------
     // write to output file
