@@ -36,12 +36,12 @@
 #define dm2_21 7.59e-5 //eV^2,                //PRL 108 171803 (2012)
 #define s22th_12 0.861
 //For the sin^2(2th_13) loop
-#define N_s2t  10                           //number of points in the grid
+#define N_s2t  20                           //number of points in the grid
 #define lo_s2t 0.01                         //sin^2(2th_13) min
 //#define lo_s2t 0.0                          //sin^2(2th_13) min
 #define hi_s2t 0.3                          //sin^2(2th_13) max
 //For the delta(m31)^2 loop
-#define N_dm2  10                           //number of points in the grid
+#define N_dm2  20                           //number of points in the grid
 #define lo_dm2 1.0e-4                       //delta(m31)^2 min
 #define hi_dm2 1.0e-2                       //delta(m31)^2 max
 //---*****************************************************---//
@@ -135,7 +135,7 @@ double chi2(const double *xx)
         
             //-- Predicted IBD from neutrino oscillations of the dth Antineutrino Detector
             //Td = (SurvP * noOsc_IBDrate_perday[iAD])*emuem[iAD]*daqTime[iAD];
-            Td = spc[iAD][iBIN]*(SurvPavg[iAD]*noOsc_IBDrate_perday[iAD]/NoscTot[iAD])*emuem[iAD]*daqTime[iAD];
+            Td = spc[iAD][iBIN]*(SurvPavg*noOsc_IBDrate_perday[iAD]/NoscTot[iAD])*emuem[iAD]*daqTime[iAD];
             //-- Measured IDB events of the dth Antineutrino Detector (background is substracted)
             //Md = (IBDrate_data[iAD][0] - totalBgd[iAD][0]*emuem[iAD])*daqTime[iAD];
             int idx = -1;
@@ -197,7 +197,7 @@ int db_minuit_spectral(const char * minName = "Minuit",
     //-------------------
     // Energy Histograms
     //-------------------
-    TFile *fenergy = new TFile("PRL112_data.root","read");
+    TFile *fenergy = new TFile("./PRL112_data.root","read");
     //Three sets of histograms one for each Experimental Hall
     for (int i = 0 ; i < nEH ; i++)
         {
@@ -227,18 +227,7 @@ int db_minuit_spectral(const char * minName = "Minuit",
         bfit_spect_hist[iAD] = new TH1F(Form("bfit_spect_hist_%d",iAD),"",NB,xbins);
     }
   
-  
-  //---*****************************************************---//
-  /*    //Random fluctuation to the data in order to try to get larger values of chi^2 (By A.Aguilar-Arevalo 2016-02-12)
-	TF1 *gg = new TF1("gg","exp(-0.5*(x/1.5)^2)",-10,10);
-	for (int i=0;i<nAD;i++)
-	{
-        noOsc_IBDrate_perday[i] += gg->GetRandom();
-        cout << noOsc_IBDrate_perday[i]<<"  ";
-	}
-  */
-  //---*****************************************************---//
-  
+
     for (int blid = 0 ; blid < nAD*nNR ; blid++)
         {
             int id = (blid/nNR);
@@ -247,7 +236,7 @@ int db_minuit_spectral(const char * minName = "Minuit",
             wrd_array[id][ir] = wrd_histo->GetBinContent(blid+1);
             //cout << blid << "  " << wrd_array[id][ir] << endl;
         }
-    //break;
+
     cout << "wrd array -> Done..." << endl;
   
     cout << "Minimization settings..." << endl;
@@ -266,12 +255,11 @@ int db_minuit_spectral(const char * minName = "Minuit",
     chi2Surface_file.open((s2t_eps).c_str());
   
     //-- File to print minimized pull parameters
-  
     ofstream minimPullT_file;
     string PullT = "files_data/chi2_pullT_surface.txt";
     minimPullT_file.open((PullT).c_str());
   
-    ifstream file("db_gridOscSpectra.txt");
+    ifstream file("files_data/db_gridOscSpectra.txt");
     cout << "Reading file - Loop in progress..." << endl;
     int iad = 0;
     int first6 = 1;
@@ -302,6 +290,16 @@ int db_minuit_spectral(const char * minName = "Minuit",
             //cout << NoscTot[iad] << " " << sp << endl;
 
             iad++;
+/*
+            cout << "*************************************" << endl;
+            for(int ibin = 1 ; ibin <= 26 ; ibin++)
+            {
+                cout << nosc_spect_hist[iAD-1]->GetBinContent(ibin) << "  ";
+            }
+            cout << "\n*************************************" << endl;
+            //break;
+*/
+            
             
             //At this point, we have read the six AD spectra (six lines) for one point (s2th_13,dm2_31) in the grid
             if (iad == 6)
@@ -368,14 +366,14 @@ int db_minuit_spectral(const char * minName = "Minuit",
                 //std::cout << "Succesful run for sin^2(th13) = " << s2th_13 << "!! \t" << min->MinValue() << endl;
                 //}
             }//if iad END
-            
+
         }//file loop END
     std::cout << "Succesful run!!" << endl;
-
+    //break;
     //------------------------------------------------------------------------------
     //------------------------------------------------------------------------------
     //Drawing no-oscillated spectra
-    TCanvas *canv0 = new TCanvas("canv0","",3*700,2*500);
+    TCanvas *canv0 = new TCanvas("canv0","",3*700,2*350);
     canv0->Divide(3,2);
     for(int iAD = 0 ; iAD < 6 ; iAD++)
     {
@@ -410,7 +408,7 @@ int db_minuit_spectral(const char * minName = "Minuit",
     nosc_spect_EHhist[2]->Add(nosc_spect_hist[4],1);
     nosc_spect_EHhist[2]->Add(nosc_spect_hist[5],1);
 
-    TCanvas *canv1 = new TCanvas("canv1","Events",3*700,1*500);
+    TCanvas *canv1 = new TCanvas("canv1","Events",3*700,1*350);
     canv1->Divide(3,1);
     for(int iEH = 0 ; iEH < nEH ; iEH++)
     {
@@ -421,7 +419,7 @@ int db_minuit_spectral(const char * minName = "Minuit",
     canv1->Print("canv1.pdf");
 
     //---------------------------------------
-    TCanvas *canv2 = new TCanvas("canv2","Events/MeV",3*700,1*500);
+    TCanvas *canv2 = new TCanvas("canv2","Events/MeV",3*700,1*350);
     canv2->Divide(3,1);
     TH1F *nosc_spect_EHhist_EvtperMeV[nEH];
     for(int iEH = 0 ; iEH < nEH ; iEH++)
@@ -431,7 +429,7 @@ int db_minuit_spectral(const char * minName = "Minuit",
         {
             double binw = nosc_spect_EHhist[iEH]->GetBinWidth(ibin+1);
             double binc = nosc_spect_EHhist[iEH]->GetBinContent(ibin+1);
-            cout << iEH << "  binw = " << binw << "\t binc = " << binc << endl;
+            //cout << iEH << "  binw = " << binw << "\t binc = " << binc << endl;
             nosc_spect_EHhist_EvtperMeV[iEH]->SetBinContent(ibin+1,binc/binw);
         }
         canv2->cd(iEH+1);

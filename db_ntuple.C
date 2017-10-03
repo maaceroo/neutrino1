@@ -54,7 +54,7 @@ void db_ntuple()
     };
 
     //make ntuple
-    TFile *fout = new TFile("files_data/db-ntuple.root","RECREATE");
+    TFile *fout = new TFile("files_data/db-ntuple_500M.root","RECREATE");
     TTree *T = new TTree("T","Monte Carlo neutrino events");
 
     float Ep, En, Ln;
@@ -86,6 +86,9 @@ void db_ntuple()
             En = Ep + avg_nRecoilE + avg_constE;
         
             T->Fill();
+            
+            if(i%1000000 == 0)
+                cout << "Number of events " << i << " done!" << endl;
         }
     
     fout->Write();

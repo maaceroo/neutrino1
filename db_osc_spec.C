@@ -137,8 +137,8 @@ void db_osc_spec()
     double s2t_pt, dm2_pt;
     int   sel;
 
-    const int     N_s2t = 10;
-    const int     N_dm2 = 10;
+    const int     N_s2t = 20;
+    const int     N_dm2 = 20;
 
     double       lo_s2t = 0.01;
     double       hi_s2t = 0.3;

@@ -36,7 +36,7 @@ void db_osc_rate()
 
     //---------------------------------------------------
     // Open ntuple file to read simulated data (Ep, En, Ln) for the 6 AD
-    TFile *fntuple = new TFile("files_data/db-ntuple.root","READ");
+    TFile *fntuple = new TFile("files_data/db-ntuple_500M.root","READ");
     TTree *T = (TTree*)fntuple->Get("T");
     TCut cutBF;
     //---------------------------------------------------
@@ -128,8 +128,8 @@ void db_osc_rate()
         //No-oscillation IDB rate (per day)
         noOsc_IBDrate_perday[iAD] = IBDrate_perday[iAD][0]/avgPosc_AD[iAD];
         //Printing results
-        //cout << "(avgPosc_AD,noOsc_IBDrate_perday)_" << sel << " = (" << avgPosc_AD[iAD]
-        //     << ", " << noOsc_IBDrate_perday[iAD] << ") " << endl;
+        cout << "(avgPosc_AD,noOsc_IBDrate_perday)_" << sel << " = (" << avgPosc_AD[iAD]
+             << ", " << noOsc_IBDrate_perday[iAD] << ") " << endl;
         //------------------------------------------------
 
         //------------------------------------------------
