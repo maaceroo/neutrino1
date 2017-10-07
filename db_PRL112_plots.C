@@ -16,10 +16,10 @@ void db_PRL112_plots()
 
     //---------------------------------------------------------------------------------------------------
     //get data from digitized files - EH1
-    TGraph *DB_specEH1_Data  = new TGraph("files_data/EH1/DB_specEH1_Data.csv","%lg,%lg","");
-    TGraph *DB_specEH1_NoOsc = new TGraph("files_data/EH1/DB_specEH1_NoOsc.csv","%lg,%lg","");
-    TGraph *DB_specEH1_BF    = new TGraph("files_data/EH1/DB_specEH1_BF.csv","%lg,%lg","");
-    TGraph *DB_specEH1_BG    = new TGraph("files_data/EH1/DB_specEH1_BG.csv","%lg,%lg","");
+    TGraph *DB_specEH1_DataperMev  = new TGraph("files_data/EH1/DB_specEH1_Data.csv","%lg,%lg","");
+    TGraph *DB_specEH1_NoOscperMev = new TGraph("files_data/EH1/DB_specEH1_NoOsc.csv","%lg,%lg","");
+    TGraph *DB_specEH1_BFperMev    = new TGraph("files_data/EH1/DB_specEH1_BF.csv","%lg,%lg","");
+    TGraph *DB_specEH1_BGperMev    = new TGraph("files_data/EH1/DB_specEH1_BG.csv","%lg,%lg","");
     
     TGraph *DB_ratioEH1_BF   = new TGraph("files_data/EH1/DB_ratioEH1_BF.csv","%lg,%lg","");
     TGraph *DB_ratioEH1_Data = new TGraph("files_data/EH1/DB_ratioEH1_Data.csv","%lg,%lg","");
@@ -28,10 +28,10 @@ void db_PRL112_plots()
     //Note: "DB_ratioEH1_NoOsc" is not digitized. Trivial horizontal line
     //---------------------------------------------------------------------------------------------------
     //get data from digitized files - EH2
-    TGraph *DB_specEH2_Data  = new TGraph("files_data/EH2/DB_specEH2_Data.csv","%lg,%lg","");
-    TGraph *DB_specEH2_NoOsc = new TGraph("files_data/EH2/DB_specEH2_NoOsc.csv","%lg,%lg","");
-    TGraph *DB_specEH2_BF    = new TGraph("files_data/EH2/DB_specEH2_BF.csv","%lg,%lg","");
-    TGraph *DB_specEH2_BG    = new TGraph("files_data/EH2/DB_specEH2_BG.csv","%lg,%lg","");
+    TGraph *DB_specEH2_DataperMev  = new TGraph("files_data/EH2/DB_specEH2_Data.csv","%lg,%lg","");
+    TGraph *DB_specEH2_NoOscperMev = new TGraph("files_data/EH2/DB_specEH2_NoOsc.csv","%lg,%lg","");
+    TGraph *DB_specEH2_BFperMev    = new TGraph("files_data/EH2/DB_specEH2_BF.csv","%lg,%lg","");
+    TGraph *DB_specEH2_BGperMev    = new TGraph("files_data/EH2/DB_specEH2_BG.csv","%lg,%lg","");
     
     TGraph *DB_ratioEH2_BF   = new TGraph("files_data/EH2/DB_ratioEH2_BF.csv","%lg,%lg","");
     TGraph *DB_ratioEH2_Data = new TGraph("files_data/EH2/DB_ratioEH2_Data.csv","%lg,%lg","");
@@ -40,10 +40,10 @@ void db_PRL112_plots()
     //Note: "DB_ratioEH1_NoOsc" is not digitized. Trivial horizontal line
     //---------------------------------------------------------------------------------------------------
     //get data from digitized files - EH3
-    TGraph *DB_specEH3_Data  = new TGraph("files_data/EH3/DB_specEH3_Data.csv","%lg,%lg","");
-    TGraph *DB_specEH3_NoOsc = new TGraph("files_data/EH3/DB_specEH3_NoOsc.csv","%lg,%lg","");
-    TGraph *DB_specEH3_BF    = new TGraph("files_data/EH3/DB_specEH3_BF.csv","%lg,%lg","");
-    TGraph *DB_specEH3_BG    = new TGraph("files_data/EH3/DB_specEH3_BG.csv","%lg,%lg","");
+    TGraph *DB_specEH3_DataperMev  = new TGraph("files_data/EH3/DB_specEH3_Data.csv","%lg,%lg","");
+    TGraph *DB_specEH3_NoOscperMev = new TGraph("files_data/EH3/DB_specEH3_NoOsc.csv","%lg,%lg","");
+    TGraph *DB_specEH3_BFperMev    = new TGraph("files_data/EH3/DB_specEH3_BF.csv","%lg,%lg","");
+    TGraph *DB_specEH3_BGperMev    = new TGraph("files_data/EH3/DB_specEH3_BG.csv","%lg,%lg","");
     
     TGraph *DB_ratioEH3_BF   = new TGraph("files_data/EH3/DB_ratioEH3_BF.csv","%lg,%lg","");
     TGraph *DB_ratioEH3_Data = new TGraph("files_data/EH3/DB_ratioEH3_Data.csv","%lg,%lg","");
@@ -148,64 +148,64 @@ void db_PRL112_plots()
     for (int i = 0 ; i < NB ; i++)
         {
             // spectra EH1
-            ctnt = DB_specEH1_Data->GetY()[i];
+            ctnt = DB_specEH1_DataperMev->GetY()[i];
             data_spect_histoPerMeV[0]->SetBinContent(i+1,ctnt);
             binW = data_spect_histoPerMeV[0]->GetBinWidth(i+1);
             data_spect_histo[0]->SetBinContent(i+1,ctnt*binW);
             
-            ctnt = DB_specEH1_NoOsc->GetY()[i];
+            ctnt = DB_specEH1_NoOscperMev->GetY()[i];
             nosc_spect_histoPerMeV[0]->SetBinContent(i+1,ctnt);
             binW = nosc_spect_histoPerMeV[0]->GetBinWidth(i+1);
             nosc_spect_histo[0]->SetBinContent(i+1,ctnt*binW);
             
-            ctnt = DB_specEH1_BF->GetY()[i];
+            ctnt = DB_specEH1_BFperMev->GetY()[i];
             BFit_spect_histoPerMeV[0]->SetBinContent(i+1,ctnt);
             binW = BFit_spect_histoPerMeV[0]->GetBinWidth(i+1);
             BFit_spect_histo[0]->SetBinContent(i+1,ctnt*binW);
             
-            ctnt = DB_specEH1_BG->GetY()[i];
+            ctnt = DB_specEH1_BGperMev->GetY()[i];
             BkGd_spect_histoPerMeV[0]->SetBinContent(i+1,ctnt);
             binW = BkGd_spect_histoPerMeV[0]->GetBinWidth(i+1);
             BkGd_spect_histo[0]->SetBinContent(i+1,ctnt*binW);
             
             // spectra EH2
-            ctnt = DB_specEH1_Data->GetY()[i];
+            ctnt = DB_specEH2_DataperMev->GetY()[i];
             data_spect_histoPerMeV[1]->SetBinContent(i+1,ctnt);
             binW = data_spect_histoPerMeV[1]->GetBinWidth(i+1);
             data_spect_histo[1]->SetBinContent(i+1,ctnt*binW);
             
-            ctnt = DB_specEH1_NoOsc->GetY()[i];
+            ctnt = DB_specEH2_NoOscperMev->GetY()[i];
             nosc_spect_histoPerMeV[1]->SetBinContent(i+1,ctnt);
             binW = nosc_spect_histoPerMeV[1]->GetBinWidth(i+1);
             nosc_spect_histo[1]->SetBinContent(i+1,ctnt*binW);
             
-            ctnt = DB_specEH1_BF->GetY()[i];
+            ctnt = DB_specEH2_BFperMev->GetY()[i];
             BFit_spect_histoPerMeV[1]->SetBinContent(i+1,ctnt);
             binW = BFit_spect_histoPerMeV[1]->GetBinWidth(i+1);
             BFit_spect_histo[1]->SetBinContent(i+1,ctnt*binW);
             
-            ctnt = DB_specEH1_BG->GetY()[i];
+            ctnt = DB_specEH2_BGperMev->GetY()[i];
             BkGd_spect_histoPerMeV[1]->SetBinContent(i+1,ctnt);
             binW = BkGd_spect_histoPerMeV[1]->GetBinWidth(i+1);
             BkGd_spect_histo[1]->SetBinContent(i+1,ctnt*binW);
             
             // spectra EH3
-            ctnt = DB_specEH1_Data->GetY()[i];
+            ctnt = DB_specEH3_DataperMev->GetY()[i];
             data_spect_histoPerMeV[2]->SetBinContent(i+1,ctnt);
             binW = data_spect_histoPerMeV[2]->GetBinWidth(i+1);
             data_spect_histo[2]->SetBinContent(i+1,ctnt*binW);
             
-            ctnt = DB_specEH1_NoOsc->GetY()[i];
+            ctnt = DB_specEH3_NoOscperMev->GetY()[i];
             nosc_spect_histoPerMeV[2]->SetBinContent(i+1,ctnt);
             binW = nosc_spect_histoPerMeV[2]->GetBinWidth(i+1);
             nosc_spect_histo[2]->SetBinContent(i+1,ctnt*binW);
             
-            ctnt = DB_specEH1_BF->GetY()[i];
+            ctnt = DB_specEH3_BFperMev->GetY()[i];
             BFit_spect_histoPerMeV[2]->SetBinContent(i+1,ctnt);
             binW = BFit_spect_histoPerMeV[2]->GetBinWidth(i+1);
             BFit_spect_histo[2]->SetBinContent(i+1,ctnt*binW);
             
-            ctnt = DB_specEH1_BG->GetY()[i];
+            ctnt = DB_specEH3_BGperMev->GetY()[i];
             BkGd_spect_histoPerMeV[2]->SetBinContent(i+1,ctnt);
             binW = BkGd_spect_histoPerMeV[2]->GetBinWidth(i+1);
             BkGd_spect_histo[2]->SetBinContent(i+1,ctnt*binW);
@@ -296,7 +296,7 @@ void db_PRL112_plots()
     gPad->RedrawAxis();
     gPad->SetTicks(1,1);
 
-    canv0->Print("files_plots/canv_DB-EH1.pdf");
+    canv0->Print("files_plots/canv_DB.pdf");
 
     canv0->Clear("D");
     
@@ -368,6 +368,129 @@ void db_PRL112_plots()
 
     fout->Close();
 
+    
+    /////////////////////////
+    TLatex *lat = new TLatex();
+    lat->SetNDC();
+    lat->SetTextFont(ft);
+    lat->SetTextSize(1.6*sz);
+
+    TLegend *leg1 = new TLegend(0.6,0.5,0.8,0.8);
+    leg1->SetTextFont(ft);
+    leg1->SetTextSize(1.1*sz);
+    leg1->SetFillColor(0);
+    leg1->SetLineColor(0);
+    
+    leg1->AddEntry(data_spect_histo[0],"Datos Daya Bay","pl");
+    leg1->AddEntry(nosc_spect_histo[0],"Sin Oscilaci#acute{o}n","l");
+    leg1->AddEntry(BFit_spect_histo[0],"Mejor Ajuste","l");
+    leg1->AddEntry(BkGd_spect_histo[0],"Background Total","f");
+
+    TCanvas *ca = new TCanvas("ca", "canvas", 700, 900);
+    
+    TPad *pad1 = new TPad("pad1", "pad1", 0, 2./3., 1, 1.0);
+    pad1->SetBottomMargin(0); // Upper and lower plot are joined
+    pad1->Draw();             // Draw the upper pad: pad1
+    pad1->cd();               // pad1 becomes the current pad
+    frame_spectra1->Draw();
+    BFit_spect_histoPerMeV[0]->Draw("same hist");
+    data_spect_histoPerMeV[0]->Draw("P same hist");
+    nosc_spect_histoPerMeV[0]->Draw("same");
+    BkGd_spect_histoPerMeV[0]->Draw("same");
+    gPad->SetTicks(1,1);
+    leg1->Draw();
+    lat->DrawLatex(0.7,0.3,"EH1");
+    
+    // lower plot will be in pad
+    ca->cd();          // Go back to the main canvas before defining pad2
+    TPad *pad2 = new TPad("pad2", "pad2", 0, 1./3., 1, 2./3.);
+    pad2->SetTopMargin(0);
+    pad2->SetBottomMargin(0);
+    pad2->Draw();
+    pad2->cd();       // pad2 becomes the current pad
+    frame_spectra2->Draw();
+    BFit_spect_histoPerMeV[1]->Draw("same hist");
+    data_spect_histoPerMeV[1]->Draw("P same hist");
+    nosc_spect_histoPerMeV[1]->Draw("same");
+    BkGd_spect_histoPerMeV[1]->Draw("same");
+    gPad->SetTicks(1,1);
+    lat->DrawLatex(0.7,0.3,"EH2");
+    
+    // lower plot will be in pad
+    ca->cd();          // Go back to the main canvas before defining pad2
+    TPad *pad3 = new TPad("pad3", "pad3", 0, 0.0., 1, 1./3.);
+    pad3->SetTopMargin(0);
+    pad3->SetBottomMargin(0.1);
+    pad3->Draw();
+    pad3->cd();       // pad2 becomes the current pad
+    frame_spectra3->Draw();
+    BFit_spect_histoPerMeV[2]->Draw("same hist");
+    data_spect_histoPerMeV[2]->Draw("P same hist");
+    nosc_spect_histoPerMeV[2]->Draw("same");
+    BkGd_spect_histoPerMeV[2]->Draw("same");
+    gPad->SetTicks(1,1);
+    lat->DrawLatex(0.7,0.3,"EH3");
+    
+    ca->Print("files_plots/DB_spect-PRL112.pdf");
+
+    TH2F *frame_eventsEH1 = new TH2F("frame_eventsEH1","",NB,lo,hi,10,0,64000*0.25);
+    frame_eventsEH1->GetXaxis()->SetTitle("Energ#'ia Reconstruida (MeV)");
+    frame_eventsEH1->GetYaxis()->SetTitle("Eventos");
+    
+    TH2F *frame_eventsEH2 = new TH2F("frame_eventsEH2","",NB,lo,hi,10,0,29500*0.25);
+    frame_eventsEH2->GetXaxis()->SetTitle("Energ#'ia Reconstruida (MeV)");
+    frame_eventsEH2->GetYaxis()->SetTitle("Eventos");
+    
+    TH2F *frame_eventsEH3 = new TH2F("frame_eventsEH3","",NB,lo,hi,10,0,13750*0.25);
+    frame_eventsEH3->GetXaxis()->SetTitle("Energ#'ia Reconstruida (MeV)");
+    frame_eventsEH3->GetYaxis()->SetTitle("Eventos");
+
+    TCanvas *ce = new TCanvas("ce", "canvas", 700, 900);
+    
+    TPad *pad1 = new TPad("pad1", "pad1", 0, 2./3., 1, 1.0);
+    pad1->SetBottomMargin(0); // Upper and lower plot are joined
+    pad1->Draw();             // Draw the upper pad: pad1
+    pad1->cd();               // pad1 becomes the current pad
+    frame_eventsEH1->Draw();
+    BFit_spect_histo[0]->Draw("same hist");
+    data_spect_histo[0]->Draw("P same hist");
+    nosc_spect_histo[0]->Draw("same");
+    BkGd_spect_histo[0]->Draw("same");
+    gPad->SetTicks(1,1);
+    leg1->Draw();
+    lat->DrawLatex(0.7,0.3,"EH1");
+    
+    // lower plot will be in pad
+    ce->cd();          // Go back to the main canvas before defining pad2
+    TPad *pad2 = new TPad("pad2", "pad2", 0, 1./3., 1, 2./3.);
+    pad2->SetTopMargin(0);
+    pad2->SetBottomMargin(0);
+    pad2->Draw();
+    pad2->cd();       // pad2 becomes the current pad
+    frame_eventsEH2->Draw();
+    BFit_spect_histo[1]->Draw("same hist");
+    data_spect_histo[1]->Draw("P same hist");
+    nosc_spect_histo[1]->Draw("same");
+    BkGd_spect_histo[1]->Draw("same");
+    gPad->SetTicks(1,1);
+    lat->DrawLatex(0.7,0.3,"EH2");
+    
+    // lower plot will be in pad
+    ce->cd();          // Go back to the main canvas before defining pad2
+    TPad *pad3 = new TPad("pad3", "pad3", 0, 0.0., 1, 1./3.);
+    pad3->SetTopMargin(0);
+    pad3->SetBottomMargin(0.1);
+    pad3->Draw();
+    pad3->cd();       // pad2 becomes the current pad
+    frame_eventsEH3->Draw();
+    BFit_spect_histo[2]->Draw("same hist");
+    data_spect_histo[2]->Draw("P same hist");
+    nosc_spect_histo[2]->Draw("same");
+    BkGd_spect_histo[2]->Draw("same");
+    gPad->SetTicks(1,1);
+    lat->DrawLatex(0.7,0.3,"EH3");
+    
+    ce->Print("files_plots/DB_Events-PRL112.pdf");
 
 }// end
 

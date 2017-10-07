@@ -36,12 +36,12 @@
 #define dm2_21 7.59e-5 //eV^2,                //PRL 108 171803 (2012)
 #define s22th_12 0.861
 //For the sin^2(2th_13) loop
-#define N_s2t  20                           //number of points in the grid
+#define N_s2t  10                           //number of points in the grid
 #define lo_s2t 0.01                         //sin^2(2th_13) min
 //#define lo_s2t 0.0                          //sin^2(2th_13) min
 #define hi_s2t 0.3                          //sin^2(2th_13) max
 //For the delta(m31)^2 loop
-#define N_dm2  20                           //number of points in the grid
+#define N_dm2  10                           //number of points in the grid
 #define lo_dm2 1.0e-4                       //delta(m31)^2 min
 #define hi_dm2 1.0e-2                       //delta(m31)^2 max
 //---*****************************************************---//
@@ -259,7 +259,7 @@ int db_minuit_spectral(const char * minName = "Minuit",
     string PullT = "files_data/chi2_pullT_surface.txt";
     minimPullT_file.open((PullT).c_str());
   
-    ifstream file("files_data/db_gridOscSpectra.txt");
+    ifstream file("files_data/db_gridOscSpectra_10M.txt");
     cout << "Reading file - Loop in progress..." << endl;
     int iad = 0;
     int first6 = 1;
@@ -385,16 +385,16 @@ int db_minuit_spectral(const char * minName = "Minuit",
     TH1F *data_spect_EHhisto[nEH];
     //-- ADs 0, 1 -> EH 0
     data_spect_EHhisto[0] = (TH1F*)data_spect_histo[0]->Clone();
-    data_spect_EHhisto[0]->Scale(IBDrate_data[0][0]);
-    data_spect_EHhisto[0]->Add(data_spect_histo[0],IBDrate_data[1][0]);
+    data_spect_EHhisto[0]->Scale(IBDrate_data[0][0]*daqTime[0]);
+    data_spect_EHhisto[0]->Add(data_spect_histo[0],IBDrate_data[1][0]*daqTime[1]);
     //-- AD 2 -> EH 1
     data_spect_EHhisto[1] = (TH1F*)data_spect_histo[1]->Clone();
-    data_spect_EHhisto[1]->Scale(IBDrate_data[2][0]);
+    data_spect_EHhisto[1]->Scale(IBDrate_data[2][0]*daqTime[2]);
     //-- ADs 3, 4, 5 -> EH 2
     data_spect_EHhisto[2] = (TH1F*)data_spect_histo[2]->Clone();
-    data_spect_EHhisto[2]->Scale(IBDrate_data[3][0]);
-    data_spect_EHhisto[2]->Add(data_spect_histo[2],IBDrate_data[4][0]);
-    data_spect_EHhisto[2]->Add(data_spect_histo[2],IBDrate_data[5][0]);
+    data_spect_EHhisto[2]->Scale(IBDrate_data[3][0]*daqTime[3]);
+    data_spect_EHhisto[2]->Add(data_spect_histo[2],IBDrate_data[4][0]*daqTime[4]);
+    data_spect_EHhisto[2]->Add(data_spect_histo[2],IBDrate_data[5][0]*daqTime[5]);
     
     
     TH1F *nosc_spect_EHhist[nEH];

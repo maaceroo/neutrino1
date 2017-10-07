@@ -33,7 +33,7 @@ void db_osc_spec()
     }
     //---------------------------------------------------
     // Open ntuple file to read simulated data
-    TFile *fntuple = new TFile("files_data/db-ntuple_500M.root","READ");
+    TFile *fntuple = new TFile("files_data/db-ntuple_10M.root","READ");
     TTree *T = (TTree*)fntuple->Get("T");
     TCut cutBF;
     //---------------------------------------------------
@@ -137,8 +137,8 @@ void db_osc_spec()
     double s2t_pt, dm2_pt;
     //int   sel;
 
-    const int     N_s2t = 20;
-    const int     N_dm2 = 20;
+    const int     N_s2t = 10;
+    const int     N_dm2 = 10;
 
     double       lo_s2t = 0.01;
     double       hi_s2t = 0.3;
@@ -169,7 +169,7 @@ void db_osc_spec()
     //file << setprecision(5);
     
     FILE *file;
-    file = fopen("files_data/db_gridOscSpectra_500M.txt","w");
+    file = fopen("files_data/db_gridOscSpectra_10M.txt","w");
     
     //write non-oscillated spectra for each AD to file
     for (int iAD = 0 ; iAD < nAD ; iAD++)
