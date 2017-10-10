@@ -11,7 +11,7 @@
 // paper PRL112.                                                       //
 //---------------------------------------------------------------------//
 
-#include<constants.h>
+#include"constants.h"
 
 void db_ntuple()
 { // begin
@@ -38,23 +38,23 @@ void db_ntuple()
     const int nDet = 8;
     const int nRea = 6;
     //Baseline Distances (cm)
-    char  *detNames[nDet] = {"EH1-AD1", "EH1-AD2", "EH2-AD1", "EH2-AD2",
-                             "EH3-AD1", "EH3-AD2", "EH3-AD3", "EH3-AD4"};
+    const char  *detNames[nDet] = {"EH1-AD1", "EH1-AD2", "EH2-AD1", "EH2-AD2",
+          	                   "EH3-AD1", "EH3-AD2", "EH3-AD3", "EH3-AD4"};
     //The 48 baselines in Daya-Bay ()
     double baselines[nDet][nRea] =
     {
         {362.380, 371.763,  903.466, 817.158,1353.618,1265.315},
         {357.940, 368.414,  903.347, 816.896,1354.229,1265.886},
-		{1332.479,1358.148, 467.574, 489.577, 557.579, 499.207},
-		{1337.429,1362.876, 472.971, 495.346, 558.707, 501.071},
-		{1919.632,1894.337,1533.180,1533.628,1551.384,1524.940},
-		{1917.519,1891.977,1534.919,1535.032,1554.767,1528.079},
-		{1925.255,1899.861,1538.930,1539.468,1556.344,1530.078},
-		{1923.149,1897.507,1540.667,1540.872,1559.721,1533.179}
+	{1332.479,1358.148, 467.574, 489.577, 557.579, 499.207},
+	{1337.429,1362.876, 472.971, 495.346, 558.707, 501.071},
+	{1919.632,1894.337,1533.180,1533.628,1551.384,1524.940},
+	{1917.519,1891.977,1534.919,1535.032,1554.767,1528.079},
+	{1925.255,1899.861,1538.930,1539.468,1556.344,1530.078},
+	{1923.149,1897.507,1540.667,1540.872,1559.721,1533.179}
     };
 
     //make ntuple
-    TFile *fout = new TFile("files_data/db-ntuple_10M.root","RECREATE");
+    TFile *fout = new TFile("files_data/db-ntuple_500M.root","RECREATE");
     TTree *T = new TTree("T","Monte Carlo neutrino events");
 
     float Ep, En, Ln;
@@ -67,13 +67,13 @@ void db_ntuple()
     T->Branch("ir", &ir, "ir/s"); //reactor
     T->Branch("id", &id, "id/s"); //detector
 
-    int Nevents = 10000000;
+    int Nevents = 500000000;
         for (int i = 0 ; i < Nevents ; i++)
         {
             // generate a baseline (blid uniquely identifies the baseline)
-            blid = (int*) histo_ldist_6Det->GetRandom();
-            id =   (int*) (blid/nRea);
-            ir =   (int*) (blid - id*nRea);
+            blid = histo_ldist_6Det->GetRandom();
+            id =   (blid/nRea);
+            ir =   (blid - id*nRea);
             Ln = baselines[id][ir];
             
             // generate a neutrino energy
@@ -87,7 +87,7 @@ void db_ntuple()
         
             T->Fill();
             
-            if(i%1000000 == 0)
+            if(i%10000000 == 0)
                 cout << "Number of events " << i << " done!" << endl;
         }
     
