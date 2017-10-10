@@ -16,7 +16,8 @@
 // (2014)                                                              //
 //---------------------------------------------------------------------//
 
-#include <constants.h>
+#include "constants.h"
+#include "rate_SurvProb.C"
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -150,18 +151,18 @@ void db_osc_rate()
 
     double dm2_21 = 7.59e-5; //eV^2,                  //PRL 108 171803 (2012)
     double dm2_31 = 2.32e-3; //eV^2,                  //PRL 108 171803 (2012)
-    int   sel;
+    int   selad;
 
     for (int iAD = 0 ; iAD < nAD ; iAD++)
     {
-        if (iAD < 3) sel = iAD;
-        else if (iAD >= 3) sel = iAD +1;
+        if (iAD < 3) selad = iAD;
+        else if (iAD >= 3) selad = iAD +1;
         
-        T->Draw(Form("((sin(1.267 * %e * Ln/En))**2) >> SinDelta21_%d",dm2_21,iAD),Form("id==%d",sel));
+        T->Draw(Form("((sin(1.267 * %e * Ln/En))**2) >> SinDelta21_%d",dm2_21,iAD),Form("id==%d",selad));
         integ = SinDelta21[iAD]->Integral();
         SinDelta21[iAD]->Scale(1.0/integ); //Used to plot
         avgSinDelta21[iAD] = SinDelta21[iAD]->GetMean();
-        T->Draw(Form("((sin(1.267 * %e * Ln/En))**2) >> SinDelta31_%d",dm2_31,iAD),Form("id==%d",sel));
+        T->Draw(Form("((sin(1.267 * %e * Ln/En))**2) >> SinDelta31_%d",dm2_31,iAD),Form("id==%d",selad));
         integ = SinDelta31[iAD]->Integral();
         SinDelta31[iAD]->Scale(1.0/integ); //Used to plot
         avgSinDelta31[iAD] = SinDelta31[iAD]->GetMean();
@@ -222,7 +223,7 @@ void db_osc_rate()
             SurvProb->SetParameter(0,avgSinDelta21[iAD]);
             SurvProb->SetParameter(1,avgSinDelta31[iAD]);
             
-            s2t_pt = 10**(log10(lo_s2t) + double(is2t)*DeltaLog_s2t);
+            s2t_pt = pow(10,(log10(lo_s2t) + double(is2t)*DeltaLog_s2t));
             //s2t_pt = lo_s2t + double(is2t)*DeltaLin_s2t;
             
             SurvP = SurvProb->Eval(s2t_pt);
@@ -230,9 +231,9 @@ void db_osc_rate()
             IBDrate_osc[is2t] = (SurvP * noOsc_IBDrate_perday[iAD] + totalBgd[iAD][0])*emuem[iAD];
             //cout << IBDrate_osc[is2t] << "   " << IBDrate_data[iAD][0] << "  " << SurvP << "   " << noOsc_IBDrate_perday[iAD] << endl;
             
-            double sqrerror = (IBDrate_data[iAD][1])**2 + (totalBgd[iAD][1])**2;
+            double sqrerror = pow(IBDrate_data[iAD][1],2) + pow(totalBgd[iAD][1],2);
             
-            chi2[is2t] += ((IBDrate_osc[is2t] - IBDrate_data[iAD][0])**2)/sqrerror;
+            chi2[is2t] += (pow((IBDrate_osc[is2t] - IBDrate_data[iAD][0]),2))/sqrerror;
             
         }//for iAD
         file << s2t_pt << "\t" << SurvP << "\t" << chi2[is2t] << endl;
@@ -244,16 +245,16 @@ void db_osc_rate()
     file.close();
 
     double chi2_min = 5e+5;
-    int sel;
+    int isel;
     for (int jj = 0 ; jj < N_s2t ; jj++)
     {
         if (chi2[jj] < chi2_min)
         {
-            sel = jj;
-            chi2_min = chi2[sel];
+            isel = jj;
+            chi2_min = chi2[isel];
         }
     }
-    cout << "chi2_min = " << chi2_min << ", for jj = " << sel << endl;
+    cout << "chi2_min = " << chi2_min << ", for jj = " << isel << endl;
     
     //---------------------------------------------------
     //---------------------------------------------------
@@ -352,14 +353,14 @@ void db_osc_rate()
         leg_avgs->AddEntry(Posc_AD_BF[i],Form("AD%d P_{avg} = %f",i+1,avgPosc_AD[i]));
     }
     
-    TCanvas *canv0 = new TCanvas("canv0","canv0",775,500);
+    TCanvas *canv1 = new TCanvas("canv1","canv1",775,500);
     frame_POscBF->Draw();
     for (int j = 0 ; j < nAD ; j++) {
         Posc_AD_BF[j]->Draw("same");
     }
     leg_avgs->Draw();
     
-    canv0->Print("files_plots/POsc_avg.pdf");
+    canv1->Print("files_plots/POsc_avg.pdf");
     //---------------------------------------------------
 
 } //end

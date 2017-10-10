@@ -122,7 +122,7 @@ set label 4 "{/Symbol e}" at -0.07,0.0 center rotate by 90
 ## Mark at the BF
 set label 35 "+" at 0.0904523,0.000150754 center font "CharterBT-Roman,15"
 ## Minimum chi2 value
-min = 0.0043444
+min = 0.00394972
 
 unset ztics
 set clabel

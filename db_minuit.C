@@ -63,11 +63,11 @@ double daqTime[nAD] = {191.001,191.001,189.645,189.779,189.779,189.779};
 //---*****************************************************---//
 // Information obtained by executing the script "db_osc_rate.C"
 //IBD rate per day w/o oscillations
-double noOsc_IBDrate_perday[nAD] = { 663.44, 674.29, 592.31,  78.68,  78.39,  77.50};
+double noOsc_IBDrate_perday[nAD] = { 663.44, 674.29, 592.29,  78.65,  78.35,  77.47};
 //<sin^2(1.267 dm2_21 L/E)> for each AD
-double avgSinDelta21[nAD] = { 0.000239729, 0.000235682, 0.000263077, 0.001998732, 0.002001843, 0.002012429};
+double avgSinDelta21[nAD] = { 0.000239729, 0.000235682, 0.000262485, 0.002113974, 0.002117254, 0.002128461};
 //<sin^2(1.267 dm2_31 L/E)> for each AD
-double avgSinDelta31[nAD] = { 0.167673962, 0.164917723, 0.191475522, 0.740637350, 0.741081646, 0.741720850};
+double avgSinDelta31[nAD] = { 0.167673962, 0.164917723, 0.191260723, 0.735005040, 0.735393386, 0.735922251};
 //---*****************************************************---//
 double s2th_13; //oscillation parameter to be fitted
 double epsilon; //absolute normalization factor to be fitted

@@ -8,7 +8,7 @@ double rate_SurvProb(double *x, double *par)
     
     double s22th_12 = 0.861;
     
-    double SProb = 1.0 - 0.25*((1.0 + sqrt(1.0 - s2t))**2)*s22th_12*avgD21 - s2t*avgD31;
+    double SProb = 1.0 - 0.25*(pow(1.0 + sqrt(1.0 - s2t),2))*s22th_12*avgD21 - s2t*avgD31;
     
     return SProb;
     
