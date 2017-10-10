@@ -11,13 +11,13 @@ void ldist()
     const int nRea = 6; //Number of reactors  = 6
     
     //Baseline Distances (cm)
-    char  *detNames[nDet] = {"EH1-AD1", "EH1-AD2", "EH2-AD1", "EH2-AD2",
-                             "EH3-AD1", "EH3-AD2", "EH3-AD3", "EH3-AD4"};
+    const char *detNames[nDet] = {"EH1-AD1", "EH1-AD2", "EH2-AD1", "EH2-AD2",
+          	                  "EH3-AD1", "EH3-AD2", "EH3-AD3", "EH3-AD4"};
 
     //From Nucl.Inst.Meth.Phys.Research A 811 (2016) 133–161 (Table 2)
     double baselines[nDet][nRea] = {
 		{362.380,371.763,903.466,817.158,1353.618,1265.315},
-        {357.940,368.414,903.347,816.896,1354.229,1265.886},
+        	{357.940,368.414,903.347,816.896,1354.229,1265.886},
 		{1332.479,1358.148,467.574,489.577,557.579,499.207},
 		{1337.429,1362.876,472.971,495.346,558.707,501.071},
 		{1919.632,1894.337,1533.180,1533.628,1551.384,1524.940},
@@ -75,7 +75,7 @@ void ldist()
         for (int ir=0; ir<nRea; ir++){
 
             int ii = id*nRea+ir;
-            double wgt = massesDet[id]*th_pow[ir]/baselines[id][ir]**2;
+            double wgt = massesDet[id]*th_pow[ir]/(pow(baselines[id][ir],2));
 
             //printf("%2d \t %2d %2d \t %s: %7.3f m %f \n",ii,id,ir,detNames[id],baselines[id][ir], wgt);
       
@@ -115,13 +115,18 @@ void ldist()
 
     printf("\n");
 
-    int Nevt=1000000;
+    int Nevt=10000000;
     for (int i=0;i<Nevt;i++){
-        int bl_idx = (int*)histo_ldist->GetRandom();
+	//NOTE 2017-10-10 (By MAAO): I have removed (int*) from severla lines 
+	//(120, 122, 122, 137, 140 -plus 5 lines-) after getting messages like 
+	//  "ldist.C:123:20: warning: cast to 'int *' from smaller integer type 'int' [-Wint-to-pointer-cast]
+        //   int idet = (int*) (bl_idx/nRea);" 
+	//running on Linux 16.04 and ROOT V6.06/02
+        int bl_idx = histo_ldist->GetRandom();
         histo_ldist_gen->Fill(bl_idx);
 
-        int idet = (int*) (bl_idx/nRea);
-        int irea = (int*) (bl_idx- idet*nRea);
+        int idet =  (bl_idx/nRea);
+        int irea =  (bl_idx- idet*nRea);
 
         //printf("%2d \t %2d %2d\n",bl_idx, idet, irea);
     }
@@ -132,13 +137,13 @@ void ldist()
     histo_ldist_eh3_gen->SetMarkerStyle(8);
     histo_ldist_eh3_gen->SetMarkerSize(1.0);
 
-    Nevt=1000000;
+    Nevt=10000000;
     for (int i=0;i<Nevt;i++){
-        int bl_idx = (int*)histo_ldist_eh3->GetRandom();
+        int bl_idx = histo_ldist_eh3->GetRandom();
         histo_ldist_eh3_gen->Fill(bl_idx);
 
-        int idet = (int*) (bl_idx/nRea);
-        int irea = (int*) (bl_idx- idet*nRea);
+        int idet =  (bl_idx/nRea);
+        int irea =  (bl_idx- idet*nRea);
 
         //printf("%2d \t %2d %2d\n",bl_idx, idet, irea);
     }
