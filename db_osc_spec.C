@@ -20,20 +20,20 @@ void db_osc_spec()
 
     //---------------------------------------------------
     // Open data file
-    TFile *fdata = new TFile("PRL112_data.root","READ");
+    //TFile *fdata = new TFile("PRL112_data.root","READ");
     //---------------------------------------------------
     // define and get Data (energy) and Background histograms for the three (3) spectra (three EH)
-    const int nEH = 3;
-    TH1F *data_spect_histo[nEH];
-    TH1F *BkGd_spect_histo[nEH];
-    for (int i = 0 ; i < nEH ; i++)
-    {
-        data_spect_histo[i] = (TH1F*) fdata->Get(Form("data_spect_histo_%d",i));//data from PRL112_data.root
-        BkGd_spect_histo[i] = (TH1F*) fdata->Get(Form("BkGd_spect_histo_%d",i));//data from PRL112_data.root
-    }
+    //const int nEH = 3;
+    //TH1F *data_spect_histo[nEH];
+    //TH1F *BkGd_spect_histo[nEH];
+    //for (int i = 0 ; i < nEH ; i++)
+    //{
+    //    data_spect_histo[i] = (TH1F*) fdata->Get(Form("data_spect_histo_%d",i));//data from PRL112_data.root
+    //    BkGd_spect_histo[i] = (TH1F*) fdata->Get(Form("BkGd_spect_histo_%d",i));//data from PRL112_data.root
+    //}
     //---------------------------------------------------
     // Open ntuple file to read simulated data
-    TFile *fntuple = new TFile("files_data/db-ntuple_10M.root","READ");
+    TFile *fntuple = new TFile("files_data/db-ntuple_5M.root","READ");
     TTree *T = (TTree*)fntuple->Get("T");
     TCut cutBF;
     //---------------------------------------------------
@@ -51,15 +51,15 @@ void db_osc_spec()
     xbins[26] = hi;
     //---------------------------------------------------
     const int nAD = 6; //Number of Antineutrino detectors
-    TH1F *nosc_spect_histo[nAD];
+    TH1F *nu_nosc_spect_histo[nAD];
     TH1F *BFit_spect_histo[nAD];
     TH1F *Posc_AD_BF[nAD];
     TH1F *Posc_AD_surv[nAD];
     for (int i = 0 ; i < nAD ; i++)
     {
         //no-oscillation Ep spectra - histograms
-        nosc_spect_histo[i] = new TH1F(Form("nosc_spect_histo_%d",i),"",NB,xbins);// info from db-ntuple.root
-        nosc_spect_histo[i]->SetLineColor(i+3);
+        nu_nosc_spect_histo[i] = new TH1F(Form("nu_nosc_spect_histo_%d",i),"",NB,xbins);// info from db-ntuple.root
+        nu_nosc_spect_histo[i]->SetLineColor(i+3);
         //BF-oscillation Ep spectra - histograms
         BFit_spect_histo[i] = new TH1F(Form("BFit_spect_histo_%d",i),"",NB,xbins);// info from db-ntuple.root
         BFit_spect_histo[i]->SetLineColor(i+1);
@@ -118,9 +118,9 @@ void db_osc_spec()
 
         //------------------------------------------------
         //Filling the non-oscillated Ep spectra
-        T->Draw(Form("Ep >> nosc_spect_histo_%d",iAD),Form("(id==%d)",sel),"");
-        TotNosc[iAD] =  nosc_spect_histo[iAD]->Integral();
-        //nosc_spect_histo[iAD]->Scale(noOsc_IBDrate_perday[iAD]/TotNosc[iAD]); //normalize per day HERE? (2017-07-13)
+        T->Draw(Form("Ep >> nu_nosc_spect_histo_%d",iAD),Form("(id==%d)",sel),"");
+        TotNosc[iAD] =  nu_nosc_spect_histo[iAD]->Integral();
+        //nu_nosc_spect_histo[iAD]->Scale(noOsc_IBDrate_perday[iAD]/TotNosc[iAD]); //normalize per day HERE? (2017-07-13)
         
         //condition to fill BF-oscillation- Ep spectra
         cutBF = Form("(1.0 - 0.089*((sin( 1.267 * 2.32e-3 * Ln/En ))**2) - ((cos(0.5 * asin(sqrt(0.089))))**4) * 0.861 * (sin( 1.267 * 7.59e-5 * Ln/En ))**2)*(id==%d)",iAD);
@@ -169,7 +169,7 @@ void db_osc_spec()
     //file << setprecision(5);
     
     FILE *file;
-    file = fopen("files_data/db_gridOscSpectra_10M.txt","w");
+    file = fopen("files_data/db_gridOscSpectra_5M.txt","w");
     
     //write non-oscillated spectra for each AD to file
     for (int iAD = 0 ; iAD < nAD ; iAD++)
@@ -182,7 +182,7 @@ void db_osc_spec()
       //print bin-content of non-oscilated spectra per day
       for (int ib = 0 ; ib < 26 ; ib++)
       {
-         double contNO   = nosc_spect_histo[iAD]->GetBinContent(ib+1);
+         double contNO   = nu_nosc_spect_histo[iAD]->GetBinContent(ib+1);
          //file << "\t" << contNO;
           fprintf(file," %10.2f",contNO);
       }
@@ -275,7 +275,7 @@ void db_osc_spec()
     for (int i = 0 ; i < 1 ; i++)
     {
         leg_spect->AddEntry(BFit_spect_histo[i],Form("AD%d",i+1));
-        leg_spect->AddEntry(nosc_spect_histo[i],Form("AD%d",i+1));
+        leg_spect->AddEntry(nu_nosc_spect_histo[i],Form("AD%d",i+1));
     }
     for (int i = 0 ; i < 4 ; i++)
     {
@@ -285,7 +285,7 @@ void db_osc_spec()
     
     //frame_spectra->Draw();
     BFit_spect_histo[0]->Draw("");
-    nosc_spect_histo[0]->Draw("same");
+    nu_nosc_spect_histo[0]->Draw("same");
 //    wosc_spect_histo[0]->Draw("same");
     for (int i = 0 ; i < 4 ; i++)
     {

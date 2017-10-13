@@ -22,12 +22,16 @@ void db_ntuple()
     TFile *fenergy = new TFile("PRL112_data.root","read");
     //Three sets of histograms one for each Experimental Hall
     const int nEH = 3;
-    TH1F *data_spect_histo[nEH];
+    TH1F *nosc_spect_histo[nEH];
+    TH1F *bkgd_spect_histo[nEH];
+    TH1F *nu_nosc_spect_histo[nEH];
     for (int i = 0 ; i < nEH ; i++)
     {
-        data_spect_histo[i] = (TH1F*) fenergy->Get(Form("data_spect_histo_%d",i));
+        nosc_spect_histo[i] = (TH1F*) fenergy->Get(Form("nosc_spect_histo_%d",i));
+        bkgd_spect_histo[i] = (TH1F*) fenergy->Get(Form("bkgd_spect_histo_%d",i));
+        nu_nosc_spect_histo[i] = (TH1F*) nosc_spect_histo[i]->Clone();
+        nu_nosc_spect_histo[i]->Add(bkgd_spect_histo[i],-1.0);
     }
-
     //-------------------
     // Distance Histogram
     //-------------------
@@ -54,7 +58,7 @@ void db_ntuple()
     };
 
     //make ntuple
-    TFile *fout = new TFile("files_data/db-ntuple_500M.root","RECREATE");
+    TFile *fout = new TFile("files_data/db-ntuple_5M.root","RECREATE");
     TTree *T = new TTree("T","Monte Carlo neutrino events");
 
     float Ep, En, Ln;
@@ -67,7 +71,7 @@ void db_ntuple()
     T->Branch("ir", &ir, "ir/s"); //reactor
     T->Branch("id", &id, "id/s"); //detector
 
-    int Nevents = 500000000;
+    int Nevents = 5000000;
         for (int i = 0 ; i < Nevents ; i++)
         {
             // generate a baseline (blid uniquely identifies the baseline)
@@ -82,12 +86,12 @@ void db_ntuple()
             else if (id == 2) ad = 1;
             else if (id > 3 && id < 7) ad = 2;
             
-            Ep = data_spect_histo[ad]->GetRandom();
+            Ep = nu_nosc_spect_histo[ad]->GetRandom();
             En = Ep + avg_nRecoilE + avg_constE;
         
             T->Fill();
             
-            if(i%10000000 == 0)
+            if(i%1000000 == 0)
                 cout << "Number of events " << i << " done!" << endl;
         }
     

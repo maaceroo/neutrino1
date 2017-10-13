@@ -72,12 +72,12 @@ void db_PRL112_plots()
     TH1F *data_spect_histoPerMeV[nEH];
     TH1F *nosc_spect_histoPerMeV[nEH];
     TH1F *BFit_spect_histoPerMeV[nEH];
-    TH1F *BkGd_spect_histoPerMeV[nEH];
+    TH1F *bkgd_spect_histoPerMeV[nEH];
     //-- Events
     TH1F *data_spect_histo[nEH];
     TH1F *nosc_spect_histo[nEH];
     TH1F *BFit_spect_histo[nEH];
-    TH1F *BkGd_spect_histo[nEH];
+    TH1F *bkgd_spect_histo[nEH];
     //-- Ratio
     TH1F *data_ratio_histo[nEH];
     TH1F *nosc_ratio_histo[nEH];
@@ -100,9 +100,9 @@ void db_PRL112_plots()
         BFit_spect_histoPerMeV[i]->SetLineWidth(3);
         BFit_spect_histoPerMeV[i]->SetLineColor(2);
         
-        BkGd_spect_histoPerMeV[i] = new TH1F(Form("BkGd_spect_histoPerMeV_%d",i),"",NB,xbins);
-        BkGd_spect_histoPerMeV[i]->SetLineWidth(2);
-        BkGd_spect_histoPerMeV[i]->SetLineColor(6);
+        bkgd_spect_histoPerMeV[i] = new TH1F(Form("bkgd_spect_histoPerMeV_%d",i),"",NB,xbins);
+        bkgd_spect_histoPerMeV[i]->SetLineWidth(2);
+        bkgd_spect_histoPerMeV[i]->SetLineColor(6);
 
         // spectra (Events)
         //-----------
@@ -119,9 +119,9 @@ void db_PRL112_plots()
         BFit_spect_histo[i]->SetLineWidth(3);
         BFit_spect_histo[i]->SetLineColor(2);
         
-        BkGd_spect_histo[i] = new TH1F(Form("BkGd_spect_histo_%d",i),"",NB,xbins);
-        BkGd_spect_histo[i]->SetLineWidth(2);
-        BkGd_spect_histo[i]->SetLineColor(6);
+        bkgd_spect_histo[i] = new TH1F(Form("bkgd_spect_histo_%d",i),"",NB,xbins);
+        bkgd_spect_histo[i]->SetLineWidth(2);
+        bkgd_spect_histo[i]->SetLineColor(6);
         
         //Data - Background ratios
         //------------------
@@ -164,9 +164,9 @@ void db_PRL112_plots()
             BFit_spect_histo[0]->SetBinContent(i+1,ctnt*binW);
             
             ctnt = DB_specEH1_BGperMev->GetY()[i];
-            BkGd_spect_histoPerMeV[0]->SetBinContent(i+1,ctnt);
-            binW = BkGd_spect_histoPerMeV[0]->GetBinWidth(i+1);
-            BkGd_spect_histo[0]->SetBinContent(i+1,ctnt*binW);
+            bkgd_spect_histoPerMeV[0]->SetBinContent(i+1,ctnt);
+            binW = bkgd_spect_histoPerMeV[0]->GetBinWidth(i+1);
+            bkgd_spect_histo[0]->SetBinContent(i+1,ctnt*binW);
             
             // spectra EH2
             ctnt = DB_specEH2_DataperMev->GetY()[i];
@@ -185,9 +185,9 @@ void db_PRL112_plots()
             BFit_spect_histo[1]->SetBinContent(i+1,ctnt*binW);
             
             ctnt = DB_specEH2_BGperMev->GetY()[i];
-            BkGd_spect_histoPerMeV[1]->SetBinContent(i+1,ctnt);
-            binW = BkGd_spect_histoPerMeV[1]->GetBinWidth(i+1);
-            BkGd_spect_histo[1]->SetBinContent(i+1,ctnt*binW);
+            bkgd_spect_histoPerMeV[1]->SetBinContent(i+1,ctnt);
+            binW = bkgd_spect_histoPerMeV[1]->GetBinWidth(i+1);
+            bkgd_spect_histo[1]->SetBinContent(i+1,ctnt*binW);
             
             // spectra EH3
             ctnt = DB_specEH3_DataperMev->GetY()[i];
@@ -206,9 +206,9 @@ void db_PRL112_plots()
             BFit_spect_histo[2]->SetBinContent(i+1,ctnt*binW);
             
             ctnt = DB_specEH3_BGperMev->GetY()[i];
-            BkGd_spect_histoPerMeV[2]->SetBinContent(i+1,ctnt);
-            binW = BkGd_spect_histoPerMeV[2]->GetBinWidth(i+1);
-            BkGd_spect_histo[2]->SetBinContent(i+1,ctnt*binW);
+            bkgd_spect_histoPerMeV[2]->SetBinContent(i+1,ctnt);
+            binW = bkgd_spect_histoPerMeV[2]->GetBinWidth(i+1);
+            bkgd_spect_histo[2]->SetBinContent(i+1,ctnt*binW);
 
             //------------------------------------------------------
             // ratios EH1
@@ -281,7 +281,7 @@ void db_PRL112_plots()
     canv0->cd(1);
     gPad->SetPad(0.005,0.300,0.995,0.995);
     frame_spectra1->Draw();
-    BkGd_spect_histoPerMeV[0]->Draw("same hist");
+    bkgd_spect_histoPerMeV[0]->Draw("same hist");
     BFit_spect_histoPerMeV[0]->Draw("same hist");
     data_spect_histoPerMeV[0]->Draw("P same hist");
     nosc_spect_histoPerMeV[0]->Draw("same");
@@ -303,7 +303,7 @@ void db_PRL112_plots()
     canv0->cd(1);
     gPad->SetPad(0.005,0.300,0.995,0.995);
     frame_spectra2->Draw();
-    BkGd_spect_histoPerMeV[1]->Draw("same hist");
+    bkgd_spect_histoPerMeV[1]->Draw("same hist");
     BFit_spect_histoPerMeV[1]->Draw("same hist");
     data_spect_histoPerMeV[1]->Draw("P same hist");
     nosc_spect_histoPerMeV[1]->Draw("same");
@@ -325,7 +325,7 @@ void db_PRL112_plots()
     canv0->cd(1);
     gPad->SetPad(0.005,0.300,0.995,0.995);
     frame_spectra3->Draw();
-    BkGd_spect_histoPerMeV[2]->Draw("same hist");
+    bkgd_spect_histoPerMeV[2]->Draw("same hist");
     BFit_spect_histoPerMeV[2]->Draw("same hist");
     data_spect_histoPerMeV[2]->Draw("P same hist");
     nosc_spect_histoPerMeV[2]->Draw("same");
@@ -353,12 +353,12 @@ void db_PRL112_plots()
             data_spect_histoPerMeV[i]->Write();
             nosc_spect_histoPerMeV[i]->Write();
             BFit_spect_histoPerMeV[i]->Write();
-            BkGd_spect_histoPerMeV[i]->Write();
+            bkgd_spect_histoPerMeV[i]->Write();
             //spectra (Events)
             data_spect_histo[i]->Write();
             nosc_spect_histo[i]->Write();
             BFit_spect_histo[i]->Write();
-            BkGd_spect_histo[i]->Write();
+            bkgd_spect_histo[i]->Write();
             
             //ratio
             data_ratio_histo[i]->Write();
@@ -384,7 +384,7 @@ void db_PRL112_plots()
     leg1->AddEntry(data_spect_histo[0],"Datos Daya Bay","pl");
     leg1->AddEntry(nosc_spect_histo[0],"Sin Oscilaci#acute{o}n","l");
     leg1->AddEntry(BFit_spect_histo[0],"Mejor Ajuste","l");
-    leg1->AddEntry(BkGd_spect_histo[0],"Background Total","f");
+    leg1->AddEntry(bkgd_spect_histo[0],"Background Total","f");
 
     TCanvas *ca = new TCanvas("ca", "canvas", 700, 900);
     
@@ -396,7 +396,7 @@ void db_PRL112_plots()
     BFit_spect_histoPerMeV[0]->Draw("same hist");
     data_spect_histoPerMeV[0]->Draw("P same hist");
     nosc_spect_histoPerMeV[0]->Draw("same");
-    BkGd_spect_histoPerMeV[0]->Draw("same");
+    bkgd_spect_histoPerMeV[0]->Draw("same");
     gPad->SetTicks(1,1);
     leg1->Draw();
     lat->DrawLatex(0.7,0.3,"EH1");
@@ -412,7 +412,7 @@ void db_PRL112_plots()
     BFit_spect_histoPerMeV[1]->Draw("same hist");
     data_spect_histoPerMeV[1]->Draw("P same hist");
     nosc_spect_histoPerMeV[1]->Draw("same");
-    BkGd_spect_histoPerMeV[1]->Draw("same");
+    bkgd_spect_histoPerMeV[1]->Draw("same");
     gPad->SetTicks(1,1);
     lat->DrawLatex(0.7,0.3,"EH2");
     
@@ -427,7 +427,7 @@ void db_PRL112_plots()
     BFit_spect_histoPerMeV[2]->Draw("same hist");
     data_spect_histoPerMeV[2]->Draw("P same hist");
     nosc_spect_histoPerMeV[2]->Draw("same");
-    BkGd_spect_histoPerMeV[2]->Draw("same");
+    bkgd_spect_histoPerMeV[2]->Draw("same");
     gPad->SetTicks(1,1);
     lat->DrawLatex(0.7,0.3,"EH3");
     
@@ -455,7 +455,7 @@ void db_PRL112_plots()
     BFit_spect_histo[0]->Draw("same hist");
     data_spect_histo[0]->Draw("P same hist");
     nosc_spect_histo[0]->Draw("same");
-    BkGd_spect_histo[0]->Draw("same");
+    bkgd_spect_histo[0]->Draw("same");
     gPad->SetTicks(1,1);
     leg1->Draw();
     lat->DrawLatex(0.7,0.3,"EH1");
@@ -471,7 +471,7 @@ void db_PRL112_plots()
     BFit_spect_histo[1]->Draw("same hist");
     data_spect_histo[1]->Draw("P same hist");
     nosc_spect_histo[1]->Draw("same");
-    BkGd_spect_histo[1]->Draw("same");
+    bkgd_spect_histo[1]->Draw("same");
     gPad->SetTicks(1,1);
     lat->DrawLatex(0.7,0.3,"EH2");
     
@@ -486,7 +486,7 @@ void db_PRL112_plots()
     BFit_spect_histo[2]->Draw("same hist");
     data_spect_histo[2]->Draw("P same hist");
     nosc_spect_histo[2]->Draw("same");
-    BkGd_spect_histo[2]->Draw("same");
+    bkgd_spect_histo[2]->Draw("same");
     gPad->SetTicks(1,1);
     lat->DrawLatex(0.7,0.3,"EH3");
     
