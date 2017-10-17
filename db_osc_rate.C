@@ -37,7 +37,7 @@ void db_osc_rate()
 
     //---------------------------------------------------
     // Open ntuple file to read simulated data (Ep, En, Ln) for the 6 AD
-    TFile *fntuple = new TFile("files_data/db-ntuple_500M.root","READ");
+    TFile *fntuple = new TFile("files_data/db-ntuple_5M.root","READ");
     TTree *T = (TTree*)fntuple->Get("T");
     TCut cutBF;
     //---------------------------------------------------
