@@ -406,15 +406,15 @@ int db_minuit_spectral(const char * minName = "Minuit",
     //-- ADs 0, 1 -> EH 0
     nosc_spect_EHhist[0] = (TH1F*)nu_nosc_spect_hist[0]->Clone(); // Nus from AD0
     nosc_spect_EHhist[0]->Add(nu_nosc_spect_hist[1],1); // Nus from AD1
-    nosc_spect_EHhist[0]->Add(bkgd_spect_histo[0],bfactor[0]); //Background from EH0
+    nosc_spect_EHhist[0]->Add(bkgd_spect_histo[0],1.0/bfactor[0]); //Background from EH0
     //-- AD 2 -> EH 1
     nosc_spect_EHhist[1] = (TH1F*)nu_nosc_spect_hist[2]->Clone(); //Nus from AD2
-    nosc_spect_EHhist[1]->Add(bkgd_spect_histo[1],bfactor[1]); //Background from EH1
+    nosc_spect_EHhist[1]->Add(bkgd_spect_histo[1],1.0/bfactor[1]); //Background from EH1
     //-- ADs 3, 4, 5 -> EH 2
     nosc_spect_EHhist[2] = (TH1F*)nu_nosc_spect_hist[3]->Clone(); //Nus from AD3
     nosc_spect_EHhist[2]->Add(nu_nosc_spect_hist[4],1); //Nus from AD4
     nosc_spect_EHhist[2]->Add(nu_nosc_spect_hist[5],1); //Nus from AD5
-    nosc_spect_EHhist[2]->Add(bkgd_spect_histo[2],bfactor[2]); //Background from EH2
+    nosc_spect_EHhist[2]->Add(bkgd_spect_histo[2],1.0/bfactor[2]); //Background from EH2
 
     TCanvas *canv1 = new TCanvas("canv1","Events",3*700,1*350);
     canv1->Divide(3,1);
