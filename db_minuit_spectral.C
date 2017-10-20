@@ -36,12 +36,12 @@
 #define dm2_21 7.59e-5 //eV^2,                //PRL 108 171803 (2012)
 #define s22th_12 0.861
 //For the sin^2(2th_13) loop
-#define N_s2t  10                           //number of points in the grid
+#define N_s2t  200                           //number of points in the grid
 #define lo_s2t 0.01                         //sin^2(2th_13) min
 //#define lo_s2t 0.0                          //sin^2(2th_13) min
 #define hi_s2t 0.3                          //sin^2(2th_13) max
 //For the delta(m31)^2 loop
-#define N_dm2  10                           //number of points in the grid
+#define N_dm2  200                           //number of points in the grid
 #define lo_dm2 1.0e-4                       //delta(m31)^2 min
 #define hi_dm2 1.0e-2                       //delta(m31)^2 max
 //---*****************************************************---//

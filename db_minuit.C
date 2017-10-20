@@ -40,12 +40,12 @@
 #define dm2_31 2.32e-3 //eV^2,                  //PRL 108 171803 (2012)
 #define s22th_12 0.861
 //For the sin^2(2th_13) loop
-#define N_s2t  100                            //number of points in the grid
+#define N_s2t  200                            //number of points in the grid
 //#define lo_s2t 0.01                             //sin^2(2th_13) min
 #define lo_s2t 0.0                            //sin^2(2th_13) min
 #define hi_s2t 0.5                            //sin^2(2th_13) max
 //For the epsilon loop
-#define N_eps  100                           //number of points in the grid
+#define N_eps  200                           //number of points in the grid
 #define lo_eps -1.0e-2                       //epsilon min
 #define hi_eps +1.0e-2                       //epsilon max
 //---*****************************************************---//

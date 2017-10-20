@@ -137,8 +137,8 @@ void db_osc_spec()
     double s2t_pt, dm2_pt;
     //int   sel;
 
-    const int     N_s2t = 10;
-    const int     N_dm2 = 10;
+    const int     N_s2t = 200;
+    const int     N_dm2 = 200;
 
     double       lo_s2t = 0.01;
     double       hi_s2t = 0.3;
@@ -195,11 +195,11 @@ void db_osc_spec()
 
     for (int is2t = 0 ; is2t < N_s2t ; is2t++)
     {
-        s2t_pt = 10**(log10(lo_s2t) + double(is2t)*DeltaLog_s2t);
+        s2t_pt = pow(10,log10(lo_s2t) + (double(is2t)*DeltaLog_s2t));
     
         for (int idm2 = 0 ; idm2 < N_dm2 ; idm2++)
         {
-            dm2_pt = 10**(log10(lo_dm2) + double(idm2)*DeltaLog_dm2);
+            dm2_pt = pow(10,log10(lo_dm2) + (double(idm2)*DeltaLog_dm2));
 
             for (int iAD = 0 ; iAD < nAD ; iAD++)
             {
@@ -292,7 +292,7 @@ void db_osc_spec()
         wosc_spect_histo[i]->Draw("same");
     }
     leg_spect->Draw();
-    break;
+    //break;
     
     cout << endl << "Mean value: " << BFit_spect_histo[0]->GetMean() << endl;
 
@@ -321,14 +321,14 @@ void db_osc_spec()
         leg_avgs->AddEntry(Posc_AD_BF[i],Form("AD%d P_{avg} = %f",i+1,avgPosc_AD[i]));
     }
     
-    TCanvas *canv0 = new TCanvas("canv0","canv0",775,500);
+    TCanvas *canv1 = new TCanvas("canv1","canv1",775,500);
     frame_POscBF->Draw();
     for (int j = 0 ; j < nAD ; j++) {
         Posc_AD_BF[j]->Draw("same");
     }
     leg_avgs->Draw();
     
-    canv0->Print("POsc_avg.pdf");
+    canv1->Print("POsc_avg.pdf");
     //---------------------------------------------------
 
 } //end

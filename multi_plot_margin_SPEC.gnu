@@ -31,12 +31,14 @@ set xrange[xmin:xmax]
 set xlabel "{/Symbol D}{/Symbol c}^{2}"
 
 ## y-axis settings
-set logscale y
-ymin = +1e-4
-ymax = +1e-2
+#set logscale y
+#ymin = +1e-4
+#ymax = +1e-2
+ymin = +1.5
+ymax = +3.5
 set yrange[ymin:ymax]
 unset ytics
-set format y "10^{%T}"
+#set format y "10^{%T}"
 
 unset key
 
@@ -45,7 +47,8 @@ set arrow 1 from 1.00,ymin to 1.00,ymax nohead lt 4 lw 2
 set arrow 3 from 4.00,ymin to 4.00,ymax nohead lt 3 lw 2
 set arrow 5 from 9.00,ymin to 9.00,ymax nohead lt 2 lw 2
 
-plot 'files_data/db_eps_chi2_SPEC.txt' u 2:1 w l lw 1
+#plot 'files_data/db_eps_chi2_SPEC.txt' u 2:1 w l lw 1
+plot 'files_data/db_eps_chi2_SPEC.txt' u 2:(10**3*($1)) w l lw 1
 
 reset
 ######################################
@@ -110,24 +113,29 @@ set format x "10^{%T}"
 set label 2 "sin^{2}2{/Symbol q}_{13}" at 0.06,0.00006 center
 
 ## y-axis settings
-set logscale y
+#set logscale y
 set ytics offset -43.5
-ymin = +1e-4
-ymax = +1e-2
+#ymin = +1e-4
+#ymax = +1e-2
+ymin = 1.5
+ymax = 3.5
 set yrange[ymin:ymax]
-set format y "10^{%T}"
-set label 4 "{/Symbol D}m^{2}_{31}" at 0.006,0.001 center rotate by 90
+#set format y "10^{%T}"
+#set label 4 "{/Symbol D}m^{2}_{31} (eV^2)" at 0.006,0.001 center rotate by 90
+set label 4 "{/Symbol D}m^{2}_{31} (10^{-3} eV^2)" at 0.006,2.5 center rotate by 90
 
 ## Mark at the BF
-set label 35 "+" at 0.0965,0.00215 center font "CharterBT-Roman,15"
+#set label 35 "+" at 0.0802,0.00268 center font "CharterBT-Roman,15"
+set label 35 "+" at 0.0802,2.68 center font "CharterBT-Roman,15"
 ## Minimum chi2 value
-min = 92.3269
+min = 84.255
 
 unset ztics
 set clabel
 unset key
 
-splot 'files_data/chi2_s2t-eps_surface_SPEC.txt' u 1:2:(($3)-min) w l lw 2
+#splot 'files_data/chi2_s2t-eps_surface_SPEC.txt' u 1:2:(($3)-min) w l lw 2
+splot 'files_data/chi2_s2t-eps_surface_SPEC.txt' u 1:(10**3*($2)):(($3)-min) w l lw 2
 
 ########################################################################################
 
