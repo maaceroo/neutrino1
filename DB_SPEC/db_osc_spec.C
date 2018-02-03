@@ -170,8 +170,9 @@ void db_osc_spec()
     //file << setprecision(5);
     
     FILE *file;
-    file = fopen("files_data/db_gridOscSpectra_5M.txt","w");
-    
+    //file = fopen("files_data/db_gridOscSpectra_5M.txt","w");
+    file = fopen("files_data/db_gridOscSpectra_test.txt","w");
+
     //write non-oscillated spectra for each AD to file
     for (int iAD = 0 ; iAD < nAD ; iAD++)
     {

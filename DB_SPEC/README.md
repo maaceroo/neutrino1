@@ -27,16 +27,15 @@ _Output_:
 
 _Output_:
 - Declaration of arrays (needed in Step 4): 
-    - noOsc_IBDrate_perday[nAD] 
-    - avgSinDelta21[nAD] 
-    - avgSinDelta31[nAD] 
+    - noOsc_IBDrate_perday[nAD]
+- files_data/db_gridOscSpectra_5M.txt
 
-**4.** Execute root macro db_minuit_spec.C [_NOTE: the number of grid points are hard-coded in the statements at Line 43 (`#define N_s2t  200`) and Line 48 (`#define N_dm2  200`). Change those numbers at you prefer._]
+**4.** Execute root macro db_minuit_spec.C [_NOTE: the number of grid points are hard-coded in the statements at Line 39 (`#define N_s2t  200`) and Line 44 (`#define N_dm2  200`). Change those numbers at you prefer._]
 
     > root -b -l -n -q db_minuit_spec.C
 
 _Output_:  
-- files_data/chi2_s2t-eps_surface_SPEC.txt (_contains three columns: `sin^2(2th)`, `Delta M^2`, `chi2`_)
+- files_data/chi2_s2t-dm2_surface_SPEC.txt (_contains three columns: `sin^2(2th)`, `Delta M^2`, `chi2`_)
 
 **5.** Compile and execute db_chi2_min.cpp and db_margin.cpp
 

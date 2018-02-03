@@ -88,6 +88,10 @@ TH1F *wosc_spect_hist[nAD];
 TH1F *nu_wosc_spect_hist[nAD];
 TH1F *bfit_spect_hist[nAD];
 
+//** Declarar la matriz de covarianza fraccionaria como un TH2F
+TH2F *fracCovaMatrix_hist;    //Se carga dentro de la función principal db_minuot_spec()
+TMatrix *fracCovaMatrix_mat;  //Se llena en la función principal db_minuot_spec()
+
 //---*****************************************************---//
 //-- Chi-square function to be minimized --------------------//
 //-- It has 19 pull parameters and 2 oscillation parameter --//
@@ -167,7 +171,13 @@ double chi2(const double *xx)
             //-- Testing a fake normalization factor
             double test = 0.0;
             sqr_chi += pow( (Md - Td*(1.0 + epsilon - test + eps_d[iAD] + wrd) + eta_d[iAD]) ,2 )/sqrerror;
-
+            //Modificar para que chi2 = (vec.col)^T x Inv.Mat.Cov x (vec.col)
+            //1. vec.col = vector columna con la Predicción en cada Bin
+            //   Predicción en cada bin = Td*(1.0 + epsilon - test + eps_d[iAD] + wrd) - eta_d[iAD]
+            //2. Matriz diagonal con sqrerror en la diagonal (Mat.Stat)
+            //3. La Mat.Covarianza debe ser construida (se requiere db_CovarianceMat_6x6.root que contiene Mat.Cov.Fraccionaria_ij):
+            //   Mat.Cov_ij = (Mat.Cov.Fraccionaria_ij * NPred_i * NPred_j) + Mat.Stat_ij
+            //   Invertir Mat.Cov
         }
     }
   
