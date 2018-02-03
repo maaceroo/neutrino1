@@ -1,14 +1,4 @@
-//---------------------------------------------------------------------//
-//--  ldist_6x6.C - By M.A. Acero O. & A.A. Aguilar-A. - 2016-01-02  --//
-//---------------------------------------------------------------------//
-// This macro can be executed under ROOT typing                        //
-// "root[0] .x ldist_6x6.C"                                            //
-// For the rate-only analysis, using information from:                 //
-// - F.P. An et al., PRL 112 061801 (2014)                             //
-// - F.P. An et al., Chin.Phys.C37 011001 (2013)                       //
-//---------------------------------------------------------------------//
-
-void ldist_6x6()
+void ldist()
 { // begin
 
     //------------- Style --------------
@@ -17,23 +7,23 @@ void ldist_6x6()
     //------------- Style --------------
 
 
-    const int nDet = 6; //Number of detectorr = 6
+    const int nDet = 8; //Number of detectorr = 8
     const int nRea = 6; //Number of reactors  = 6
     
     //Baseline Distances (cm)
-    char  *detNames[nDet] = {"EH1-AD1", "EH1-AD2", "EH2-AD1", /*"EH2-AD2",*/
-                             "EH3-AD1", "EH3-AD2", "EH3-AD3"/*, "EH3-AD4"*/};
+    const char *detNames[nDet] = {"EH1-AD1", "EH1-AD2", "EH2-AD1", "EH2-AD2",
+          	                  "EH3-AD1", "EH3-AD2", "EH3-AD3", "EH3-AD4"};
 
     //From Nucl.Inst.Meth.Phys.Research A 811 (2016) 133–161 (Table 2)
     double baselines[nDet][nRea] = {
 		{362.380,371.763,903.466,817.158,1353.618,1265.315},
-        {357.940,368.414,903.347,816.896,1354.229,1265.886},
+        	{357.940,368.414,903.347,816.896,1354.229,1265.886},
 		{1332.479,1358.148,467.574,489.577,557.579,499.207},
-//		{1337.429,1362.876,472.971,495.346,558.707,501.071},
+		{1337.429,1362.876,472.971,495.346,558.707,501.071},
 		{1919.632,1894.337,1533.180,1533.628,1551.384,1524.940},
 		{1917.519,1891.977,1534.919,1535.032,1554.767,1528.079},
-		{1925.255,1899.861,1538.930,1539.468,1556.344,1530.078}//,
-//		{1923.149,1897.507,1540.667,1540.872,1559.721,1533.179}
+		{1925.255,1899.861,1538.930,1539.468,1556.344,1530.078},
+		{1923.149,1897.507,1540.667,1540.872,1559.721,1533.179}
 		};
 /*
     for (int i = 0; i < nDet; i++) {
@@ -48,7 +38,7 @@ void ldist_6x6()
     double protperKg = 7.169e25;
 
     //GdLS Mass in each detector (kg). From Nucl.Inst.Meth.Phys.Research A 811 (2016) 133–161 (Table 10)
-    double massesDet[nDet] = {19941.0,19967.0,19891.0,/*19944.0,*/19917.0,19989.0,19892.0/*,19931.0*/};
+    double massesDet[nDet] = {19941.0,19967.0,19891.0,19944.0,19917.0,19989.0,19892.0,19931.0};
 
     double Nprot[nDet];
     for (int i = 0 ; i < nDet ; i++) {
@@ -74,43 +64,118 @@ void ldist_6x6()
     }
     //break;
 
-//    int nb = 48;
-    int nb = 36;
+    int nb = 48;
     double lo = 0;
-    double hi = nb;
-    TH1F *histo_ldist_6x6 = new TH1F("histo_ldist_6x6","",nb,lo,hi);
-    histo_ldist_6x6->SetXTitle("EH-AD index");
-    histo_ldist_6x6->SetYTitle("a. u.");
+    double hi = 48;
+    TH1F *histo_ldist = new TH1F("histo_ldist","",nb,lo,hi);
+    TH1F *histo_ldist_eh3 = new TH1F("histo_ldist_eh3","",nb,lo,hi);
+    TH1F *histo_ldist_6Det = new TH1F("histo_ldist_6Det","",nb,lo,hi);
 
     for (int id=0; id<nDet; id++){
         for (int ir=0; ir<nRea; ir++){
 
             int ii = id*nRea+ir;
+            double wgt = massesDet[id]*th_pow[ir]/(pow(baselines[id][ir],2));
 
-            double wgt = massesDet[id]*th_pow[ir]/baselines[id][ir]**2;
+            //printf("%2d \t %2d %2d \t %s: %7.3f m %f \n",ii,id,ir,detNames[id],baselines[id][ir], wgt);
+      
+            histo_ldist->SetBinContent(ii+1,wgt);
+            //printf("%2d \t %2d %2d \t %s: %7.3f m %f \n",ii,id,ir,detNames[id],baselines[id][ir], wgt);
 
-            histo_ldist_6x6->SetBinContent(ii+1,wgt);
+            if (id>=4){
+                histo_ldist_eh3->SetBinContent(ii+1,wgt);
+            }
             
+            if (id != 3 && id != 7){
+                histo_ldist_6Det->SetBinContent(ii+1,wgt);
+            }
         } //for ir
     } //for id
     
-    double integ_6x6 = histo_ldist_6x6->Integral();
-    histo_ldist_6x6->Scale(1.0/integ_6x6);
+    double integ = histo_ldist->Integral();
+    histo_ldist->Scale(1.0/integ);
+
+    double integ_eh3 = histo_ldist_eh3->Integral();
+    histo_ldist_eh3->Scale(1.0/integ_eh3);
     
-    TFile *fout = new TFile("daya-bay-ldist_6x6.root","recreate");
+    double integ_6Det = histo_ldist_6Det->Integral();
+    histo_ldist_6Det->Scale(1.0/integ_6Det);
+    
+    TFile *fout = new TFile("files_data/daya-bay-ldist.root","recreate");
     fout->cd();
-    histo_ldist_6x6->Write();
+    histo_ldist->Write();
+    histo_ldist_eh3->Write();
+    histo_ldist_6Det->Write();
+
+
+    //Test generation of baselines
+    TH1F *histo_ldist_gen = new TH1F("histo_ldist_gen","",nb,lo,hi);
+    histo_ldist_gen->SetMarkerStyle(8);
+    histo_ldist_gen->SetMarkerSize(1.0);
 
     printf("\n");
 
+    int Nevt=10000000;
+    for (int i=0;i<Nevt;i++){
+	//NOTE 2017-10-10 (By MAAO): I have removed (int*) from severla lines 
+	//(120, 122, 122, 137, 140 -plus 5 lines-) after getting messages like 
+	//  "ldist.C:123:20: warning: cast to 'int *' from smaller integer type 'int' [-Wint-to-pointer-cast]
+        //   int idet = (int*) (bl_idx/nRea);" 
+	//running on Linux 16.04 and ROOT V6.06/02
+        int bl_idx = histo_ldist->GetRandom();
+        histo_ldist_gen->Fill(bl_idx);
+
+        int idet =  (bl_idx/nRea);
+        int irea =  (bl_idx- idet*nRea);
+
+        //printf("%2d \t %2d %2d\n",bl_idx, idet, irea);
+    }
+    double integ_gen = histo_ldist_gen->Integral();
+    histo_ldist->Scale(integ_gen);
+
+    TH1F *histo_ldist_eh3_gen = new TH1F("histo_ldist_eh3_gen","",nb,lo,hi);
+    histo_ldist_eh3_gen->SetMarkerStyle(8);
+    histo_ldist_eh3_gen->SetMarkerSize(1.0);
+
+    Nevt=10000000;
+    for (int i=0;i<Nevt;i++){
+        int bl_idx = histo_ldist_eh3->GetRandom();
+        histo_ldist_eh3_gen->Fill(bl_idx);
+
+        int idet =  (bl_idx/nRea);
+        int irea =  (bl_idx- idet*nRea);
+
+        //printf("%2d \t %2d %2d\n",bl_idx, idet, irea);
+    }
+    double integ_eh3_gen = histo_ldist_eh3_gen->Integral();
+    histo_ldist_eh3->Scale(integ_eh3_gen);
+
    // Drawing section
 
+    TCanvas *canv0 = new TCanvas("canv0","",600,470);
+    canv0->cd();
+
+    histo_ldist_gen->Draw("PE");
+    histo_ldist->Draw("hist same");
+    histo_ldist_gen->Draw("PE same");
+
+    canv0->Print("files_plots/ldist.pdf");
+
+/*
+    TCanvas *canv1 = new TCanvas("canv1","",600,470);
+    canv1->cd();
+    
+    histo_ldist_eh3_gen->Draw("PE");
+    histo_ldist_eh3->Draw("hist same");
+    histo_ldist_eh3_gen->Draw("PE same");
+    
+    canv1->Print("files_plots/ldist_eh3.pdf");
+*/  
     TCanvas *canv2 = new TCanvas("canv2","",600,470);
     canv2->cd();
     
-    histo_ldist_6x6->Draw("hist");
+    histo_ldist_6Det->Draw("hist");
     
-    canv2->Print("ldist_6x6.pdf");
-    canv2->Print("ldist_6x6.eps");
+    canv2->Print("files_plots/ldist_6Det.pdf");
     
 } //end
