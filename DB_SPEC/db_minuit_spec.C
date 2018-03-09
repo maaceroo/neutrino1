@@ -87,10 +87,23 @@ TH1F *nu_nosc_spect_hist[nAD];
 TH1F *wosc_spect_hist[nAD];
 TH1F *nu_wosc_spect_hist[nAD];
 TH1F *bfit_spect_hist[nAD];
-
+//-------------------
+// Covariance-matrix Histograms
+//-------------------
 //** Declarar la matriz de covarianza fraccionaria como un TH2F
 TH2F *fracCovaMatrix_hist;    //Se carga dentro de la función principal db_minuot_spec()
-TMatrix *fracCovaMatrix_mat;  //Se llena en la función principal db_minuot_spec()
+//TFile *fracCovaMatrix_File = new TFile("files_data/db_CovarianceMat_6x6.root","READ");
+//fracCovaMatrix_histo->(TH1F*)(fracCovaMatrix_File->Get("covaMat_histo_6x6Det"));
+int NBx_cov;
+int NBy_cov;
+TMatrixD *statErroMatrix_matrix;
+TMatrixD *fracCovaMatrix_matrix;  //Se llena en la función principal db_minuot_spec()
+TMatrixD *fullCovaMatrix_matrix;
+TMatrixD *inv_fullCovaMatrix_matrix;
+TMatrixD *one_matrix;
+TMatrixD *delta_vector;
+TMatrixD *transp_delta_vector;
+TMatrixD *predi_vector;
 
 //---*****************************************************---//
 //-- Chi-square function to be minimized --------------------//
@@ -136,6 +149,7 @@ double chi2(const double *xx)
         SurvPavg = NoscTot[iAD]/noNoscTot[iAD];
         for (int iBIN = 0 ; iBIN < NB ; iBIN++)
         {
+            int index = iAD*NB + iBIN;
             //-- Survival Probability equation. Terms depending on dM²_21 and dM²_32(~dM²_31) are averaged
             //SurvP = 1.0 - 0.25*pow((1.0 + sqrt(1.0 - s2th_13)),2)*(s22th_12)*(avgSinDelta21[iAD]) - s2th_13*(avgSinDelta31[iAD]);
         
@@ -156,11 +170,15 @@ double chi2(const double *xx)
             double data_sigplusbg = (data_spect_histo[idx]->GetBinContent(iBIN+1))*IBDrate_data[iAD][0];
             double simu_bg = (bkgd_spect_histo[idx]->GetBinContent(iBIN+1))*totalBgd[iAD][0]*emuem[iAD];
             Md = (data_sigplusbg - simu_bg)*daqTime[iAD];
+            //cout << "iAD = " << iAD << "  iBin = " << iBIN << "  Md = " << Md << " Td = " << Td << endl;
             //-- Background of the dth Antineutrino Detector
             //Bd = totalBgd[iAD][0]*emuem[iAD]*daqTime[iAD];
             Bd = simu_bg;
 	
             sqrerror = Md + Bd;
+            
+            //Statistics Error matrix
+            statErroMatrix_matrix(index,index) = sqrerror*(1.05);
 	
             //-- Fraction of IBD contribution of the rth reactor to the dth AD
             //-- determined by baselines and reactor fluxes
@@ -168,9 +186,17 @@ double chi2(const double *xx)
             for (iNR = 0 ; iNR < nNR ; iNR++)
                 wrd += wrd_array[iAD][iNR]*alpha[iNR];
         
+            predi_vector(index,0) = Td*(1.0 + epsilon + eps_d[iAD] + wrd) - eta_d[iAD];
+            delta_vector(index,0) = Md - Td*(1.0 + epsilon + eps_d[iAD] + wrd) + eta_d[iAD];
+            transp_delta_vector(0,index) = delta_vector(index,0);
+            
+            //cout << "iAD = " << iAD << "  iBin = " << iBIN << "  Md = " << Md << " Td = " << Td
+                 //<< " delta = " << delta_vector(index,0) << endl;
+            
             //-- Testing a fake normalization factor
-            double test = 0.0;
-            sqr_chi += pow( (Md - Td*(1.0 + epsilon - test + eps_d[iAD] + wrd) + eta_d[iAD]) ,2 )/sqrerror;
+            //double test = 0.0;
+            //sqr_chi += pow( (Md - Td*(1.0 + epsilon - test + eps_d[iAD] + wrd) + eta_d[iAD]) ,2 )/sqrerror;
+            
             //Modificar para que chi2 = (vec.col)^T x Inv.Mat.Cov x (vec.col)
             //1. vec.col = vector columna con la Predicción en cada Bin
             //   Predicción en cada bin = Td*(1.0 + epsilon - test + eps_d[iAD] + wrd) - eta_d[iAD]
@@ -178,10 +204,63 @@ double chi2(const double *xx)
             //3. La Mat.Covarianza debe ser construida (se requiere db_CovarianceMat_6x6.root que contiene Mat.Cov.Fraccionaria_ij):
             //   Mat.Cov_ij = (Mat.Cov.Fraccionaria_ij * NPred_i * NPred_j) + Mat.Stat_ij
             //   Invertir Mat.Cov
+            
         }
     }
-  
-    for (iAD = 0 ; iAD < nAD ; iAD++)
+    //cout << "here the test begins." << endl;
+    //-- Tests
+    //TMatrixD *test_mat = new TMatrixD(1,1);
+    //TMatrixD *part_mat = new TMatrixD(NBx_cov,1);
+    //part_mat = fracCovaMatrix_matrix*predi_vector;
+    //test_mat = (predi_vector.T())*part_mat;
+    //test_mat.Print();
+    //cout << "here the test ends." << endl;
+
+    for (int i = 0 ; i < NBx_cov ; i++) {
+        for (int j = 0 ; j < NBy_cov ; j++) {
+            fullCovaMatrix_matrix(i,j) = statErroMatrix_matrix(i,j)
+            + predi_vector(i,0)*predi_vector(j,0)*fracCovaMatrix_matrix(i,j);
+        }
+    }
+    //predi_vector->Print();
+    //fullCovaMatrix_matrix.Print();
+/*    TVector values;
+    TMatrixD vectors = fullCovaMatrix_matrix->EigenVectors(values);
+    for (Int_t i = 0; i < values.GetNrows(); ++i) {
+        TVectorD vector(TMatrixTColumn_const<double>(vectors, i));
+        cout << "eigen-value " << i << " is " << values(i) << " with eigen-vector";
+        vector.Print();
+    }
+ */
+    if(fullCovaMatrix_matrix->Determinant() != 0){
+        inv_fullCovaMatrix_matrix = fullCovaMatrix_matrix;
+        inv_fullCovaMatrix_matrix->Invert();
+    }
+    else {
+        cout << "Determinant = " << fullCovaMatrix_matrix->Determinant() << endl;
+        cout << "Singular fullCovaMatrix!" << endl;
+        cout << "Execution aborted!" << endl;
+        break;
+    }
+    
+/*    TMatrixD *a_vector(NBx_cov,1);
+    a_vector = inv_fullCovaMatrix_matrix*delta_vector;
+    
+    TMatrixD *product_matrix(1,1);
+    product_matrix = transp_delta_vector*a_vector;*/
+
+    for (int i = 0 ; i < NBx_cov ; i++) {
+        for (int j = 0 ; j < NBy_cov ; j++) {
+            double delta_i = transp_delta_vector(0,i);
+            double delta_j = delta_vector(j,0);
+            double invMat_ij = inv_fullCovaMatrix_matrix(i,j);
+            sqr_chi += delta_i*invMat_ij*delta_j;
+        }
+    }
+    
+    //sqr_chi = product_matrix(0,0);
+    
+/*    for (iAD = 0 ; iAD < nAD ; iAD++)
         {
             //-- Background error of the dth Antineutrino Detector
             sB = totalBgd[iAD][1]*emuem[iAD]*daqTime[iAD];
@@ -190,22 +269,84 @@ double chi2(const double *xx)
     
     for (iNR = 0 ; iNR < nNR ; iNR++)
         sqr_chi += pow(alpha[iNR]/salph_r,2);
-
+*/
 
     return sqr_chi;
 }
 //---*****************************************************---//
 
 int db_minuit_spec(const char * minName = "Minuit",
-                   const char *algoName = "" ,
-                   int randomSeed = +10)
+                    const char *algoName = "" ,
+                    int randomSeed = +10)
     //int randomSeed = -1)
 {
     cout << "Let's begin..." << endl;
   
+    //-------------------
+    // Covariance-matrix Histograms
+    //-------------------
+    TFile *fracCovaMatrix_File = new TFile("files_data/db_CovarianceMat_6x6.root","READ");
+    fracCovaMatrix_hist = (TH2F*)(fracCovaMatrix_File->Get("covaMat_histo_6x6Det"));
+    //-- Creating the Rebinned Matrix with root tools.
+    NBx_cov = NB*nAD;
+    NBy_cov = NB*nAD;
+    cout << NBx_cov << "  " << NBy_cov << endl;
+    statErroMatrix_matrix = new TMatrixD(NBx_cov,NBy_cov);
+    fracCovaMatrix_matrix = new TMatrixD(NBx_cov,NBy_cov);
+    fullCovaMatrix_matrix = new TMatrixD(NBx_cov,NBy_cov);
+    inv_fullCovaMatrix_matrix = new TMatrixD(NBx_cov,NBy_cov);
+    
+    one_matrix = new TMatrixD(NBx_cov,NBy_cov);
+    
+    delta_vector        = new TMatrixD(NBx_cov,1);
+    transp_delta_vector = new TMatrixD(1,NBx_cov);
+    predi_vector        = new TMatrixD(NBx_cov,1);
+    
+    fracCovaMatrix_matrix->Zero();
+    statErroMatrix_matrix->Zero();
+    fullCovaMatrix_matrix->Zero();
+    inv_fullCovaMatrix_matrix->Zero();
+    one_matrix->Zero();
+    delta_vector->Zero();
+    transp_delta_vector->Zero();
+    predi_vector->Zero();
+    
+    int i_block = 0;
+    int j_block = 0;
+    for (int i = 0 ; i < NBx_cov ; i++) {
+        for (int j = 0 ; j < NBy_cov; j++) {
+            i_block = i%26;
+            j_block = j%26;
+            fracCovaMatrix_matrix(i,j) = fracCovaMatrix_hist->GetBinContent(i+1,j+1);
+            //if (i_block != j_block) {
+            if ((i_block == j_block + 1) || (j_block == i_block + 1)) {
+                fracCovaMatrix_matrix(i,j) *= 0.99;
+            }
+            else if ((i_block == j_block + 2) || (j_block == i_block + 2)) {
+                fracCovaMatrix_matrix(i,j) *= 0.89;
+            }
+            else if ((i_block == j_block + 3) || (j_block == i_block + 3)) {
+                fracCovaMatrix_matrix(i,j) *= 0.84;
+            }
+            else if ((i_block == j_block + 4) || (j_block == i_block + 4)) {
+                fracCovaMatrix_matrix(i,j) *= 0.79;
+            }
+            else if ((i_block == j_block + 5) || (j_block == i_block + 5)) {
+                fracCovaMatrix_matrix(i,j) *= 0.74;
+            }
+ 
+                //fracCovaMatrix_matrix(i,j) *= 0.90;
+            //}
+        }
+    }
+
+    //cout << "Done with the matrix!" << endl;
+    //fracCovaMatrix_matrix->Print();
+    //break;
+
     TFile *wrd_File = new TFile("files_data/daya-bay-ldist.root","READ");
     TH1F *wrd_histo = (TH1F*)(wrd_File->Get("histo_ldist_6Det"));
-  
+
     //-------------------
     // Energy Histograms
     //-------------------
@@ -273,7 +414,7 @@ int db_minuit_spec(const char * minName = "Minuit",
     string PullT = "files_data/chi2_pullT_surface.txt";
     minimPullT_file.open((PullT).c_str());
   
-    ifstream file("files_data/db_gridOscSpectra_5M.txt");
+    ifstream file("files_data/db_gridOscSpectra_1M.txt");
     cout << "Reading file - Loop in progress..." << endl;
     int iad = 0;
     int first6 = 1;
@@ -298,7 +439,7 @@ int db_minuit_spec(const char * minName = "Minuit",
             
             //cout << iad+1 << ": " << iAD << " " << s2th_13 << " " << dm2_31 << " " ;
             //for (int ib = 0; ib < NB; ib++) {
-            //cout << spc[iad][ib] << " ";
+              //  cout << spc[iad][ib] << " ";
             //}
             //cout << NoscTot[iad] << " " << sp << endl;
 
@@ -324,7 +465,7 @@ int db_minuit_spec(const char * minName = "Minuit",
                 const int N_params = 19; //-- Number of parameter of the chi² function --//
                 ROOT::Math::Functor f(&chi2,N_params); //-- Setting the function to be minimized by using Minuit --//
                 //-- Steps
-                double stp = 1.0e-3;
+                double stp = 1.0e-4;
                 double step[N_params] = {stp,stp,stp,stp,stp,stp,
                                         stp,stp,stp,stp,stp,stp,
                                         stp,stp,stp,stp,stp,stp,stp};
@@ -338,7 +479,7 @@ int db_minuit_spec(const char * minName = "Minuit",
                 
                 //-- Setting variables
                 double lim = 1.0e-3;
-                min->SetLimitedVariable(0,  "e_1", start[0],  step[0],  -lim, lim);
+                /*min->SetLimitedVariable(0,  "e_1", start[0],  step[0],  -lim, lim);
                 min->SetLimitedVariable(1,  "e_2", start[1],  step[1],  -lim, lim);
                 min->SetLimitedVariable(2,  "e_3", start[2],  step[2],  -lim, lim);
                 min->SetLimitedVariable(3,  "e_4", start[3],  step[3],  -lim, lim);
@@ -355,17 +496,43 @@ int db_minuit_spec(const char * minName = "Minuit",
                 min->SetLimitedVariable(14, "a_3", start[14], step[14], -lim, lim);
                 min->SetLimitedVariable(15, "a_4", start[15], step[15], -lim, lim);
                 min->SetLimitedVariable(16, "a_5", start[16], step[16], -lim, lim);
-                min->SetLimitedVariable(17, "a_6", start[17], step[17], -lim, lim);
+                min->SetLimitedVariable(17, "a_6", start[17], step[17], -lim, lim);*/
                 min->SetLimitedVariable(18, "eps", start[18], step[18], -lim, lim);
+                //min->SetFixedVariable(18, "eps", start[18]);
+                min->SetFixedVariable(0,  "e_1", start[0]);
+                min->SetFixedVariable(1,  "e_2", start[1]);
+                min->SetFixedVariable(2,  "e_3", start[2]);
+                min->SetFixedVariable(3,  "e_4", start[3]);
+                min->SetFixedVariable(4,  "e_5", start[4]);
+                min->SetFixedVariable(5,  "e_6", start[5]);
+                min->SetFixedVariable(6,  "n_1", start[6]);
+                min->SetFixedVariable(7,  "n_2", start[7]);
+                min->SetFixedVariable(8,  "n_3", start[8]);
+                min->SetFixedVariable(9,  "n_4", start[9]);
+                min->SetFixedVariable(10, "n_5", start[10]);
+                min->SetFixedVariable(11, "n_6", start[11]);
+                min->SetFixedVariable(12, "a_1", start[12]);
+                min->SetFixedVariable(13, "a_2", start[13]);
+                min->SetFixedVariable(14, "a_3", start[14]);
+                min->SetFixedVariable(15, "a_4", start[15]);
+                min->SetFixedVariable(16, "a_5", start[16]);
+                min->SetFixedVariable(17, "a_6", start[17]);
                 //min->SetFixedVariable(18, "eps", start[18]);
                 min->SetErrorDef(2.3);
                 
                 //-- Calling Minuit minimization
+
                 min->Minimize();
           
                 const double *xs = min->X();
                 
-                chi2Surface_file << s2th_13 << "\t" << dm2_31 << "\t" << min->MinValue() << endl;
+                double chi2Min = min->MinValue();
+                chi2Surface_file << s2th_13 << "\t" << dm2_31 << "\t" << chi2Min << endl;
+                
+                if (chi2Min < 0.0) {
+                    cout << "Critical error: chi2Min is negative!  " << chi2Min << endl;
+                    break;
+                }
                 
                 minimPullT_file  << s2th_13 << "\t" << dm2_31 << "\t" << xs[0] << "\t" << xs[1] << "\t" << xs[2] << "\t" << xs[3] << "\t" << xs[4] << "\t" << xs[5] << "\t" << xs[6] << "\t" << xs[7] << "\t" << xs[8] << "\t" << xs[9] << "\t" << xs[10] << "\t" << xs[11] << "\t" << xs[12] << "\t" << xs[13] << "\t" << xs[14] << "\t" << xs[15] << "\t" << xs[16] << "\t" << xs[17] << "\t" << xs[18] << "\t" << min->MinValue() << endl;
                 //}
@@ -381,7 +548,7 @@ int db_minuit_spec(const char * minName = "Minuit",
             }//if iad END
 
         }//file loop END
-    std::cout << "Succesful run!!" << endl;
+    std::cout << "Successful run!!" << endl;
     //break;
     //------------------------------------------------------------------------------
     //------------------------------------------------------------------------------
@@ -393,7 +560,7 @@ int db_minuit_spec(const char * minName = "Minuit",
         canv0->cd(iAD+1);
         nosc_spect_hist[iAD]->Draw("");
     }
-    canv0->Print("files_plots/canv0.pdf");
+    //canv0->Print("files_plots/canv0.pdf");
     
     TH1F *data_spect_EHhisto[nEH];
     //-- ADs 0, 1 -> EH 0
@@ -432,7 +599,7 @@ int db_minuit_spec(const char * minName = "Minuit",
         nosc_spect_EHhist[iEH]->Draw("h");
         data_spect_EHhisto[iEH]->Draw("p same");
     }
-    canv1->Print("files_plots/canv1.pdf");
+    //canv1->Print("files_plots/canv1.pdf");
 
     //---------------------------------------
     TCanvas *canv2 = new TCanvas("canv2","Events/MeV",3*700,1*350);
@@ -451,7 +618,7 @@ int db_minuit_spec(const char * minName = "Minuit",
         canv2->cd(iEH+1);
         nosc_spect_EHhist_EvtperMeV[iEH]->Draw("h");
     }
-    canv2->Print("files_plots/canv2.pdf");
+    //canv2->Print("files_plots/canv2.pdf");
 
     //------------------------------------------------------------------------------
     //------------------------------------------------------------------------------

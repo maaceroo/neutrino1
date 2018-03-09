@@ -61,9 +61,10 @@ set bmargin at screen 0.65
 set tmargin at screen 0.95
 
 ## x-axis settings
-set logscale x
+#set logscale x
 xmin = 0.01
-xmax = 0.3
+#xmax = 0.3
+xmax = 0.2
 set xrange[xmin:xmax]
 unset xtics
 set format x "10^{%T}"
@@ -103,13 +104,14 @@ set cntrparam order 10
 set cntrparam levels discret 2.30,6.18,11.83
 
 ## x-axis settings
-set logscale x
+#set logscale x
 xmin = 0.01
-xmax = 0.3
+#xmax = 0.3
+xmax = 0.2
 set xrange[xmin:xmax]
 #set xtics 0.01,0.1,0.29
 #set mxtics
-set format x "10^{%T}"
+#set format x "10^{%T}"
 set label 2 "sin^{2}2{/Symbol q}_{13}" at 0.06,0.00006 center
 
 ## y-axis settings
@@ -121,14 +123,14 @@ ymin = 1.5
 ymax = 3.5
 set yrange[ymin:ymax]
 #set format y "10^{%T}"
-#set label 4 "{/Symbol D}m^{2}_{31} (eV^2)" at 0.006,0.001 center rotate by 90
-set label 4 "{/Symbol D}m^{2}_{31} (10^{-3} eV^2)" at 0.006,2.5 center rotate by 90
+set label 4 "{/Symbol D}m^{2}_{31} (eV^2)" at 0.006,0.001 center rotate by 90
+#set label 4 "{/Symbol D}m^{2}_{31} (10^{-3} eV^2)" at 0.006,2.5 center rotate by 90
 
 ## Mark at the BF
-#set label 35 "+" at 0.0802,0.00268 center font "CharterBT-Roman,15"
-set label 35 "+" at 0.0965,2.15 center font "CharterBT-Roman,15"
+set label 35 "+" at 0.0802,2.68 center font "CharterBT-Roman,15"
+#set label 35 "+" at 0.0965,2.15 center font "CharterBT-Roman,15"
 ## Minimum chi2 value
-min = 92.3269
+min = 121.293
 
 unset ztics
 set clabel
