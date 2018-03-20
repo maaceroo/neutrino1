@@ -138,8 +138,8 @@ void db_osc_spec()
     double s2t_pt, dm2_pt;
     //int   sel;
 
-    const int     N_s2t = 200;
-    const int     N_dm2 = 200;
+    const int     N_s2t = 100;
+    const int     N_dm2 = 100;
 
     double       lo_s2t = 0.01;
     double       hi_s2t = 0.3;
@@ -171,7 +171,7 @@ void db_osc_spec()
     
     FILE *file;
     //file = fopen("files_data/db_gridOscSpectra_5M.txt","w");
-    file = fopen("files_data/db_gridOscSpectra_test.txt","w");
+    file = fopen("files_data/db_gridOscSpectra_100x100.txt","w");
 
     //write non-oscillated spectra for each AD to file
     for (int iAD = 0 ; iAD < nAD ; iAD++)

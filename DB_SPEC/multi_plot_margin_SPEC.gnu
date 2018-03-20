@@ -75,7 +75,7 @@ ymax =  10
 set yrange[ymin:ymax]
 set ylabel "{/Symbol D}{/Symbol c}^{2}"
 
-set key at 2.0,5
+set key at 0.31,3.8
 
 plot 'files_data/db_s2t_chi2_SPEC.txt' u 1:2 w l lw 1 t "", \
      9.0 lt 2 lw 2 t "99.73% C.L. (3{/Symbol s})", \
@@ -109,10 +109,10 @@ xmin = 0.01
 #xmax = 0.3
 xmax = 0.2
 set xrange[xmin:xmax]
-#set xtics 0.01,0.1,0.29
+set xtics 0.0,0.05,0.19
 #set mxtics
 #set format x "10^{%T}"
-set label 2 "sin^{2}2{/Symbol q}_{13}" at 0.06,0.00006 center
+set label 2 "sin^{2}2{/Symbol q}_{13}" at 0.1,1.25 center
 
 ## y-axis settings
 #set logscale y
@@ -122,15 +122,16 @@ set ytics offset -43.5
 ymin = 1.5
 ymax = 3.5
 set yrange[ymin:ymax]
+set ytics 1.5,0.5,3.4
 #set format y "10^{%T}"
-set label 4 "{/Symbol D}m^{2}_{31} (eV^2)" at 0.006,0.001 center rotate by 90
+set label 4 "{/Symbol D}m^{2}_{31} (eV^2)" at -0.0175,2.5 center rotate by 90
 #set label 4 "{/Symbol D}m^{2}_{31} (10^{-3} eV^2)" at 0.006,2.5 center rotate by 90
 
 ## Mark at the BF
-set label 35 "+" at 0.0802,2.68 center font "CharterBT-Roman,15"
+set label 35 "+" at 0.086,2.68 center font "CharterBT-Roman,15"
 #set label 35 "+" at 0.0965,2.15 center font "CharterBT-Roman,15"
 ## Minimum chi2 value
-min = 121.293
+min = 127.795
 
 unset ztics
 set clabel

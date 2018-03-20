@@ -414,7 +414,8 @@ int db_minuit_spec(const char * minName = "Minuit",
     string PullT = "files_data/chi2_pullT_surface.txt";
     minimPullT_file.open((PullT).c_str());
   
-    ifstream file("files_data/db_gridOscSpectra_1M.txt");
+    ifstream file("files_data/db_gridOscSpectra_1M.txt"); //50x50 parameter space-grid
+    //ifstream file("files_data/db_gridOscSpectra_100x100.txt");
     cout << "Reading file - Loop in progress..." << endl;
     int iad = 0;
     int first6 = 1;
@@ -479,7 +480,7 @@ int db_minuit_spec(const char * minName = "Minuit",
                 
                 //-- Setting variables
                 double lim = 1.0e-3;
-                /*min->SetLimitedVariable(0,  "e_1", start[0],  step[0],  -lim, lim);
+                min->SetLimitedVariable(0,  "e_1", start[0],  step[0],  -lim, lim);
                 min->SetLimitedVariable(1,  "e_2", start[1],  step[1],  -lim, lim);
                 min->SetLimitedVariable(2,  "e_3", start[2],  step[2],  -lim, lim);
                 min->SetLimitedVariable(3,  "e_4", start[3],  step[3],  -lim, lim);
@@ -496,10 +497,10 @@ int db_minuit_spec(const char * minName = "Minuit",
                 min->SetLimitedVariable(14, "a_3", start[14], step[14], -lim, lim);
                 min->SetLimitedVariable(15, "a_4", start[15], step[15], -lim, lim);
                 min->SetLimitedVariable(16, "a_5", start[16], step[16], -lim, lim);
-                min->SetLimitedVariable(17, "a_6", start[17], step[17], -lim, lim);*/
+                min->SetLimitedVariable(17, "a_6", start[17], step[17], -lim, lim);
                 min->SetLimitedVariable(18, "eps", start[18], step[18], -lim, lim);
                 //min->SetFixedVariable(18, "eps", start[18]);
-                min->SetFixedVariable(0,  "e_1", start[0]);
+                /*min->SetFixedVariable(0,  "e_1", start[0]);
                 min->SetFixedVariable(1,  "e_2", start[1]);
                 min->SetFixedVariable(2,  "e_3", start[2]);
                 min->SetFixedVariable(3,  "e_4", start[3]);
@@ -516,7 +517,7 @@ int db_minuit_spec(const char * minName = "Minuit",
                 min->SetFixedVariable(14, "a_3", start[14]);
                 min->SetFixedVariable(15, "a_4", start[15]);
                 min->SetFixedVariable(16, "a_5", start[16]);
-                min->SetFixedVariable(17, "a_6", start[17]);
+                min->SetFixedVariable(17, "a_6", start[17]);*/
                 //min->SetFixedVariable(18, "eps", start[18]);
                 min->SetErrorDef(2.3);
                 
