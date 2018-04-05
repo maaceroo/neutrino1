@@ -31,7 +31,7 @@
 #define  lo 1.2
 #define  hi 8.4
 //Number of Antineutrino Detectors
-#define nAD 2
+#define  nAD 2
 //Number of Nuclear Reactors
 #define nNR 6
 //Fixed neutrino oscillations parameters
@@ -45,8 +45,8 @@
 #define hi_s2t 0.3                            //sin^2(2th_13) max
 //For the a loop
 #define N_eps  100 	                           //number of points in the grid
-#define lo_eps -1.0e-3                       //a min
-#define hi_eps +1.0e-3                       //a max
+#define lo_eps -1.0e-2                       //a min
+#define hi_eps +1.0e-2                       //a max
 double ran = N_eps * N_s2t;
 //---*****************************************************---//
 
@@ -54,19 +54,24 @@ double ran = N_eps * N_s2t;
 //-- Global variables and quantities ------------------------//
 //---*****************************************************---//
 //(IBD candidates)/(DAQ live time -days-) from PRL 1610.0432v5 (2017)
-double IBDrate_data[nAD][2] = { {634.20,1.18},{64.38,0.36} };
+//double IBDrate_data[nAD][2] = { {634.20,1.18},{64.38,0.36} };
+double IBDrate_data[nAD][2] = { {616.67,1.14},{61.24,0.42} };
 //IBD rate (per day), total background and efficiencies (1610.0432v5 (2017))
 double totalBgd[nAD][2] = { {17.54,0.83},{3.14,0.23} };
-//double emuem[nAD] ={0.647,0.745};
+double emuem[nAD] ={0.7644,0.7644};
 double daqTime[nAD] = {458.49,489.93};
 //---*****************************************************---//
 // Information obtained by executing the script "RENO_osc_rate.C"
 //IBD rate per day w/o oscillations
-double noOsc_IBDrate_perday[nAD] = { 649.54,  67.65};
+//double noOsc_IBDrate_perday[nAD][nNR] ={ { 630.53, 623.43, 619.85, 620.52, 625.28, 633.21}, {65.66,  65.43,  65.28,  65.21,  65.34,  65.49}};
+double noOsc_IBDrate_perday[nAD][nNR] ={ {  43.18,  93.29, 206.74, 170.21,  73.36,  35.92}, {   9.34,  10.64, 11.72,  11.95,  11.43, 10.31}};
+//double noOsc_IBDrate_perday[nAD] = { 622.68,  65.39};
 //<sin^2(1.267 dm2_21 L/E)> for each AD
-double avgSinDelta21[nAD] = { 0.016812237, 0.051125940};
+//double avgSinDelta21[nAD] = { 0.000110395, 0.001236837};
+double avgSinDelta21[nAD][nNR] = { {0.000267,0.000121,0.000055,0.000067,0.000157,0.000327}, {0.001431,0.001251,0.001163,0.001127,0.001189,0.001314}};
 //<sin^2(1.267 dm2_ee L/E)> for each AD
-double avgSinDeltaee[nAD] = { 0.425301450, 0.614451176};
+//double avgSinDeltaee[nAD] = { 0.109914046, 0.717994798};
+double avgSinDeltaee[nAD][nNR] = { {0.250234,0.123595,0.058540,0.070624,0.156896,0.297120}, {0.760081,0.724878,0.701159,0.689812,0.710250,0.733815}};
 //---*****************************************************---//
 double s22th_13; //oscillation parameter to be fitted
 double a; //absolute normalization factor to be fitted
@@ -104,34 +109,37 @@ double chi2(const double *xx)
   double Nexp         = 0.0;
   double Bd           = 0.0;
   double sB           = 0.0;
-  double seps_d       = 1.0*0.002;
-  double seps_a       = 1.0*0.009;
+  double seps_d       = 0.002;
+  double seps_a       = 0.009;
+  double wrd = 0.0;
   
   for (iAD = 0 ; iAD < 2 ; iAD++)
     {
-      //-- Survival Probability equation. Terms depending on dM²_21 and dM²_ee(~dM²_31) are averaged
-      SurvP = 1.0 - (s22th_13*avgSinDeltaee[iAD]) - (0.25*pow((1.0 + sqrt(1.0 - s22th_13)),2)*s22th_12*avgSinDelta21[iAD]);
-      //-- Predicted IBD from neutrino oscillations of the dth Antineutrino Detector
-      Nexp = (SurvP* noOsc_IBDrate_perday[iAD])*daqTime[iAD];
       //-- Measured IDB events of the dth Antineutrino Detector (background is substracted)
-      Nobs = (IBDrate_data[iAD][0])*daqTime[iAD];
+      Nobs = (IBDrate_data[iAD][0]/*-totalBgd[iAD][0]*/)*0.7644*daqTime[iAD];
       // Error 
       sqrerror = Nobs;
-      
-      double wrd = 0.0;
       for (iNR = 0 ; iNR < nNR ; iNR++)
-	//-- determined by baselines and reactor fluxes
-	wrd += wrd_array[iAD][iNR]*fr[iNR];
-      //cout << "wrd = " << wrd <<endl;
-      sqr_chi += pow( (Nobs - Nexp*(1.0 + a + eps_d[iAD] + wrd) + b_d[iAD]) ,2 )/sqrerror;
-      
+	{
+	  //-- Survival Probability equation. Terms depending on dM²_21 and dM²_ee(~dM²_31) are averaged
+	  SurvP = 1.0 - (s22th_13*avgSinDeltaee[iAD][iNR]) - (0.25*pow((1.0 + sqrt(1.0 - s22th_13)),2)*s22th_12*avgSinDelta21[iAD][iNR]);
+	  //-- Predicted IBD from neutrino oscillations of the dth Antineutrino Detector
+	  // cout << "SurP = " << SurvP <<endl;
+	  Nexp = (SurvP*noOsc_IBDrate_perday[iAD][iNR])*0.7644*daqTime[iAD];
+	  //Nexp = (SurvP*noOsc_IBDrate_perday[iAD]*(area_bajo_curva[iAD]))*0.7644*daqTime[iAD];
+	  //-- determined by baselines and reactor fluxes
+	  wrd += Nexp*(1+fr[iNR])/*wrd_array[iAD][iNR]*(area_bajo_curva[iAD])*/;
+	}	  
+      //wrd = Nexp*(1+fr[iNR]);
+      //cout << "wrd = " << wrd << "\t Nobs = " << Nobs <<endl;
+      sqr_chi += pow( (Nobs + b_d[iAD] - wrd*(1.0 + a + eps_d[iAD])) ,2 )/sqrerror;
+      wrd = 0.0;
     }
-  
   //     cout << "chi2 = " << sqr_chi << endl;
   for (iAD = 0 ; iAD < 2 ; iAD++)
     {
       //-- Background error of the dth Antineutrino Detector
-      sB = totalBgd[iAD][1]*daqTime[iAD];
+      sB = totalBgd[iAD][1]*0.7644*daqTime[iAD];
       sqr_chi += pow(eps_d[iAD]/seps_d,2) + pow(b_d[iAD]/sB,2);
     }
   
@@ -140,6 +148,7 @@ double chi2(const double *xx)
   
   return sqr_chi;
 }
+
 //---*****************************************************---//
 
 int RENO_minuit2(const char * minName = "Minuit",
@@ -148,18 +157,22 @@ int RENO_minuit2(const char * minName = "Minuit",
 //int randomSeed = -1)
 {
   cout << "Let's begin..." << endl;
-    
+  
   TFile *wrd_File = new TFile("files_root/ldist_RENO_2x6.root","READ");
   TH1F *wrd_histo = ((TH1F*)(wrd_File->Get("histo_ldist_RENO_2x6")));;
-  
+  double mm;
   for (int blid = 0 ; blid < nAD*nNR ; blid++)
     {
       int id = (blid/nNR);
       int ir = (blid - id*nNR);
 
       wrd_array[id][ir] = wrd_histo->GetBinContent(blid+1);
-      // cout << blid << "  " << wrd_array[id][ir] << endl;
+      
+      //cout << blid << "  " << (1/wrd_array[id][ir])   << endl;
+      //cout << blid << "  " << wrd_array[id][ir]  << endl;
+      
     }
+  
   
   //break;
   //    cout << "wrd array -> Done..." << endl;
@@ -176,8 +189,11 @@ int RENO_minuit2(const char * minName = "Minuit",
   //-- File to print oscillation parameters and chi2 values
   ofstream chi2Surface_file;
   string s2t_eps = "files/chi2_s2t-eps_surface_RATE.txt";  //(sin^2(2th13), a, chi^2_min)
+  ofstream minimPullT_file;
+  string pterms = "files/chi2_pullTerms_RATE.txt";
   //string s2t_eps = "chi2_s2t_curve.txt"; //(sin^2(2th13), chi^2_min)
   chi2Surface_file.open((s2t_eps).c_str());
+  minimPullT_file.open((pterms).c_str());
   
   int is2t;
   double DeltaLog_s2t = (hi_s2t - lo_s2t)/double(N_s2t - 1);  //linear
@@ -201,32 +217,55 @@ int RENO_minuit2(const char * minName = "Minuit",
 	    ROOT::Math::Functor f(&chi2,N_params); //-- Setting the function to be minimized by using Minuit --//
 	    //-- Steps
 	    double stp = 1.0e-3;
+	    //double stp1 = 1.0e1;
 	    double step[N_params] = {stp,stp,
-				     stp,stp,
-				     stp,stp,stp,stp,stp,stp};
+	    			     stp,stp,
+	    			     stp,stp,stp,stp,stp,stp};
+	    //double step[N_params-6] = {stp,stp,
+	    //stp,stp};
+	    //double step1[N_params-4] = {stp1,stp1,
+	    //stp1,stp1,stp1,stp1};
+				  
 	    //-- Initial parameter values
 	    double start[N_params] = {0.0,0.0,
 				      0.0,0.0,
 				      0.0,0.0,0.0,0.0,0.0,0.0};
+	    //double s100 = 100.0;
+	    //double start[N_params] = {0.0,0.0,
+	    //0.0,0.0,
+	    ////100.09,80.84763,69.72081,69.00108,77.50215,95.1999};
+	    //s100,s100,s100,s100,s100,s100};
 	    
 	    //-- Calling Minuit function setting
 	    min->SetFunction(f);
 	    
 	    //-- Setting variables
 	    double lim = 1.0e-3;
-	    min->SetLimitedVariable(0,  "e_1", start[0],  step[0],  -lim, lim);
-	    min->SetLimitedVariable(1,  "e_2", start[1],  step[1],  -lim, lim);
+	    //double lim2 = 1.2e2;
+	    double lim2 = 10.0*lim;
+	    min->SetLimitedVariable(0,  "b_1", start[0],  step[0],  -lim, lim);
+	    min->SetLimitedVariable(1,  "b_2", start[1],  step[1],  -lim, lim);
 	    min->SetLimitedVariable(2,  "e_3", start[2],  step[2],  -lim, lim);
 	    min->SetLimitedVariable(3,  "e_4", start[3],  step[3],  -lim, lim);
-	    min->SetLimitedVariable(4,  "e_5", start[4],  step[4],  -lim, lim);
-	    min->SetLimitedVariable(5,  "e_6", start[5],  step[5],  -lim, lim);
-	    min->SetLimitedVariable(6,  "n_1", start[6],  step[6],  -lim, lim);
-	    min->SetLimitedVariable(7,  "n_2", start[7],  step[7],  -lim, lim);
-	    min->SetLimitedVariable(8,  "n_3", start[8],  step[8],  -lim, lim);
-	    min->SetLimitedVariable(9,  "n_4", start[9],  step[9],  -lim, lim);
+	    min->SetLimitedVariable(4,  "fr_0", start[4],  step[4],  -lim2, lim2);
+	    min->SetLimitedVariable(5,  "fr_1", start[5],  step[5],  -lim2, lim2);
+	    min->SetLimitedVariable(6,  "fr_2", start[6],  step[6],  -lim2, lim2);
+	    min->SetLimitedVariable(7,  "fr_3", start[7],  step[7],  -lim2, lim2);
+	    min->SetLimitedVariable(8,  "fr_4", start[8],  step[8],  -lim2, lim2);
+	    min->SetLimitedVariable(9,  "fr_5", start[9],  step[9],  -lim2, lim2);
+	    //min->SetFixedVariable(0,  "b_1", start[0]);
+	    //min->SetFixedVariable(1,  "b_2", start[1]);
+	    //min->SetFixedVariable(2,  "e_3", start[2]);
+	    //min->SetFixedVariable(3,  "e_4", start[3]);
+	    //min->SetFixedVariable(4,  "fr_0", start[4]*0.0);
+	    //min->SetFixedVariable(5,  "fr_1", start[5]*0.0);
+	    //min->SetFixedVariable(6,  "fr_2", start[6]*0.0);
+	    //min->SetFixedVariable(7,  "fr_3", start[7]*0.0);
+	    //min->SetFixedVariable(8,  "fr_4", start[8]*0.0);
+	    //min->SetFixedVariable(9,  "fr_5", start[9]*0.0);
 	    min->SetErrorDef(2.3);
-		
-		//-- Calling Minuit minimization
+	    
+	    //-- Calling Minuit minimization
 	    min->Minimize();
 		
 	    const double *xs = min->X();
@@ -234,11 +273,11 @@ int RENO_minuit2(const char * minName = "Minuit",
 	    chi2Surface_file << s22th_13 << "\t" << a << "\t" << min->MinValue() << endl;
 	    
 	    //-- Uncomment if you want to print the pull parameters (also Line 205)
-	    //minimPullT_file  << s2th_13 << "\t" << a  << "\t" << xs[0] << "\t" << xs[1] << "\t" << xs[2] << "\t" << xs[3] << "\t" << xs[4] << "\t" << xs[5] << "\t" << xs[6] << "\t" << xs[7] << "\t" << xs[8] << "\t" << xs[9] << "\t" << xs[10] << "\t" << xs[11] << "\t" << xs[12] << "\t" << xs[13] << "\t" << xs[14] << "\t" << xs[15] << "\t" << xs[16] << "\t" << xs[17] << "\t" << min->MinValue() << endl;
+	    minimPullT_file  << s22th_13 << "\t" << a  << "\t" << /*xs[0] << "\t" << xs[1] << "\t" << xs[2] << "\t" << xs[3] << "\t" <<*/ xs[4] << "\t" << xs[5] << "\t" << xs[6] << "\t" << xs[7] << "\t" << xs[8] << "\t" << xs[9] << "\t" << min->MinValue() << endl;
 	      }
 	chi2Surface_file << endl;
 	//-- Uncomment if you want to print the pull parameters
-	//minimPullT_file  << endl;
+	minimPullT_file  << endl;
 	    
 	if (is2t%10 == 0)
 	  std::cout << "Succesful run for sin^2(th13) = " << s22th_13 << "!! \t" << min->MinValue() << endl;

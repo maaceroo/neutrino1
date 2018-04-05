@@ -82,13 +82,13 @@ void renograph(){
 		
 	
 	//If nd = 0 then we are talking about the ratio between far- Near data; if nd =1 then is spect ratio far-near detector
-	 TH1F *ratios_histo[nd];
+	 TH1F *ratio_histo[nd];
 	for (int n = 0 ; n < nd ; n++){
 
-	  ratios_histo[n] = new TH1F(Form("ratios_histo_%d",n),"",NB,xbins);
-	  ratios_histo[n]->SetLineWidth(2);
-	  ratios_histo[n]->SetMarkerStyle(34);
-	  ratios_histo[n]->SetMarkerSize(1.1);
+	  ratio_histo[n] = new TH1F(Form("ratio_histo_%d",n),"",NB,xbins);
+	  ratio_histo[n]->SetLineWidth(2);
+	  ratio_histo[n]->SetMarkerStyle(34);
+	  ratio_histo[n]->SetMarkerSize(1.1);
 	}
 
 	// Define the legend of the plots
@@ -163,11 +163,11 @@ void renograph(){
 	leg5->AddEntry(reno_bestfit_histo,"Prediction (Best fit)");
 	leg5->AddEntry(reno_noosc_histo,"Prediction (No oscillation)");
 
-	ofstream ratiodata,ratiospect;
-	string ratiosdata = "files/ratiodata.txt";
-	string ratiosspect = "files/ratiospect.txt";
-	ratiodata.open((ratiosdata).c_str());
-	ratiospect.open((ratiosspect).c_str());
+	ofstream ratio_obs,ratio_spect;
+	string ratios_obs = "files/ratio_obs.txt";
+	string ratios_spect = "files/ratio_spect.txt";
+	ratio_obs.open((ratios_obs).c_str());
+	ratio_spect.open((ratios_spect).c_str());
 	
 	double ctnt = 0;
 	double ctnt1 = 0;
@@ -181,18 +181,18 @@ void renograph(){
 	    ctnt = reno_data_neardet->GetY()[j];
 	    ctnt1 = reno_data_fardet->GetY()[j];
 	    cont1 = ctnt1/ctnt;
-	    ratios_histo[0]->SetBinContent(j+1,cont1);
+	    ratio_histo[0]->SetBinContent(j+1,cont1);
 	    //cout << "j + 1 = " << j + 1 << "   ctnt1 = " << ctnt1 << "ctnt = " << ctnt << "cont1 = " << cont1 <<endl;	
-	    ratiodata  << cont1 << "\t"  << endl;
+	    ratio_obs  << cont1 << "\t"  << endl;
 	    
 	    ctnt = reno_espect_neardet->GetY()[j];
 	    ctnt1 = reno_espect_fardet->GetY()[j];
 	    cont2 = ctnt1/ctnt;
-	    ratios_histo[1]->SetBinContent(j+1,cont2);
+	    ratio_histo[1]->SetBinContent(j+1,cont2);
 	    //cout << "j + 1 = " << j + 1 << "   ctnt1 = " << ctnt1 << "ctnt = " << ctnt << "cont2 = " << cont2 <<endl;	
 	    
-	    ratiospect << cont2 << "\t" << endl;
-	    //	ratios <<endl;
+	    ratio_spect << cont2 << "\t" << endl;
+	    //	ratio <<endl;
 	    
 	    /////////////////////////////////////////////////////////////////////////////////////////
 	    
@@ -262,7 +262,6 @@ void renograph(){
 	    
 	  }	
 	
-	
 	TH2F *frame_spect_histo = new TH2F("frame_spect_histo","",NB,lo,hi,10,0,18300);
 	frame_spect_histo->GetXaxis()->SetTitle("Prompt Energy (MeV)");
 	frame_spect_histo->GetYaxis()->SetTitle("Events/0.2 MeV");	 
@@ -294,7 +293,7 @@ void renograph(){
 	TCanvas* c = new TCanvas("c","NEAR DETECTOR",700,500);
 	frame_spectrand->Draw();
 	
-	data_spect_histo[0]->Draw("P same");
+	data_spect_histo[0]->Draw("PE same");
 	near_spect_histo->Draw("same");
 	leg1->Draw();
 	c->Print("Plots/Neardetector.pdf");	
@@ -320,16 +319,16 @@ void renograph(){
 	reno_bg_far_cf_histo->Draw("same");
 	reno_bg_far_fast_histo->Draw("same");
 	leg3->Draw();
-	c3->Print("Plots/fardetector.pdf");
+	c3->Print("Plots/fardetectorbg.pdf");
 	
 	// Graph of far detector
 	TCanvas* c1 = new TCanvas("c1","",700,500);
 	//h->Draw("");
 	frame_spectrafd->Draw();
-	data_spect_histo[1]->Draw("P same");
+	data_spect_histo[1]->Draw("PE same");
 	far_spect_histo->Draw("same");
 	leg4->Draw();
-	c1->Print("Plots/fardetectorbg.pdf");
+	c1->Print("Plots/fardetector.pdf");
 	
 	// Graph of far detector
 	TCanvas* c4 = new TCanvas("c4","",700,500);
@@ -341,11 +340,12 @@ void renograph(){
 	c4->Print("Plots/Predictions.pdf");
 	 
 	TCanvas* c7 = new TCanvas("c7","Ratio_data_detector",700,500);
-	ratios_histo[0]->Draw();
-	c7->Print("Plots/ratio1.pdf");
+	ratio_histo[0]->Draw();
+	c7->Print("Plots/ratio_obs.pdf");
 	TCanvas* c8 = new TCanvas("c8","Ratio_spect_detector",700,500);
-	ratios_histo[1]->Draw();
-	c8->Print("Plots/ratio2.pdf");
+	ratio_histo[1]->Draw();
+	c8->Print("Plots/ratio_spect.pdf");
+	
 	// write to output file
 	TFile *fout = new TFile("files_root/RENOplots.root","recreate");
 	fout->cd();
@@ -357,7 +357,7 @@ void renograph(){
 	  {
 	    //spectra (Events / MeV)
 	    data_spect_histo[i]->Write();
-	    ratios_histo[i]->Write();
+	    ratio_histo[i]->Write();
 	  }
 	// near_data_histo->Write();
 	near_spect_histo->Write();
@@ -365,10 +365,10 @@ void renograph(){
 	//far_data_histo->Write();
 	far_spect_histo->Write();
 	
-	reno_bg_far_lihe_histo->Write();
-	reno_bg_far_acci_histo->Write();
-	reno_bg_far_cf_histo->Write();
-	reno_bg_far_fast_histo->Write();
+	reno_bg_near_lihe_histo->Write();
+	reno_bg_near_accident_histo->Write();
+	reno_bg_near_cf_histo->Write();
+	reno_bg_near_fast_histo->Write();
 	reno_bg_far_lihe_histo->Write();
 	reno_bg_far_acci_histo->Write();
 	reno_bg_far_cf_histo->Write();

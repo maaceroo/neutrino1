@@ -60,7 +60,7 @@ void RENO_ntuple()
     T->Branch("ir", &ir, "ir/s"); //reactor
     T->Branch("id", &id, "id/s"); //detector
     
-    int Nevents = 8000000;
+    int Nevents = 600000;
     for (int i = 0 ; i < Nevents ; i++)
       {
 	// generate a baseline (blid uniquely identifies the baseline)
@@ -72,7 +72,7 @@ void RENO_ntuple()
 	if(id==0)  ad=0;
 	else if (id==1) ad=1;
 	Ep = data_spect_histo[ad]->GetRandom();
-	En = Ep + Mp - Mn; // Neutrino energy. Where Mp and Mn are the proton and neutron masses
+	En = Mn + Ep - Mp ; // Neutrino energy. Where Mp and Mn are the proton and neutron masses
 	
 	
 	T->Fill();
