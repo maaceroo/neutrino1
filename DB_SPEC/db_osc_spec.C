@@ -20,28 +20,15 @@ void db_osc_spec()
     //----------  Text Style  ---------
 
     //---------------------------------------------------
-    // Open data file
-    //TFile *fdata = new TFile("PRL112_data.root","READ");
-    //---------------------------------------------------
-    // define and get Data (energy) and Background histograms for the three (3) spectra (three EH)
-    //const int nEH = 3;
-    //TH1F *data_spect_histo[nEH];
-    //TH1F *BkGd_spect_histo[nEH];
-    //for (int i = 0 ; i < nEH ; i++)
-    //{
-    //    data_spect_histo[i] = (TH1F*) fdata->Get(Form("data_spect_histo_%d",i));//data from PRL112_data.root
-    //    BkGd_spect_histo[i] = (TH1F*) fdata->Get(Form("BkGd_spect_histo_%d",i));//data from PRL112_data.root
-    //}
-    //---------------------------------------------------
     // Open ntuple file to read simulated data
     TFile *fntuple = new TFile("files_data/db-ntuple_5M.root","READ");
     TTree *T = (TTree*)fntuple->Get("T");
     TCut cutBF;
     //---------------------------------------------------
     // histogram binning for the simulated data
-    double    NB = 26;
-    double    lo = 0.7;
-    double    hi = 12.0;
+    //double    NB = 26;
+    //double    lo = 0.7;
+    //double    hi = 12.0;
     double    xbins[27];
     xbins[0] = lo;
     double delta_bins2 = (7.3 - 1.3)/24.;// = 0.25 MeV/bin
@@ -138,15 +125,15 @@ void db_osc_spec()
     double s2t_pt, dm2_pt;
     //int   sel;
 
-    const int     N_s2t = 100;
-    const int     N_dm2 = 100;
+    //const int     N_s2t = 100;
+    //const int     N_dm2 = 100;
 
-    double       lo_s2t = 0.01;
-    double       hi_s2t = 0.3;
+    //double       lo_s2t = 0.01;
+    //double       hi_s2t = 0.3;
     double DeltaLog_s2t = (log10(hi_s2t)-log10(lo_s2t))/double(N_s2t-1);
 
-    double       lo_dm2 = 1e-4;
-    double       hi_dm2 = 1e-2;
+    //double       lo_dm2 = 1e-4;
+    //double       hi_dm2 = 1e-2;
     double DeltaLog_dm2 = (log10(hi_dm2)-log10(lo_dm2))/double(N_dm2-1);
     
     TCut cut;

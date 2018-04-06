@@ -9,3 +9,27 @@ double mel = 0.510998928;   //Electron mass in(MeV)
 double avg_nRecoilE = 10.0e-3; //MeV
 double avg_constE = 0.78; //MeV
 
+// histogram binning for the simulated data
+const int  NB = 26;
+double  lo = 0.7;
+double  hi = 12.0;
+
+//Number of Antineutrino Detectors
+const int nAD = 6;
+
+//Number of Nuclear Reactors
+const int nNR = 6;
+
+//Fixed neutrino oscillations parameters
+double   dm2_21 = 7.59e-5; //eV^2,                //PRL 108 171803 (2012)
+double s22th_12 = 0.861;
+
+//Grid of oscillation parameters
+const int     N_s2t = 100;
+const int     N_dm2 = 100;
+
+double       lo_s2t = 0.01;
+double       hi_s2t = 0.3;
+
+double       lo_dm2 = 1e-4;
+double       hi_dm2 = 1e-2;

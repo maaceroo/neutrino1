@@ -24,26 +24,27 @@
 //---*****************************************************---//
 //---------- CONSTANTS --------------------------------------//
 //---*****************************************************---//
+#include "constants.h"
 // histogram binning for the simulated data
-#define  NB 26
-#define  lo 0.7
-#define  hi 12.0
+//#define  NB 26
+//#define  lo 0.7
+//#define  hi 12.0
 //Number of Antineutrino Detectors
-#define nAD 6
+//#define nAD 6
 //Number of Nuclear Reactors
-#define nNR 6
+//#define nNR 6
 //Fixed neutrino oscillations parameters
-#define dm2_21 7.59e-5 //eV^2,                //PRL 108 171803 (2012)
-#define s22th_12 0.861
+//#define dm2_21 7.59e-5 //eV^2,                //PRL 108 171803 (2012)
+//#define s22th_12 0.861
 //For the sin^2(2th_13) loop
-#define N_s2t  200                           //number of points in the grid
-#define lo_s2t 0.01                         //sin^2(2th_13) min
+//#define N_s2t  200                           //number of points in the grid
+//#define lo_s2t 0.01                         //sin^2(2th_13) min
 //#define lo_s2t 0.0                          //sin^2(2th_13) min
-#define hi_s2t 0.3                          //sin^2(2th_13) max
+//#define hi_s2t 0.3                          //sin^2(2th_13) max
 //For the delta(m31)^2 loop
-#define N_dm2  200                           //number of points in the grid
-#define lo_dm2 1.0e-4                       //delta(m31)^2 min
-#define hi_dm2 1.0e-2                       //delta(m31)^2 max
+//#define N_dm2  200                           //number of points in the grid
+//#define lo_dm2 1.0e-4                       //delta(m31)^2 min
+//#define hi_dm2 1.0e-2                       //delta(m31)^2 max
 //---*****************************************************---//
 
 //---*****************************************************---//
@@ -60,10 +61,6 @@ double daqTime[nAD]         = {191.001,191.001,189.645,189.779,189.779,189.779};
 // Information obtained by executing the script "db_osc_rate.C"
 //IBD rate per day w/o oscillations
 double noOsc_IBDrate_perday[nAD] = {663.15,673.95,591.86,78.75,78.46,77.58};
-//<sin^2(1.267 dm2_21 L/E)> for each AD
-//double avgSinDelta21[nAD]        = {0.000225897,0.000220442,0.000244761,0.00194541,0.00193977,0.00195247};
-//<sin^2(1.267 dm2_31 L/E)> for each AD
-//double avgSinDelta31[nAD]        = {0.162935,0.159482,0.183415,0.750218,0.75162,0.752462};
 //---*****************************************************---//
 //const int dim = N_s2t*N_dm2;
 double s2th_13;     //oscillation parameter to be fitted
@@ -172,13 +169,12 @@ double chi2(const double *xx)
             Md = (data_sigplusbg - simu_bg)*daqTime[iAD];
             //cout << "iAD = " << iAD << "  iBin = " << iBIN << "  Md = " << Md << " Td = " << Td << endl;
             //-- Background of the dth Antineutrino Detector
-            //Bd = totalBgd[iAD][0]*emuem[iAD]*daqTime[iAD];
             Bd = simu_bg;
 	
             sqrerror = Md + Bd;
             
             //Statistics Error matrix
-            statErroMatrix_matrix(index,index) = sqrerror*(1.05);
+            statErroMatrix_matrix(index,index) = sqrerror;
 	
             //-- Fraction of IBD contribution of the rth reactor to the dth AD
             //-- determined by baselines and reactor fluxes
@@ -480,7 +476,7 @@ int db_minuit_spec(const char * minName = "Minuit",
                 
                 //-- Setting variables
                 double lim = 1.0e-3;
-                min->SetLimitedVariable(0,  "e_1", start[0],  step[0],  -lim, lim);
+                /*min->SetLimitedVariable(0,  "e_1", start[0],  step[0],  -lim, lim);
                 min->SetLimitedVariable(1,  "e_2", start[1],  step[1],  -lim, lim);
                 min->SetLimitedVariable(2,  "e_3", start[2],  step[2],  -lim, lim);
                 min->SetLimitedVariable(3,  "e_4", start[3],  step[3],  -lim, lim);
@@ -497,10 +493,10 @@ int db_minuit_spec(const char * minName = "Minuit",
                 min->SetLimitedVariable(14, "a_3", start[14], step[14], -lim, lim);
                 min->SetLimitedVariable(15, "a_4", start[15], step[15], -lim, lim);
                 min->SetLimitedVariable(16, "a_5", start[16], step[16], -lim, lim);
-                min->SetLimitedVariable(17, "a_6", start[17], step[17], -lim, lim);
+                min->SetLimitedVariable(17, "a_6", start[17], step[17], -lim, lim);*/
                 min->SetLimitedVariable(18, "eps", start[18], step[18], -lim, lim);
                 //min->SetFixedVariable(18, "eps", start[18]);
-                /*min->SetFixedVariable(0,  "e_1", start[0]);
+                min->SetFixedVariable(0,  "e_1", start[0]);
                 min->SetFixedVariable(1,  "e_2", start[1]);
                 min->SetFixedVariable(2,  "e_3", start[2]);
                 min->SetFixedVariable(3,  "e_4", start[3]);
@@ -517,7 +513,7 @@ int db_minuit_spec(const char * minName = "Minuit",
                 min->SetFixedVariable(14, "a_3", start[14]);
                 min->SetFixedVariable(15, "a_4", start[15]);
                 min->SetFixedVariable(16, "a_5", start[16]);
-                min->SetFixedVariable(17, "a_6", start[17]);*/
+                min->SetFixedVariable(17, "a_6", start[17]);
                 //min->SetFixedVariable(18, "eps", start[18]);
                 min->SetErrorDef(2.3);
                 
