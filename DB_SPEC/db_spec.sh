@@ -1,3 +1,53 @@
+#!/bin/bash
+#-----------------------------------------------------------------------------
+
+#-----------------------------------------------------------------------------
+
+# Construct L distribution
+#root -b -l -n -q ldist.C
+
+#-----------------------------------------------------------------------------
+# Construct ntuple
+export NTUPLE_EVENTS=1000000
+echo $NTUPLE_EVENTS ntuple events
+root -b -l -n -q db_ntuple.C
+
+#-----------------------------------------------------------------------------
+# construct oscillated spectra for all points in the grid
+#root -b -l -n -q db_osc_spec.C
+
+
+
+
+#-----------------------------------------------------------------------------
+#Define grid size
+
+NS2T=50
+NDM2=50
+
+#-----------------------------------------------------------------------------
+
+g++ -o db_chi2_min.exe db_chi2_min.cpp
+g++ -o db_margin.exe db_margin.cpp
+
+#-----------------------------------------------------------------------------
+
+./db_chi2_min.exe $NS2T $NDM2 ./
+./db_margin.exe $NS2T $NDM2 ./
+
+#-----------------------------------------------------------------------------
+#Extract BF_CHI2, BF_S2T, BF_DM2 from chi2_minumum_SPEC.txt
+
+read BF_CHI2 BF_S2T BF_DM2 <<< `cat files_data/chi2_minumum_SPEC.txt`
+
+#Remove first line from file 
+tail -n +2 files_data/chi2_s2t-dm2_surface_SPEC.txt > files_data/plot.dat
+
+#----------------------------------------------------------------------------
+#----------------------------------------------------------------------------
+# Form gnuplot script
+
+cat > multi_plot_margin_SPEC.gnu <<EOF
 ##  multi_plot_margin.gnu - By: M.A.AceroO. - 23.Sep.2017  ##
 ## Script to put multple plots in one eps file. This code  ##
 ## generates the contour and the marginalization of the    ##
@@ -48,7 +98,7 @@ set arrow 3 from 4.00,ymin to 4.00,ymax nohead lt 3 lw 2
 set arrow 5 from 9.00,ymin to 9.00,ymax nohead lt 2 lw 2
 
 #plot 'files_data/db_dm2_chi2_SPEC.txt' u 2:1 w l lw 1
-plot 'files_data/db_dm2_chi2_SPEC.txt' u 2:(10**3*($1)) w l lw 1
+plot 'files_data/db_dm2_chi2_SPEC.txt' u 2:(10**3*(\$1)) w l lw 1
 
 reset
 ######################################
@@ -77,7 +127,10 @@ set ylabel "{/Symbol D}{/Symbol c}^{2}"
 
 set key at 0.31,3.8
 
-plot 'files_data/db_s2t_chi2_SPEC.txt' u 1:2 w l lw 1 t "",      9.0 lt 2 lw 2 t "99.73% C.L. (3{/Symbol s})",      4.0 lt 3 lw 2 t "95.45% C.L. (2{/Symbol s})",      1.0 lt 4 lw 2 t "68.27% C.L. (1{/Symbol s})"
+plot 'files_data/db_s2t_chi2_SPEC.txt' u 1:2 w l lw 1 t "", \
+     9.0 lt 2 lw 2 t "99.73% C.L. (3{/Symbol s})", \
+     4.0 lt 3 lw 2 t "95.45% C.L. (2{/Symbol s})", \
+     1.0 lt 4 lw 2 t "68.27% C.L. (1{/Symbol s})"
 
 reset
 
@@ -125,18 +178,18 @@ set label 4 "{/Symbol D}m^{2}_{31} (eV^2)" at -0.0175,2.5 center rotate by 90
 #set label 4 "{/Symbol D}m^{2}_{31} (10^{-3} eV^2)" at 0.006,2.5 center rotate by 90
 
 ## Mark at the BF
-set label 35 "+" at 0.0860000000,0.0026800000*1e3 center font "CharterBT-Roman,15"
+set label 35 "+" at $BF_S2T,$BF_DM2*1e3 center font "CharterBT-Roman,15"
 #set label 35 "+" at 0.0965,2.15 center font "CharterBT-Roman,15"
 ## Minimum chi2 value
-min = 153.6130000000
+min = $BF_CHI2
 
 unset ztics
 set clabel
 unset key
 
-#splot 'files_data/chi2_s2t-dm2_surface_SPEC.txt' u 1:2:(()-min) w l lw 2
-#splot 'files_data/chi2_s2t-dm2_surface_SPEC.txt' u 1:(10**3*($2)):(($3)-min) w l lw 2
-splot 'files_data/plot.dat' u 1:(10**3*($2)):(($3)-min) w l lw 2
+#splot 'files_data/chi2_s2t-dm2_surface_SPEC.txt' u 1:2:(($3)-min) w l lw 2
+#splot 'files_data/chi2_s2t-dm2_surface_SPEC.txt' u 1:(10**3*(\$2)):((\$3)-min) w l lw 2
+splot 'files_data/plot.dat' u 1:(10**3*(\$2)):((\$3)-min) w l lw 2
 
 ########################################################################################
 
@@ -145,3 +198,15 @@ unset multiplot
 set output
 set terminal x11
 
+EOF
+#----------------------------------------------------------------------------
+#----------------------------------------------------------------------------
+
+#----------------------------------------------------------------------------
+#Execute gnuplot script
+gnuplot multi_plot_margin_SPEC.gnu
+
+
+#----------------------------------------------------------------------------
+#Open in ghostview
+gv files_plots/db_plots_SPEC.eps &
