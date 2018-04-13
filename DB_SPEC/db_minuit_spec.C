@@ -410,8 +410,8 @@ int db_minuit_spec(const char * minName = "Minuit",
     string PullT = "files_data/chi2_pullT_surface.txt";
     minimPullT_file.open((PullT).c_str());
   
-    ifstream file("files_data/db_gridOscSpectra_1M.txt"); //50x50 parameter space-grid
-    //ifstream file("files_data/db_gridOscSpectra_100x100.txt");
+    //ifstream file("files_data/db_gridOscSpectra_1M.txt"); //50x50 parameter space-grid
+    ifstream file("files_data/db_gridOscSpectra_100x100.txt");
     cout << "Reading file - Loop in progress..." << endl;
     int iad = 0;
     int first6 = 1;

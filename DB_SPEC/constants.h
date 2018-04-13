@@ -25,8 +25,8 @@ double   dm2_21 = 7.59e-5; //eV^2,                //PRL 108 171803 (2012)
 double s22th_12 = 0.861;
 
 //Grid of oscillation parameters
-const int     N_s2t = 100;
-const int     N_dm2 = 100;
+const int     N_s2t = atoi(getenv("NS2T"));
+const int     N_dm2 = atoi(getenv("NDM2"));
 
 double       lo_s2t = 0.01;
 double       hi_s2t = 0.3;

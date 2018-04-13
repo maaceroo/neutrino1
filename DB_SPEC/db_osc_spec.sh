@@ -8,22 +8,21 @@
 
 #-----------------------------------------------------------------------------
 # Construct ntuple
-export NTUPLE_EVENTS=1000000
-echo $NTUPLE_EVENTS ntuple events
-root -b -l -n -q db_ntuple.C
-
-#-----------------------------------------------------------------------------
-# construct oscillated spectra for all points in the grid
-#root -b -l -n -q db_osc_spec.C
-
-
+#export NTUPLE_EVENTS=1000000
+#echo $NTUPLE_EVENTS ntuple events
+#root -b -l -n -q db_ntuple.C
 
 
 #-----------------------------------------------------------------------------
 #Define grid size
 
-NS2T=50
-NDM2=50
+export NS2T=200
+export NDM2=200
+
+#-----------------------------------------------------------------------------
+# construct oscillated spectra for all points in the grid
+root -b -l -n -q db_osc_spec.C
+
 
 #-----------------------------------------------------------------------------
 
