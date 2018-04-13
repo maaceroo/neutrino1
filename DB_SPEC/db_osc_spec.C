@@ -130,11 +130,13 @@ void db_osc_spec()
 
     //double       lo_s2t = 0.01;
     //double       hi_s2t = 0.3;
-    double DeltaLog_s2t = (log10(hi_s2t)-log10(lo_s2t))/double(N_s2t-1);
+    //double DeltaLog_s2t = (log10(hi_s2t)-log10(lo_s2t))/double(N_s2t-1);
+    double Delta_s2t = (hi_s2t - lo_s2t)/double(N_s2t-1);
 
     //double       lo_dm2 = 1e-4;
     //double       hi_dm2 = 1e-2;
-    double DeltaLog_dm2 = (log10(hi_dm2)-log10(lo_dm2))/double(N_dm2-1);
+    //double DeltaLog_dm2 = (log10(hi_dm2)-log10(lo_dm2))/double(N_dm2-1);
+    double Delta_dm2 = (hi_dm2 - lo_dm2)/double(N_dm2-1);
     
     TCut cut;
     
@@ -184,11 +186,12 @@ void db_osc_spec()
 
     for (int is2t = 0 ; is2t < N_s2t ; is2t++)
     {
-        s2t_pt = pow(10,log10(lo_s2t) + (double(is2t)*DeltaLog_s2t));
+        //s2t_pt = pow(10,log10(lo_s2t) + (double(is2t)*DeltaLog_s2t));
+        s2t_pt = lo_s2t + (double(is2t)*Delta_s2t);
     
         for (int idm2 = 0 ; idm2 < N_dm2 ; idm2++)
         {
-            dm2_pt = pow(10,log10(lo_dm2) + (double(idm2)*DeltaLog_dm2));
+            dm2_pt = lo_dm2 + (double(idm2)*Delta_dm2);
 
             for (int iAD = 0 ; iAD < nAD ; iAD++)
             {

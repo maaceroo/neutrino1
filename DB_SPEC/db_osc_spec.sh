@@ -4,24 +4,28 @@
 #-----------------------------------------------------------------------------
 
 # Construct L distribution
-#root -b -l -n -q ldist.C
+root -b -l -n -q ldist.C
 
 #-----------------------------------------------------------------------------
 # Construct ntuple
-#export NTUPLE_EVENTS=1000000
-#echo $NTUPLE_EVENTS ntuple events
-#root -b -l -n -q db_ntuple.C
+export NTUPLE_EVENTS=1000000
+echo $NTUPLE_EVENTS ntuple events
+root -b -l -n -q db_ntuple.C
 
 
 #-----------------------------------------------------------------------------
 #Define grid size
 
-export NS2T=200
-export NDM2=200
+export NS2T=10
+export NDM2=10
 
 #-----------------------------------------------------------------------------
 # construct oscillated spectra for all points in the grid
 root -b -l -n -q db_osc_spec.C
+
+#-----------------------------------------------------------------------------
+# run minimization
+root -b -l -n -q db_minuit_spec.C
 
 
 #-----------------------------------------------------------------------------
@@ -97,7 +101,8 @@ set arrow 3 from 4.00,ymin to 4.00,ymax nohead lt 3 lw 2
 set arrow 5 from 9.00,ymin to 9.00,ymax nohead lt 2 lw 2
 
 #plot 'files_data/db_dm2_chi2_SPEC.txt' u 2:1 w l lw 1
-plot 'files_data/db_dm2_chi2_SPEC.txt' u 2:(10**3*(\$1)) w l lw 1
+#plot 'files_data/db_dm2_chi2_SPEC.txt' u 2:(10**3*(\$1)) w l lw 1
+plot 'files_data/db_dm2_chi2_SPEC.txt' u 2:(10**3*(\$1)) smooth csplines w l lw 1
 
 reset
 ######################################

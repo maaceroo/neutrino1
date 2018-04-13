@@ -11,7 +11,7 @@
 // paper PRL112.                                                       //
 //---------------------------------------------------------------------//
 
-#include"constants.h"
+#include "constants.h"
 
 void db_ntuple()
 { // begin
