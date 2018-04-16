@@ -9,7 +9,7 @@ set terminal postscript color "CharterBT-Roman" 12 enhanced size 7,7
 
 ########################################################################################
 ## Figure File
-set output "files_plots/db_plots_SPEC.eps"
+set output "files_plots/db_plots_COMPARE.eps"
 ########################################################################################
 
 set multiplot
@@ -46,7 +46,7 @@ unset key
 set arrow 1 from 1.00,ymin to 1.00,ymax nohead lt 4 lw 2
 set arrow 3 from 4.00,ymin to 4.00,ymax nohead lt 3 lw 2
 set arrow 5 from 9.00,ymin to 9.00,ymax nohead lt 2 lw 2
-set arrow 5 from 16.0,ymin to 16.0,ymax nohead lt 6 lw 2
+set arrow 7 from 16.0,ymin to 16.0,ymax nohead lt 6 lw 2
 
 #plot 'files_data/db_dm2_chi2_SPEC.txt' u 2:1 w l lw 1
 #plot 'files_data/db_dm2_chi2_SPEC.txt' u 2:(10**3*($1)) w l lw 1
