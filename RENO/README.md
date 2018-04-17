@@ -1,63 +1,94 @@
 # neutrino1
-Oscillation analysis of Daya-Bay data.
-Files in this package are intended to be used to analyze data of the Daya Bay reactor antineutrino experiment. There are codes to do a rate-only analysis and others to make a spectral analysis.
+Oscillation analysis of RENO data.
+Files in this package are intended to be used to analyze data of the Reactor Experiment of Neutrinos Oscillation (RENO). There are codes to do a rate-only analysis.
 
 # Quick Reference (How-To):
 ## Rate-Only analysis (1D results)
 
-**1.** Execute root macro ldist.C:
+**1.** Execute root macro renograph.C:
 
-    > root -b -l -n -q ldist.C
-
-_Output_:  
-- daya-bay-ldist.root
-- ldist.pdf
-- ldist_6Det.pdf
-
-**2.** Execute root macro db_ntuple.C (_requires `PRL112_data.root`_)
-
-    > root -b -l -n -q db_ntuple.C
+    > root -l -s -q renograph.C
 
 _Output_:  
-- files_data/db-ntuple.root
+- files_root/RENOplots.root
+- Plots/fardetector.pdf
+- Plots/fardetectorbg.pdf 
+- Plots/Neardetector.pdf 
+- Plots/Neardetectorbg.pdf 
+- Plots/Predictions.pdf 
+- Plots/ratio_obs.pdf 
+- Plots/ratio_spect.pdf 
 
-**3.** Execute macro db_osc_rate.C (_requires `db_ntuple.root`_)
+**2.** Execute root macro ldist_2x6_RENO.C:
 
-    > root -b -l -n -q db_osc_rate.C
+    > root -l -s -q ldist_2x6_RENO.C
+
+_Output_:  
+- file_root/ldist_RENO_2x6.root
+- file_root/ldist_RENO_gen.root
+- Plots/ldist_near_det.pdf 
+- Plots/ldist_far_det.pdf 
+- Plots/ldist.pdf
+
+**3.** Execute root macro RENO_ntuple.C (_requires `renograph.root`and constant.h_)
+
+    > root -l -s -q RENO_ntuple.C
+
+_Output_:  
+- files_root/RENO-ntuple.root
+
+**4.** Execute macro RENO_osc_rate.C (_requires `RENO_ntuple.root`_)
+
+    > root -b -l -n -q RENO_osc_rate.C
 
 _Output_:
-- Declaration of arrays (needed in Step 4): 
-    - noOsc_IBDrate_perday[nAD] 
-    - avgSinDelta21[nAD] 
-    - avgSinDelta31[nAD] 
+- Declaration of arrays (needed in Step 5): 
+    - noOsc_IBDrate_perday[nAD][nNR] 
+    - avgSinDelta21[nAD][nNR] 
+    - avgSinDeltaee[nAD][nNR] 
 
-**4.** Execute root macro db_minuit.C [_NOTE: the number of grid points are hard-coded in the statements at Line 43 (`#define N_s2t  200`) and Line 48 (`#define N_eps  200`). Change those numbers at you prefer._]
+**5.** Execute root macro RENO_minuit2.C [_NOTE: the number of grid points are hard-coded in the statements at Line 42 (`#define N_s2t  200`) and Line 47 (`#define N_eps  200`). Change those numbers at you prefer._]
 
-    > root -b -l -n -q db_minuit.C
+    > root -b -l -n -q RENO_minuit2.C
 
 _Output_:  
-- files_data/chi2_s2t-eps_surface_RATE.txt (_contains three columns: `sin^2(2th)`, `epsilon`, `chi2`_)
+- files/chi2_s2t-a_surface_RATE.txt (_contains three columns: `sin^2(2th_13)`, `a`, `chi2`_)
+- files/chi2_minimun_RATE.txt (_File containig three tab-separated values: `chi2_min  s2t_BF  a_BF`_)
+- files/chi2_pullTerms_RATE.txt 
 
-**5.** Compile and execute db_chi2_min.cpp and db_margin.cpp
+**6.** Compile and execute RENO_margin.cpp
 
-5.1. Compile
+6.1. Compile
 
-    > g++ -o db_chi2_min.exe db_chi2_min.cpp
-    > g++ -o db_margin.exe db_margin.cpp
+     > g++ -o RENO_margin.exe db_margin.cpp
 
-5.2. Execute: arguments are the number of grid points and the path to the file `chi2_s2t-eps_surface_RATE.txt`
+6.2. Execute: arguments are the number of grid points and the path to the file `chi2_s2t-a_surface_RATE.txt`
 
-    > ./db_chi2_min.exe 200 200 ./
-    > ./db_margin.exe 200 200 ./
+    > ./RENO_margin.exe 200 200 ./
 
 _Output_:
-- files_data/chi2_minumum_RATE.txt (_File containig three tab-separated values: `chi2_min  s2t_BF  epsilon_BF`_) 
-- files_data/db_s2t_chi2_RATE.txt (_chi2 vs. s2th, where chi2 is marginalized over all the pull terms and epsilon_)
-- files_data/db_eps_chi2_RATE.txt (_chi2 vs. epsilon, where chi2 is marginalized over all the pull terms and s2t_)
+- files/RENO_s2t_chi2_RATE.txt (_chi2 vs. s2th, where chi2 is marginalized over all the pull terms and a_)
+- files/RENO_a_chi2_RATE.txt (_chi2 vs. a, where chi2 is marginalized over all the pull terms and s2t_)
 
-**6.** Execute the gnuplot macro multi_plot_margin_RATE.gnu (_requires the three `.txt` output files from step **4**_)
+**7.** Execute the gnuplot macro multi_plot_margin_RATE.gnu (_requires the three `.txt` second output files from step **5** and output files from step **6** _)
 
-    > gnuplot multi_plot_margin_RATE.gnu
+    > gnuplot multi_plot_margin_RATE_RENO.gnu
 
 _Output_:  
-- files_data/db_plots_RATE.eps (_Contour plot of s2t vs. epsilon and marginalized chi2 plots_)
+- Plots/RENO_plots_RATE.eps (_Contour plot of s2t vs. a and marginalized chi2 plots_)
+
+
+**8.** Execute root macro db_plus_RENO.C (_requires the two files. The first is took from Daya Bay analisys`db_s2t_chi2_RATE.txt` and the second one is took from RENO_s2t_chi2_RATE.txt _)
+
+    > root -b -l -n -q db_plus_RENO.C
+
+_Output_:  
+- files/chi2_s2t_RENO_plus_DB.txt (_contains three columns: `sin^2(2th_13)`, `chi2_DB + chi2_RENO`__)
+
+**9.** Execute the gnuplot macro plots_RATE_db_and_RENO.gnu (_requires three files `chi2_s2t_RENO_plus_DB.txt` `db_s2t_chi2_RATE.txt` and `db_s2t_chi2_RATE.txt`_)
+
+    > gnuplot plots_RATE_db_and_RENO.gnu
+
+_Output_:  
+- Plots/plots_RATE_db_and_RENO.eps (_Plot of s2t vs. (`chi2_DB` , `chi2_RENO`and `chi2_DB + chi2_RENO`) in the same plot_)
+
