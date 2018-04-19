@@ -16,8 +16,8 @@ root -b -l -n -q db_ntuple.C
 #-----------------------------------------------------------------------------
 #Define grid size
 
-export NS2T=10
-export NDM2=10
+export NS2T=200
+export NDM2=200
 
 #-----------------------------------------------------------------------------
 # construct oscillated spectra for all points in the grid
