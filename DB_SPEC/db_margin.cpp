@@ -33,7 +33,7 @@ int main(int argc, char* argv[])
     }
     // path to read/write data
     string path1 = argv[3];
-    string chi_file = "files_data/chi2_s2t-dm2_surface_SPEC.txt";
+    string chi_file = "files_data/chi2_s2t-dm2_surface_SPEC-noFL.txt";
     string min_chi = "files_data/chi2_minumum_SPEC.txt";
   
     ofstream file,filem;

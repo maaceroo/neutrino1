@@ -32,7 +32,7 @@ int main(int argc, char* argv[])
   int sn = atoi(argv[1]);
   int dmn= atoi(argv[2]);
   int cols, val;
-  string dat_f = "files_data/chi2_s2t-dm2_surface_SPEC.txt";
+  string dat_f = "files_data/chi2_s2t-dm2_surface_SPEC-noFL.txt";
   ifstream data((path1 + dat_f).c_str());
   
   cols = COLS;

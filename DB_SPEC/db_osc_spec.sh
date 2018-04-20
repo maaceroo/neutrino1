@@ -8,7 +8,7 @@ root -b -l -n -q ldist.C
 
 #-----------------------------------------------------------------------------
 # Construct ntuple
-export NTUPLE_EVENTS=1000000
+export NTUPLE_EVENTS=5000000
 echo $NTUPLE_EVENTS ntuple events
 root -b -l -n -q db_ntuple.C
 
@@ -16,8 +16,8 @@ root -b -l -n -q db_ntuple.C
 #-----------------------------------------------------------------------------
 #Define grid size
 
-export NS2T=200
-export NDM2=200
+export NS2T=100
+export NDM2=100
 
 #-----------------------------------------------------------------------------
 # construct oscillated spectra for all points in the grid
@@ -27,8 +27,13 @@ root -b -l -n -q db_osc_spec.C
 # run minimization
 root -b -l -n -q db_minuit_spec.C
 
+#-----------------------------------------------------------------------------
+#Remove first line from file 
+tail -n +2 files_data/chi2_s2t-dm2_surface_SPEC.txt > files_data/chi2_s2t-dm2_surface_SPEC-noFL.txt
+
 
 #-----------------------------------------------------------------------------
+#compile routines
 
 g++ -o db_chi2_min.exe db_chi2_min.cpp
 g++ -o db_margin.exe db_margin.cpp
@@ -42,9 +47,6 @@ g++ -o db_margin.exe db_margin.cpp
 #Extract BF_CHI2, BF_S2T, BF_DM2 from chi2_minumum_SPEC.txt
 
 read BF_CHI2 BF_S2T BF_DM2 <<< `cat files_data/chi2_minumum_SPEC.txt`
-
-#Remove first line from file 
-tail -n +2 files_data/chi2_s2t-dm2_surface_SPEC.txt > files_data/plot.dat
 
 #----------------------------------------------------------------------------
 #----------------------------------------------------------------------------
@@ -79,7 +81,7 @@ set tmargin at screen 0.65
 
 ## x-axis settings
 xmin =  0
-xmax =  10
+xmax =  17
 set xrange[xmin:xmax]
 set xlabel "{/Symbol D}{/Symbol c}^{2}"
 
@@ -96,13 +98,15 @@ unset ytics
 unset key
 
 ## Vertical lines ad 1,2,3 sigma (1D)
-set arrow 1 from 1.00,ymin to 1.00,ymax nohead lt 4 lw 2
-set arrow 3 from 4.00,ymin to 4.00,ymax nohead lt 3 lw 2
-set arrow 5 from 9.00,ymin to 9.00,ymax nohead lt 2 lw 2
+set arrow 1 from  1.00,ymin to 1.00,ymax nohead lt 4 lw 2
+set arrow 3 from  4.00,ymin to 4.00,ymax nohead lt 3 lw 2
+set arrow 5 from  9.00,ymin to 9.00,ymax nohead lt 2 lw 2
+set arrow 7 from 16.00,ymin to 16.00,ymax nohead lt 6 lw 2
 
 #plot 'files_data/db_dm2_chi2_SPEC.txt' u 2:1 w l lw 1
 #plot 'files_data/db_dm2_chi2_SPEC.txt' u 2:(10**3*(\$1)) w l lw 1
-plot 'files_data/db_dm2_chi2_SPEC.txt' u 2:(10**3*(\$1)) smooth csplines w l lw 1
+#plot 'files_data/db_dm2_chi2_SPEC.txt' u 2:(10**3*(\$1)) smooth csplines w l lw 1
+plot 'files_data/db_dm2_chi2_SPEC.txt' u 2:(10**3*(\$1)) w l lw 1
 
 reset
 ######################################
@@ -125,13 +129,14 @@ set format x "10^{%T}"
 
 ## y-axis settings
 ymin =  0
-ymax =  10
+ymax =  17
 set yrange[ymin:ymax]
 set ylabel "{/Symbol D}{/Symbol c}^{2}"
 
 set key at 0.31,3.8
 
 plot 'files_data/db_s2t_chi2_SPEC.txt' u 1:2 w l lw 1 t "", \
+    16.0 lt 6 lw 2 t "99.99% C.L. (4{/Symbol s})", \
      9.0 lt 2 lw 2 t "99.73% C.L. (3{/Symbol s})", \
      4.0 lt 3 lw 2 t "95.45% C.L. (2{/Symbol s})", \
      1.0 lt 4 lw 2 t "68.27% C.L. (1{/Symbol s})"
@@ -190,10 +195,12 @@ min = $BF_CHI2
 unset ztics
 set clabel
 unset key
+set grid ytics lc rgb "#bbbbbb" lw 1 lt 0
+set grid xtics lc rgb "#bbbbbb" lw 1 lt 0
 
 #splot 'files_data/chi2_s2t-dm2_surface_SPEC.txt' u 1:2:(($3)-min) w l lw 2
 #splot 'files_data/chi2_s2t-dm2_surface_SPEC.txt' u 1:(10**3*(\$2)):((\$3)-min) w l lw 2
-splot 'files_data/plot.dat' u 1:(10**3*(\$2)):((\$3)-min) w l lw 2
+splot 'files_data/chi2_s2t-dm2_surface_SPEC-noFL.txt' u 1:(10**3*(\$2)):((\$3)-min) w l lw 2
 
 ########################################################################################
 

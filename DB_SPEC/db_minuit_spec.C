@@ -315,6 +315,7 @@ int db_minuit_spec(const char * minName = "Minuit",
             j_block = j%26;
             fracCovaMatrix_matrix(i,j) = fracCovaMatrix_hist->GetBinContent(i+1,j+1);
             //if (i_block != j_block) {
+            /*
             if ((i_block == j_block + 1) || (j_block == i_block + 1)) {
                 fracCovaMatrix_matrix(i,j) *= 0.99;
             }
@@ -330,11 +331,12 @@ int db_minuit_spec(const char * minName = "Minuit",
             else if ((i_block == j_block + 5) || (j_block == i_block + 5)) {
                 fracCovaMatrix_matrix(i,j) *= 0.74;
             }
- 
+            */
                 //fracCovaMatrix_matrix(i,j) *= 0.90;
             //}
         }
     }
+
 
     //cout << "Done with the matrix!" << endl;
     //fracCovaMatrix_matrix->Print();
@@ -411,7 +413,7 @@ int db_minuit_spec(const char * minName = "Minuit",
     minimPullT_file.open((PullT).c_str());
   
     //ifstream file("files_data/db_gridOscSpectra_1M.txt"); //50x50 parameter space-grid
-    ifstream file("files_data/db_gridOscSpectra_100x100.txt");
+    ifstream file("files_data/db_gridOscSpectra.txt");
     cout << "Reading file - Loop in progress..." << endl;
     int iad = 0;
     int first6 = 1;
@@ -462,7 +464,7 @@ int db_minuit_spec(const char * minName = "Minuit",
                 const int N_params = 19; //-- Number of parameter of the chi² function --//
                 ROOT::Math::Functor f(&chi2,N_params); //-- Setting the function to be minimized by using Minuit --//
                 //-- Steps
-                double stp = 1.0e-4;
+                double stp = 1.0e-3;
                 double step[N_params] = {stp,stp,stp,stp,stp,stp,
                                         stp,stp,stp,stp,stp,stp,
                                         stp,stp,stp,stp,stp,stp,stp};
@@ -475,7 +477,7 @@ int db_minuit_spec(const char * minName = "Minuit",
                 min->SetFunction(f);
                 
                 //-- Setting variables
-                double lim = 1.0e-3;
+                double lim = 1.0e-1;
                 /*min->SetLimitedVariable(0,  "e_1", start[0],  step[0],  -lim, lim);
                 min->SetLimitedVariable(1,  "e_2", start[1],  step[1],  -lim, lim);
                 min->SetLimitedVariable(2,  "e_3", start[2],  step[2],  -lim, lim);
