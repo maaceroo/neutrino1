@@ -50,7 +50,7 @@ set arrow 7 from 16.0,ymin to 16.0,ymax nohead lt 6 lw 2
 
 #plot 'files_data/db_dm2_chi2_SPEC.txt' u 2:1 w l lw 1
 #plot 'files_data/db_dm2_chi2_SPEC.txt' u 2:(10**3*($1)) w l lw 1
-plot 'files_data/db_dm2_chi2_SPEC.txt' u 2:(10**3*($1)) w l lw 1,\
+plot 'files_data/db_dm2_chi2_SPEC.txt' u 2:(10**3*($1)) w l lw 1#,\
      'files_data/db_dm2_DB_PRL112.txt' u 2:1 w l lt 0 lw 2
 
 reset
@@ -80,7 +80,7 @@ set ylabel "{/Symbol D}{/Symbol c}^{2}"
 
 set key at 0.305,9.0
 
-plot 'files_data/db_s2t_chi2_SPEC.txt' u 1:2 w l lw 1 t "",      16.0 lt 6 lw 2 t "99.99% C.L. (4{/Symbol s})",      9.0 lt 2 lw 2 t "99.73% C.L. (3{/Symbol s})",      4.0 lt 3 lw 2 t "95.45% C.L. (2{/Symbol s})",      1.0 lt 4 lw 2 t "68.27% C.L. (1{/Symbol s})",\
+plot 'files_data/db_s2t_chi2_SPEC.txt' u 1:2 w l lw 1 t "",      16.0 lt 6 lw 2 t "99.99% C.L. (4{/Symbol s})",      9.0 lt 2 lw 2 t "99.73% C.L. (3{/Symbol s})",      4.0 lt 3 lw 2 t "95.45% C.L. (2{/Symbol s})",      1.0 lt 4 lw 2 t "68.27% C.L. (1{/Symbol s})"#,\
     'files_data/db_s2t_DB_PRL112.txt' u 1:2 w l lt 0 lw 2 t "Daya Bay PRL112"
 
 reset

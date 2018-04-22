@@ -43,15 +43,15 @@ unset ytics
 unset key
 
 ## Vertical lines ad 1,2,3 sigma (1D)
-set arrow 1 from 1.00,ymin to 1.00,ymax nohead lt 4 lw 2
-set arrow 3 from 4.00,ymin to 4.00,ymax nohead lt 3 lw 2
-set arrow 5 from 9.00,ymin to 9.00,ymax nohead lt 2 lw 2
-set arrow 5 from 16.0,ymin to 16.0,ymax nohead lt 6 lw 2
+set arrow 1 from  1.00,ymin to 1.00,ymax nohead lt 4 lw 2
+set arrow 3 from  4.00,ymin to 4.00,ymax nohead lt 3 lw 2
+set arrow 5 from  9.00,ymin to 9.00,ymax nohead lt 2 lw 2
+set arrow 7 from 16.00,ymin to 16.00,ymax nohead lt 6 lw 2
 
 #plot 'files_data/db_dm2_chi2_SPEC.txt' u 2:1 w l lw 1
 #plot 'files_data/db_dm2_chi2_SPEC.txt' u 2:(10**3*($1)) w l lw 1
-plot 'files_data/db_dm2_chi2_SPEC.txt' u 2:(10**3*($1)) w l lw 1,\
-     'files_data/db_dm2_DB_PRL112.txt' u 2:1 w l lt 0 lw 2
+#plot 'files_data/db_dm2_chi2_SPEC.txt' u 2:(10**3*($1)) smooth csplines w l lw 1
+plot 'files_data/db_dm2_chi2_SPEC.txt' u 2:(10**3*($1)) w l lw 1
 
 reset
 ######################################
@@ -78,10 +78,9 @@ ymax =  17
 set yrange[ymin:ymax]
 set ylabel "{/Symbol D}{/Symbol c}^{2}"
 
-set key at 0.305,9.0
+set key at 0.31,3.8
 
-plot 'files_data/db_s2t_chi2_SPEC.txt' u 1:2 w l lw 1 t "",      16.0 lt 6 lw 2 t "99.99% C.L. (4{/Symbol s})",      9.0 lt 2 lw 2 t "99.73% C.L. (3{/Symbol s})",      4.0 lt 3 lw 2 t "95.45% C.L. (2{/Symbol s})",      1.0 lt 4 lw 2 t "68.27% C.L. (1{/Symbol s})",\
-    'files_data/db_s2t_DB_PRL112.txt' u 1:2 w l lt 0 lw 2 t "Daya Bay PRL112"
+plot 'files_data/db_s2t_chi2_SPEC.txt' u 1:2 w l lw 1 t "",     16.0 lt 6 lw 2 t "99.99% C.L. (4{/Symbol s})",      9.0 lt 2 lw 2 t "99.73% C.L. (3{/Symbol s})",      4.0 lt 3 lw 2 t "95.45% C.L. (2{/Symbol s})",      1.0 lt 4 lw 2 t "68.27% C.L. (1{/Symbol s})"
 
 reset
 
@@ -123,26 +122,26 @@ set ytics offset -43.5
 ymin = 1.5
 ymax = 3.5
 set yrange[ymin:ymax]
-set ytics 1.5,0.2,3.4
+set ytics 1.5,0.5,3.4
 #set format y "10^{%T}"
 set label 4 "{/Symbol D}m^{2}_{31} (eV^2)" at -0.0175,2.5 center rotate by 90
 #set label 4 "{/Symbol D}m^{2}_{31} (10^{-3} eV^2)" at 0.006,2.5 center rotate by 90
 
 ## Mark at the BF
-set label 35 "+" at 0.0842000000,0.0027600000*1e3 center font "CharterBT-Roman,15"
-set label 36 "x" at 0.09,2.59 center font "CharterBT-Roman,15"
-set label 37 "x  DB PRL112 BF" at 0.17,1.6 center font "CharterBT-Roman,10"
+set label 35 "+" at 0.0750000000,0.0025000000*1e3 center font "CharterBT-Roman,15"
+#set label 35 "+" at 0.0965,2.15 center font "CharterBT-Roman,15"
 ## Minimum chi2 value
-min = 89.8858000000
+min = 68.3523000000
 
 unset ztics
 set clabel
 unset key
+set grid ytics lc rgb "#bbbbbb" lw 1 lt 0
+set grid xtics lc rgb "#bbbbbb" lw 1 lt 0
 
 #splot 'files_data/chi2_s2t-dm2_surface_SPEC.txt' u 1:2:(()-min) w l lw 2
 #splot 'files_data/chi2_s2t-dm2_surface_SPEC.txt' u 1:(10**3*($2)):(($3)-min) w l lw 2
-splot 'files_data/plot.dat' u 1:(10**3*($2)):(($3)-min) w l lw 2,\
-      'files_data/chi2_scan.dat' u 1:2:3 w l
+splot 'files_data/chi2_s2t-dm2_surface_SPEC-noFL.txt' u 1:(10**3*($2)):(($3)-min) w l lw 2
 
 ########################################################################################
 
