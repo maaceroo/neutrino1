@@ -28,8 +28,10 @@ double s22th_12 = 0.861;
 const int     N_s2t = atoi(getenv("NS2T"));
 const int     N_dm2 = atoi(getenv("NDM2"));
 
-double       lo_s2t = 0.05;
-double       hi_s2t = 0.15;
+double       lo_s2t = atof(getenv("LO_S2T"));
+double       hi_s2t = atof(getenv("HI_S2T"));
 
-double       lo_dm2 = 1.5e-3;
-double       hi_dm2 = 3.5e-3;
+double       lo_dm2 = atof(getenv("LO_DM2"));
+double       hi_dm2 = atof(getenv("HI_DM2"));
+
+

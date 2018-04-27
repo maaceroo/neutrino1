@@ -138,6 +138,20 @@ void db_osc_spec()
     //double DeltaLog_dm2 = (log10(hi_dm2)-log10(lo_dm2))/double(N_dm2-1);
     double Delta_dm2 = (hi_dm2 - lo_dm2)/double(N_dm2-1);
     
+
+    printf("\n");
+    printf("Grid definition db_osc_spec.C\n");
+    printf("---------------------------\n");
+    printf("N_s2t: %d\n",N_s2t);
+    printf("lo_s2t: %f\n",lo_s2t);
+    printf("hi_s2t: %f\n",hi_s2t);
+    printf("\n");
+    printf("N_dm2: %d\n",N_dm2);
+    printf("lo_dm2: %f\n",lo_dm2);
+    printf("hi_dm2: %f\n",hi_dm2);
+    printf("---------------------------\n");
+    printf("\n");
+
     TCut cut;
     
     const int dim = N_s2t*N_dm2;
