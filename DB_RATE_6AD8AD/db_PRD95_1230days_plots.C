@@ -1,7 +1,6 @@
-// csv files are digitalizations of data plots in the article, by using Engauge software.
-// plot from Daya Bay Coll. PRL 112, 061801 (2014) - arXiv:13106732
+// plot from Daya Bay Coll. PRD 95, 072006 (2017) - arXiv:1610.04802
 
-void db_PRL112_plots()
+void db_PRD95_1230days_plots()
 {// begin
 
     //------------- Style --------------
@@ -16,55 +15,44 @@ void db_PRL112_plots()
 
     //---------------------------------------------------------------------------------------------------
     //get data from digitized files - EH1
-    TGraph *DB_specEH1_DataperMev  = new TGraph("files_data/EH1/DB_specEH1_Data.csv","%lg,%lg","");
-    TGraph *DB_specEH1_NoOscperMev = new TGraph("files_data/EH1/DB_specEH1_NoOsc.csv","%lg,%lg","");
-    TGraph *DB_specEH1_BFperMev    = new TGraph("files_data/EH1/DB_specEH1_BF.csv","%lg,%lg","");
-    TGraph *DB_specEH1_BGperMev    = new TGraph("files_data/EH1/DB_specEH1_BG.csv","%lg,%lg","");
+    TGraph *DB_specEH1_Data  = new TGraph("files_data/EH1/DB1230_specEH1_Data.txt","%lg %lg","");
+    TGraph *DB_specEH1_NoOsc = new TGraph("files_data/EH1/DB1230_specEH1_NoOsc.txt","%lg %lg","");
+    TGraph *DB_specEH1_BF    = new TGraph("files_data/EH1/DB1230_specEH1_BF.txt","%lg %lg","");
+    TGraph *DB_specEH1_BG    = new TGraph("files_data/EH1/DB1230_specEH1_BG.txt","%lg %lg","");
     
-    TGraph *DB_ratioEH1_BF   = new TGraph("files_data/EH1/DB_ratioEH1_BF.csv","%lg,%lg","");
-    TGraph *DB_ratioEH1_Data = new TGraph("files_data/EH1/DB_ratioEH1_Data.csv","%lg,%lg","");
-    TGraph *DB_ratioEH1_Erro = new TGraph("files_data/EH1/DB_ratioEH1_Erro.csv","%lg,%lg","");
-    
-    //Note: "DB_ratioEH1_NoOsc" is not digitized. Trivial horizontal line
     //---------------------------------------------------------------------------------------------------
     //get data from digitized files - EH2
-    TGraph *DB_specEH2_DataperMev  = new TGraph("files_data/EH2/DB_specEH2_Data.csv","%lg,%lg","");
-    TGraph *DB_specEH2_NoOscperMev = new TGraph("files_data/EH2/DB_specEH2_NoOsc.csv","%lg,%lg","");
-    TGraph *DB_specEH2_BFperMev    = new TGraph("files_data/EH2/DB_specEH2_BF.csv","%lg,%lg","");
-    TGraph *DB_specEH2_BGperMev    = new TGraph("files_data/EH2/DB_specEH2_BG.csv","%lg,%lg","");
+    TGraph *DB_specEH2_Data  = new TGraph("files_data/EH2/DB1230_specEH2_Data.txt","%lg %lg","");
+    TGraph *DB_specEH2_NoOsc = new TGraph("files_data/EH2/DB1230_specEH2_NoOsc.txt","%lg %lg","");
+    TGraph *DB_specEH2_BF    = new TGraph("files_data/EH2/DB1230_specEH2_BF.txt","%lg %lg","");
+    TGraph *DB_specEH2_BG    = new TGraph("files_data/EH2/DB1230_specEH2_BG.txt","%lg %lg","");
     
-    TGraph *DB_ratioEH2_BF   = new TGraph("files_data/EH2/DB_ratioEH2_BF.csv","%lg,%lg","");
-    TGraph *DB_ratioEH2_Data = new TGraph("files_data/EH2/DB_ratioEH2_Data.csv","%lg,%lg","");
-    TGraph *DB_ratioEH2_Erro = new TGraph("files_data/EH2/DB_ratioEH2_Erro.csv","%lg,%lg","");
-    
-    //Note: "DB_ratioEH1_NoOsc" is not digitized. Trivial horizontal line
     //---------------------------------------------------------------------------------------------------
     //get data from digitized files - EH3
-    TGraph *DB_specEH3_DataperMev  = new TGraph("files_data/EH3/DB_specEH3_Data.csv","%lg,%lg","");
-    TGraph *DB_specEH3_NoOscperMev = new TGraph("files_data/EH3/DB_specEH3_NoOsc.csv","%lg,%lg","");
-    TGraph *DB_specEH3_BFperMev    = new TGraph("files_data/EH3/DB_specEH3_BF.csv","%lg,%lg","");
-    TGraph *DB_specEH3_BGperMev    = new TGraph("files_data/EH3/DB_specEH3_BG.csv","%lg,%lg","");
+    TGraph *DB_specEH3_Data  = new TGraph("files_data/EH3/DB1230_specEH3_Data.txt","%lg %lg","");
+    TGraph *DB_specEH3_NoOsc = new TGraph("files_data/EH3/DB1230_specEH3_NoOsc.txt","%lg %lg","");
+    TGraph *DB_specEH3_BF    = new TGraph("files_data/EH3/DB1230_specEH3_BF.txt","%lg %lg","");
+    TGraph *DB_specEH3_BG    = new TGraph("files_data/EH3/DB1230_specEH3_BG.txt","%lg %lg","");
     
-    TGraph *DB_ratioEH3_BF   = new TGraph("files_data/EH3/DB_ratioEH3_BF.csv","%lg,%lg","");
-    TGraph *DB_ratioEH3_Data = new TGraph("files_data/EH3/DB_ratioEH3_Data.csv","%lg,%lg","");
-    TGraph *DB_ratioEH3_Erro = new TGraph("files_data/EH3/DB_ratioEH3_Erro.csv","%lg,%lg","");
-    
-    //Note: "DB_ratioEH1_NoOsc" is not digitized. Trivial horizontal line
     //---------------------------------------------------------------------------------------------------
 
+    cout << "1. Load files... Done" << endl;
+    
     //define histograms
-    double    NB = 26;
+    double    NB = 35;
     double    lo = 0.7;
     double    hi = 12.0;
-
-    double xbins[27];
+    
+    double xbins[36];
     xbins[0] = 0.7;
-    double delta_bins2 = (7.3 - 1.3)/24; // 0.25 MeV/bin
+    double delta_bins2 = (7.9 - 1.3)/33; // 0.20 MeV/bin
     for (int i = 0 ; i < (NB-1) ; i++)
-        {
-            xbins[i+1] = 1.3 + delta_bins2*i;
-        }
-    xbins[26] = hi;
+    {
+        xbins[i+1] = 1.3 + delta_bins2*i;
+    }
+    xbins[35] = hi;
+
+    cout << "2. Bins definition... Done" << endl;
 
     //-----------
     const int nEH = 3;
@@ -122,159 +110,131 @@ void db_PRL112_plots()
         bkgd_spect_histo[i] = new TH1F(Form("bkgd_spect_histo_%d",i),"",NB,xbins);
         bkgd_spect_histo[i]->SetLineWidth(2);
         bkgd_spect_histo[i]->SetLineColor(6);
-        
-        //Data - Background ratios
-        //------------------
-        data_ratio_histo[i] = new TH1F(Form("data_ratio_histo_%d",i),"",NB,xbins);
-        data_ratio_histo[i]->SetLineWidth(2);
-        data_ratio_histo[i]->SetMarkerStyle(8);
-        data_ratio_histo[i]->SetMarkerSize(0.8);
-        
-        nosc_ratio_histo[i] = new TH1F(Form("nosc_ratio_histo_%d",i),"",NB,xbins);
-        nosc_ratio_histo[i]->SetLineWidth(2);
-        nosc_ratio_histo[i]->SetLineColor(4);
-        
-        BFit_ratio_histo[i] = new TH1F(Form("BFit_ratio_histo_%d",i),"",NB,xbins);
-        BFit_ratio_histo[i]->SetLineWidth(2);
-        BFit_ratio_histo[i]->SetLineColor(2);
     }
     
+    cout << "3. Histogram definition... Done" << endl;
+
     // set histogram contents
     double ctnt = 0;
-    double erro = 0;
-    
     double binW = 0.0;
 
     for (int i = 0 ; i < NB ; i++)
         {
             // spectra EH1
-            ctnt = DB_specEH1_DataperMev->GetY()[i];
-            data_spect_histoPerMeV[0]->SetBinContent(i+1,ctnt);
-            binW = data_spect_histoPerMeV[0]->GetBinWidth(i+1);
-            data_spect_histo[0]->SetBinContent(i+1,ctnt*binW);
+            ctnt = DB_specEH1_Data->GetY()[i];
+            data_spect_histo[0]->SetBinContent(i+1,ctnt);
+            binW = data_spect_histo[0]->GetBinWidth(i+1);
+            data_spect_histoPerMeV[0]->SetBinContent(i+1,ctnt/(1.0e5*binW));
             
-            ctnt = DB_specEH1_NoOscperMev->GetY()[i];
-            nosc_spect_histoPerMeV[0]->SetBinContent(i+1,ctnt);
-            binW = nosc_spect_histoPerMeV[0]->GetBinWidth(i+1);
-            nosc_spect_histo[0]->SetBinContent(i+1,ctnt*binW);
+            ctnt = DB_specEH1_NoOsc->GetY()[i];
+            nosc_spect_histo[0]->SetBinContent(i+1,ctnt);
+            binW = nosc_spect_histo[0]->GetBinWidth(i+1);
+            nosc_spect_histoPerMeV[0]->SetBinContent(i+1,ctnt/(1.0e5*binW));
             
-            ctnt = DB_specEH1_BFperMev->GetY()[i];
-            BFit_spect_histoPerMeV[0]->SetBinContent(i+1,ctnt);
-            binW = BFit_spect_histoPerMeV[0]->GetBinWidth(i+1);
-            BFit_spect_histo[0]->SetBinContent(i+1,ctnt*binW);
+            ctnt = DB_specEH1_BF->GetY()[i];
+            BFit_spect_histo[0]->SetBinContent(i+1,ctnt);
+            binW = BFit_spect_histo[0]->GetBinWidth(i+1);
+            BFit_spect_histoPerMeV[0]->SetBinContent(i+1,ctnt/(1.0e5*binW));
             
-            ctnt = DB_specEH1_BGperMev->GetY()[i];
-            bkgd_spect_histoPerMeV[0]->SetBinContent(i+1,ctnt);
-            binW = bkgd_spect_histoPerMeV[0]->GetBinWidth(i+1);
-            bkgd_spect_histo[0]->SetBinContent(i+1,ctnt*binW);
+            ctnt = DB_specEH1_BG->GetY()[i];
+            bkgd_spect_histo[0]->SetBinContent(i+1,ctnt);
+            binW = bkgd_spect_histo[0]->GetBinWidth(i+1);
+            bkgd_spect_histoPerMeV[0]->SetBinContent(i+1,ctnt/(1.0e5*binW));
             
             // spectra EH2
-            ctnt = DB_specEH2_DataperMev->GetY()[i];
-            data_spect_histoPerMeV[1]->SetBinContent(i+1,ctnt);
-            binW = data_spect_histoPerMeV[1]->GetBinWidth(i+1);
-            data_spect_histo[1]->SetBinContent(i+1,ctnt*binW);
+            ctnt = DB_specEH2_Data->GetY()[i];
+            data_spect_histo[1]->SetBinContent(i+1,ctnt);
+            binW = data_spect_histo[1]->GetBinWidth(i+1);
+            data_spect_histoPerMeV[1]->SetBinContent(i+1,ctnt/(1.0e5*binW));
             
-            ctnt = DB_specEH2_NoOscperMev->GetY()[i];
-            nosc_spect_histoPerMeV[1]->SetBinContent(i+1,ctnt);
-            binW = nosc_spect_histoPerMeV[1]->GetBinWidth(i+1);
-            nosc_spect_histo[1]->SetBinContent(i+1,ctnt*binW);
+            ctnt = DB_specEH2_NoOsc->GetY()[i];
+            nosc_spect_histo[1]->SetBinContent(i+1,ctnt);
+            binW = nosc_spect_histo[1]->GetBinWidth(i+1);
+            nosc_spect_histoPerMeV[1]->SetBinContent(i+1,ctnt/(1.0e5*binW));
             
-            ctnt = DB_specEH2_BFperMev->GetY()[i];
-            BFit_spect_histoPerMeV[1]->SetBinContent(i+1,ctnt);
-            binW = BFit_spect_histoPerMeV[1]->GetBinWidth(i+1);
-            BFit_spect_histo[1]->SetBinContent(i+1,ctnt*binW);
+            ctnt = DB_specEH2_BF->GetY()[i];
+            BFit_spect_histo[1]->SetBinContent(i+1,ctnt);
+            binW = BFit_spect_histo[1]->GetBinWidth(i+1);
+            BFit_spect_histoPerMeV[1]->SetBinContent(i+1,ctnt/(1.0e5*binW));
             
-            ctnt = DB_specEH2_BGperMev->GetY()[i];
-            bkgd_spect_histoPerMeV[1]->SetBinContent(i+1,ctnt);
-            binW = bkgd_spect_histoPerMeV[1]->GetBinWidth(i+1);
-            bkgd_spect_histo[1]->SetBinContent(i+1,ctnt*binW);
+            ctnt = DB_specEH2_BG->GetY()[i];
+            bkgd_spect_histo[1]->SetBinContent(i+1,ctnt);
+            binW = bkgd_spect_histo[1]->GetBinWidth(i+1);
+            bkgd_spect_histoPerMeV[1]->SetBinContent(i+1,ctnt/(1.0e5*binW));
             
             // spectra EH3
-            ctnt = DB_specEH3_DataperMev->GetY()[i];
-            data_spect_histoPerMeV[2]->SetBinContent(i+1,ctnt);
-            binW = data_spect_histoPerMeV[2]->GetBinWidth(i+1);
-            data_spect_histo[2]->SetBinContent(i+1,ctnt*binW);
+            ctnt = DB_specEH3_Data->GetY()[i];
+            data_spect_histo[2]->SetBinContent(i+1,ctnt);
+            binW = data_spect_histo[2]->GetBinWidth(i+1);
+            data_spect_histoPerMeV[2]->SetBinContent(i+1,ctnt/(1.0e5*binW));
             
-            ctnt = DB_specEH3_NoOscperMev->GetY()[i];
-            nosc_spect_histoPerMeV[2]->SetBinContent(i+1,ctnt);
-            binW = nosc_spect_histoPerMeV[2]->GetBinWidth(i+1);
-            nosc_spect_histo[2]->SetBinContent(i+1,ctnt*binW);
+            ctnt = DB_specEH3_NoOsc->GetY()[i];
+            nosc_spect_histo[2]->SetBinContent(i+1,ctnt);
+            binW = nosc_spect_histo[2]->GetBinWidth(i+1);
+            nosc_spect_histoPerMeV[2]->SetBinContent(i+1,ctnt/(1.0e5*binW));
             
-            ctnt = DB_specEH3_BFperMev->GetY()[i];
-            BFit_spect_histoPerMeV[2]->SetBinContent(i+1,ctnt);
-            binW = BFit_spect_histoPerMeV[2]->GetBinWidth(i+1);
-            BFit_spect_histo[2]->SetBinContent(i+1,ctnt*binW);
+            ctnt = DB_specEH3_BF->GetY()[i];
+            BFit_spect_histo[2]->SetBinContent(i+1,ctnt);
+            binW = BFit_spect_histo[2]->GetBinWidth(i+1);
+            BFit_spect_histoPerMeV[2]->SetBinContent(i+1,ctnt/(1.0e5*binW));
             
-            ctnt = DB_specEH3_BGperMev->GetY()[i];
-            bkgd_spect_histoPerMeV[2]->SetBinContent(i+1,ctnt);
-            binW = bkgd_spect_histoPerMeV[2]->GetBinWidth(i+1);
-            bkgd_spect_histo[2]->SetBinContent(i+1,ctnt*binW);
-
-            //------------------------------------------------------
-            // ratios EH1
-            ctnt = DB_ratioEH1_Data->GetY()[i];
-            erro = DB_ratioEH1_Erro->GetY()[i];
-            data_ratio_histo[0]->SetBinContent(i+1,ctnt);
-            data_ratio_histo[0]->SetBinError(i+1,erro);
-            
-            ctnt = 1.0;
-            nosc_ratio_histo[0]->SetBinContent(i+1,ctnt);
-            
-            ctnt = DB_ratioEH1_BF->GetY()[i];
-            BFit_ratio_histo[0]->SetBinContent(i+1,ctnt);
-
-            // ratios EH2
-            ctnt = DB_ratioEH2_Data->GetY()[i];
-            erro = DB_ratioEH2_Erro->GetY()[i];
-            data_ratio_histo[1]->SetBinContent(i+1,ctnt);
-            data_ratio_histo[1]->SetBinError(i+1,erro);
-            
-            ctnt = 1.0;
-            nosc_ratio_histo[1]->SetBinContent(i+1,ctnt);
-            
-            ctnt = DB_ratioEH2_BF->GetY()[i];
-            BFit_ratio_histo[1]->SetBinContent(i+1,ctnt);
-            
-            // ratios EH3
-            ctnt = DB_ratioEH3_Data->GetY()[i];
-            erro = DB_ratioEH3_Erro->GetY()[i];
-            data_ratio_histo[2]->SetBinContent(i+1,ctnt);
-            data_ratio_histo[2]->SetBinError(i+1,erro);
-            
-            ctnt = 1.0;
-            nosc_ratio_histo[2]->SetBinContent(i+1,ctnt);
-            
-            ctnt = DB_ratioEH3_BF->GetY()[i];
-            BFit_ratio_histo[2]->SetBinContent(i+1,ctnt);
-            
-/*            // tests that errors look OK
-            ctnt = wtd_near_site_ratio_bfit_lo->GetY()[i];
-            ns_wtd_ratio_bfit_lo_histo->SetBinContent(i+1,ctnt);
-            //
-            ctnt = wtd_near_site_ratio_bfit_hi->GetY()[i];
-            ns_wtd_ratio_bfit_hi_histo->SetBinContent(i+1,ctnt);
-*/
+            ctnt = DB_specEH3_BG->GetY()[i];
+            bkgd_spect_histo[2]->SetBinContent(i+1,ctnt);
+            binW = bkgd_spect_histo[2]->GetBinWidth(i+1);
+            bkgd_spect_histoPerMeV[2]->SetBinContent(i+1,ctnt/(1.0e5*binW));
         }
+
+    cout << "4. Fill Histograms... Done" << endl;
+
+    for (int i = 0 ; i < nEH ; i++)
+    {
+        //Data/NoOsc ratios
+        //------------------
+        data_ratio_histo[i] = (TH1F*)data_spect_histo[i]->Clone(Form("data_ratio_histo_%d",i));
+        //data_ratio_histo[i] = new TH1F(Form("data_ratio_histo_%d",i),"",NB,xbins);
+        data_ratio_histo[i]->Divide(nosc_spect_histo[i]);
+        data_ratio_histo[i]->SetLineWidth(2);
+        data_ratio_histo[i]->SetMarkerStyle(8);
+        data_ratio_histo[i]->SetMarkerSize(0.8);
+        
+        nosc_ratio_histo[i] = (TH1F*)nosc_spect_histo[i]->Clone(Form("nosc_ratio_histo_%d",i));
+        //nosc_ratio_histo[i] = new TH1F(Form("nosc_ratio_histo_%d",i),"",NB,xbins);
+        nosc_ratio_histo[i]->Divide(nosc_spect_histo[i]);
+        nosc_ratio_histo[i]->SetLineWidth(2);
+        nosc_ratio_histo[i]->SetLineColor(4);
+        
+        BFit_ratio_histo[i] = (TH1F*)BFit_spect_histo[i]->Clone(Form("BFit_ratio_histo_%d",i));
+        //BFit_ratio_histo[i] = new TH1F(Form("BFit_ratio_histo_%d",i),"",NB,xbins);
+        BFit_ratio_histo[i]->Divide(nosc_spect_histo[i]);
+        BFit_ratio_histo[i]->SetLineWidth(2);
+        BFit_ratio_histo[i]->SetLineColor(2);
+    }
+
+    cout << "5. Ratio Histograms... Done" << endl;
 
     // Drawng section
     //-------------------
     
-    TH2F *frame_spectra1 = new TH2F("frame_spectra1","",NB,lo,hi,10,0,64.5e3);
-    frame_spectra1->GetXaxis()->SetTitle("Prompt Reconstructed Energy (MeV)");
+    TH2F *frame_spectra1 = new TH2F("frame_spectra1","",NB,lo,hi,10,0,3.5);
+    frame_spectra1->GetXaxis()->SetTitle("Prompt Energy (MeV)");
     frame_spectra1->GetYaxis()->SetTitle("Events/MeV");
     
-    TH2F *frame_spectra2 = new TH2F("frame_spectra2","",NB,lo,hi,10,0,29.5e3);
-    frame_spectra2->GetXaxis()->SetTitle("Prompt Reconstructed Energy (MeV)");
+    TH2F *frame_spectra2 = new TH2F("frame_spectra2","",NB,lo,hi,10,0,3.15);
+    frame_spectra2->GetXaxis()->SetTitle("Prompt Energy (MeV)");
     frame_spectra2->GetYaxis()->SetTitle("Events/MeV");
     
-    TH2F *frame_spectra3 = new TH2F("frame_spectra3","",NB,lo,hi,10,0,13.55e3);
-    frame_spectra3->GetXaxis()->SetTitle("Prompt Reconstructed Energy (MeV)");
+    TH2F *frame_spectra3 = new TH2F("frame_spectra3","",NB,lo,hi,10,0,1.0);
+    frame_spectra3->GetXaxis()->SetTitle("Prompt Energy (MeV)");
     frame_spectra3->GetYaxis()->SetTitle("Events/MeV");
     
-    TH2F *frame_ratios = new TH2F("frame_ratios","",NB,lo,hi,10,0.83,1.12);
-    frame_ratios->GetXaxis()->SetTitle("Prompt Reconstructed Energy (MeV)");
-    frame_ratios->GetYaxis()->SetTitle("Data - Background / Prediction");
-
+    TH2F *frame_ratios12 = new TH2F("frame_ratios12","",NB,lo,hi,10,0.93,1.05);
+    frame_ratios12->GetXaxis()->SetTitle("Prompt Energy (MeV)");
+    frame_ratios12->GetYaxis()->SetTitle("R^{obs} / R^{pred}_{no-osc}");
+    
+    TH2F *frame_ratios3 = new TH2F("frame_ratios3","",NB,lo,hi,10,0.90,1.02);
+    frame_ratios3->GetXaxis()->SetTitle("Prompt Energy (MeV)");
+    frame_ratios3->GetYaxis()->SetTitle("R^{obs} / R^{pred}_{no-osc}");
+    
     TCanvas *canv0 = new TCanvas("canv0","",700,450);
     canv0->Divide(1,2);
 
@@ -289,14 +249,14 @@ void db_PRL112_plots()
     
     canv0->cd(2);
     gPad->SetPad(0.005,0.006,0.995,0.300);
-    frame_ratios->Draw();
-    BFit_ratio_histo[0]->Draw("same hist");
+    frame_ratios12->Draw();
+    BFit_ratio_histo[0]->Draw("same");
     data_ratio_histo[0]->Draw("P same");
     nosc_ratio_histo[0]->Draw("same");
     gPad->RedrawAxis();
     gPad->SetTicks(1,1);
 
-    canv0->Print("files_plots/canv_DB.pdf");
+    canv0->Print("files_plots/canv_DB1230-EH1.pdf");
 
     canv0->Clear("D");
     
@@ -311,14 +271,14 @@ void db_PRL112_plots()
     
     canv0->cd(2);
     gPad->SetPad(0.005,0.005,0.995,0.300);
-    frame_ratios->Draw();
-    BFit_ratio_histo[1]->Draw("same hist");
+    frame_ratios12->Draw();
+    BFit_ratio_histo[1]->Draw("same");
     data_ratio_histo[1]->Draw("P same");
     nosc_ratio_histo[1]->Draw("same");
     gPad->SetTicks(1,1);
     gPad->RedrawAxis();
     
-    canv0->Print("files_plots/canv_DB-EH2.pdf");
+    canv0->Print("files_plots/canv_DB1230-EH2.pdf");
     
     canv0->Clear("D");
     
@@ -333,18 +293,18 @@ void db_PRL112_plots()
     
     canv0->cd(2);
     gPad->SetPad(0.005,0.005,0.995,0.300);
-    frame_ratios->Draw();
-    BFit_ratio_histo[2]->Draw("same hist");
+    frame_ratios3->Draw();
+    BFit_ratio_histo[2]->Draw("same");
     data_ratio_histo[2]->Draw("P same");
     nosc_ratio_histo[2]->Draw("same");
     gPad->SetTicks(1,1);
     gPad->RedrawAxis();
     
-    canv0->Print("files_plots/canv_DB-EH3.pdf");
+    canv0->Print("files_plots/canv_DB1230-EH3.pdf");
     
     //---------------------------------------------------------
     // write to output file
-    TFile *fout = new TFile("PRL112_data.root","recreate");
+    TFile *fout = new TFile("PRD95_1230days_data.root","recreate");
     fout->cd();
 
     for (int i = 0 ; i < nEH ; i++)
@@ -368,7 +328,7 @@ void db_PRL112_plots()
 
     fout->Close();
 
-    
+/*
     /////////////////////////
     TLatex *lat = new TLatex();
     lat->SetNDC();
@@ -491,6 +451,6 @@ void db_PRL112_plots()
     lat->DrawLatex(0.7,0.3,"EH3");
     
     ce->Print("files_plots/DB_Events-PRL112.pdf");
-
+*/
 }// end
 
