@@ -12,14 +12,14 @@ void ldist()
     
     //Baseline Distances (cm)
     const char *detNames[nDet] = {"EH1-AD1", "EH1-AD2", "EH2-AD1", "EH2-AD2",
-          	                  "EH3-AD1", "EH3-AD2", "EH3-AD3", "EH3-AD4"};
+          	                      "EH3-AD1", "EH3-AD2", "EH3-AD3", "EH3-AD4"};
 
     //From Nucl.Inst.Meth.Phys.Research A 811 (2016) 133–161 (Table 2)
     double baselines[nDet][nRea] = {
-		{362.380,371.763,903.466,817.158,1353.618,1265.315},
-        	{357.940,368.414,903.347,816.896,1354.229,1265.886},
-		{1332.479,1358.148,467.574,489.577,557.579,499.207},
-		{1337.429,1362.876,472.971,495.346,558.707,501.071},
+		{ 362.380, 371.763, 903.466, 817.158,1353.618,1265.315},
+       	{ 357.940, 368.414, 903.347, 816.896,1354.229,1265.886},
+		{1332.479,1358.148, 467.574, 489.577, 557.579, 499.207},
+		{1337.429,1362.876, 472.971, 495.346, 558.707, 501.071},
 		{1919.632,1894.337,1533.180,1533.628,1551.384,1524.940},
 		{1917.519,1891.977,1534.919,1535.032,1554.767,1528.079},
 		{1925.255,1899.861,1538.930,1539.468,1556.344,1530.078},
@@ -69,7 +69,6 @@ void ldist()
     double hi = 48;
     TH1F *histo_ldist = new TH1F("histo_ldist","",nb,lo,hi);
     TH1F *histo_ldist_eh3 = new TH1F("histo_ldist_eh3","",nb,lo,hi);
-    TH1F *histo_ldist_6Det = new TH1F("histo_ldist_6Det","",nb,lo,hi);
 
     for (int id=0; id<nDet; id++){
         for (int ir=0; ir<nRea; ir++){
@@ -85,10 +84,7 @@ void ldist()
             if (id>=4){
                 histo_ldist_eh3->SetBinContent(ii+1,wgt);
             }
-            
-            if (id != 3 && id != 7){
-                histo_ldist_6Det->SetBinContent(ii+1,wgt);
-            }
+
         } //for ir
     } //for id
     
@@ -98,15 +94,10 @@ void ldist()
     double integ_eh3 = histo_ldist_eh3->Integral();
     histo_ldist_eh3->Scale(1.0/integ_eh3);
     
-    double integ_6Det = histo_ldist_6Det->Integral();
-    histo_ldist_6Det->Scale(1.0/integ_6Det);
-    
     TFile *fout = new TFile("files_data/daya-bay-ldist.root","recreate");
     fout->cd();
     histo_ldist->Write();
     histo_ldist_eh3->Write();
-    histo_ldist_6Det->Write();
-
 
     //Test generation of baselines
     TH1F *histo_ldist_gen = new TH1F("histo_ldist_gen","",nb,lo,hi);
@@ -171,11 +162,4 @@ void ldist()
     
     canv1->Print("files_plots/ldist_eh3.pdf");
 */  
-    TCanvas *canv2 = new TCanvas("canv2","",600,470);
-    canv2->cd();
-    
-    histo_ldist_6Det->Draw("hist");
-    
-    canv2->Print("files_plots/ldist_6Det.pdf");
-    
 } //end
