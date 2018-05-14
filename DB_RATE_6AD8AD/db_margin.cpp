@@ -33,10 +33,8 @@ int main(int argc, char* argv[])
     }
     // path to read/write data
     string path1 = argv[3];
-    //string chi_file = "files_data/chi2_s2t-eps_surface_RATE.txt";
-    //string min_chi = "files_data/chi2_minumum_RATE.txt";
-    string chi_file = "files_data/chi2_s2t-eps_surface_SPEC.txt";
-    string min_chi = "files_data/chi2_minumum_SPEC.txt";
+    string chi_file = "files_data/chi2_s2t-eps_surface_RATE.txt";
+    string min_chi = "files_data/chi2_minumum_RATE.txt";
   
     ofstream file,filem;
     ifstream min1((path1 + chi_file).c_str());
@@ -64,10 +62,8 @@ int main(int argc, char* argv[])
         for(int m=0;m<COL;m++)
             min1 >> matrix[l][m];
 
-    //string s2t_file = "files_data/db_s2t_chi2_RATE.txt";
-    //string dmn_file = "files_data/db_eps_chi2_RATE.txt";
-    string s2t_file = "files_data/db_s2t_chi2_SPEC.txt";
-    string dmn_file = "files_data/db_eps_chi2_SPEC.txt";
+    string s2t_file = "files_data/db_s2t_chi2_RATE.txt";
+    string dmn_file = "files_data/db_eps_chi2_RATE.txt";
     file.open((path1 + s2t_file).c_str());
     filem.open((path1 + dmn_file).c_str());
     

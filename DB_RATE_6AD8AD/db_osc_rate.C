@@ -1,19 +1,14 @@
 //---------------------------------------------------------------------//
-//-- db_osc_rate.C - By M.A. Acero O. & A.A. Aguilar-A. - 2017-01-02 --//
+//-- db_osc_rate.C - By M.A. Acero O. & A.A. Aguilar-A. - 2018-05-22 --//
 //---------------------------------------------------------------------//
 // This macro can be executed under ROOT typing                        //
 //"root[0] .x db_osc_rate.C"                                           //
 // For the rate-only analysis, using information from F.P. An et al.,  //
-// PRL 112 061801 (2014)                                               //
+// PRD 95 072006 (2017)                                               //
 //---------------------------------------------------------------------//
-// 2017-01-31                                                          //
-// Modifications to perform a rate-only analysis by computing and using//
-// average values for the survival probability and taking sin2(2th) as //
-// the only free parameter (to bi fitted).                             //
-// 2017-02-03                                                          //
 // This macro performs a simple chi^2 analysis of the Daya Bay data by //
-// comparing the IBD rate at the six AD reported in PRL 112 061801     //
-// (2014)                                                              //
+// comparing the IBD rate at the six AD reported in PRD 95 072006      //
+// (2017)                                                              //
 //---------------------------------------------------------------------//
 
 #include "constants.h"
@@ -37,24 +32,25 @@ void db_osc_rate()
 
     //---------------------------------------------------
     // Open ntuple file to read simulated data (Ep, En, Ln) for the 6 AD
-    TFile *fntuple = new TFile("files_data/db-ntuple_5M.root","READ");
+    TFile *fntuple = new TFile("files_data/db-ntuple.root","READ");
     TTree *T = (TTree*)fntuple->Get("T");
     TCut cutBF;
     //---------------------------------------------------
     // histogram binning for the simulated data
-    double    NB = 26;
+    double    NB = 35;
     double    lo = 0.7;
     double    hi = 12.0;
-    double    xbins[27];
-    xbins[0] = lo;
-    double delta_bins2 = (7.3 - 1.3)/24.;// = 0.25 MeV/bin
-    for (int i=0;i<(NB-1);i++)
+    
+    double xbins[36];
+    xbins[0] = 0.7;
+    double delta_bins2 = (7.9 - 1.3)/33; // 0.20 MeV/bin
+    for (int i = 0 ; i < (NB-1) ; i++)
     {
         xbins[i+1] = 1.3 + delta_bins2*i;
     }
-    xbins[26] = hi;
+    xbins[35] = hi;
     //---------------------------------------------------
-    const int nAD = 6; //Number os Antineutrino detectors
+    const int nAD = 8; //Number os Antineutrino detectors
     TH1F *BFit_spect_histo[nAD];
     TH1F *Posc_AD_BF[nAD];
     TH1F *Posc_AD_surv[nAD];
@@ -82,32 +78,32 @@ void db_osc_rate()
         Posc_AD_surv[i]     = new TH1F(Form("Posc_AD_surv_%d",i),"",1000,0,1);//to store <POsc(s2th,dm2)>
     }
     //---------------------------------------------------
-    //IBD rate (per day), total background and efficiencies (PRL 112 061801 (2014))
-    //EH1(AD1, AD2),EH2(AD3),EH3(AD4, AD5, AD6)
+    //IBD rate (per day), total background and efficiencies (PRD 95 072006 (2017) Selection A)
+    //EH1(AD1, AD2),EH2(AD3, AD8),EH3(AD4, AD5, AD6, AD7)
     double IBDrate_perday[nAD][2] =
     {
-        {653.30,2.31},{664.15,2.33},
-        {581.97,2.33},
-        { 73.31,0.66},{ 73.03,0.66},{72.20,0.66}
+        {653.03,1.37},{665.42,1.38},
+        {599.71,1.12},{593.82,1.18},
+        { 74.25,0.28},{ 74.60,0.28},{ 73.98,0.28},{ 74.73,0.30}
     };
-    //(IBD candidates)/(DAQ live time -days-) from PRL 112 061801 (2014)
+    //(IBD candidates)/(DAQ live time -days-) from PRD 95 072006 (2017)
     double IBDrate_data[nAD][2] =
     {
-        {530.31,23.03},{536.75,23.17},
-        {489.93,22.13},
-        { 73.58,8.58},{ 73.21,8.56},{72.35,8.51}
+        {534.93,23.13},{542.75,23.30},
+        {509.00,22.56},{503.83,22.45},
+        { 72.71, 8.53},{ 72.94, 8.54},{ 72.33, 8.50},{ 72.88, 8.54}
     };
     double totalBgd[nAD][2] =
     {
-        {13.20,0.98},{13.01,0.98},
-        { 9.57,0.71},
-        { 3.52,0.14},{ 3.48,0.14},{3.43,0.14}
+        {11.94,1.07},{11.94,1.07},
+        { 8.76,0.78},{ 8.69,0.78},
+        { 1.56,0.07},{ 1.47,0.07},{ 1.48,0.07},{ 1.28,0.07}
     };
     double emuem[nAD] =
     {
-        0.7957,0.7927,
-        0.8282,
-        0.9577,0.9568,0.9566
+        0.8044,0.8013,
+        0.8365,0.8363,
+        0.9587,0.9585,0.9581,0.9588
     };
 
     int sel;
@@ -116,8 +112,9 @@ void db_osc_rate()
     double integ;
     for (int iAD = 0 ; iAD < nAD ; iAD++)
     {
-        if (iAD < 3) sel = iAD;
-        else if (iAD >= 3) sel = iAD +1;
+        sel = iAD;
+        //if (iAD < 3) sel = iAD;
+        //else if (iAD >= 3) sel = iAD +1;
         //------------------------------------------------
         //Filling Ocillation prpbability at BF - histogram
         T->Draw(Form("(1.0 - 0.090*((sin( 1.267 * 2.32e-3 * Ln/En ))**2) - ((cos(0.5 * asin(sqrt(0.090))))**4) * 0.861 * (sin( 1.267 * 7.59e-5 * Ln/En ))**2) >> Posc_AD_BF_%d",iAD),Form("id==%d",sel));
@@ -155,8 +152,9 @@ void db_osc_rate()
 
     for (int iAD = 0 ; iAD < nAD ; iAD++)
     {
-        if (iAD < 3) selad = iAD;
-        else if (iAD >= 3) selad = iAD +1;
+        selad = iAD;
+        //if (iAD < 3) selad = iAD;
+        //else if (iAD >= 3) selad = iAD +1;
         
         T->Draw(Form("((sin(1.267 * %e * Ln/En))**2) >> SinDelta21_%d",dm2_21,iAD),Form("id==%d",selad));
         integ = SinDelta21[iAD]->Integral();
@@ -187,7 +185,6 @@ void db_osc_rate()
         double test = SurvProb->Eval(0.090);
         //cout << i << "test = " << test << endl;
     }
-    
     
     double s2t_pt;
     

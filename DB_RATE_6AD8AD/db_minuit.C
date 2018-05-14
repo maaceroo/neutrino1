@@ -1,5 +1,5 @@
 //---------------------------------------------------------------------//
-//--  db_minuit.C - By M.A. Acero O. & A.A. Aguilar-A. - 2017-02-02  --//
+//--  db_minuit.C - By M.A. Acero O. & A.A. Aguilar-A. - 2018-05-12  --//
 //---------------------------------------------------------------------//
 //-- Using 'NumericalMinimization.C' macro example to minimize a chi2--//
 //-- function. It uses a Minimizer class in ROOT.                    --//
@@ -8,7 +8,7 @@
 //--                0 random with seed 0;                            --//
 //--               >0 random with given seed.                        --//
 //-- Analysis of the Daya Bay data from                              --//
-//-- F.P. An et al., PRL112 061801 (2014)                            --//
+//-- F.P. An et al., PRD 95 072006 (2017)                            --//
 //---------------------------------------------------------------------//
 //-- This macro can be executed under ROOT typing                    --//
 //-- "root[0] .x db_minuit.C"                                        --//
@@ -28,11 +28,11 @@
 //---------- CONSTANTS ------------------------------------------------//
 //---***************************************************************---//
 // histogram binning for the simulated data
-#define  NB 26
+#define  NB 35
 #define  lo 0.7
 #define  hi 12.0
 //Number of Antineutrino Detectors
-#define nAD 6
+#define nAD 8
 //Number of Nuclear Reactors
 #define nNR 6
 //Fixed neutrino oscillations parameters
@@ -40,12 +40,12 @@
 #define dm2_31 2.32e-3 //eV^2,                  //PRL 108 171803 (2012)
 #define s22th_12 0.861
 //For the sin^2(2th_13) loop
-#define N_s2t  200                            //number of points in the grid
+#define N_s2t  100                            //number of points in the grid
 //#define lo_s2t 0.01                             //sin^2(2th_13) min
-#define lo_s2t 0.0                            //sin^2(2th_13) min
-#define hi_s2t 0.5                            //sin^2(2th_13) max
+#define lo_s2t 0.05                            //sin^2(2th_13) min
+#define hi_s2t 0.25                            //sin^2(2th_13) max
 //For the epsilon loop
-#define N_eps  200                           //number of points in the grid
+#define N_eps  100                           //number of points in the grid
 #define lo_eps -1.0e-2                       //epsilon min
 #define hi_eps +1.0e-2                       //epsilon max
 //---*****************************************************---//
@@ -53,21 +53,21 @@
 //---*****************************************************---//
 //-- Global variables and quantities ------------------------//
 //---*****************************************************---//
-//EH1(AD1, AD2),EH2(AD3),EH3(AD4, AD5, AD6)
-//(IBD candidates)/(DAQ live time -days-) from PRL 112 061801 (2014)
-double IBDrate_data[nAD][2] = { {530.31,1.67},{536.75,1.68},{489.93,1.61},{ 73.58,0.62},{ 73.21,0.62},{72.35,0.62} };
-//IBD rate (per day), total background and efficiencies (PRL 112 061801 (2014))
-double totalBgd[nAD][2] = { {13.20,0.98},{13.01,0.98},{ 9.57,0.71},{ 3.52,0.14},{ 3.48,0.14},{3.43,0.14} };
-double emuem[nAD] ={0.7957,0.7927,0.8282,0.9577,0.9568,0.9566};
-double daqTime[nAD] = {191.001,191.001,189.645,189.779,189.779,189.779};
+//EH1(AD1, AD2),EH2(AD3, AD8),EH3(AD4, AD5, AD6, AD7)
+//(IBD candidates)/(DAQ live time -days-) from PRD 95 072006 (2017)
+double IBDrate_data[nAD][2] = { {534.93,23.13},{542.75,23.30},{509.00,22.56},{503.83,22.45},{ 72.71, 8.53},{ 72.94, 8.54},{ 72.33, 8.50},{ 72.88, 8.54} };
+//IBD rate (per day), total background and efficiencies (PRD 95 072006 (2017))
+double totalBgd[nAD][2] = { {11.94,1.07},{11.94,1.07},{ 8.76,0.78},{ 8.69,0.78},{ 1.56,0.07},{ 1.47,0.07},{1.48,0.07},{ 1.28,0.07} };
+double emuem[nAD] ={0.8044,0.8013,0.8365,0.8363,0.9587,0.9585,0.9581,0.9588};
+double daqTime[nAD] = {117.178,1117.178,1114.337,924.933,1106.915,1106.915,1106.915,917.417};
 //---*****************************************************---//
 // Information obtained by executing the script "db_osc_rate.C"
 //IBD rate per day w/o oscillations
-double noOsc_IBDrate_perday[nAD] = { 663.34, 674.17, 592.17,  78.72,  78.43,  77.55};
+double noOsc_IBDrate_perday[nAD] = { 663.03, 675.43, 610.16, 604.31,  79.73,  80.08,  79.46,  80.25};
 //<sin^2(1.267 dm2_21 L/E)> for each AD
-double avgSinDelta21[nAD] = { 0.000234944, 0.000230247, 0.000257448, 0.001951586, 0.001953465, 0.001962183};
+double avgSinDelta21[nAD] = { 0.000233916, 0.000230374, 0.000256018, 0.000259286, 0.001948003, 0.001945891, 0.001960081, 0.001969502};
 //<sin^2(1.267 dm2_31 L/E)> for each AD
-double avgSinDelta31[nAD] = { 0.166012120, 0.162990755, 0.189091099, 0.746264250, 0.746767073, 0.748318385};
+double avgSinDelta31[nAD] = { 0.165500850, 0.162559727, 0.187949592, 0.190512065, 0.745789863, 0.743062235, 0.747974331, 0.746556079};
 //---*****************************************************---//
 double s2th_13; //oscillation parameter to be fitted
 double epsilon; //absolute normalization factor to be fitted
@@ -116,7 +116,7 @@ double chi2(const double *xx)
     double seps_d       = 1.0*0.002;
     double seps_a       = 1.0*0.008;
     
-    for (iAD = 0 ; iAD < 6 ; iAD++)
+    for (iAD = 0 ; iAD < 8 ; iAD++)
     {
 	//-- Survival Probability equation. Terms depending on dM²_21 and dM²_32(~dM²_31) are averaged
         SurvP = 1.0 - 0.25*pow((1.0 + sqrt(1.0 - s2th_13)),2)*(s22th_12)*(avgSinDelta21[iAD]) - s2th_13*(avgSinDelta31[iAD]);
@@ -141,7 +141,7 @@ double chi2(const double *xx)
         
     }
     
-    for (iAD = 0 ; iAD < 6 ; iAD++)
+    for (iAD = 0 ; iAD < 8 ; iAD++)
     {
         //-- Background error of the dth Antineutrino Detector
         sB = totalBgd[iAD][1]*emuem[iAD]*daqTime[iAD];
@@ -163,7 +163,7 @@ int db_minuit(const char * minName = "Minuit",
     cout << "Let's begin..." << endl;
     
     TFile *wrd_File = new TFile("files_data/daya-bay-ldist.root","READ");
-    TH1F *wrd_histo = ((TH1F*)(wrd_File->Get("histo_ldist_6Det")));;
+    TH1F *wrd_histo = ((TH1F*)(wrd_File->Get("histo_ldist")));;
     
     for (int blid = 0 ; blid < nAD*nNR ; blid++)
     {
