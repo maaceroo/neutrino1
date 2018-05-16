@@ -15,6 +15,13 @@
 
 void RENO_ntuple()
 { // begin
+
+    
+  //------------- Style --------------
+  gROOT->SetStyle("Plain");
+  gStyle->SetOptStat(0);
+  //------------- Style --------------
+
   
   //-------------------
   // Energy Histograms
@@ -77,6 +84,24 @@ void RENO_ntuple()
       
       T->Fill();
     }
+  
+    //h_Ep->Fill(Ep);
+  TH1F* Ep_h = new TH1F("Ep_h","",78,0.0,8.4);
+  Ep_h->GetXaxis()->SetTitle("    Energ#acute{i}a de la se#tilde{n}al r#acute{a}pida (MeV)"  );
+  Ep_h->GetYaxis()->SetTitle("          N#acute{u}mero de eventos        ");
+  T->Draw("Ep>>Ep_h");
+  TCanvas *canv0 = new TCanvas("canv0","canv0",800,500);
+  Ep_h->Draw();
+  canv0->Print("Plots/promt_energy_RENO.pdf");
+  TH1F* En_h = new TH1F("En_h","",78,0.0,8.4);
+  En_h->GetXaxis()->SetTitle("   Energ#acute{i}a del Neutrino (MeV)    ");
+  En_h->GetYaxis()->SetTitle("         N#acute{u}mero de eventos         ");
+  T->Draw("Ep>>Ep_h");
+  TCanvas *canv = new TCanvas("canv","canv",800,500);
+  T->Draw("En>>En_h");
+  En_h->Draw();
+  canv->Print("Plots/Neutrino_energy_RENO.pdf");
+  
   
   fout->Write();
   

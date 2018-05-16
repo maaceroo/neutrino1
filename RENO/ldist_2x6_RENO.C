@@ -71,13 +71,13 @@ void ldist_2x6_RENO()
   histo_ldist_RENO_2x6->SetXTitle("NR-AD index");
   histo_ldist_RENO_2x6->SetYTitle(" Events ");
   
-  TH1F *histo_ldist_RENO_near = new TH1F("histo_ldist_RENO_near","Near Detector",6,lo,6);
-  histo_ldist_RENO_near->SetXTitle("NR index");
-  histo_ldist_RENO_near->SetYTitle(" Events ");
+  TH1F *histo_ldist_RENO_near = new TH1F("histo_ldist_RENO_near","",6,lo,6);
+  histo_ldist_RENO_near->SetXTitle("                NR index             ");
+  histo_ldist_RENO_near->SetYTitle("                 Eventos             ");
   
-  TH1F *histo_ldist_RENO_far = new TH1F("histo_ldist_RENO_far","Far Detector",6,lo,6);
-  histo_ldist_RENO_far->SetXTitle("NR index");
-  histo_ldist_RENO_far->SetYTitle(" Events ");
+  TH1F *histo_ldist_RENO_far = new TH1F("histo_ldist_RENO_far","",6,lo,6);
+  histo_ldist_RENO_far->SetXTitle("            NR index               ");
+  histo_ldist_RENO_far->SetYTitle("             Eventos               ");
   
   for (int id=0; id<nDet; id++){
     for (int ir=0; ir<nRea; ir++){
@@ -162,11 +162,11 @@ void ldist_2x6_RENO()
   histo_ldist_gen_far->Write();
   
   // Drawing section
-  TCanvas *canvn = new TCanvas("canvn","",600,470);
+  TCanvas *canvn = new TCanvas("canvn","",800,470);
   histo_ldist_RENO_near->Draw("hist");
   canvn->Print("Plots/ldist_near_det.pdf");
   
-  TCanvas *canvf = new TCanvas("canvf","",600,470);
+  TCanvas *canvf = new TCanvas("canvf","",750,470);
   histo_ldist_RENO_far->Draw("hist");
   canvf->Print("Plots/ldist_far_det.pdf");
   

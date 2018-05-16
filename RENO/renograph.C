@@ -50,11 +50,12 @@ void renograph(){
  	const double lo = 1.2;  
  	const double hi = 8.4;
 	double xbins[NB+1];
+	xbins[0] = 1.2;
 	double delta_bins2 = (6.0 - 1.2)/24; // 0.2 MeV/bin
 	
 	for (int i = 0 ; i < (NB-2) ; i++)
         {
-            xbins[i+1] = 1.2 + delta_bins2*i;
+	  xbins[i+1] = 1.2 + delta_bins2*(i+1);
 	
 	}
 	xbins[25] = xbins[24] + 0.4;
@@ -92,9 +93,9 @@ void renograph(){
 	}
 	
 	// Define the legend of the plots
-	TLegend *leg1 = new TLegend(.75,.80,.95,.95,"Near Detector");
+	TLegend *leg1 = new TLegend(.2,.5,0.3,.6," Detector cercano");
 	leg1->AddEntry(spect_histo[0],"MC");
-	leg1->AddEntry(data_spect_histo[0],"data");
+	leg1->AddEntry(data_spect_histo[0],"datos");
 	
 
 	// Near detector backgrounds
@@ -103,11 +104,11 @@ void renograph(){
 	TH1F *reno_bg_near_lihe_histo  = new TH1F("reno_bg_near_lihe_histo", "",NB,xbins);
 	TH1F *reno_bg_near_cf_histo  = new TH1F("reno_bg_near_cf_histo", "",NB,xbins);
 
-	TLegend *leg2 = new TLegend(.75,.80,.95,.95,"Near Detector");
-	leg2->AddEntry(reno_bg_near_cf_histo,"Cf");
-	leg2->AddEntry(reno_bg_near_fast_histo," Fast Neutron");
+	TLegend *leg2 = new TLegend(.40,.60,0.89,.89,"Detector Cercano");
+	//leg2->AddEntry(reno_bg_near_cf_histo,"Cf");
+	leg2->AddEntry(reno_bg_near_fast_histo,"  Neutrones R#acute{a}pidos ");
 	leg2->AddEntry(reno_bg_near_accident_histo,"Accidental");
-	leg2->AddEntry(reno_bg_near_lihe_histo,"Li He");
+	leg2->AddEntry(reno_bg_near_lihe_histo,"Li/He");
 	
 	THStack *hst = new THStack("hst","Backgrounds Near Detector");
 	reno_bg_near_fast_histo->SetLineColor(7);
@@ -123,9 +124,9 @@ void renograph(){
 	reno_bg_near_cf_histo->SetLineWidth(2);
 	hst->Add(reno_bg_near_cf_histo);		
 
-	TLegend *leg4 = new TLegend(.75,.80,.95,.95,"Far Detector");
+	TLegend *leg4 = new TLegend(.2,.5,0.3,.6, "Detector Lejano");
 	leg4->AddEntry(spect_histo[1],"MC");
-	leg4->AddEntry(data_spect_histo[1],"data");
+	leg4->AddEntry(data_spect_histo[1],"datos");
 
 
 	//Far detector backgrounds
@@ -134,10 +135,10 @@ void renograph(){
 	TH1F *reno_bg_far_lihe_histo  = new TH1F("reno_bg_far_lihe_histo", "",NB,xbins);		
 	TH1F *reno_bg_far_cf_histo  = new TH1F("reno_bg_far_cf_histo", "",NB,xbins);
 	
-	TLegend *leg3 = new TLegend(.75,.80,.95,.95,"Far Detector");
-	leg3->AddEntry(reno_bg_far_fast_histo," Fast Neutron");
+	TLegend *leg3 = new TLegend(.4,.6,0.89,.89," Detector Lejano");
+	leg3->AddEntry(reno_bg_far_fast_histo," Neutrones R#acute{a}pidos");
 	leg3->AddEntry(reno_bg_far_acci_histo,"Accidental");
-	leg3->AddEntry(reno_bg_far_lihe_histo,"Li He");
+	leg3->AddEntry(reno_bg_far_lihe_histo,"Li/He");
 	leg3->AddEntry(reno_bg_far_cf_histo,"Cf");
 	
 	THStack *hst1 = new THStack("hst1","Backgrounds far Detector");
@@ -254,61 +255,67 @@ void renograph(){
 	    
 	  }	
 	
-	TH2F *frame_spectrafd = new TH2F("frame_spectrafd","",NB,lo,hi,10,0,1890);
-	frame_spectrafd->GetXaxis()->SetTitle("Prompt Energy (MeV)");
-	frame_spectrafd->GetYaxis()->SetTitle("Events/0.2 MeV");
+	TH2F *frame_spectrafd = new TH2F("frame_spectrafd","",NB,1,hi,10,0,1890);
+	frame_spectrafd->GetXaxis()->SetTitle("                 Energ#acute{i}a de la se#tilde{n}al r#acute{a}pida (MeV)                 ");
+	frame_spectrafd->GetYaxis()->SetTitle("                                  Eventos/0.2 MeV                              ");
 		
-	TH2F *frame_spectrand = new TH2F("frame_spectrand","",NB,lo,hi,10,0,18300);
-	frame_spectrand->GetXaxis()->SetTitle("Prompt Energy (MeV)");
-	frame_spectrand->GetYaxis()->SetTitle("Events/0.2 MeV");
+	TH2F *frame_spectrand = new TH2F("frame_spectrand","",NB,1,hi,10,0,18300);
+	frame_spectrand->GetXaxis()->SetTitle("                 Energ#acute{i}a de la se#tilde{n}al r#acute{a}pida (MeV)                 ");
+	frame_spectrand->GetYaxis()->SetTitle("                                                       Eventos/0.2 MeV                         ");
 	
-	TH2F *frame_backnd = new TH2F("frame_backnd","",NB,lo,hi,10,0,800);
-	frame_backnd->GetXaxis()->SetTitle("Prompt Energy (MeV)");
-	frame_backnd->GetYaxis()->SetTitle("Events/0.2 MeV");
+	TH2F *frame_backnd = new TH2F("frame_backnd","",NB,1,hi,10,0,800);
+	frame_backnd->GetXaxis()->SetTitle("                 Energ#acute{i}a de la se#tilde{n}al r#acute{a}pida (MeV)                    ");
+	frame_backnd->GetYaxis()->SetTitle("                                ");
 	
-	TH2F *frame_backfd = new TH2F("frame_backfd","",NB,lo,hi,10,0,130);
-	frame_backfd->GetXaxis()->SetTitle("Prompt Energy (MeV)");
-	frame_backfd->GetYaxis()->SetTitle("Events/0.2 MeV");
+	TH2F *frame_backfd = new TH2F("frame_backfd","",NB,1,hi,10,0,130);
+	frame_backfd->GetXaxis()->SetTitle("                 Energ#acute{i}a de la se#tilde{n}al r#acute{a}pida (MeV)                    ");
+	frame_backfd->GetYaxis()->SetTitle("                                     ");
 	
-	TH2F *frame_pred = new TH2F("frame_pred","",NB,lo,hi,10,0,2010);
-	frame_pred->GetXaxis()->SetTitle("Prompt Energy (MeV)");
-	frame_pred->GetYaxis()->SetTitle("Events/0.2 MeV");
+	TH2F *frame_pred = new TH2F("frame_pred","",NB,1,hi,10,0,2010);
+	frame_pred->GetXaxis()->SetTitle("                 Energ#acute{i}a de la se#tilde{n}al r#acute{a}pida (MeV)                      ");
+	frame_pred->GetYaxis()->SetTitle("                                       Eventos/0.2 MeV                                            ");
 
 	// Drawing section
 	
 	// near Drawing seccion
 	// Graph of near detector
-	TCanvas* c = new TCanvas("c","NEAR DETECTOR",700,500);
+	TCanvas* c = new TCanvas("c","NEAR DETECTOR",1400,900);
 	frame_spectrand->Draw();
 	data_spect_histo[0]->Draw("PE same");
 	spect_histo[0]->Draw("same");
 	leg1->Draw();
-	c->Print("Plots/Neardetector.pdf");	
-	
-	TCanvas *c2 = new TCanvas("c2","Near Detector",700,500);
+		
+	TPad *subpad = new TPad("subpad","",0.54,0.54,0.89,0.89); 
+	subpad->Draw(); 
+	subpad->cd(); 
+	//	TCanvas *c2 = new TCanvas("c2","Near Detector",700,500);
 	frame_backnd->Draw();
 	reno_bg_near_cf_histo->Draw("same");
 	reno_bg_near_lihe_histo->Draw("same");
 	reno_bg_near_accident_histo->Draw("same");
 	reno_bg_near_fast_histo->Draw("same");
 	leg2->Draw();
-	c2->Print("Plots/Neardetectorbg.pdf");
-	 
-	TCanvas *c3 = new TCanvas("c3","",700,500);
+	//c2->Print("Plots/Neardetectorbg.pdf");
+	c->Print("Plots/Neardetector.pdf");	
+
+	// Graph of far detector
+	TCanvas* c1 = new TCanvas("c1","",1400,900);
+	frame_spectrafd->Draw();
+	data_spect_histo[1]->Draw("PE same");
+	spect_histo[1]->Draw("same");
+	leg4->Draw();
+	
+	TPad *subpad2 = new TPad("subpad2","",0.54,0.54,0.89,0.89); 
+	subpad2->Draw(); 
+	subpad2->cd(); 
+	//TCanvas *c3 = new TCanvas("c3","",700,500);
 	frame_backfd->Draw();
 	reno_bg_far_lihe_histo->Draw("same");
 	reno_bg_far_acci_histo->Draw("same");
 	reno_bg_far_cf_histo->Draw("same");
 	reno_bg_far_fast_histo->Draw("same");
 	leg3->Draw();
-	c3->Print("Plots/fardetectorbg.pdf");
-	
-	// Graph of far detector
-	TCanvas* c1 = new TCanvas("c1","",700,500);
-	frame_spectrafd->Draw();
-	data_spect_histo[1]->Draw("PE same");
-	spect_histo[1]->Draw("same");
-	leg4->Draw();
+	//c3->Print("Plots/fardetectorbg.pdf");
 	c1->Print("Plots/fardetector.pdf");
 	
 	// Graph of far detector
