@@ -40,12 +40,12 @@
 #define dm2_31 2.32e-3 //eV^2,                  //PRL 108 171803 (2012)
 #define s22th_12 0.861
 //For the sin^2(2th_13) loop
-#define N_s2t  100                            //number of points in the grid
+#define N_s2t  10                            //number of points in the grid
 //#define lo_s2t 0.01                             //sin^2(2th_13) min
 #define lo_s2t 0.05                            //sin^2(2th_13) min
 #define hi_s2t 0.25                            //sin^2(2th_13) max
 //For the epsilon loop
-#define N_eps  100                           //number of points in the grid
+#define N_eps  10                           //number of points in the grid
 #define lo_eps -1.0e-2                       //epsilon min
 #define hi_eps +1.0e-2                       //epsilon max
 //---*****************************************************---//
@@ -59,7 +59,7 @@ double IBDrate_data[nAD][2] = { {534.93,23.13},{542.75,23.30},{509.00,22.56},{50
 //IBD rate (per day), total background and efficiencies (PRD 95 072006 (2017))
 double totalBgd[nAD][2] = { {11.94,1.07},{11.94,1.07},{ 8.76,0.78},{ 8.69,0.78},{ 1.56,0.07},{ 1.47,0.07},{1.48,0.07},{ 1.28,0.07} };
 double emuem[nAD] ={0.8044,0.8013,0.8365,0.8363,0.9587,0.9585,0.9581,0.9588};
-double daqTime[nAD] = {117.178,1117.178,1114.337,924.933,1106.915,1106.915,1106.915,917.417};
+double daqTime[nAD] = {1117.178,1117.178,1114.337,924.933,1106.915,1106.915,1106.915,917.417};
 //---*****************************************************---//
 // Information obtained by executing the script "db_osc_rate.C"
 //IBD rate per day w/o oscillations

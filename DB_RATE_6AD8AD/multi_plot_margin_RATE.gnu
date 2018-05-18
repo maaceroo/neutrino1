@@ -122,9 +122,9 @@ set yrange[ymin:ymax]
 set label 4 "{/Symbol e}" at 0.036,0.0 center rotate by 90
 
 ## Mark at the BF
-set label 35 "+" at 0.090404, 0.00030303 center font "CharterBT-Roman,15"
+set label 35 "+" at 0.0944444, 0.00111111 center font "CharterBT-Roman,15"
 ## Minimum chi2 value
-min = 0.068649
+min = 2.07188
 
 unset ztics
 set clabel

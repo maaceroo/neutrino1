@@ -78,6 +78,9 @@ void db_osc_rate()
         Posc_AD_surv[i]     = new TH1F(Form("Posc_AD_surv_%d",i),"",1000,0,1);//to store <POsc(s2th,dm2)>
     }
     //---------------------------------------------------
+    //-DAQtime
+    double daqTime[nAD] = {1117.178,1117.178,1114.337,924.933,1106.915,1106.915,1106.915,917.417};
+
     //IBD rate (per day), total background and efficiencies (PRD 95 072006 (2017) Selection A)
     //EH1(AD1, AD2),EH2(AD3, AD8),EH3(AD4, AD5, AD6, AD7)
     double IBDrate_perday[nAD][2] =
@@ -93,12 +96,44 @@ void db_osc_rate()
         {509.00,22.56},{503.83,22.45},
         { 72.71, 8.53},{ 72.94, 8.54},{ 72.33, 8.50},{ 72.88, 8.54}
     };
-    double totalBgd[nAD][2] =
+
+    double totalBgd_6D[nAD][2] =
+    {
+        {12.06,1.08},{12.03,1.07},
+        { 8.91,0.79},{ 0.00,0.00},
+        { 1.74,0.12},{ 1.65,0.12},{ 1.66,0.12},{ 0.00,0.00}
+    };
+    double totalBgd_8D[nAD][2] =
     {
         {11.94,1.07},{11.94,1.07},
         { 8.76,0.78},{ 8.69,0.78},
         { 1.56,0.07},{ 1.47,0.07},{ 1.48,0.07},{ 1.28,0.07}
     };
+
+    double W6d[nAD] = {191.001/1117.178, 191.001/1117.178,
+                       189.645/1114.337, 0.0,
+                       189.779/1106.915,  189.779/1106.915, 189.779/1106.915, 0.0};
+    double W8d[nAD];
+    double totalBgd[nAD][2];
+    for (int iwd = 0; iwd< nAD; iwd++){
+       W8d[iwd] = 1.0 - W6d[iwd];
+       totalBgd[iwd][0] = totalBgd_6D[iwd][0]*W6d[iwd] + totalBgd_8D[iwd][0]*W8d[iwd];
+       totalBgd[iwd][1] = sqrt(pow(totalBgd_6D[iwd][1]*W6d[iwd],2) + pow(totalBgd_8D[iwd][1]*W8d[iwd],2));
+
+       printf("totalBg[%d][1] = %f +/- %f \n", iwd, totalBgd[iwd][0], totalBgd[iwd][1]);
+     }
+    printf("\n");
+
+
+
+
+    //double totalBgd[nAD][2] =
+    //{
+    //    {11.94,1.07},{11.94,1.07},
+    //    { 8.76,0.78},{ 8.69,0.78},
+    //    { 1.56,0.07},{ 1.47,0.07},{ 1.48,0.07},{ 1.28,0.07}
+    //};
+
     double emuem[nAD] =
     {
         0.8044,0.8013,
@@ -291,6 +326,29 @@ void db_osc_rate()
     }
     printf("******************************************************************************************\n");
     
+   printf("double totalBdg[nAD][2] = {");
+    for (int iAD = 0 ; iAD < nAD ; iAD++)
+    {
+        printf("{%5.2f,%5.2f}",totalBgd[iAD][0],totalBgd[iAD][1]);
+        if(iAD < nAD-1)
+            printf(",");
+        else
+            printf("};\n");
+    }
+
+   printf("double emuem[nAD] = {");
+    for (int iAD = 0 ; iAD < nAD ; iAD++)
+    {
+        printf("%6.4f",emuem[iAD]);
+        if(iAD < nAD-1)
+            printf(",");
+        else
+            printf("};\n");
+    }
+
+
+   printf("};\n");
+
     //---------------------------------------------------
 
     
