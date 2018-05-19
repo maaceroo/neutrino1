@@ -124,9 +124,6 @@ void db_osc_rate()
      }
     printf("\n");
 
-
-
-
     //double totalBgd[nAD][2] =
     //{
     //    {11.94,1.07},{11.94,1.07},
@@ -181,15 +178,13 @@ void db_osc_rate()
     double avgSinDelta21[nAD]; //<sin^2(1.267 dm2_21 L/E)> for each AD
     double avgSinDelta31[nAD]; //<sin^2(1.267 dm2_31 L/E)> for each AD
 
-    double dm2_21 = 7.59e-5; //eV^2,                  //PRL 108 171803 (2012)
-    double dm2_31 = 2.32e-3; //eV^2,                  //PRL 108 171803 (2012)
+    double dm2_21 = 7.53e-5; //eV^2,                  //2017 Review of Particle Physics (On-line, 2018.05.19).
+    double dm2_31 = 2.45e-3; //eV^2,                  //2017 Review of Particle Physics (On-line, 2018.05.19).
     int   selad;
 
     for (int iAD = 0 ; iAD < nAD ; iAD++)
     {
         selad = iAD;
-        //if (iAD < 3) selad = iAD;
-        //else if (iAD >= 3) selad = iAD +1;
         
         T->Draw(Form("((sin(1.267 * %e * Ln/En))**2) >> SinDelta21_%d",dm2_21,iAD),Form("id==%d",selad));
         integ = SinDelta21[iAD]->Integral();
@@ -202,7 +197,6 @@ void db_osc_rate()
         //cout << "avgSinDelta21_" << iAD << " = " << avgSinDelta21[iAD] << "\t"
              //<< "avgSinDelta31_" << iAD << " = " << avgSinDelta31[iAD] << endl;
     }
-    
 
     //---------------------------------------------------
     //Survival probability for different values of sin2(2th_13)

@@ -47,10 +47,14 @@ void ldist()
     
     //Individual Reactor (maximum) Thermal Power (GW)
     double th_pow[nRea] = {2.9,2.9,2.9,2.9,2.9,2.9};
+    //Individual Reactor (average) Thermal Power (GW) - 8AD period (PRD 95, 072006 (2017))
+    //double th_pow[nRea] = {2.514,2.447,2.566,2.519,2.519,2.550};
     //Mean Fission fractions (U235,U238,Pu239,Pu241). From PRL 112, 061801 (2014)
     double fissFrac[4] = {0.573,0.076,0.301,0.050};
     //Thermal Fission Energies in MeV (U235,U238,Pu239,Pu241). From Phys.Rev.C88, 014605 (2013)
     double ThFisEn[4] = {202.36,205.99,211.12,214.26};
+    //Thermal Fission Energies in MeV (U235,U238,Pu239,Pu241). From J.Phys. G36 045002 (2009)
+    //double ThFisEn[4] = {201.7,205.0,210.0,212.4};
     double AvMeVperFiss = 0.0;
     for (int i = 0 ; i < 4 ; i++) {
         AvMeVperFiss += fissFrac[i]*ThFisEn[i];
@@ -68,7 +72,6 @@ void ldist()
     double lo = 0;
     double hi = 48;
     TH1F *histo_ldist = new TH1F("histo_ldist","",nb,lo,hi);
-    TH1F *histo_ldist_eh3 = new TH1F("histo_ldist_eh3","",nb,lo,hi);
 
     for (int id=0; id<nDet; id++){
         for (int ir=0; ir<nRea; ir++){
@@ -80,9 +83,6 @@ void ldist()
       
             histo_ldist->SetBinContent(ii+1,wgt);
             //printf("%2d \t %2d %2d \t %s: %7.3f m %f \n",ii,id,ir,detNames[id],baselines[id][ir], wgt);
-
-            if (id>=4){
-                histo_ldist_eh3->SetBinContent(ii+1,wgt);
             }
 
         } //for ir
@@ -91,13 +91,9 @@ void ldist()
     double integ = histo_ldist->Integral();
     histo_ldist->Scale(1.0/integ);
 
-    double integ_eh3 = histo_ldist_eh3->Integral();
-    histo_ldist_eh3->Scale(1.0/integ_eh3);
-    
     TFile *fout = new TFile("files_data/daya-bay-ldist.root","recreate");
     fout->cd();
     histo_ldist->Write();
-    histo_ldist_eh3->Write();
 
     //Test generation of baselines
     TH1F *histo_ldist_gen = new TH1F("histo_ldist_gen","",nb,lo,hi);
@@ -108,7 +104,7 @@ void ldist()
 
     int Nevt=10000000;
     for (int i=0;i<Nevt;i++){
-	//NOTE 2017-10-10 (By MAAO): I have removed (int*) from severla lines 
+	//NOTE 2017-10-10 (By MAAO): I have removed (int*) from several lines
 	//(120, 122, 122, 137, 140 -plus 5 lines-) after getting messages like 
 	//  "ldist.C:123:20: warning: cast to 'int *' from smaller integer type 'int' [-Wint-to-pointer-cast]
         //   int idet = (int*) (bl_idx/nRea);" 
@@ -124,23 +120,6 @@ void ldist()
     double integ_gen = histo_ldist_gen->Integral();
     histo_ldist->Scale(integ_gen);
 
-    TH1F *histo_ldist_eh3_gen = new TH1F("histo_ldist_eh3_gen","",nb,lo,hi);
-    histo_ldist_eh3_gen->SetMarkerStyle(8);
-    histo_ldist_eh3_gen->SetMarkerSize(1.0);
-
-    Nevt=10000000;
-    for (int i=0;i<Nevt;i++){
-        int bl_idx = histo_ldist_eh3->GetRandom();
-        histo_ldist_eh3_gen->Fill(bl_idx);
-
-        int idet =  (bl_idx/nRea);
-        int irea =  (bl_idx- idet*nRea);
-
-        //printf("%2d \t %2d %2d\n",bl_idx, idet, irea);
-    }
-    double integ_eh3_gen = histo_ldist_eh3_gen->Integral();
-    histo_ldist_eh3->Scale(integ_eh3_gen);
-
    // Drawing section
 
     TCanvas *canv0 = new TCanvas("canv0","",600,470);
@@ -152,14 +131,4 @@ void ldist()
 
     canv0->Print("files_plots/ldist.pdf");
 
-/*
-    TCanvas *canv1 = new TCanvas("canv1","",600,470);
-    canv1->cd();
-    
-    histo_ldist_eh3_gen->Draw("PE");
-    histo_ldist_eh3->Draw("hist same");
-    histo_ldist_eh3_gen->Draw("PE same");
-    
-    canv1->Print("files_plots/ldist_eh3.pdf");
-*/  
-} //end
+}//end
