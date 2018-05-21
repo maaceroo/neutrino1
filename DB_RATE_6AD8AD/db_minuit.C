@@ -27,27 +27,28 @@
 //---***************************************************************---//
 //---------- CONSTANTS ------------------------------------------------//
 //---***************************************************************---//
+#include "constants.h"
 // histogram binning for the simulated data
-#define  NB 35
-#define  lo 0.7
-#define  hi 12.0
+//#define  NB 35
+//#define  lo 0.7
+//#define  hi 12.0
 //Number of Antineutrino Detectors
-#define nAD 8
+//#define nAD 8
 //Number of Nuclear Reactors
-#define nNR 6
+//#define nNR 6
 //Fixed neutrino oscillations parameters
-#define dm2_21 7.53e-5 //eV^2,                  //2017 Review of Particle Physics (On-line, 2018.05.19).
-#define dm2_31 2.45e-3 //eV^2,                  //2017 Review of Particle Physics (On-line, 2018.05.19).
-#define s22th_12 0.861
+//#define dm2_21 7.53e-5 //eV^2,                  //2017 Review of Particle Physics (On-line, 2018.05.19).
+//#define dm2_31 2.45e-3 //eV^2,                  //2017 Review of Particle Physics (On-line, 2018.05.19).
+//#define s22th_12 0.861
 //For the sin^2(2th_13) loop
-#define N_s2t  60                            //number of points in the grid
+//#define N_s2t  60                            //number of points in the grid
 //#define lo_s2t 0.01                             //sin^2(2th_13) min
-#define lo_s2t 0.05                            //sin^2(2th_13) min
-#define hi_s2t 0.25                            //sin^2(2th_13) max
+//#define lo_s2t 0.05                            //sin^2(2th_13) min
+//#define hi_s2t 0.25                            //sin^2(2th_13) max
 //For the epsilon loop
-#define N_eps  60                           //number of points in the grid
-#define lo_eps -1.0e-2                       //epsilon min
-#define hi_eps +1.0e-2                       //epsilon max
+//#define N_eps  60                           //number of points in the grid
+//#define lo_eps -1.0e-2                       //epsilon min
+//#define hi_eps +1.0e-2                       //epsilon max
 //---*****************************************************---//
 
 //---*****************************************************---//

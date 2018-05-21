@@ -27,7 +27,7 @@ int main(int argc, char* argv[])
 
   ofstream min_file;
   min_file.open((path1 + min_chi).c_str());
-  min_file << fixed << setprecision(10);
+  min_file << fixed << setprecision(6);
   
   int sn = atoi(argv[1]);
   int dmn= atoi(argv[2]);

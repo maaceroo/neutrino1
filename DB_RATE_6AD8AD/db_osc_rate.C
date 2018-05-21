@@ -37,9 +37,9 @@ void db_osc_rate()
     TCut cutBF;
     //---------------------------------------------------
     // histogram binning for the simulated data
-    double    NB = 35;
-    double    lo = 0.7;
-    double    hi = 12.0;
+    //double    NB = 35;
+    //double    lo = 0.7;
+    //double    hi = 12.0;
     
     double xbins[36];
     xbins[0] = 0.7;
@@ -289,7 +289,7 @@ void db_osc_rate()
     printf("* Declaration of arrays needed for db_minuit.C lines 66, 68 and 70. Copy and paste there. *\n");
     printf("******************************************************************************************\n\n");
     //-- Printing out for db_minuit.C
-    printf("noOsc_IBDrate_perday[nAD] = {");
+    printf("double noOsc_IBDrate_perday[nAD] = {");
     for (int iAD = 0 ; iAD < nAD ; iAD++)
     {
         printf("%7.2f",noOsc_IBDrate_perday[iAD]);

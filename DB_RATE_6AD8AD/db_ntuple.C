@@ -71,7 +71,9 @@ void db_ntuple()
     T->Branch("ir", &ir, "ir/s"); //reactor
     T->Branch("id", &id, "id/s"); //detector
 
-    int Nevents = 1000000;
+    //int Nevents = 1000000;
+    int Nevents = atoi(getenv("NTUPLE_EVENTS"));
+    printf("Ntuple Events: %d \n",Nevents);
         for (int i = 0 ; i < Nevents ; i++)
         {
             // generate a baseline (blid uniquely identifies the baseline)
