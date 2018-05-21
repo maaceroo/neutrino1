@@ -36,16 +36,16 @@
 //Number of Nuclear Reactors
 #define nNR 6
 //Fixed neutrino oscillations parameters
-#define dm2_21 7.59e-5 //eV^2,                  //PRL 108 171803 (2012)
-#define dm2_31 2.32e-3 //eV^2,                  //PRL 108 171803 (2012)
+#define dm2_21 7.53e-5 //eV^2,                  //2017 Review of Particle Physics (On-line, 2018.05.19).
+#define dm2_31 2.45e-3 //eV^2,                  //2017 Review of Particle Physics (On-line, 2018.05.19).
 #define s22th_12 0.861
 //For the sin^2(2th_13) loop
-#define N_s2t  10                            //number of points in the grid
+#define N_s2t  60                            //number of points in the grid
 //#define lo_s2t 0.01                             //sin^2(2th_13) min
 #define lo_s2t 0.05                            //sin^2(2th_13) min
 #define hi_s2t 0.25                            //sin^2(2th_13) max
 //For the epsilon loop
-#define N_eps  10                           //number of points in the grid
+#define N_eps  60                           //number of points in the grid
 #define lo_eps -1.0e-2                       //epsilon min
 #define hi_eps +1.0e-2                       //epsilon max
 //---*****************************************************---//
@@ -57,7 +57,7 @@
 //(IBD candidates)/(DAQ live time -days-) from PRD 95 072006 (2017)
 double IBDrate_data[nAD][2] = { {534.93,23.13},{542.75,23.30},{509.00,22.56},{503.83,22.45},{ 72.71, 8.53},{ 72.94, 8.54},{ 72.33, 8.50},{ 72.88, 8.54} };
 //IBD rate (per day), total background and efficiencies (PRD 95 072006 (2017))
-double totalBgd[nAD][2] = { {11.94,1.07},{11.94,1.07},{ 8.76,0.78},{ 8.69,0.78},{ 1.56,0.07},{ 1.47,0.07},{1.48,0.07},{ 1.28,0.07} };
+double totalBgd[nAD][2] = { {11.96, 0.91},{11.96, 0.91},{ 8.79, 0.66},{ 8.69, 0.78},{ 1.59, 0.06},{ 1.50, 0.06},{ 1.51, 0.06},{ 1.28, 0.07} };
 double emuem[nAD] ={0.8044,0.8013,0.8365,0.8363,0.9587,0.9585,0.9581,0.9588};
 double daqTime[nAD] = {1117.178,1117.178,1114.337,924.933,1106.915,1106.915,1106.915,917.417};
 //---*****************************************************---//
@@ -65,9 +65,9 @@ double daqTime[nAD] = {1117.178,1117.178,1114.337,924.933,1106.915,1106.915,1106
 //IBD rate per day w/o oscillations
 double noOsc_IBDrate_perday[nAD] = { 663.03, 675.43, 610.16, 604.31,  79.73,  80.08,  79.46,  80.25};
 //<sin^2(1.267 dm2_21 L/E)> for each AD
-double avgSinDelta21[nAD] = { 0.000233916, 0.000230374, 0.000256018, 0.000259286, 0.001948003, 0.001945891, 0.001960081, 0.001969502};
+double avgSinDelta21[nAD] = { 0.000230234, 0.000226747, 0.000251988, 0.000255204, 0.001917360, 0.001915281, 0.001929247, 0.001938521};
 //<sin^2(1.267 dm2_31 L/E)> for each AD
-double avgSinDelta31[nAD] = { 0.165500850, 0.162559727, 0.187949592, 0.190512065, 0.745789863, 0.743062235, 0.747974331, 0.746556079};
+double avgSinDelta31[nAD] = { 0.179606632, 0.176403459, 0.204881620, 0.207666334, 0.762535106, 0.759829143, 0.764013835, 0.762621122};
 //---*****************************************************---//
 double s2th_13; //oscillation parameter to be fitted
 double epsilon; //absolute normalization factor to be fitted

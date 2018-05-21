@@ -61,7 +61,7 @@ int main(int argc, char* argv[])
 	}
     }
   cout << "The minimum Chi^2 value is   " << setprecision(6) << min << endl;
-  cout << "For s2t =  " << chi[val][0] << ",  dmn =  " << chi[val][1] << endl;
+  cout << "For s2t =  " << chi[val][0] << ",  eps =  " << chi[val][1] << endl;
 
   min_file << min << "  " << chi[val][0] << "  " << chi[val][1] << endl;
 

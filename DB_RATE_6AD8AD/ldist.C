@@ -83,7 +83,6 @@ void ldist()
       
             histo_ldist->SetBinContent(ii+1,wgt);
             //printf("%2d \t %2d %2d \t %s: %7.3f m %f \n",ii,id,ir,detNames[id],baselines[id][ir], wgt);
-            }
 
         } //for ir
     } //for id
