@@ -73,10 +73,10 @@ echo '=========================================='
 echo 'compiling  db_chi2_min.cpp and db_margin.cpp'
 echo '=========================================='
 echo
-##g++ -o db_chi2_min.exe db_chi2_min.cpp
-##g++ -o db_margin.exe db_margin.cpp
-clang++ -o db_chi2_min.exe db_chi2_min.cpp
-clang++ -o db_margin.exe db_margin.cpp
+g++ -o db_chi2_min.exe db_chi2_min.cpp
+g++ -o db_margin.exe db_margin.cpp
+##clang++ -o db_chi2_min.exe db_chi2_min.cpp
+##clang++ -o db_margin.exe db_margin.cpp
 
 echo
 #-----------------------------------------------------------------------------
