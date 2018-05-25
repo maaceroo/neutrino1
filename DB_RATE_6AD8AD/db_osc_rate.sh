@@ -28,8 +28,8 @@ echo
 #-----------------------------------------------------------------------------
 #Define grid 
 
-export NS2T=60
-export NEPS=60
+export NS2T=150
+export NEPS=150
 
 export LO_S2T=0.01
 export HI_S2T=0.25
@@ -101,9 +101,9 @@ echo '=========================================='
 echo 'Editting gnu plot script ...'
 echo
 #Create temporary file with new line in place
-sed -i '' '125s/.*/set label 35 "+" at '$BF_S2T','$BF_DM2' center font "CharterBT-Roman,15"/' multi_plot_margin_RATE.gnu
+sed -i "125s/.*/set label 35 '+' at $BF_S2T,$BF_DM2 center font 'CharterBT-Roman,15'/" multi_plot_margin_RATE.gnu
 
-sed -i '' '127s/.*/min = '$BF_CHI2'/' multi_plot_margin_RATE.gnu
+sed -i "127s/.*/min = $BF_CHI2/" multi_plot_margin_RATE.gnu
 
 echo
 
