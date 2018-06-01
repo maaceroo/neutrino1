@@ -48,7 +48,7 @@ set arrow 3 from  4.00,ymin to 4.00,ymax nohead lt 3 lw 2
 set arrow 5 from  9.00,ymin to 9.00,ymax nohead lt 2 lw 2
 set arrow 7 from 16.00,ymin to 16.00,ymax nohead lt 6 lw 2
 
-plot 'files_data/db_dm2_chi2_SPEC.txt' u 2:(10**3*(\$1)) w l lw 1
+plot 'files_data/db_dm2_chi2_SPEC.txt' u 2:(10**3*($1)) w l lw 1
 
 reset
 
@@ -129,9 +129,9 @@ set label 4 "{/Symbol D}m^{2}_{31} (eV^2)" at -0.0175,2.5 center rotate by 90
 #set label 4 "{/Symbol D}m^{2}_{31} (10^{-3} eV^2)" at 0.006,2.5 center rotate by 90
 
 ## Mark at the BF
-set label 35 "+" at 0.0965,2.15e3 center font "CharterBT-Roman,15"
+set label 35 '+' at 0.1050000000,0.0025000000*1e3 center font 'CharterBT-Roman,15'
 ## Minimum chi2 value
-min = 92.3269
+min = 71.5927000000
 
 unset ztics
 set clabel

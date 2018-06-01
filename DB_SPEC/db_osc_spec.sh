@@ -103,7 +103,7 @@ echo '=========================================='
 echo 'Editting gnu plot script ...'
 echo
 #Create temporary file with new line in place
-sed -i "132s/.*/set label 35 '+' at $BF_S2T,$BF_DM2 center font 'CharterBT-Roman,15'/" multi_plot_margin_SPEC.gnu
+sed -i "132s/.*/set label 35 '+' at $BF_S2T,$BF_DM2*1e3 center font 'CharterBT-Roman,15'/" multi_plot_margin_SPEC.gnu
 
 sed -i "134s/.*/min = $BF_CHI2/" multi_plot_margin_SPEC.gnu
 
