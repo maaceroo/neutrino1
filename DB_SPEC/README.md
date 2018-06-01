@@ -3,8 +3,23 @@ Oscillation analysis of Daya-Bay data.
 Files in this package are intended to be used to analyze data of the Daya Bay reactor antineutrino experiment. There are codes to do a rate-only analysis and others to make a spectral analysis.
 
 # Quick Reference (How-To):
+
 ## Rate-Only analysis (1D results)
 
+### Runnig with a single command line
+A simplified way to run the complete analysis can be performed by executing the shell script db_osc_spec.sh:
+
+    > ./source db_osc_spec.sh
+
+This will go step-by-step running each macro to generate the necessary information for the analysis, as described bellow. You may change some of the parameters in this file:
+
+- NTUPLE_EVENTS: this is the number of MC simulated events. Note that 1e6 is good enough, but it is set to 5e6.
+- Grid Parameters:
+- (NS2T,NDM2) defines the number of points to be used in the parameter space (mixing angle, mass-squared difference). The larger the number, the finer the grid (more points in the parameter space), the longer the time to execute.
+- (LO_S2T, HI_S2T) and (LO_DM2, HI_DM2) difine the lower and higher values to be used for the two mixing parameters to be fitted.
+
+
+### Runnig step-by-step
 **1.** Execute root macro ldist.C:
 
     > root -b -l -n -q ldist.C
