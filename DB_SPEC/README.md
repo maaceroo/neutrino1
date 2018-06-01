@@ -9,7 +9,7 @@ Files in this package are intended to be used to analyze data of the Daya Bay re
 ### Runnig with a single command line
 A simplified way to run the complete analysis can be performed by executing the shell script db_osc_spec.sh:
 
-    > ./source db_osc_spec.sh
+    > source db_osc_spec.sh
 
 This will go step-by-step running each macro to generate the necessary information for the analysis, as described bellow. You may change some of the parameters in this file:
 
