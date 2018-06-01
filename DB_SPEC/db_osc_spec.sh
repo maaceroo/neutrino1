@@ -2,6 +2,33 @@
 #-----------------------------------------------------------------------------
 
 #-----------------------------------------------------------------------------
+#Define grid 
+echo '=========================================='
+echo '0) Define Grid'
+echo '=========================================='
+echo 
+
+export NS2T=5
+export NDM2=5
+
+export LO_S2T=0.01
+export HI_S2T=0.20
+
+export LO_DM2=1.5e-3
+export HI_DM2=3.5e-3
+
+echo 'Grid in to be used:'
+echo 'NS2T='$NS2T
+echo 'LO_S2T='$LO_S2T
+echo 'HI_S2T='$HI_S2T
+echo
+echo 'NDM2='$NDM2
+echo 'LO_DM2='$LO_DM2
+echo 'HI_DM2='$HI_DM2
+echo
+
+
+#-----------------------------------------------------------------------------
 echo
 
 # Construct L distribution
@@ -23,28 +50,6 @@ export NTUPLE_EVENTS=5000000
 echo $NTUPLE_EVENTS ntuple events
 root -b -l -n -q db_ntuple.C
 
-echo
-
-#-----------------------------------------------------------------------------
-#Define grid 
-
-export NS2T=5
-export NDM2=5
-
-export LO_S2T=0.01
-export HI_S2T=0.20
-
-export LO_DM2=1.5e-3
-export HI_DM2=3.5e-3
-
-echo 'Grid in to be used:'
-echo 'NS2T='$NS2T
-echo 'LO_S2T='$LO_S2T
-echo 'HI_S2T='$HI_S2T
-echo
-echo 'NDM2='$NDM2
-echo 'LO_DM2='$LO_DM2
-echo 'HI_DM2='$HI_DM2
 echo
 
 #-----------------------------------------------------------------------------
