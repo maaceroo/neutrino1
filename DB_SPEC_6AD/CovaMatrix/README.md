@@ -11,9 +11,9 @@ Runnig a single root macro will execute all the necessary scripts to create the 
 
     > root -l -n -b -q db_CovaMatrix_6AD_6x6Det_build.C
 
-The `db_CorrMatrix_6AD_DiagBlk3_37bins.txt` file contains the digitalised correlation matris extracted from slides "Daya Bay Oscilla+on Analysis" by Henoch Wong (2016).
+The `db_CorrMatrix_6AD_DiagBlk3_37bins.txt` file contains the digitalised correlation matrix extracted from slides "Daya Bay Oscilla+on Analysis" by Henoch Wong (2016).
 
-The final product ir the `root` file `db_CovaMatrix_6AD_6x26bins.root`, automatically saved to `../files_data/`, from it is called by the analysis macro.
+The final product is the `root` file `db_CovaMatrix_6AD_6x26bins.root`, automatically saved to `../files_data/`, from where it is called by the analysis macro.
 
 ### Runnig step-by-step
 **1.** Execute (_requires `db_CorrMatrix_6AD_DiagBlk3_37bins.txt`_):
