@@ -89,7 +89,7 @@ TH1F *bfit_spect_hist[nAD];
 //-------------------
 //** Declarar la matriz de covarianza fraccionaria como un TH2F
 TH2F *fracCovaMatrix_hist;    //Se carga dentro de la función principal db_minuot_spec()
-//TFile *fracCovaMatrix_File = new TFile("files_data/db_CovarianceMat_6x6.root","READ");
+//TFile *fracCovaMatrix_File = new TFile("files_data/db_CovaMatrix_6AD_6x26bins.root","READ");
 //fracCovaMatrix_histo->(TH1F*)(fracCovaMatrix_File->Get("covaMat_histo_6x6Det"));
 int NBx_cov;
 int NBy_cov;
@@ -197,7 +197,7 @@ double chi2(const double *xx)
             //1. vec.col = vector columna con la Predicción en cada Bin
             //   Predicción en cada bin = Td*(1.0 + epsilon - test + eps_d[iAD] + wrd) - eta_d[iAD]
             //2. Matriz diagonal con sqrerror en la diagonal (Mat.Stat)
-            //3. La Mat.Covarianza debe ser construida (se requiere db_CovarianceMat_6x6.root que contiene Mat.Cov.Fraccionaria_ij):
+            //3. La Mat.Covarianza debe ser construida (se requiere db_CovaMatrix_6AD_6x26bins.root que contiene Mat.Cov.Fraccionaria_ij):
             //   Mat.Cov_ij = (Mat.Cov.Fraccionaria_ij * NPred_i * NPred_j) + Mat.Stat_ij
             //   Invertir Mat.Cov
             
@@ -281,7 +281,7 @@ int db_minuit_spec(const char * minName = "Minuit",
     //-------------------
     // Covariance-matrix Histograms
     //-------------------
-    TFile *fracCovaMatrix_File = new TFile("files_data/db_CovarianceMat_6x6.root","READ");
+    TFile *fracCovaMatrix_File = new TFile("files_data/db_CovaMatrix_6AD_6x26bins.root","READ");
     fracCovaMatrix_hist = (TH2F*)(fracCovaMatrix_File->Get("covaMat_histo_6x6Det"));
     //-- Creating the Rebinned Matrix with root tools.
     NBx_cov = NB*nAD;
