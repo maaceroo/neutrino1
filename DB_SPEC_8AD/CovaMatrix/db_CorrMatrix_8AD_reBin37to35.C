@@ -2,8 +2,8 @@
 // covariance starting from the Correlation matrix a test matrix
 
 //Constants definition
-const int NBC = 37;         //Correlation matrix Number of bins
-const int NBCreb = 35;      //Rebinned Correlation matrix Number of bins
+const int NBC    = 37;         //Correlation matrix Number of bins
+const int NBCreb = 35;         //Rebinned Correlation matrix Number of bins
 //------------------------------------------------------
 void set_plot_style()
 {
@@ -187,13 +187,11 @@ void db_CorrMatrix_8AD_reBin37to35()
         }
         //Filling the fluctuated-rebinned vectors
         vecFlucReb[0] = (vecFluc[0] + vecFluc[1] + 0.5*vecFluc[2])/2.5;
-        for (int n = 0 ; n < 6 ; n++) {
-            vecFlucReb[1+4*n] = (0.50*vecFluc[2+5*n] + 0.75*vecFluc[3+5*n])/1.25;
-            vecFlucReb[2+4*n] = (0.25*vecFluc[3+5*n] + 1.00*vecFluc[4+5*n])/1.25;
-            vecFlucReb[3+4*n] = (1.00*vecFluc[5+5*n] + 0.25*vecFluc[6+5*n])/1.25;
-            vecFlucReb[4+4*n] = (0.75*vecFluc[6+5*n] + 0.50*vecFluc[7+5*n])/1.25;
+        for (int n = 1 ; n < 34 ; n++) {
+            vecFlucReb[n] = (0.50*vecFluc[n+1] + 0.50*vecFluc[n+2])/1.00;
         }
-        vecFlucReb[25] = (0.5*vecFluc[32] + vecFluc[33] + vecFluc[34] + vecFluc[35] + vecFluc[36])/4.5;
+        vecFlucReb[34] = (0.5*vecFluc[35] + vecFluc[36])/1.5;
+        
         for (int ii = 0 ; ii < NBCreb ; ii++) {
             histoArray[m]->SetBinContent(ii+1,vecFlucReb[ii]);
         }
@@ -346,7 +344,7 @@ void db_CorrMatrix_8AD_reBin37to35()
     
     //---------------------------------------------------------
     // Write the rebinned correlation matrix to output file
-    TFile *fout = new TFile("./db_CorrMatrix_6AD_26bins.root","recreate");
+    TFile *fout = new TFile("./db_CorrMatrix_8AD_35bins.root","recreate");
     fout->cd();
     corrMatRebHisto->Write();
     

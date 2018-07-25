@@ -1,5 +1,5 @@
 //Constants definition
-const int NB = 26;      //Correlation matrix Number of bins
+const int NB = 35;      //Correlation matrix Number of bins
 //------------------------------------------------------
 void set_plot_style()
 {
@@ -15,7 +15,7 @@ void set_plot_style()
 }
 //------------------------------------------------------
 
-void db_CovaMatrix_6AD_26bins()
+void db_CovaMatrix_8AD_35bins()
 {// begin
 
     //------------- Style --------------
@@ -28,7 +28,7 @@ void db_CovaMatrix_6AD_26bins()
     Double_t sz = 0.04;
     //------------------------------------------------------------------
 
-    TFile *fmat = new TFile("db_CorrMatrix_6AD_26bins.root");
+    TFile *fmat = new TFile("db_CorrMatrix_8AD_35bins.root");
     TH2F *corrMat_histo = (TH2F*)fmat->Get("corrMatRebHisto");
     cout << "Bins: " << corrMat_histo->GetXaxis()->GetNbins() << endl;
     //matrix definition
