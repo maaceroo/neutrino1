@@ -1,25 +1,25 @@
 //--------------------------------------------------------------------------------//
-//--  db_CovaMatrix_6AD_6x26bins.C - By M.A. Acero O. & A.A. Aguilar-A. - 2018-01-27  --//
-// This macro creates a plot of the 6x6 DB-AD Covariance matrix. This matrix was  //
+//--  db_CovaMatrix_8AD_8x35bins.C - By M.A. Acero O. & A.A. Aguilar-A. - 2018-09-3  --//
+// This macro creates a plot of the 8x8 DB-AD Covariance matrix. This matrix was  //
 // constructed as follows:                                                        //
 //  1. Rebin the full correlation matrix from 37 bins as seen in                  //
 //     "Daya Bay Oscillaton Analysis [Pure covariance approach]" presentation by  //
 //     Henoch Wong (2016)                                                         //
-//     to 26 bins as in the paper                                                 //
+//     to 35 bins as in the paper                                                 //
 //     An et al. PRL112 061801 (2014) "Spectral Measurements of electron          //
 //     antineutrino oscillation, amplitud and frecuency at Daya-Bay".             //
-//  2. Rebin the full systematic errors from 25 (0 - 8 MeV) bins from             //
+//  2. Rebin the full systematic errors from 25 (0.7 - 8 MeV) bins from             //
 //     "Measurement of the Reactor Antineutrino Flux and Spectrum at Daya Bay",   //
 //     arXiv:1508.04233,                                                          //
-//     to 26 bin (0 - 12 MeV). The last bin has been put by hand.                 //
+//     to 35 bin (0.7 - 12 MeV). The last 2 bins has been put by hand.                 //
 //  3. Calculate Covariance matrix as:                                            //
 //     cov_ij = sigma_i*sigma_j*rho_ij                                            //
 //  4. Replicate the Covariance Matrix for all the detector and make an array of  //
-//  6x6 blocks.                                                                   //
+// 8x8 blocks.                                                                   //
 //--------------------------------------------------------------------------------//
 
 //Constants definition
-const int NB = 26;      //Correlation matrix Number of bins
+const int NB = 35;      //Correlation matrix Number of bins
 //------------------------------------------------------
 void set_plot_style()
 {//This function sets appropiate colors to the bar used for "COLZ" option
@@ -34,7 +34,7 @@ void set_plot_style()
     gStyle->SetNumberContours(NCont);
 }
 
-void db_CovaMatrix_6AD_6x26bins()
+void db_CovaMatrix_8AD_8x35bins()
 {// begin
 
     //------------- Style --------------
@@ -48,13 +48,13 @@ void db_CovaMatrix_6AD_6x26bins()
     //---------------------------------
 
     //---------------------------------------------------------------------------------------------------
-    TFile *inFile = new TFile("./db_CovaMatrix_6AD_26bins.root");
+    TFile *inFile = new TFile("./db_CovaMatrix_8AD_35bins.root");
     TH2F *covaMat_histo_1x1Det = (TH2F*)inFile->Get("covaMat_histo");
     covaMat_histo_1x1Det->SetName("covaMat_histo_1x1Det");
     
-    TMatrixD covaMat_matrix_1x1Det(26,26);
-    for (int i = 0 ; i < 26 ; i++) {
-        for (int j = 0 ; j < 26 ; j++) {
+    TMatrixD covaMat_matrix_1x1Det(35,35);
+    for (int i = 0 ; i < NB ; i++) {
+        for (int j = 0 ; j < NB ; j++) {
             covaMat_matrix_1x1Det(i,j) = covaMat_histo_1x1Det->GetBinContent(i+1,j+1);
         }
     }
@@ -67,26 +67,28 @@ void db_CovaMatrix_6AD_6x26bins()
     }
     cout << endl;
 
-    double rho_array[6][6]={{1.0,0.0,0.0,0.0,0.0,0.0},
-                            {0.0,1.0,0.0,0.0,0.0,0.0},
-                            {0.0,0.0,1.0,0.0,0.0,0.0},
-                            {0.0,0.0,0.0,1.0,0.0,0.0},
-                            {0.0,0.0,0.0,0.0,1.0,0.0},
-                            {0.0,0.0,0.0,0.0,0.0,1.0}};
+    double rho_array[8][8]={{1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0},
+                            {0.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0},
+                            {0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0},
+                            {0.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0},
+                            {0.0,0.0,0.0,0.0,1.0,0.0,0.0,0.0},
+                            {0.0,0.0,0.0,0.0,0.0,1.0,0.0,0.0},
+                            {0.0,0.0,0.0,0.0,0.0,0.0,1.0,0.0},
+                            {0.0,0.0,0.0,0.0,0.0,0.0,0.0,1.0}};
     
     //Construct correlation matrix upper triangle
-    double corr_start = 0.99;
-    for (int j = 0 ; j < 6 ; j++){
-        for (int k = 0 ; k < 6 ; k++){
-            for (int i = 0 ; i < 6 ; i++) {
+    double corr_start = 0.999;
+    for (int j = 0 ; j < 8 ; j++){
+        for (int k = 0 ; k < 8 ; k++){
+            for (int i = 0 ; i < 8 ; i++) {
                     int ij = i+j;
                     int ik = i+k;
-                    if ( (ij)<6 && (ik<6) ) {
+                    if ( (ij)<8 && (ik<8) ) {
                         if (ij==ik)
                             rho_array[ij][ik]=1.0;
                         else if ( ik==(ij+1) )
                             rho_array[ij][ik]=corr_start;
-                        else if ( ij<(6-1) )
+                        else if ( ij<(8-1) )
                             rho_array[ij][ik] = rho_array[ij][ik-1]*rho_array[ij+1][ik];
                 }//if
             }//for i
@@ -94,18 +96,18 @@ void db_CovaMatrix_6AD_6x26bins()
     }//for j
     
     //Assign correlation matrixlower triangle
-    double corrMat_6x6Block[6][6];
-    for(int ii = 0 ; ii < 6 ; ii++){
-        for(int jj = ii+1 ; jj < 6 ; jj++){
+    double corrMat_8x8Block[8][8];
+    for(int ii = 0 ; ii < 8 ; ii++){
+        for(int jj = ii+1 ; jj < 8 ; jj++){
             rho_array[jj][ii] = rho_array[ii][jj];
         }
     }
     
     cout << "The AD-correlation Matrix is:" << endl;
-    for(int ii = 0 ; ii < 6 ; ii++){
-        for(int jj = 0 ; jj < 6 ; jj++){
-            corrMat_6x6Block[ii][jj] =  rho_array[ii][jj];
-            cout << corrMat_6x6Block[ii][jj] << "\t";
+    for(int ii = 0 ; ii < 8 ; ii++){
+        for(int jj = 0 ; jj < 8 ; jj++){
+            corrMat_8x8Block[ii][jj] =  rho_array[ii][jj];
+            cout << setprecision(4) << corrMat_8x8Block[ii][jj] << "\t";
         }
         cout << endl;
     }
@@ -129,28 +131,30 @@ void db_CovaMatrix_6AD_6x26bins()
     cout << "NBx = " << NBx << " NBy = " << NBy << endl;
     
     //-- Number of detectors
-    int nDet = 6;
-    int    NBx_6x6 = NBx*nDet;
-    double lox_6x6 = 0;
-    double hix_6x6 = NBx*nDet;
-    int    NBy_6x6 = NBy*nDet;
-    double loy_6x6 = 0;
-    double hiy_6x6 = NBy*nDet;
-    TH2F *covaMat_histo_6x6Det = new TH2F("covaMat_histo_6x6Det","",NBx_6x6,lox_6x6,hix_6x6,NBy_6x6,loy_6x6,hiy_6x6);
-    cout << NBx_6x6 << "  " << NBy_6x6 << endl;
-    for (int i = 0 ; i < NBx_6x6 ; i++) {
-        for (int j = i ; j < NBy_6x6 ; j++) {
+    int nDet = 8;
+    int    NBx_8x8 = NBx*nDet;
+    double lox_8x8 = 0;
+    double hix_8x8 = NBx*nDet;
+    int    NBy_8x8 = NBy*nDet;
+    double loy_8x8 = 0;
+    double hiy_8x8 = NBy*nDet;
+    TH2F *covaMat_histo_8x8Det = new TH2F("covaMat_histo_8x8Det","",NBx_8x8,lox_8x8,hix_8x8,NBy_8x8,loy_8x8,hiy_8x8);
+    cout << NBx_8x8 << "  " << NBy_8x8 << endl;
+    for (int i = 0 ; i < NBx_8x8 ; i++) {
+        for (int j = i ; j < NBy_8x8 ; j++) {
             int ii = i%NBx;
             int jj = j%NBy;
             int iB = int(i/NBx);
             int jB = int(j/NBy);
-            double block_corrFact_ij = corrMat_6x6Block[iB][jB];
+            double block_corrFact_ij = corrMat_8x8Block[iB][jB];
             //cout << i << " " << j << "   -   " << ii << " " << jj << "   -   " << iB << " " << jB << endl;
             double value = covaMat_histo_1x1Det->GetBinContent(ii+1,jj+1)*block_corrFact_ij;
-            covaMat_histo_6x6Det->SetBinContent(i+1,j+1,value);
-            covaMat_histo_6x6Det->SetBinContent(j+1,i+1,value);
+            covaMat_histo_8x8Det->SetBinContent(i+1,j+1,value);
+            covaMat_histo_8x8Det->SetBinContent(j+1,i+1,value);
         }
     }
+  
+/*
     double Td_vector[156] = {3094.27,
         3328.37,
         4400.68,
@@ -465,7 +469,9 @@ void db_CovaMatrix_6AD_6x26bins()
         42.8657,
         48.3429
     }; //tiene los valores Md
-    
+*/
+
+/*    
     TMatrixD delta_vector(156,1);
     TMatrixD transp_delta_vector(1,156);
     for (int i = 0 ; i < 156 ; i++) {
@@ -474,14 +480,14 @@ void db_CovaMatrix_6AD_6x26bins()
     }
     //delta_vector.Print();
 
-    TH2F *fullnorm_covaMat_histo_6x6Det = new TH2F("fullnorm_covaMat_histo_6x6Det","",NBx_6x6,lox_6x6,hix_6x6,NBy_6x6,loy_6x6,hiy_6x6);
-    for (int i = 0 ; i < NBx_6x6 ; i++) {
-        for (int j = i ; j < NBy_6x6 ; j++) {
+    TH2F *fullnorm_covaMat_histo_8x8Det = new TH2F("fullnorm_covaMat_histo_8x8Det","",NBx_8x8,lox_8x8,hix_8x8,NBy_8x8,loy_8x8,hiy_8x8);
+    for (int i = 0 ; i < NBx_8x8 ; i++) {
+        for (int j = i ; j < NBy_8x8 ; j++) {
             int ii = i%NBx;
             int jj = j%NBy;
             int iB = int(i/NBx);
             int jB = int(j/NBy);
-            double block_corrFact_ij = corrMat_6x6Block[iB][jB];
+            double block_corrFact_ij = corrMat_8x8Block[iB][jB];
             //cout << iB << ", " << jB << " " << block_corrFact_ij << endl;
             double value = Td_vector[i]*Td_vector[j]*covaMat_histo_1x1Det->GetBinContent(ii+1,jj+1)*block_corrFact_ij;
             if (ii != jj) {
@@ -490,31 +496,40 @@ void db_CovaMatrix_6AD_6x26bins()
             if (i == j) {
                 value += Md_vector[i]*(1.0);
             }
-            fullnorm_covaMat_histo_6x6Det->SetBinContent(i+1,j+1,value);
-            fullnorm_covaMat_histo_6x6Det->SetBinContent(j+1,i+1,value);
-            //verificar que norm_covaMat_histo_6x6Det se puede invertir (hacer igual que lo que está abajo)
+            fullnorm_covaMat_histo_8x8Det->SetBinContent(i+1,j+1,value);
+            fullnorm_covaMat_histo_8x8Det->SetBinContent(j+1,i+1,value);
+            //verificar que norm_covaMat_histo_8x8Det se puede invertir (hacer igual que lo que está abajo)
         }
     }
+*/
+
+
     //-- Test matrix inversion
     //-- Creating the Rebinned Matrix with root tools.
-    TMatrixD covaMat_matrix(NBx_6x6,NBy_6x6);
-    TMatrixD fullnorm_covaMat_matrix(NBx_6x6,NBy_6x6);
+    TMatrixD covaMat_matrix(NBx_8x8,NBy_8x8);
+    covaMat_matrix.Zero();
+/*
+    TMatrixD fullnorm_covaMat_matrix(NBx_8x8,NBy_8x8);
     TMatrixD fullnorm_covaMatBlock_matrix(NBx,NBy);
     covaMat_matrix.Zero();
     fullnorm_covaMat_matrix.Zero();
     fullnorm_covaMatBlock_matrix.Zero();
-    for (int i = 0 ; i < NBx_6x6 ; i++) {
-        for (int j = 0 ; j < NBy_6x6; j++) {
-            covaMat_matrix(i,j)      = covaMat_histo_6x6Det->GetBinContent(i+1,j+1);
-            fullnorm_covaMat_matrix(i,j) = fullnorm_covaMat_histo_6x6Det->GetBinContent(i+1,j+1);
-            int c1 = 4;
-            int c2 = 5;
-            if ((c1*NBx <= i && i < c2*NBx) && (c1*NBy <= j && j < c2*NBy)) {
-                fullnorm_covaMatBlock_matrix(i-c1*NBx,j-c1*NBy) = fullnorm_covaMat_matrix(i,j);
-            }
+*/
+    for (int i = 0 ; i < NBx_8x8 ; i++) {
+        for (int j = 0 ; j < NBy_8x8; j++) {
+            covaMat_matrix(i,j)      = covaMat_histo_8x8Det->GetBinContent(i+1,j+1);
+            //fullnorm_covaMat_matrix(i,j) = fullnorm_covaMat_histo_8x8Det->GetBinContent(i+1,j+1);
+            //int c1 = 4;
+            //int c2 = 5;
+            //if ((c1*NBx <= i && i < c2*NBx) && (c1*NBy <= j && j < c2*NBy)) {
+            //    fullnorm_covaMatBlock_matrix(i-c1*NBx,j-c1*NBy) = fullnorm_covaMat_matrix(i,j);
+            //}
         }
     }
     cout << endl;
+
+
+/*
     //fullnorm_covaMatBlock_matrix.Print();
     TVectorD valuesBL;
     TMatrixD vectors = fullnorm_covaMatBlock_matrix.EigenVectors(valuesBL);
@@ -524,14 +539,17 @@ void db_CovaMatrix_6AD_6x26bins()
             cout << "Block-Matrix eigen-value " << i << " is " << valuesBL(i) << endl;
     }
     cout << endl;
+*/
+
     
-    TMatrixD inv_mat(NBx_6x6,NBy_6x6);
-    TMatrixD uno_mat(NBx_6x6,NBy_6x6);
+    TMatrixD inv_mat(NBx_8x8,NBy_8x8);
+    TMatrixD uno_mat(NBx_8x8,NBy_8x8);
     inv_mat = covaMat_matrix;
     inv_mat.Invert();
     uno_mat = covaMat_matrix*inv_mat;
-    TMatrixD inv_fullnormmat(NBx_6x6,NBy_6x6);
-    TMatrixD uno_fullnormmat(NBx_6x6,NBy_6x6);
+/*
+    TMatrixD inv_fullnormmat(NBx_8x8,NBy_8x8);
+    TMatrixD uno_fullnormmat(NBx_8x8,NBy_8x8);
     inv_fullnormmat = fullnorm_covaMat_matrix;
     inv_fullnormmat.Invert();
     uno_fullnormmat = fullnorm_covaMat_matrix*inv_fullnormmat;
@@ -547,6 +565,7 @@ void db_CovaMatrix_6AD_6x26bins()
     }
     
     cout << "chi2 = " << sqr_chi << endl;
+*/
 /*
     TVectorD values;
     //TMatrixD vectors = fullnorm_covaMat_matrix.EigenVectors(values);
@@ -559,6 +578,8 @@ void db_CovaMatrix_6AD_6x26bins()
         //vector.Print();
     }
 */
+/*
+
     if(fullnorm_covaMat_matrix.Determinant() == 0){
     //    inv_mat = fullnorm_covaMat_matrix;
     //    inv_mat.Invert();
@@ -569,39 +590,40 @@ void db_CovaMatrix_6AD_6x26bins()
         cout << "Execution aborted!" << endl;
         //break;
     }
-    
-    
-    TH2F *unoMat_histo = new TH2F("unoMat_histo","",NBx_6x6,lox_6x6,hix_6x6,NBy_6x6,loy_6x6,hiy_6x6);
-    TH2F *norm_unoMat_histo = new TH2F("norm_unoMat_histo","",NBx_6x6,lox_6x6,hix_6x6,NBy_6x6,loy_6x6,hiy_6x6);
-    for (int k = 0 ; k < NBx_6x6 ; k++) {
-        for (int l = 0 ; l < NBy_6x6 ; l++) {
+*/ 
+   
+    TH2F *unoMat_histo = new TH2F("unoMat_histo","",NBx_8x8,lox_8x8,hix_8x8,NBy_8x8,loy_8x8,hiy_8x8);
+    //TH2F *norm_unoMat_histo = new TH2F("norm_unoMat_histo","",NBx_8x8,lox_8x8,hix_8x8,NBy_8x8,loy_8x8,hiy_8x8);
+    for (int k = 0 ; k < NBx_8x8 ; k++) {
+        for (int l = 0 ; l < NBy_8x8 ; l++) {
             unoMat_histo->SetBinContent(k+1,l+1,uno_mat(k,l));
-            norm_unoMat_histo->SetBinContent(k+1,l+1,uno_fullnormmat(k,l));
+            //norm_unoMat_histo->SetBinContent(k+1,l+1,uno_fullnormmat(k,l));
         }
     }
     
-    TH2F *invMat_histo = new TH2F("invMat_histo","",NBx_6x6,lox_6x6,hix_6x6,NBy_6x6,loy_6x6,hiy_6x6);
-    TH2F *norm_invMat_histo = new TH2F("norm_invMat_histo","",NBx_6x6,lox_6x6,hix_6x6,NBy_6x6,loy_6x6,hiy_6x6);
-    for (int k = 0 ; k < NBx_6x6 ; k++) {
-        for (int l = 0 ; l < NBy_6x6 ; l++) {
+
+    TH2F *invMat_histo = new TH2F("invMat_histo","",NBx_8x8,lox_8x8,hix_8x8,NBy_8x8,loy_8x8,hiy_8x8);
+    //TH2F *norm_invMat_histo = new TH2F("norm_invMat_histo","",NBx_8x8,lox_8x8,hix_8x8,NBy_8x8,loy_8x8,hiy_8x8);
+    for (int k = 0 ; k < NBx_8x8 ; k++) {
+        for (int l = 0 ; l < NBy_8x8 ; l++) {
             invMat_histo->SetBinContent(k+1,l+1,inv_mat(k,l));
-            norm_invMat_histo->SetBinContent(k+1,l+1,inv_fullnormmat(k,l));
+            //norm_invMat_histo->SetBinContent(k+1,l+1,inv_fullnormmat(k,l));
         }
     }
 
     // Drawng section
     set_plot_style();
     //---------------------------------------------------------
-    //TH2F *frame = new TH2F("frame","",NBx_6x6,lox_6x6,hix_6x6,NBy_6x6,loy_6x6,hiy_6x6);
+    //TH2F *frame = new TH2F("frame","",NBx_8x8,lox_8x8,hix_8x8,NBy_8x8,loy_8x8,hiy_8x8);
     TCanvas *canv0 = new TCanvas("canv0","",740,740);
     //frame->Draw();
-    covaMat_histo_6x6Det->Draw("COLZ");
+    covaMat_histo_8x8Det->Draw("COLZ");
     gPad->SetTicks(1,1);
     //---------------------------------------------------------
     TCanvas *canv2 = new TCanvas("canv2","",3*400,400);
     canv2->Divide(3,1);
     canv2->cd(1);
-    covaMat_histo_6x6Det->Draw("COLZ");
+    covaMat_histo_8x8Det->Draw("COLZ");
     canv2->cd(2);
     invMat_histo->Draw("COLZ");
     canv2->cd(3);
@@ -610,26 +632,28 @@ void db_CovaMatrix_6AD_6x26bins()
     //canv0->Print("files_plots/canv_DB.pdf");
     //---------------------------------------------------------
     // write to output file
-    TFile *fout = new TFile("../files_data/db_CovaMatrix_6AD_6x26bins.root","recreate");
+    TFile *fout = new TFile("./db_CovaMatrix_8AD_8x35bins.root","recreate");
     fout->cd();
     
-    covaMat_histo_6x6Det->Write();
+    covaMat_histo_8x8Det->Write();
 
     fout->Close();
 
+/*
     //Testing Norm matrix
     TCanvas *canv01 = new TCanvas("canv01","",740,740);
-    fullnorm_covaMat_histo_6x6Det->Draw("COLZ");
+    fullnorm_covaMat_histo_8x8Det->Draw("COLZ");
     gPad->SetTicks(1,1);
     //---------------------------------------------------------
     TCanvas *canv02 = new TCanvas("canv02","",3*400,400);
     canv02->Divide(3,1);
     canv02->cd(1);
-    fullnorm_covaMat_histo_6x6Det->Draw("COLZ");
+    fullnorm_covaMat_histo_8x8Det->Draw("COLZ");
     canv02->cd(2);
     norm_invMat_histo->Draw("COLZ");
     canv02->cd(3);
     norm_unoMat_histo->Draw("COLZ");
+*/
 
 /*    //Testing 1x1 Det matrix
     TCanvas *canv03 = new TCanvas("canv03","",740,740);
