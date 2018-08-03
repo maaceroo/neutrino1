@@ -33,23 +33,41 @@ void db_CovaMatrix_8AD_35bins()
     cout << "Bins: " << corrMat_histo->GetXaxis()->GetNbins() << endl;
     //matrix definition
     
-    double e_syst[NB] = {1.124, 1.046, 1.035, 1.030, 1.028,
-                        1.026, 1.025, 1.024, 1.023, 1.024,
-                        1.025, 1.026, 1.028, 1.029, 1.032,
-                        1.033, 1.038, 1.041, 1.043, 1.046,
-                        1.052, 1.060, 1.068, 1.078, 1.240,
-                        1.440};
+    //double e_syst[NB] = {1.124, 1.046, 1.035, 1.030, 1.028,
+    //                    1.026, 1.025, 1.024, 1.023, 1.024,
+    //                    1.025, 1.026, 1.028, 1.029, 1.032,
+    //                    1.033, 1.038, 1.041, 1.043, 1.046,
+    //                    1.052, 1.060, 1.068, 1.078, 1.240,
+    //                    1.440};
+
+
+    //--- Graph with errors from https://arxiv.org/pdf/1508.04233.pdf  Fig. 2
+    const int Ngr = 26;
+    double erxx[Ngr] = {0.975,1.375,1.625,1.875,2.125,2.375,2.625,2.875,3.125,3.375,
+                    3.625,3.875,4.125,4.375,4.625,4.875,5.125,5.375,5.625,5.875,   
+                    6.125,6.375,6.625,6.875,7.500,10.0};
+    double eryy[Ngr] = {1.12448,1.04615,1.03497,1.03030,1.02751,1.02657,1.02471,1.02378,1.02284,1.02378,
+                    1.02471,1.02657,1.02751,1.02937,1.03217,1.03497,1.03776,1.04149,1.04336,1.04615,
+                    1.05175,1.06014,1.06853,1.07786,1.24009,2.0};
+    TGraph *errgr = new TGraph(Ngr,erxx,eryy);
+    printf("f(3.5)=%f\n",errgr->Eval(3.5));
+    errgr->Draw("AC");
+    //---------------
+
 
     //define histogram
     double    lo = 0.7;
     double    hi = 12.0;
+
     //Bins for the rebinned matrix
     double xbins[NB+1];
     xbins[0] = 0.7;
-    double delta_bins2 = (7.3 - 1.3)/24; // 0.25 MeV/bin
+    double delta_bins2 = (7.9 - 1.3)/33; // 0.2 MeV/bin
     for (int i = 0 ; i < (NB-1) ; i++)
         xbins[i+1] = 1.3 + delta_bins2*i;
     xbins[NB] = hi;
+
+
 
     TH1F *e_syst_histo1 = new TH1F("e_syst_histo1","",NB,xbins);
     e_syst_histo1->SetLineColor(kRed);
@@ -57,11 +75,21 @@ void db_CovaMatrix_8AD_35bins()
     TH1F *e_syst_histo2 = new TH1F("e_syst_histo2","",NB,xbins);
     e_syst_histo2->SetLineColor(kRed);
     //e_syst_histo2->SetFillColor(10);
+
+    //- array with total systematic error interpolated from errgr TGraph
+    double e_syst[NB];
+    for (int i=0;i<NB;i++){
+      double xpoint = e_syst_histo1->GetBinCenter(i+1);
+      e_syst[i] = errgr->Eval(xpoint);
+    }
+
+    //---Fill e_syst_histo1 and e_syst_histo2
     for (int i = 0 ; i < NB ; i++) {
         e_syst_histo1->SetBinContent(i+1,e_syst[i]);
         e_syst_histo2->SetBinContent(i+1,2.0-e_syst[i]);
     }
 
+    //- assign values to covariance matrix elements 
     TH2F *covaMat_histo = new TH2F("covaMat_histo","",NB,xbins,NB,xbins);
     for (int i = 0 ; i < NB ; i++) {
         double sigma_i = e_syst_histo1->GetBinContent(i+1) - 1.0;
@@ -73,6 +101,7 @@ void db_CovaMatrix_8AD_35bins()
         }
     }
     
+
     //covaMat_histo->SetMinimum(-1.0);
     //covaMat_histo->SetMaximum(+1.0);
 
@@ -105,7 +134,7 @@ void db_CovaMatrix_8AD_35bins()
         }
     }
 
-    TFile *outf = new TFile("./db_CovaMatrix_6AD_26bins.root","recreate");
+    TFile *outf = new TFile("./db_CovaMatrix_8AD_35bins.root","recreate");
     outf->cd();
     covaMat_histo->Write();
     covaMat_matrix.Write();
@@ -129,7 +158,7 @@ void db_CovaMatrix_8AD_35bins()
     canv2->cd(3);
     unoMat_histo->Draw("COLZ");
     //---------------------------------------------------------
-    TH2F *e_frame = new TH2F("e_frame","",10,0.7,12,10,0.5,1.5);
+    TH2F *e_frame = new TH2F("e_frame","",10,0.7,12,10,0.0,2.1);
     TCanvas *canv1 = new TCanvas("canv1","",500,300);
     canv1->cd();
     e_frame->Draw();
