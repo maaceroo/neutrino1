@@ -24,14 +24,14 @@ const int nNR = 6;
 double   dm2_21 = 7.59e-5; //eV^2,                //PRL 108 171803 (2012)
 double s22th_12 = 0.861;
 
-//Grid of oscillation parameters
-const int     N_s2t = atoi(getenv("NS2T"));
-const int     N_dm2 = atoi(getenv("NDM2"));
+//Grid of oscillation parameters. ¡¡¡¡¡¡¡Uncomment when in use!!!!!!!!
+//const int     N_s2t = atoi(getenv("NS2T"));
+//const int     N_dm2 = atoi(getenv("NDM2"));
 
-double       lo_s2t = atof(getenv("LO_S2T"));
-double       hi_s2t = atof(getenv("HI_S2T"));
+//double       lo_s2t = atof(getenv("LO_S2T"));
+//double       hi_s2t = atof(getenv("HI_S2T"));
 
-double       lo_dm2 = atof(getenv("LO_DM2"));
-double       hi_dm2 = atof(getenv("HI_DM2"));
+//double       lo_dm2 = atof(getenv("LO_DM2"));
+//double       hi_dm2 = atof(getenv("HI_DM2"));
 
 
