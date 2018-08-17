@@ -10,12 +10,12 @@ double avg_nRecoilE = 10.0e-3; //MeV
 double avg_constE = 0.78; //MeV
 
 // histogram binning for the simulated data
-const int  NB = 26;
+const int  NB = 35;
 double  lo = 0.7;
 double  hi = 12.0;
 
 //Number of Antineutrino Detectors
-const int nAD = 6;
+const int nAD = 8;
 
 //Number of Nuclear Reactors
 const int nNR = 6;
@@ -33,5 +33,3 @@ double s22th_12 = 0.861;
 
 //double       lo_dm2 = atof(getenv("LO_DM2"));
 //double       hi_dm2 = atof(getenv("HI_DM2"));
-
-
