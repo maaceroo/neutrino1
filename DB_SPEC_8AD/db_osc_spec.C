@@ -90,6 +90,7 @@ void db_osc_spec()
     {
         //if (iAD < 3) sel = iAD; // this is not necessary here as there are 8 AD
         //else if (iAD >= 3) sel = iAD+1;
+        sel = iAD;
         //------------------------------------------------
         //Filling Ocillation prpbability at BF - histogram
         T->Draw(Form("(1.0 - 0.089*((sin( 1.267 * 2.32e-3 * Ln/En ))**2) - ((cos(0.5 * asin(sqrt(0.089))))**4) * 0.861 * (sin( 1.267 * 7.59e-5 * Ln/En ))**2) >> Posc_AD_BF_%d",iAD),Form("id==%d",sel));
@@ -125,8 +126,8 @@ void db_osc_spec()
     double s2t_pt, dm2_pt;
     //int   sel;
     //Comment out when using the shel script!!!
-    const int     N_s2t = 10;
-    const int     N_dm2 = 10;
+    const int     N_s2t = 2;
+    const int     N_dm2 = 2;
     //Comment out when using the shel script!!!
     double       lo_s2t = 0.01;
     double       hi_s2t = 0.3;
@@ -178,13 +179,15 @@ void db_osc_spec()
     //write non-oscillated spectra for each AD to file
     for (int iAD = 0 ; iAD < nAD ; iAD++)
     {
-       if      (iAD <  3) sel = iAD;
-       else if (iAD >= 3) sel = iAD+1;
+       //if      (iAD <  3) sel = iAD;// this is not necessary here as there are 8 AD
+       //else if (iAD >= 3) sel = iAD+1;
+       sel = iAD;
+       //---------------------------------------------------------
 
       //file << iAD + 1 << " " << s2t_pt << "\t" << dm2_pt;
        fprintf(file,"%d %8.2e %8.2e",iAD+1,s2t_pt,dm2_pt);
       //print bin-content of non-oscilated spectra per day
-      for (int ib = 0 ; ib < 26 ; ib++)
+      for (int ib = 0 ; ib < NB ; ib++)
       {
          double contNO   = nu_nosc_spect_histo[iAD]->GetBinContent(ib+1);
          //file << "\t" << contNO;
@@ -208,9 +211,9 @@ void db_osc_spec()
 
             for (int iAD = 0 ; iAD < nAD ; iAD++)
             {
-                if (iAD < 3) sel = iAD;
-                else if (iAD >= 3) sel = iAD +1;
-                    
+                //if (iAD < 3) sel = iAD;// this is not necessary here as there are 8 AD
+                //else if (iAD >= 3) sel = iAD +1;
+                sel = iAD;    
                 // Condition to fill oscilated spectra for (s2t_pt,dm2_pt), i.e. wosc_spect_histo[iAD]
                 cut = Form("(1.0 - %e*((sin( 1.267 * %e * Ln/En ))**2) - (0.25*(1 + sqrt(1 - %e))**2) * 0.861 * (sin( 1.267 * 7.59e-5 * Ln/En ))**2)*(id==%d)" ,s2t_pt,dm2_pt,s2t_pt,sel);
                 // Filling oscilated spectra for (s2t_pt,dm2_pt)
@@ -229,7 +232,7 @@ void db_osc_spec()
                 //file << iAD + 1 << " " << s2t_pt << "\t" << dm2_pt;
                 fprintf(file,"%d %8.2e %8.2e",iAD+1,s2t_pt,dm2_pt);
                 //Printing bin-content for the oscilated spectra for (s2t_pt,dm2_pt)
-                for (int ib = 0 ; ib < 26 ; ib++)
+                for (int ib = 0 ; ib < NB ; ib++)
                 {
                     double cont   = wosc_spect_histo[ih]->GetBinContent(ib+1);
                     //file << "\t" << cont;

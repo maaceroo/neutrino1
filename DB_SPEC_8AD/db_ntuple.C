@@ -83,7 +83,7 @@ void db_ntuple()
             Ln =   baselines[id][ir];
             
             // generate a neutrino energy
-            //if (id is 0 or 1, espectro de EH1; id is 2, espectro de EH2; id is 4 to 6,espectro de EH3) esto para Ep
+            //if (id is 0 or 1, espectro de EH1; id is 2 or 3, espectro de EH2; id is 4 to 7,espectro de EH3) esto para Ep
             if (id < 2)       ad = 0;
             else if (id == 2 || id == 3) ad = 1;
             else if (id > 3) ad = 2;
