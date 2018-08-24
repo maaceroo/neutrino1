@@ -180,7 +180,7 @@ void db_CorrMatrix_8AD_FixPosDef_37bins()
     for (int i = 0 ; i < NBx ; i++)
         for (int j = 0 ; j < NBy ; j++){
             fixedMat_histo->SetBinContent(i+1,j+1,fixedMatScaled(i,j));
-            CorMat_histo->SetBinContent(i+1,j+1,fixedMatScaled(i,j));
+            //CorMat_histo->SetBinContent(i+1,j+1,fixedMatScaled(i,j));
         }
     // Drawng section
     //---------------------------------------------------------
@@ -204,7 +204,7 @@ void db_CorrMatrix_8AD_FixPosDef_37bins()
     TFile *fout = new TFile("./db_CorrMatrix_8AD_FixPosDef_37bins.root","recreate");
     fout->cd();
     
-    CorMat_histo->Write();
+    fixedMat_histo->Write();
 
     fout->Close();
 

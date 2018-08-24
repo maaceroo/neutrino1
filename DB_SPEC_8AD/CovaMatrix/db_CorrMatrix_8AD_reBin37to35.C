@@ -33,7 +33,7 @@ void db_CorrMatrix_8AD_reBin37to35()
     //---------------------------------
 
     TFile *fmat = new TFile("./db_CorrMatrix_8AD_FixPosDef_37bins.root");
-    TH2F *CorMat_histo = (TH2F*)fmat->Get("CorMat_histo");
+    TH2F *CorMat_histo = (TH2F*)fmat->Get("fixedMat_histo");
     TH2F *RedCorMat_histo = new TH2F("RedCorMat_histo","",NBC,0,NBC,NBC,0,NBC);
     cout << "Bins: " << CorMat_histo->GetXaxis()->GetNbins() << endl;
     //matrix definition
