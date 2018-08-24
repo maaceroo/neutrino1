@@ -126,8 +126,8 @@ void db_osc_spec()
     double s2t_pt, dm2_pt;
     //int   sel;
     //Comment out when using the shel script!!!
-    const int     N_s2t = 5;
-    const int     N_dm2 = 5;
+    const int     N_s2t = 10;
+    const int     N_dm2 = 10;
     //Comment out when using the shel script!!!
     double       lo_s2t = 0.01;
     double       hi_s2t = 0.3;

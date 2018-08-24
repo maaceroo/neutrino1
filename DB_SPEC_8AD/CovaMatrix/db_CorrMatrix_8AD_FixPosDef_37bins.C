@@ -148,7 +148,8 @@ void db_CorrMatrix_8AD_FixPosDef_37bins()
     TMatrixD diagMat(NBx,NBy);
     diagMat.Zero();
     for (int i = 0 ; i < NBx ; i++) {
-        if(values(i) < 0.0 && abs(values(i)) < 1.0e-4)
+        //if(values(i) < 0.0 && abs(values(i)) < 1.0e-4)
+        if(values(i) < 0.0)
             diagMat(i,i) = 0.0;
         else
             diagMat(i,i) = values(i);

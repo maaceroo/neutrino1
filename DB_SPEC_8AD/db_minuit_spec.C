@@ -37,12 +37,12 @@
 //#define dm2_21 7.59e-5 //eV^2,                //PRL 108 171803 (2012)
 //#define s22th_12 0.861
 //For the sin^2(2th_13) loop
-#define N_s2t  5                           //number of points in the grid
+#define N_s2t  10                           //number of points in the grid
 //#define lo_s2t 0.01                         //sin^2(2th_13) min
 #define lo_s2t 0.0                          //sin^2(2th_13) min
 #define hi_s2t 0.3                          //sin^2(2th_13) max
 //For the delta(m31)^2 loop
-#define N_dm2  5                           //number of points in the grid
+#define N_dm2  10                           //number of points in the grid
 #define lo_dm2 1.0e-4                       //delta(m31)^2 min
 #define hi_dm2 1.0e-2                       //delta(m31)^2 max
 //---*****************************************************---//
@@ -311,29 +311,10 @@ int db_minuit_spec(const char * minName = "Minuit",
     int j_block = 0;
     for (int i = 0 ; i < NBx_cov ; i++) {
         for (int j = 0 ; j < NBy_cov; j++) {
-            i_block = i%26;
-            j_block = j%26;
+            i_block = i%35;
+            j_block = j%35;
             fracCovaMatrix_matrix(i,j) = fracCovaMatrix_hist->GetBinContent(i+1,j+1);
-            //if (i_block != j_block) {
-            /*
-            if ((i_block == j_block + 1) || (j_block == i_block + 1)) {
-                fracCovaMatrix_matrix(i,j) *= 0.99;
-            }
-            else if ((i_block == j_block + 2) || (j_block == i_block + 2)) {
-                fracCovaMatrix_matrix(i,j) *= 0.89;
-            }
-            else if ((i_block == j_block + 3) || (j_block == i_block + 3)) {
-                fracCovaMatrix_matrix(i,j) *= 0.84;
-            }
-            else if ((i_block == j_block + 4) || (j_block == i_block + 4)) {
-                fracCovaMatrix_matrix(i,j) *= 0.79;
-            }
-            else if ((i_block == j_block + 5) || (j_block == i_block + 5)) {
-                fracCovaMatrix_matrix(i,j) *= 0.74;
-            }
-            */
-                //fracCovaMatrix_matrix(i,j) *= 0.90;
-            //}
+
         }
     }
 

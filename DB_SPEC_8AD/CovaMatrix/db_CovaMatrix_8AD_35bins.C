@@ -48,7 +48,7 @@ void db_CovaMatrix_8AD_35bins()
                     6.125,6.375,6.625,6.875,7.500,10.0};
     double eryy[Ngr] = {1.12448,1.04615,1.03497,1.03030,1.02751,1.02657,1.02471,1.02378,1.02284,1.02378,
                     1.02471,1.02657,1.02751,1.02937,1.03217,1.03497,1.03776,1.04149,1.04336,1.04615,
-                    1.05175,1.06014,1.06853,1.07786,1.24009,2.0};
+                    1.05175,1.06014,1.06853,1.07786,1.24009,1.5};
     TGraph *errgr = new TGraph(Ngr,erxx,eryy);
     printf("f(3.5)=%f\n",errgr->Eval(3.5));
     errgr->Draw("AC");
@@ -113,11 +113,64 @@ void db_CovaMatrix_8AD_35bins()
             covaMat_matrix(i,j) = covaMat_histo->GetBinContent(i+1,j+1);
         }
     }
+
+    //------------------------------------------------------
+    // Positive definiteness correction
+
+    TVectorD values;
+    TMatrixD vectors = covaMat_matrix.EigenVectors(values);
+    for (Int_t i = 0; i < values.GetNrows(); ++i) {
+        cout << "eigen-value " << i << " is " << values(i) << " with eigen-vector" << endl;
+    }
+    //vectors.Print();
+
+    TMatrixD vectors_I = vectors;
+    vectors_I.T();
+    
+    TMatrixD temp(NB,NB);
+    TMatrixD diagMat(NB,NB);
+    diagMat.Zero();
+    for (int i = 0 ; i < NB ; i++) {
+        //if(values(i) < 0.0 && abs(values(i)) < 1.0e-4)
+        if(values(i) < 0.0)
+            diagMat(i,i) = 0.0;
+        else
+            diagMat(i,i) = values(i);
+    }
+    temp = vectors*diagMat;
+
+    TMatrixD fixedMat(NB,NB);
+    TMatrixD fixedMatScaled(NB,NB);
+    fixedMat = temp*vectors_I;
+
+    for (int i = 0 ; i < NB ; i++)
+        for (int j = 0 ; j < NB ; j++)
+            fixedMatScaled(i,j) = fixedMat(i,j)/sqrt(fixedMat(i,i)*fixedMat(j,j));
+    
+    TVectorD values2;
+    vectors = fixedMatScaled.EigenVectors(values2);
+    cout << "First iteration" << endl;
+    for (Int_t i = 0 ; i < values2.GetNrows(); ++i) {
+        cout << "eigen-value " << i << " is " << values(i) << " " << values2(i) << endl;
+    }
+    fixedMatScaled.Print();
+
+    covaMat_matrix = fixedMatScaled; // replace covaMat_Matrix with fixed matrix
+    //Replace histo
+    for (int k = 0 ; k < NB ; k++) {
+        for (int l = 0 ; l < NB ; l++) {
+            covaMat_histo->SetBinContent(k+1,l+1,fixedMatScaled(k,l));
+        }
+    }
+
+    //------------------------------------------------------
+
     TMatrixD inv_mat(NB,NB);
     TMatrixD uno_mat(NB,NB);
     inv_mat = covaMat_matrix;
     inv_mat.Invert();
     uno_mat = covaMat_matrix*inv_mat;
+
     //printf("\n Testing Unitarity \n");
     //invReb_mat.Print();
     TH2F *unoMat_histo = new TH2F("unoMat_histo","",NB,xbins,NB,xbins);
