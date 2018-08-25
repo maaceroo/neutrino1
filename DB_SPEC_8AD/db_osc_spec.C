@@ -26,11 +26,11 @@ void db_osc_spec()
     TCut cutBF;
     //---------------------------------------------------
     // histogram binning for the simulated data
-    //double    NB = 26;
+    //double    NB = 35;
     //double    lo = 0.7;
     //double    hi = 12.0;
     double xbins[36];
-    xbins[0] = 0.7;
+    xbins[0] = lo;
     double delta_bins2 = (7.9 - 1.3)/33; // 0.20 MeV/bin
     for (int i = 0 ; i < (NB-1) ; i++)
     {
@@ -38,7 +38,7 @@ void db_osc_spec()
     }
     xbins[35] = hi;
     //---------------------------------------------------
-    const int nAD = 8; //Number of Antineutrino detectors
+    //const int nAD = 8; //Number of Antineutrino detectors
     TH1F *nu_nosc_spect_histo[nAD];
     TH1F *BFit_spect_histo[nAD];
     TH1F *Posc_AD_BF[nAD];
@@ -88,8 +88,6 @@ void db_osc_spec()
     double integ;
     for (int iAD = 0 ; iAD < nAD ; iAD++)
     {
-        //if (iAD < 3) sel = iAD; // this is not necessary here as there are 8 AD
-        //else if (iAD >= 3) sel = iAD+1;
         sel = iAD;
         //------------------------------------------------
         //Filling Ocillation prpbability at BF - histogram
@@ -126,16 +124,16 @@ void db_osc_spec()
     double s2t_pt, dm2_pt;
     //int   sel;
     //Comment out when using the shel script!!!
-    const int     N_s2t = 10;
-    const int     N_dm2 = 10;
+    //const int     N_s2t = 5;
+    //const int     N_dm2 = 5;
     //Comment out when using the shel script!!!
-    double       lo_s2t = 0.01;
-    double       hi_s2t = 0.3;
+    //double       lo_s2t = 0.01;
+    //double       hi_s2t = 0.3;
     //double DeltaLog_s2t = (log10(hi_s2t)-log10(lo_s2t))/double(N_s2t-1);
     double Delta_s2t = (hi_s2t - lo_s2t)/double(N_s2t-1);
     //Comment out when using the shel script!!!
-    double       lo_dm2 = 1e-4;
-    double       hi_dm2 = 1e-2;
+    //double       lo_dm2 = 1e-4;
+    //double       hi_dm2 = 1e-2;
     //double DeltaLog_dm2 = (log10(hi_dm2)-log10(lo_dm2))/double(N_dm2-1);
     double Delta_dm2 = (hi_dm2 - lo_dm2)/double(N_dm2-1);
     
@@ -166,7 +164,6 @@ void db_osc_spec()
         wosc_spect_histo[i]->SetLineStyle(2);
     }
 
-
     //File to print the oscillation paramenter, the survival prob. and oscilated spectra
     //ofstream file;
     //string result = "db_SurvParams_V2.txt";
@@ -179,8 +176,6 @@ void db_osc_spec()
     //write non-oscillated spectra for each AD to file
     for (int iAD = 0 ; iAD < nAD ; iAD++)
     {
-       //if      (iAD <  3) sel = iAD;// this is not necessary here as there are 8 AD
-       //else if (iAD >= 3) sel = iAD+1;
        sel = iAD;
        //---------------------------------------------------------
 

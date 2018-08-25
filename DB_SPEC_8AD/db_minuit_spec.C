@@ -37,14 +37,14 @@
 //#define dm2_21 7.59e-5 //eV^2,                //PRL 108 171803 (2012)
 //#define s22th_12 0.861
 //For the sin^2(2th_13) loop
-#define N_s2t  10                           //number of points in the grid
+//#define N_s2t  5                           //number of points in the grid
 //#define lo_s2t 0.01                         //sin^2(2th_13) min
-#define lo_s2t 0.0                          //sin^2(2th_13) min
-#define hi_s2t 0.3                          //sin^2(2th_13) max
+//#define lo_s2t 0.0                          //sin^2(2th_13) min
+//#define hi_s2t 0.3                          //sin^2(2th_13) max
 //For the delta(m31)^2 loop
-#define N_dm2  10                           //number of points in the grid
-#define lo_dm2 1.0e-4                       //delta(m31)^2 min
-#define hi_dm2 1.0e-2                       //delta(m31)^2 max
+//#define N_dm2  5                           //number of points in the grid
+//#define lo_dm2 1.0e-4                       //delta(m31)^2 min
+//#define hi_dm2 1.0e-2                       //delta(m31)^2 max
 //---*****************************************************---//
 
 //---*****************************************************---//
@@ -188,19 +188,6 @@ double chi2(const double *xx)
             
             //cout << "iAD = " << iAD << "  iBin = " << iBIN << "  Md = " << Md << " Td = " << Td
                  //<< " delta = " << delta_vector(index,0) << endl;
-            
-            //-- Testing a fake normalization factor
-            //double test = 0.0;
-            //sqr_chi += pow( (Md - Td*(1.0 + epsilon - test + eps_d[iAD] + wrd) + eta_d[iAD]) ,2 )/sqrerror;
-            
-            //Modificar para que chi2 = (vec.col)^T x Inv.Mat.Cov x (vec.col)
-            //1. vec.col = vector columna con la Predicción en cada Bin
-            //   Predicción en cada bin = Td*(1.0 + epsilon - test + eps_d[iAD] + wrd) - eta_d[iAD]
-            //2. Matriz diagonal con sqrerror en la diagonal (Mat.Stat)
-            //3. La Mat.Covarianza debe ser construida (se requiere db_CovaMatrix_6AD_6x26bins.root que contiene Mat.Cov.Fraccionaria_ij):
-            //   Mat.Cov_ij = (Mat.Cov.Fraccionaria_ij * NPred_i * NPred_j) + Mat.Stat_ij
-            //   Invertir Mat.Cov
-            
         }
     }
     //cout << "here the test begins." << endl;
@@ -220,14 +207,7 @@ double chi2(const double *xx)
     }
     //predi_vector->Print();
     //fullCovaMatrix_matrix.Print();
-/*    TVector values;
-    TMatrixD vectors = fullCovaMatrix_matrix->EigenVectors(values);
-    for (Int_t i = 0; i < values.GetNrows(); ++i) {
-        TVectorD vector(TMatrixTColumn_const<double>(vectors, i));
-        cout << "eigen-value " << i << " is " << values(i) << " with eigen-vector";
-        vector.Print();
-    }
- */
+
     if(fullCovaMatrix_matrix->Determinant() != 0){
         inv_fullCovaMatrix_matrix = fullCovaMatrix_matrix;
         inv_fullCovaMatrix_matrix->Invert();
@@ -254,19 +234,6 @@ double chi2(const double *xx)
         }
     }
     
-    //sqr_chi = product_matrix(0,0);
-    
-/*    for (iAD = 0 ; iAD < nAD ; iAD++)
-        {
-            //-- Background error of the dth Antineutrino Detector
-            sB = totalBgd[iAD][1]*emuem[iAD]*daqTime[iAD];
-            sqr_chi += pow(eps_d[iAD]/seps_d,2) + pow(eta_d[iAD]/sB,2);
-        }
-    
-    for (iNR = 0 ; iNR < nNR ; iNR++)
-        sqr_chi += pow(alpha[iNR]/salph_r,2);
-*/
-
     return sqr_chi;
 }
 //---*****************************************************---//

@@ -39,8 +39,10 @@ void db_ntuple()
     //8 detectors (PRD95 072006, 2017)
     TH1F *histo_ldist = (TH1F*) fpathl->Get("histo_ldist");
 
-    const int nDet = 8;
-    const int nRea = 6;
+    //const int nDet = 8;
+    //const int nRea = 6;
+    const int nDet = nAD;
+    const int nRea = nNR;
     //Baseline Distances (cm)
     const char  *detNames[nDet] = {"EH1-AD1", "EH1-AD2", "EH2-AD1", "EH2-AD2",
           	                   "EH3-AD1", "EH3-AD2", "EH3-AD3", "EH3-AD4"};
@@ -83,7 +85,7 @@ void db_ntuple()
             Ln =   baselines[id][ir];
             
             // generate a neutrino energy
-            //if (id is 0 or 1, espectro de EH1; id is 2 or 3, espectro de EH2; id is 4 to 7,espectro de EH3) esto para Ep
+            //if (id is 0 or 1, EH1 spectrum; id is 2 or 3, EH2 spectrum; id is 4 to 7, EH3 spectrum) this is for Ep
             if (id < 2)       ad = 0;
             else if (id == 2 || id == 3) ad = 1;
             else if (id > 3) ad = 2;

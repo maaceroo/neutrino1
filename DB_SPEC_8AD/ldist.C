@@ -109,11 +109,6 @@ void ldist()
 
     int Nevt = 10000000;
     for (int i=0 ; i<Nevt ; i++){
-	//NOTE 2017-10-10 (By MAAO): I have removed (int*) from severla lines 
-	//(120, 122, 122, 137, 140 -plus 5 lines-) after getting messages like 
-	//  "ldist.C:123:20: warning: cast to 'int *' from smaller integer type 'int' [-Wint-to-pointer-cast]
-        //   int idet = (int*) (bl_idx/nRea);" 
-	//running on Linux 16.04 and ROOT V6.06/02
         int bl_idx = histo_ldist->GetRandom();
         histo_ldist_gen->Fill(bl_idx);
 
