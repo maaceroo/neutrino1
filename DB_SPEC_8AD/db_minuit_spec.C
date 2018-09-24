@@ -183,7 +183,8 @@ double chi2(const double *xx)
                 wrd += wrd_array[iAD][iNR]*alpha[iNR];
         
             predi_vector(index,0) = Td*(1.0 + epsilon + eps_d[iAD] + wrd) - eta_d[iAD];
-            delta_vector(index,0) = Md - Td*(1.0 + epsilon + eps_d[iAD] + wrd) + eta_d[iAD];
+            //delta_vector(index,0) = Md - Td*(1.0 + epsilon + eps_d[iAD] + wrd) + eta_d[iAD];
+            delta_vector(index,0) = Md - Td*(1.0 + epsilon + eps_d[iAD] + wrd) + eta_d[iAD]*Bd;
             transp_delta_vector(0,index) = delta_vector(index,0);
             
             //cout << "iAD = " << iAD << "  iBin = " << iBIN << "  Md = " << Md << " Td = " << Td
@@ -202,7 +203,8 @@ double chi2(const double *xx)
     for (int i = 0 ; i < NBx_cov ; i++) {
         for (int j = 0 ; j < NBy_cov ; j++) {
             fullCovaMatrix_matrix(i,j) = statErroMatrix_matrix(i,j)
-            + predi_vector(i,0)*predi_vector(j,0)*fracCovaMatrix_matrix(i,j);
+            + 0.0*predi_vector(i,0)*predi_vector(j,0)*fracCovaMatrix_matrix(i,j); // ** test A.A. 7/sep/18
+            //+ predi_vector(i,0)*predi_vector(j,0)*fracCovaMatrix_matrix(i,j);
         }
     }
     //predi_vector->Print();
@@ -233,6 +235,18 @@ double chi2(const double *xx)
             sqr_chi += delta_i*invMat_ij*delta_j;
         }
     }
+
+   for (iAD = 0 ; iAD < 6 ; iAD++)
+       {
+           //-- Background error of the dth Antineutrino Detector
+           //sB = totalBgd[iAD][1]*emuem[iAD]*daqTime[iAD];
+           sB = totalBgd[iAD][1]/totalBgd[iAD][0];
+           sqr_chi += pow(eps_d[iAD]/seps_d,2) + pow(eta_d[iAD]/sB,2);
+       }
+    
+    for (iNR = 0 ; iNR < 6 ; iNR++)
+         sqr_chi += pow(alpha[iNR]/salph_r,2);
+
     
     return sqr_chi;
 }
@@ -433,13 +447,13 @@ int db_minuit_spec(const char * minName = "Minuit",
                 
                 //-- Setting variables
                 double lim = 1.0e-1;
-                /*min->SetLimitedVariable(0,  "e_1", start[0],  step[0],  -lim, lim);
+                min->SetLimitedVariable(0,  "e_1", start[0],  step[0],  -lim, lim);
                 min->SetLimitedVariable(1,  "e_2", start[1],  step[1],  -lim, lim);
                 min->SetLimitedVariable(2,  "e_3", start[2],  step[2],  -lim, lim);
                 min->SetLimitedVariable(3,  "e_4", start[3],  step[3],  -lim, lim);
                 min->SetLimitedVariable(4,  "e_5", start[4],  step[4],  -lim, lim);
                 min->SetLimitedVariable(5,  "e_6", start[5],  step[5],  -lim, lim);
-                min->SetLimitedVariable(6,  "n_1", start[6],  step[6],  -lim, lim);
+                /*min->SetLimitedVariable(6,  "n_1", start[6],  step[6],  -lim, lim);
                 min->SetLimitedVariable(7,  "n_2", start[7],  step[7],  -lim, lim);
                 min->SetLimitedVariable(8,  "n_3", start[8],  step[8],  -lim, lim);
                 min->SetLimitedVariable(9,  "n_4", start[9],  step[9],  -lim, lim);
@@ -453,12 +467,12 @@ int db_minuit_spec(const char * minName = "Minuit",
                 min->SetLimitedVariable(17, "a_6", start[17], step[17], -lim, lim);*/
                 min->SetLimitedVariable(18, "eps", start[18], step[18], -lim, lim);
                 //min->SetFixedVariable(18, "eps", start[18]);
-                min->SetFixedVariable(0,  "e_1", start[0]);
-                min->SetFixedVariable(1,  "e_2", start[1]);
-                min->SetFixedVariable(2,  "e_3", start[2]);
-                min->SetFixedVariable(3,  "e_4", start[3]);
-                min->SetFixedVariable(4,  "e_5", start[4]);
-                min->SetFixedVariable(5,  "e_6", start[5]);
+                //min->SetFixedVariable(0,  "e_1", start[0]);
+                //min->SetFixedVariable(1,  "e_2", start[1]);
+                //min->SetFixedVariable(2,  "e_3", start[2]);
+                //min->SetFixedVariable(3,  "e_4", start[3]);
+                //min->SetFixedVariable(4,  "e_5", start[4]);
+                //min->SetFixedVariable(5,  "e_6", start[5]);
                 min->SetFixedVariable(6,  "n_1", start[6]);
                 min->SetFixedVariable(7,  "n_2", start[7]);
                 min->SetFixedVariable(8,  "n_3", start[8]);
