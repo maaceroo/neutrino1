@@ -248,7 +248,7 @@ double chi2(const double *xx)
            sqr_chi += pow(eps_d[iAD]/seps_d,2) + pow(eta_d[iAD]/sB,2);
        }
     
-    for (iNR = 0 ; iNR < nR ; iNR++)
+    for (iNR = 0 ; iNR < nNR ; iNR++)
          sqr_chi += pow(alpha[iNR]/salph_r,2);
 
     
