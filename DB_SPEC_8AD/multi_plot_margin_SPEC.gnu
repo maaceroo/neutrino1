@@ -110,7 +110,7 @@ xmin = 0.05
 #xmax = 0.3
 xmax = 0.12
 set xrange[xmin:xmax]
-set xtics 0.0,0.05,0.19
+set xtics 0.05,0.01,0.11
 #set mxtics
 #set format x "10^{%T}"
 set label 2 "sin^{2}2{/Symbol q}_{13}" at 0.1,1.25 center
@@ -120,10 +120,10 @@ set label 2 "sin^{2}2{/Symbol q}_{13}" at 0.1,1.25 center
 set ytics offset -43.5
 #ymin = +1e-4
 #ymax = +1e-2
-ymin = 2.0
-ymax = 3.0
+ymin = 2.1
+ymax = 2.9
 set yrange[ymin:ymax]
-set ytics 1.5,0.5,3.4
+set ytics 2.1,1.9,2.9
 #set format y "10^{%T}"
 set label 4 "{/Symbol D}m^{2}_{31} (eV^2)" at -0.0175,2.5 center rotate by 90
 #set label 4 "{/Symbol D}m^{2}_{31} (10^{-3} eV^2)" at 0.006,2.5 center rotate by 90

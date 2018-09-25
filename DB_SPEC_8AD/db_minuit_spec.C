@@ -447,12 +447,12 @@ int db_minuit_spec(const char * minName = "Minuit",
                 
                 //-- Setting variables
                 double lim = 1.0e-1;
-                min->SetLimitedVariable(0,  "e_1", start[0],  step[0],  -lim, lim);
-                min->SetLimitedVariable(1,  "e_2", start[1],  step[1],  -lim, lim);
-                min->SetLimitedVariable(2,  "e_3", start[2],  step[2],  -lim, lim);
-                min->SetLimitedVariable(3,  "e_4", start[3],  step[3],  -lim, lim);
-                min->SetLimitedVariable(4,  "e_5", start[4],  step[4],  -lim, lim);
-                min->SetLimitedVariable(5,  "e_6", start[5],  step[5],  -lim, lim);
+                //min->SetLimitedVariable(0,  "e_1", start[0],  step[0],  -lim, lim);
+                //min->SetLimitedVariable(1,  "e_2", start[1],  step[1],  -lim, lim);
+                //min->SetLimitedVariable(2,  "e_3", start[2],  step[2],  -lim, lim);
+                //min->SetLimitedVariable(3,  "e_4", start[3],  step[3],  -lim, lim);
+                //min->SetLimitedVariable(4,  "e_5", start[4],  step[4],  -lim, lim);
+                //min->SetLimitedVariable(5,  "e_6", start[5],  step[5],  -lim, lim);
                 /*min->SetLimitedVariable(6,  "n_1", start[6],  step[6],  -lim, lim);
                 min->SetLimitedVariable(7,  "n_2", start[7],  step[7],  -lim, lim);
                 min->SetLimitedVariable(8,  "n_3", start[8],  step[8],  -lim, lim);
@@ -466,13 +466,13 @@ int db_minuit_spec(const char * minName = "Minuit",
                 min->SetLimitedVariable(16, "a_5", start[16], step[16], -lim, lim);
                 min->SetLimitedVariable(17, "a_6", start[17], step[17], -lim, lim);*/
                 min->SetLimitedVariable(18, "eps", start[18], step[18], -lim, lim);
-                //min->SetFixedVariable(18, "eps", start[18]);
-                //min->SetFixedVariable(0,  "e_1", start[0]);
-                //min->SetFixedVariable(1,  "e_2", start[1]);
-                //min->SetFixedVariable(2,  "e_3", start[2]);
-                //min->SetFixedVariable(3,  "e_4", start[3]);
-                //min->SetFixedVariable(4,  "e_5", start[4]);
-                //min->SetFixedVariable(5,  "e_6", start[5]);
+                min->SetFixedVariable(18, "eps", start[18]);
+                min->SetFixedVariable(0,  "e_1", start[0]);
+                min->SetFixedVariable(1,  "e_2", start[1]);
+                min->SetFixedVariable(2,  "e_3", start[2]);
+                min->SetFixedVariable(3,  "e_4", start[3]);
+                min->SetFixedVariable(4,  "e_5", start[4]);
+                min->SetFixedVariable(5,  "e_6", start[5]);
                 min->SetFixedVariable(6,  "n_1", start[6]);
                 min->SetFixedVariable(7,  "n_2", start[7]);
                 min->SetFixedVariable(8,  "n_3", start[8]);
