@@ -123,15 +123,15 @@ set ytics offset -43.5
 ymin = 2.1
 ymax = 2.9
 set yrange[ymin:ymax]
-set ytics 2.1,1.9,2.9
+set ytics 2.1,0.1,2.8
 #set format y "10^{%T}"
 set label 4 "{/Symbol D}m^{2}_{31} (eV^2)" at -0.0175,2.5 center rotate by 90
 #set label 4 "{/Symbol D}m^{2}_{31} (10^{-3} eV^2)" at 0.006,2.5 center rotate by 90
 
 ## Mark at the BF
-set label 35 '+' at 0.0811000000,0.0024400000*1e3 center font 'CharterBT-Roman,15'
+set label 35 '+' at 0.0811,0.00244*1e3 center font 'CharterBT-Roman,15'
 ## Minimum chi2 value
-min = 218.1280000000
+min = 219.783
 
 unset ztics
 set clabel

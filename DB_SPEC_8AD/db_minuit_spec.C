@@ -466,7 +466,7 @@ int db_minuit_spec(const char * minName = "Minuit",
                 min->SetLimitedVariable(16, "a_5", start[16], step[16], -lim, lim);
                 min->SetLimitedVariable(17, "a_6", start[17], step[17], -lim, lim);*/
                 min->SetLimitedVariable(18, "eps", start[18], step[18], -lim, lim);
-                min->SetFixedVariable(18, "eps", start[18]);
+                //min->SetFixedVariable(18, "eps", start[18]);
                 min->SetFixedVariable(0,  "e_1", start[0]);
                 min->SetFixedVariable(1,  "e_2", start[1]);
                 min->SetFixedVariable(2,  "e_3", start[2]);
