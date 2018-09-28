@@ -60,7 +60,7 @@ double daqTime[nAD]         = {1117.178,1117.178,1114.337,924.933,1106.915,1106.
 //---*****************************************************---//
 // Information obtained by executing the script "db_osc_rate.C"
 //IBD rate per day w/o oscillations
-double noOsc_IBDrate_perday[nAD] = {662.977,675.401,610.019,604.176,79.6609,80.0328,79.3829,80.1862};
+double noOsc_IBDrate_perday[nAD]; // = {663.538, 675.961, 610.675, 604.832, 79.5001, 79.8741, 79.2203, 80.021};
 //---*****************************************************---//
 //const int dim = N_s2t*N_dm2;
 double s2th_13;     //oscillation parameter to be fitted
@@ -368,6 +368,16 @@ int db_minuit_spec(const char * minName = "Minuit",
     min->SetTolerance(0.001);
     min->SetPrintLevel(-1);
   
+    //-- File to get noOsc normalizations
+    ifstream file("files_data/db_IBDrates_perday.txt");
+    cout << "Reading file - Loop in progress..." << endl;
+    cout << "Reading noOsc normalizations file ..." << endl;
+    for (int i=0; i< nAD; i ++){
+      IBDrates_file >> noOsc_IBDrate_perday[i];
+      cout << "noOscIBD_rates_perday " <<i<<": "<< noOsc_IBDrate_perday[i] << endl;
+
+    }//for
+ 
     //-- File to print oscillation parameters and chi2 values
     ofstream chi2Surface_file;
     string s2t_dm2 = "files_data/chi2_s2t-dm2_surface_SPEC.txt";  //(sin^2(2th13), dm2, chi^2_min)
@@ -460,8 +470,8 @@ int db_minuit_spec(const char * minName = "Minuit",
                 min->SetLimitedVariable(5,  "e_6", start[5],  step[5],  -lim, lim);
                 min->SetLimitedVariable(6,  "e_7", start[6],  step[6],  -lim, lim);
                 min->SetLimitedVariable(7,  "e_8", start[7],  step[7],  -lim, lim);
-		*/
-                /*
+		
+                
 		min->SetLimitedVariable(8,  "n_1", start[8],  step[8],  -lim, lim);
                 min->SetLimitedVariable(9,  "n_2", start[9],  step[9],  -lim, lim);
                 min->SetLimitedVariable(10, "n_3", start[10], step[10], -lim, lim);
@@ -470,8 +480,8 @@ int db_minuit_spec(const char * minName = "Minuit",
                 min->SetLimitedVariable(13, "n_6", start[13], step[13], -lim, lim);
                 min->SetLimitedVariable(14, "n_7", start[14], step[14], -lim, lim);
                 min->SetLimitedVariable(15, "n_8", start[15], step[15], -lim, lim);
-		*/
-                /*
+		
+                
 		min->SetLimitedVariable(16, "a_1", start[16], step[16], -lim, lim);
                 min->SetLimitedVariable(17, "a_2", start[17], step[17], -lim, lim);
                 min->SetLimitedVariable(18, "a_3", start[18], step[18], -lim, lim);
@@ -491,7 +501,7 @@ int db_minuit_spec(const char * minName = "Minuit",
                 min->SetFixedVariable(6,  "e_7", start[6]);
                 min->SetFixedVariable(7,  "e_8", start[7]);
 		//*/
-		///*
+	        ///*
 		min->SetFixedVariable(8,  "n_1", start[8]);
                 min->SetFixedVariable(9,  "n_2", start[9]);
                 min->SetFixedVariable(10, "n_3", start[10]);

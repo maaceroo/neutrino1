@@ -81,6 +81,9 @@ void db_osc_spec()
        const double s22th12 = 0.861;              //PRL 108 171803 (2012)
        */
 
+    FILE *file_IBDrates;
+    file_IBDrates = fopen("files_data/db_noOsc_IBDrates_perday.txt","w");
+
     int sel;
     double TotNosc[nAD];
     double avgPosc_AD[nAD]; //<POsc(s2t_BF,dm2_31)>
@@ -91,7 +94,7 @@ void db_osc_spec()
         sel = iAD;
         //------------------------------------------------
         //Filling Ocillation prpbability at BF - histogram
-        T->Draw(Form("(1.0 - 0.089*((sin( 1.267 * 2.32e-3 * Ln/En ))**2) - ((cos(0.5 * asin(sqrt(0.089))))**4) * 0.861 * (sin( 1.267 * 7.59e-5 * Ln/En ))**2) >> Posc_AD_BF_%d",iAD),Form("id==%d",sel));
+        T->Draw(Form("(1.0 - 0.0841*((sin( 1.267 * 2.50e-3 * Ln/En ))**2) - ((cos(0.5 * asin(sqrt(0.0841))))**4) * 0.841 * (sin( 1.267 * 7.59e-5 * Ln/En ))**2) >> Posc_AD_BF_%d",iAD),Form("id==%d",sel));
         integ = Posc_AD_BF[iAD]->Integral();
         Posc_AD_BF[iAD]->Scale(1.0/integ); //Used to plot the Survival Probabilities for each AD with BF parameters (normalized)
         //Average oscillation Probability
@@ -101,6 +104,8 @@ void db_osc_spec()
         //Printing results
         cout << "(avgPosc_AD,noOsc_IBDrate_perday)_" << sel << " = (" << avgPosc_AD[iAD]
         << ", " << noOsc_IBDrate_perday[iAD] << ") " << endl;
+        fprintf(file_IBDrates,"%f \n", noOsc_IBDrate_perday[iAD]);
+
         //------------------------------------------------
 
         //------------------------------------------------
@@ -110,7 +115,7 @@ void db_osc_spec()
         //nu_nosc_spect_histo[iAD]->Scale(noOsc_IBDrate_perday[iAD]/TotNosc[iAD]); //normalize per day HERE? (2017-07-13)
         
         //condition to fill BF-oscillation- Ep spectra
-        cutBF = Form("(1.0 - 0.089*((sin( 1.267 * 2.32e-3 * Ln/En ))**2) - ((cos(0.5 * asin(sqrt(0.089))))**4) * 0.861 * (sin( 1.267 * 7.59e-5 * Ln/En ))**2)*(id==%d)",iAD);
+        cutBF = Form("(1.0 - 0.0841*((sin( 1.267 * 2.50e-3 * Ln/En ))**2) - ((cos(0.5 * asin(sqrt(0.0841))))**4) * 0.841 * (sin( 1.267 * 7.59e-5 * Ln/En ))**2)*(id==%d)",iAD);
 
         //Filling and normalizing BF-oscillation Ep spectra
         T->Draw(Form("Ep >> BFit_spect_histo_%d",sel),cutBF,"");
@@ -118,7 +123,9 @@ void db_osc_spec()
         BFit_spect_histo[iAD]->Scale(1.0/integ);
         //------------------------------------------------
     }
+    fclose(file_IBDrates);
     
+
     //---------------------------------------------------
     //Definition of the grid of oscillation parameters
     double s2t_pt, dm2_pt;
