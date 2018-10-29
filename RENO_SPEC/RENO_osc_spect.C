@@ -1,12 +1,9 @@
 //------------------------------------------------------------------------------------------//
-//--- RENO_osc_rate.C - By M.A. Acero O., A.A. Aguilar-A. and D.J. Polo T. - 2018-15-09 ----//
+//--- RENO_osc_spect.C - By M.A. Acero O., A.A. Aguilar-A. and D.J. Polo T. - 2018-15-09 ---//
 //------------------------------------------------------------------------------------------//
 // This macro can be executed under ROOT typing   "root[0] .x RENO_osc_spect.C"             //
 // For the spect only analysis, using information from F.P. An et al., PRL 112 061801 (2014)//
 //------------------------------------------------------------------------------------------//
-// 2017-23-12                                                                               //
-// Modifications to perform a rate-only analysis by computing and using average values for  //
-// the survival probability and taking sin2(2th) as the only free parameter (to bi fitted). //
 // 2017-02-03                                                                               //
 // This macro performs a simple chi^2 analysis of the RENO data by comparing the IBD        //
 // rate at the six AD reported in article 1610.04326 (2017)                                 //
@@ -59,9 +56,9 @@ void RENO_osc_spect()
 
   //---------------------------------------------------
   // histogram binning for the simulated data
-  const double    NB = 27; 
-  const double    lo = 1.2;  
-  const double    hi = 8.4;
+  //const double    NB = 27; 
+  //const double    lo = 1.2;  
+  //const double    hi = 8.4;
   double xbins[NB+1];
   double delta_bins2 = (6.0 - 1.2)/24; // 0.2 MeV/bin
   
@@ -181,22 +178,32 @@ void RENO_osc_spect()
   //---------------------------------------------------
   //Definition of the grid of oscillation parameters
   double s2t_pt, dm2_pt;
-  
-  const int     N_s2t = 100;
-  const int     N_dm2 = 100;
-  
-  double       lo_s2t = 0.01;
-  double       hi_s2t = 0.2;
+  //const int     N_s2t = 100;
+  //const int     N_dm2 = 100;
+  //double       lo_s2t = 0.01;
+  //double       hi_s2t = 0.2;
   double DeltaLin_s2t = (hi_s2t - lo_s2t)/double(N_s2t-1);
   //double DeltaLog_s2t = (log10(hi_s2t)-log10(lo_s2t))/double(N_s2t-1);
-  
-  double       lo_dm2 = 1.2e-3;
-  double       hi_dm2 = 3.5e-3;
+  //double       lo_dm2 = 1.2e-3;
+  //double       hi_dm2 = 3.5e-3;
   double DeltaLin_dm2 = (hi_dm2 - lo_dm2)/double(N_dm2-1);
   //double DeltaLog_dm2 = (log10(hi_dm2)-log10(lo_dm2))/double(N_dm2-1);
   
-  TCut cut;
-  
+    printf("\n");
+    printf("Grid definition db_osc_spec.C\n");
+    printf("---------------------------\n");
+    printf("N_s2t: %d\n",N_s2t);
+    printf("lo_s2t: %f\n",lo_s2t);
+    printf("hi_s2t: %f\n",hi_s2t);
+    printf("\n");
+    printf("N_dm2: %d\n",N_dm2);
+    printf("lo_dm2: %f\n",lo_dm2);
+    printf("hi_dm2: %f\n",hi_dm2);
+    printf("---------------------------\n");
+    printf("\n");
+
+    TCut cut;
+
   const int dim = N_s2t*N_dm2;
   double TotWosc[dim];
   
@@ -214,7 +221,7 @@ void RENO_osc_spect()
   double neno = 0.0;
   for (int iAD = 0 ; iAD < nAD ; iAD++)
     {
-      for (int ib = 0 ; ib < 27 ; ib++)
+      for (int ib = 0 ; ib < NB ; ib++)
 	{
 	  nebf = BFit_spect_histo_d[iAD]->GetBinContent(ib+1);
 	  neno = nebf/avgPosc_AD[iAD]/*IBDrate_perday[iAD][0]*daqTime[iAD]*/;
@@ -233,7 +240,7 @@ void RENO_osc_spect()
       //file << iAD + 1 << " " << s2t_pt << "\t" << dm2_pt;double daqTime[nAD] = {458.49,489.93};
       fprintf(file,"%d %8.2e %8.2e",iAD+1,s2t_pt,dm2_pt);
       //print bin-content of non-oscillated spectra per day
-      for (int ib = 0 ; ib < 27 ; ib++)
+      for (int ib = 0 ; ib < NB ; ib++)
 	{
 	  double contNO = nosc_spect_histo[iAD]->GetBinContent(ib+1);
 	  //file << "\t" << contNO;
@@ -279,7 +286,7 @@ void RENO_osc_spect()
 	      //file << iAD + 1 << " " << s2t_pt << "\t" << dm2_pt;
 	      fprintf(file,"%d %8.2e %8.2e",iAD+1,s2t_pt,dm2_pt);
 	      //Printing bin-content for the oscilated spectra for (s2t_pt,dm2_pt)
-	      for (int ib = 0 ; ib < 27 ; ib++)
+	      for (int ib = 0 ; ib < NB ; ib++)
 		{
 		  double cont   = wosc_spect_histo[ih]->GetBinContent(ib+1);
 		  //cout << " cont = " << cont << " ih = " << ih <<endl; 

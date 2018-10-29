@@ -22,14 +22,15 @@
 //-------- In this case, chi^2(min) is the minimum chi^2 for the pull      ----------//
 //-------- terms.                                                          ----------//
 //-----------------------------------------------------------------------------------//
+#include "constants.h"
 #include <math.h>
 //---*****************************************************************************---//
 //------------------------ CONSTANTS ------------------------------------------------//
 //---*****************************************************************************---//
 // histogram binning for the simulated data
-#define  NB 27
-#define  lo 1.2
-#define  hi 8.4
+//#define  NB 27
+//#define  lo 1.2
+//#define  hi 8.4
 //Number of Antineutrino Detectors
 #define  nAD 2
 //Number of Nuclear Reactors
@@ -39,10 +40,10 @@
 //#define dm2_ee 2.62e-3 //eV^2,                  // 1610.0432v5 (2017)
 #define s22th_12 0.846
 //For the sin^2(2th_13) loop
-#define N_s2t  100                            //number of points in the grid
-#define N_eps  100	                           //number of points in the grid
-#define hi_dm2 3.5e-3                       //dm2 max
-double ran = N_eps * N_s2t;
+//#define N_s2t  100                            //number of points in the grid
+//#define N_dm2  100	                           //number of points in the grid
+//#define hi_dm2 3.5e-3                       //dm2 max
+double ran = N_dm2 * N_s2t;
 //---*****************************************************---//
 
 //---*****************************************************---//
@@ -80,10 +81,10 @@ double ratio[NB];
 int iAD;
 int iNR;
 //---*****************************************************---//
-const int nd = 2;
-TH1F *ratio_histo[nd];
-TH1F *data_spect_histo[nd];
-//TH1F *BkGd_spect_histo[nd];
+//const int nd = nAD;
+TH1F *ratio_histo[nAD];
+TH1F *data_spect_histo[nAD];
+//TH1F *BkGd_spect_histo[nAD];
 //---*****************************************************---//
 TH1F *nosc_spect_hist[nAD];
 TH1F *nosc_spect_hist_1[nAD];
@@ -100,7 +101,7 @@ double chi2(const double *xx)
   e       = xx[1];
   b_d[0]  = xx[2];
   b_d[1]  = xx[3];
-  // fr[0] = xx[4];
+  //fr[0] = xx[4];
   //fr[1] = xx[5];
   //fr[2] = xx[6];
   //fr[3] = xx[7];
@@ -158,7 +159,7 @@ double chi2(const double *xx)
       
     }
   
-  for (iAD = 0 ; iAD < 2 ; iAD++)
+  for (iAD = 0 ; iAD < nAD ; iAD++)
     {
       //-- Background error of the dth Antineutrino Detector
       sB = totalBgd[iAD][1]*0.7644*daqTime[iAD];
@@ -215,10 +216,10 @@ int RENO_minuit_spect(const char * minName = "Minuit",
   }
 
   // define number of bins //
-  const int  NB = 27; 
-  const double lo = 1.2;  
-  const double hi = 8.4;
-  const int nd = 2;
+  //const int  NB = 27; 
+  //const double lo = 1.2;  
+  //const double hi = 8.4;
+  //const int nd = 2;
   double xbins[NB+1];
   //xbins[0] = 1.2;
   //cout << xbins[0] <<endl;
@@ -273,7 +274,7 @@ int RENO_minuit_spect(const char * minName = "Minuit",
      // cout << " a = " << spc[0][26] << endl; 
       if(first2 <= 2)
 	{
-	  for(int ibin = 1 ; ibin <= 27 ; ibin++)
+	  for(int ibin = 1 ; ibin <= NB ; ibin++)
 	    {
 	      double bincont = spc[iad][ibin-1]*(noOsc_IBDrate_perday[iAD-1]/NoscTot[iad])*emuem[iAD-1]*daqTime[iAD-1];
 	      double bincontent = bincont/0.2;
@@ -317,11 +318,9 @@ int RENO_minuit_spect(const char * minName = "Minuit",
 	  
 	  //-- Setting variables
 	  double lim = 1.0e-3;
-	  //double lim2 = 1.2e2;
-	  double lim2 = 10.0*lim;
 	  
-	  min->SetLimitedVariable(0,  "epsilon", start[0],  step[0],  -lim,  lim);
-	  min->SetLimitedVariable(1,  "e",       start[1],  step[1],  -lim,  lim);
+	  min->SetLimitedVariable(0,  "epsilon", start[0],  step[0],  -lim, lim);
+	  min->SetLimitedVariable(1,  "e",       start[1],  step[1],  -lim, lim);
 	  min->SetLimitedVariable(2,  "b_0",     start[2],  step[2],  -lim, lim);
 	  min->SetLimitedVariable(3,  "b_1",     start[3],  step[3],  -lim, lim);
 	  min->SetErrorDef(2.3);

@@ -133,9 +133,9 @@ set label 5 "{+ Best-fit}" at 0.12,0.0038 center
 #set label 6 "{* Best-fit}" at 0.12,0.0037 center 
 
 ## Mark at the BF
-set label 35 '+' at 0.0772,0.00278 center font 'CharterBT-Roman,15'
+set label 35 '+' at 0.08,0.00253 center font 'CharterBT-Roman,15'
 ## Minimum chi2 value
-min = 20.021
+min = 13.4975
 
 unset ztics
 set clabel
@@ -143,9 +143,8 @@ unset key
 set grid ytics lc rgb "#bbbbbb" lw 1 lt 0
 set grid xtics lc rgb "#bbbbbb" lw 1 lt 0
 
-#splot 'files/chi2_s2t-dm2_surface_spect.txt' u 1:2:(($3)-min) w l lw 2
-#splot 'files/chi2_s2t-dm2_surface_SPEC.txt' u 1:2:(($3)-min) w l lw 2
-splot 'files/chi2_s2t-dm2_surface_spect.txt' u 1:2:(($3)-min) w l lw 2
+#splot 'files/chi2_s2t-dm2_surface_spect-noFL.txt' u 1:2:(($3)-min) w l lw 2
+splot 'files/chi2_s2t-dm2_surface_spect-noFL.txt' u 1:2:(($3)-min) w l lw 2
 
 ########################################################################################
 
