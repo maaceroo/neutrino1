@@ -58,15 +58,11 @@ double daqTime[nAD] = {458.49,489.93};
 //---*****************************************************---//
 // Information obtained by executing the script "RENO_osc_rate.C"
 //IBD rate per day w/o oscillations
-//double noOsc_IBDrate_perday[nAD][nNR] ={ { 630.53, 623.43, 619.85, 620.52, 625.28, 633.21}, {65.66,  65.43,  65.28,  65.21,  65.34,  65.49}s};
-//double noOsc_IBDrate_perday[nAD][nNR] ={ {43.1752,93.2927,206.74,170.208,73.3643,35.9172 },{9.34206,10.6367,11.7157,11.9517,11.4308,10.3138} };
 double noOsc_IBDrate_perday[nAD] = { 622.68,  65.39};
 //<sin^2(1.267 dm2_21 L/E)> for each AD
 //double avgSinDelta21[nAD] = { 0.000110395, 0.001236837};
-//double avgSinDelta21[nAD][nNR] ={ {0.000267,0.000121,0.000055,0.000067,0.000157,0.000327} , {0.001431,0.001251,0.001163,0.001127,0.001189,0.001314} };
 //<sin^2(1.267 dm2_ee L/E)> for each AD
 //double avgSinDeltaee[nAD] = { 0.109914046, 0.717994798};
-//double avgSinDeltaee[nAD][iNR] = { {0.250234,0.123595,0.058540,0.070624,0.156896,0.297120} , {0.760081,0.724878,0.701159,0.689812,0.710250,0.733815} };
 //---*****************************************************---//
 double s2th_13; //oscillation parameter to be fitted
 double dm2_ee;   //oscillation parameter to be fitted
@@ -94,8 +90,8 @@ TH1F *nosc_spect_hist_1[nAD];
 TH1F *nosc_spect_hist_bf[nAD];
 //---*****************************************************---//
 //-- Chi-square function to be minimized --------------------//
-//-- It has 10 pull parameters, 1 oscillation parameter and--//
-//-- a normalization factor. The last two are to be fitted. -//
+//-- It has 3 pull parameters, 2 oscillation parameters and--//
+//-- a normalization factor.                               --//
 //---*****************************************************---//
 double chi2(const double *xx)
 {
@@ -323,18 +319,19 @@ int RENO_minuit_spect(const char * minName = "Minuit",
 	  double lim = 1.0e-3;
 	  //double lim2 = 1.2e2;
 	  double lim2 = 10.0*lim;
-	  /*
-	    min->SetLimitedVariable(0,  "epsilon", start[0],  step[0],  -lim,  lim);
-	    min->SetLimitedVariable(1,  "e",       start[1],  step[1],  -lim,  lim);
-	    min->SetLimitedVariable(2,  "b_0",     start[2],  step[2],  -lim, lim);
-	    min->SetLimitedVariable(3,  "b_1",     start[3],  step[3],  -lim, lim);
-	    min->SetErrorDef(2.3);
-	  */
-	  min->SetFixedVariable(0,  "epsilon", start[0]);
-	  min->SetFixedVariable(1,  "e", start[1]);
-	  min->SetFixedVariable(2,  "b_0", start[2]);
-	  min->SetFixedVariable(3,  "b_1", start[3]);
 	  
+	  min->SetLimitedVariable(0,  "epsilon", start[0],  step[0],  -lim,  lim);
+	  min->SetLimitedVariable(1,  "e",       start[1],  step[1],  -lim,  lim);
+	  min->SetLimitedVariable(2,  "b_0",     start[2],  step[2],  -lim, lim);
+	  min->SetLimitedVariable(3,  "b_1",     start[3],  step[3],  -lim, lim);
+	  min->SetErrorDef(2.3);
+	  
+	/*
+	  min->SetFixedVariable(0,  "epsilon", start[0]);
+	  min->SetFixedVariable(1,  "e",       start[1]);
+	  min->SetFixedVariable(2,  "b_0",     start[2]);
+	  min->SetFixedVariable(3,  "b_1",     start[3]);
+	*/
 	  //-- Calling Minuit minimization
 	  min->Minimize();
 	  
