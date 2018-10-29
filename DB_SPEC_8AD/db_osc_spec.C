@@ -20,7 +20,7 @@ void db_osc_spec()
     //----------  Text Style  ---------
 
     //---------------------------------------------------
-    // Open ntuple file to read simulated data
+    // Open  file to read simulated data
     TFile *fntuple = new TFile("files_data/db-ntuple.root","READ");
     TTree *T = (TTree*)fntuple->Get("T");
     TCut cutBF;

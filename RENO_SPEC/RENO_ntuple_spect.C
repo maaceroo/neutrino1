@@ -61,7 +61,8 @@ void RENO_ntuple_spect()
   T->Branch("ir", &ir, "ir/s"); //reactor
   T->Branch("id", &id, "id/s"); //detector
   
-  int Nevents = 600000;
+  //int Nevents = 5000000; // CAUTION!! This must be commented out when using the script
+  int Nevents = atoi(getenv("NTUPLE_EVENTS")); // This must be uncommented when using the script
   for (int i = 0 ; i < Nevents ; i++)
     {
       // generate a baseline (blid uniquely identifies the baseline)
