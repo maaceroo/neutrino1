@@ -369,14 +369,13 @@ int db_minuit_spec(const char * minName = "Minuit",
     min->SetPrintLevel(-1);
   
     //-- File to get noOsc normalizations
-    ifstream file("files_data/db_IBDrates_perday.txt");
-    cout << "Reading file - Loop in progress..." << endl;
+    ifstream IBDrates_file("files_data/db_noOsc_IBDrates_perday.txt");
     cout << "Reading noOsc normalizations file ..." << endl;
-    for (int i=0; i< nAD; i ++){
-      IBDrates_file >> noOsc_IBDrate_perday[i];
-      cout << "noOscIBD_rates_perday " <<i<<": "<< noOsc_IBDrate_perday[i] << endl;
-
-    }//for
+    for (int i=0; i< nAD; i ++)
+	{
+	    IBDrates_file >> noOsc_IBDrate_perday[i];
+      	    cout << "noOscIBD_rates_perday " << i << ": " << noOsc_IBDrate_perday[i] << endl;
+    	}//for
  
     //-- File to print oscillation parameters and chi2 values
     ofstream chi2Surface_file;
@@ -461,7 +460,7 @@ int db_minuit_spec(const char * minName = "Minuit",
                 
                 //-- Setting variables
                 double lim = 1.0e-1;
-                /*
+                
 		min->SetLimitedVariable(0,  "e_1", start[0],  step[0],  -lim, lim);
                 min->SetLimitedVariable(1,  "e_2", start[1],  step[1],  -lim, lim);
                 min->SetLimitedVariable(2,  "e_3", start[2],  step[2],  -lim, lim);
@@ -488,10 +487,10 @@ int db_minuit_spec(const char * minName = "Minuit",
                 min->SetLimitedVariable(19, "a_4", start[19], step[19], -lim, lim);
                 min->SetLimitedVariable(20, "a_5", start[20], step[20], -lim, lim);
                 min->SetLimitedVariable(21, "a_6", start[21], step[21], -lim, lim);
-		*/
+		
                 min->SetLimitedVariable(22, "eps", start[22], step[22], -lim, lim);
 		//-----------------------------------------------------------------//
-		///*
+		/*
                 min->SetFixedVariable(0,  "e_1", start[0]);
                 min->SetFixedVariable(1,  "e_2", start[1]);
                 min->SetFixedVariable(2,  "e_3", start[2]);
@@ -500,8 +499,8 @@ int db_minuit_spec(const char * minName = "Minuit",
                 min->SetFixedVariable(5,  "e_6", start[5]);
                 min->SetFixedVariable(6,  "e_7", start[6]);
                 min->SetFixedVariable(7,  "e_8", start[7]);
-		//*/
-	        ///*
+		*/
+	        /*
 		min->SetFixedVariable(8,  "n_1", start[8]);
                 min->SetFixedVariable(9,  "n_2", start[9]);
                 min->SetFixedVariable(10, "n_3", start[10]);
@@ -510,15 +509,15 @@ int db_minuit_spec(const char * minName = "Minuit",
                 min->SetFixedVariable(13, "n_6", start[13]);
                 min->SetFixedVariable(14, "n_7", start[14]);
                 min->SetFixedVariable(15, "n_8", start[15]);
-		//*/
-		///*
+		*/
+		/*
                 min->SetFixedVariable(16, "a_1", start[16]);
                 min->SetFixedVariable(17, "a_2", start[17]);
                 min->SetFixedVariable(18, "a_3", start[18]);
                 min->SetFixedVariable(19, "a_4", start[19]);
                 min->SetFixedVariable(20, "a_5", start[20]);
                 min->SetFixedVariable(21, "a_6", start[21]);
-		//*/
+		*/
                 //min->SetFixedVariable(22, "eps", start[22]);
                 min->SetErrorDef(2.3);
                 
