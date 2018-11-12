@@ -135,22 +135,28 @@ double chi2(const double *xx)
   SurvPavg2 = NoscTot[1]/noNoscTot[1];
   
     //- 12.11.2018 -Begins
-    double fno_ePos[NB] = {0.0};
-    double fno_eNeg[NB] = {0.0};
+    double f_ePos[NB] = {0.0};
+    double f_eNeg[NB] = {0.0};
     double spcNew[nAD][NB];
-    double Eold,Enew_i,Enew_j;
-    /*
-    for (int iBIN = 0 ; iBIN < NB ; iBIN++) { //-- should thid part be here or inside the big iBIN loop?
-        Eold   = xbins[iBIN];
-        Enew_i = (1+e)*xbins[iBIN];
-        Enew_j = (1+e)*xbins[iBIN+1];
-        if (e < 0) {
-            fn[iBIN] = (Eold - Enew_j)/(Enew_j - Enew_i);
+    double Eold_i,Enew_i,Enew_j;
+
+    if (e < 0) {    
+       for (int iBIN = 0 ; iBIN < NB ; iBIN++) { //-- should thid part be here or inside the big iBIN loop?
+          Eold_i   = xbins[iBIN];
+          Enew_i = (1+e)*xbins[iBIN];
+          Enew_j = (1+e)*xbins[iBIN+1];
+
+          f_eNeg[iBIN] = (Eold_i - Enew_i)/(Enew_j - Enew_i);
         }
-        else {
-            fn[iBIN] = (Enew_i - Eold)/(Enew_i - Enew_j);
+     }//if
+     else {
+        for (int iBIN = 1 ; iBIN < NB+1 ; iBIN++){
+           Eold_i   = xbins[iBIN];
+           Enew_i = (1+e)*xbins[iBIN];
+           Enew_j = (1+e)*xbins[iBIN-1];
+           f_ePos[iBIN] = (Enew_i - Eold_i)/(Enew_i - Enew_j);
         }
-    }*/
+     } //else
     //- 12.11.2018 -Ends
     for (int iBIN = 0 ; iBIN < NB ; iBIN++)
     {
@@ -162,31 +168,16 @@ double chi2(const double *xx)
       sqrerror = ( Nobs2/(pow(Nobs1,2)) ) + ( (pow(Nobs2,2))/(pow(Nobs1,3)) );
 
         //- 12.11.2018 -Begins
-        for (int iBIN = 0 ; iBIN < NB ; iBIN++) { //-- should thid part be here or outside the big iBIN loop?
-            Eold   = xbins[iBIN];
-            Enew_i = (1+e)*xbins[iBIN];
-            Enew_j = (1+e)*xbins[iBIN+1];
-            if (e < 0) {
-                fno_eNeg[iBIN] = (Eold  - Enew_j)/(Enew_j - Enew_i);
-            }
-            else {
-                fno_ePos[iBIN] = (Enew_i - Eold)/(Enew_i  - Enew_j);
-            }
-        }
-        if (e < 0) {
-            if (iBIN == 0) {
-                spcNew[0][iBIN] = spc[0][iBIN] + fno_eNeg[iBIN]*spc[0][iBIN];
-            }
-            else
-                spcNew[0][iBIN] = spc[0][iBIN] - fno_eNeg[iBIN]*spc[0][iBIN] + fno_eNeg[iBIN+1]*spc[0][iBIN+1];
-        }
-        else{
-            if (iBIN == 0) {
-                spcNew[0][iBIN] = spc[0][iBIN] - fno_ePos[iBIN]*spc[0][iBIN];
-            }
-            else
-                spcNew[0][iBIN] = spc[0][iBIN] + fno_ePos[iBIN]*spc[0][iBIN] - fno_ePos[iBIN+1]*spc[0][iBIN+1];
-        }
+      if (e<0) {
+ 
+             if (iBIN == 0)
+                spcNew[0][iBIN] = spc[0][iBIN] + f_eNeg[iBIN+1]*spc[0][iBIN+1];            
+             else if (iBIN<NB-1)
+                spcNew[0][iBIN] = spc[0][iBIN] - f_eNeg[iBIN+1]*spc[0][iBIN] + f_eNeg[iBIN+2]*spc[0][iBIN+1];
+             else
+                spcNew[0][iBIN] = spc[0][iBIN] - f_eNeg[iBIN]*spc[0][iBIN] ;
+
+         //}
         //- 12.11.2018 -Ends
         //added 02.11.2018 (MAAO & AAAA)
         
