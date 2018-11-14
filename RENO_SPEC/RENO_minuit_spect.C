@@ -147,10 +147,10 @@ double chi2(const double *xx)
         }
     }//if
     else {
-        for (int iBIN = 1 ; iBIN < NB+1 ; iBIN++){
-            Eold_i   = xbins[iBIN];
-            Enew_i = (1+e)*xbins[iBIN];
-            Enew_j = (1+e)*xbins[iBIN-1];
+        for (int iBIN = 0 ; iBIN < NB ; iBIN++){
+            Eold_i   = xbins[iBIN+1];
+            Enew_i = (1+e)*xbins[iBIN+1];
+            Enew_j = (1+e)*xbins[iBIN];
             f_ePos[iBIN] = (Enew_i - Eold_i)/(Enew_i - Enew_j);
         }
     } //else
