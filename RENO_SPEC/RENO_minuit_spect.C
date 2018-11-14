@@ -80,6 +80,7 @@ double noNoscTot[nAD];
 double ratio[NB];
 int iAD;
 int iNR;
+double xbins[NB+1];
 //---*****************************************************---//
 //const int nd = nAD;
 TH1F *ratio_histo[nAD];
@@ -96,95 +97,109 @@ TH1F *nosc_spect_hist_bf[nAD];
 //---*****************************************************---//
 double chi2(const double *xx)
 {
-//Pull parameters considered in the chi² function
-  epsilon = xx[0];
-  e       = xx[1];
-  b_d[0]  = xx[1];
-  b_d[1]  = xx[2];
-  fr[0]   = xx[3];
-  fr[1]   = xx[4];
-  fr[2]   = xx[5];
-  fr[3]   = xx[6];
-  fr[4]   = xx[7];
-  fr[5]   = xx[8];
+    //Pull parameters considered in the chi² function
+    epsilon = xx[0];
+    e       = xx[1];
+    b_d[0]  = xx[1];
+    b_d[1]  = xx[2];
+    fr[0]   = xx[3];
+    fr[1]   = xx[4];
+    fr[2]   = xx[5];
+    fr[3]   = xx[6];
+    fr[4]   = xx[7];
+    fr[5]   = xx[8];
+    //---*****************************************************---//
+    int iAD;
+    int iNR;
+    double SurvPavg1        = 0.0;
+    double SurvPavg2        = 0.0;
+    double Nexp1            = 0.0;
+    double Nexp2            = 0.0;
+    double sqr_chi          = 0.0;
+    double sqrerror         = 0.0;
+    double Nobs1            = 0.0;
+    double Nobs             = 0.0;
+    double Nobs2            = 0.0;
+    double Bd               = 0.0;
+    double OFN              = 0.0;
+    double TFN              = 0.0;
+    double sB[2]            = {0.047,0.073};
+    double seps             = 0.002;
+    double sfr_r            = 0.009;
+    double sesc             = 0.0015;
+    double wrd              = 0.0;
   
-  
-  //---*****************************************************---//
-  
-  int iAD;
-  int iNR;
-  double SurvPavg1        = 0.0;
-  double SurvPavg2        = 0.0;
-  double Nexp1            = 0.0;
-  double Nexp2            = 0.0;
-  double sqr_chi          = 0.0;
-  double sqrerror         = 0.0;
-  double Nobs1            = 0.0;
-  double Nobs             = 0.0;
-  double Nobs2            = 0.0;
-  double Bd               = 0.0;
-  double OFN              = 0.0;
-  double TFN              = 0.0;
-  double sB[2]            = {0.047,0.073};
-  double seps             = 0.002;
-  double sfr_r            = 0.009;
-  double sesc             = 0.0015;
-  double wrd              = 0.0;
-  
-  SurvPavg1 = NoscTot[0]/noNoscTot[0];
-  SurvPavg2 = NoscTot[1]/noNoscTot[1];
-  
+    SurvPavg1 = NoscTot[0]/noNoscTot[0];
+    SurvPavg2 = NoscTot[1]/noNoscTot[1];
+
     //- 12.11.2018 -Begins
     double f_ePos[NB] = {0.0};
     double f_eNeg[NB] = {0.0};
     double spcNew[nAD][NB];
     double Eold_i,Enew_i,Enew_j;
 
-    if (e < 0) {    
-       for (int iBIN = 0 ; iBIN < NB ; iBIN++) { //-- should thid part be here or inside the big iBIN loop?
-          Eold_i   = xbins[iBIN];
-          Enew_i = (1+e)*xbins[iBIN];
-          Enew_j = (1+e)*xbins[iBIN+1];
-
-          f_eNeg[iBIN] = (Eold_i - Enew_i)/(Enew_j - Enew_i);
+    if (e < 0) {
+        for (int iBIN = 0 ; iBIN < NB ; iBIN++) {
+            Eold_i   = xbins[iBIN];
+            Enew_i = (1+e)*xbins[iBIN];
+            Enew_j = (1+e)*xbins[iBIN+1];
+            f_eNeg[iBIN] = (Eold_i - Enew_i)/(Enew_j - Enew_i);
         }
-     }//if
-     else {
+    }//if
+    else {
         for (int iBIN = 1 ; iBIN < NB+1 ; iBIN++){
-           Eold_i   = xbins[iBIN];
-           Enew_i = (1+e)*xbins[iBIN];
-           Enew_j = (1+e)*xbins[iBIN-1];
-           f_ePos[iBIN] = (Enew_i - Eold_i)/(Enew_i - Enew_j);
+            Eold_i   = xbins[iBIN];
+            Enew_i = (1+e)*xbins[iBIN];
+            Enew_j = (1+e)*xbins[iBIN-1];
+            f_ePos[iBIN] = (Enew_i - Eold_i)/(Enew_i - Enew_j);
         }
-     } //else
+    } //else
     //- 12.11.2018 -Ends
-    for (int iBIN = 0 ; iBIN < NB ; iBIN++)
-    {
-      //  int index = iAD*NB + iBIN;
-      //-- Measured IDB events of the dth Antineutrino Detector (background is substracted)
-      Nobs1 = (data_spect_histo[0]->GetBinContent(iBIN+1))*IBDrate_data[0][0]*0.7644*daqTime[0];
-      Nobs2 = (data_spect_histo[1]->GetBinContent(iBIN+1))*IBDrate_data[1][0]*0.7644*daqTime[1];
+
+    for (int iBIN = 0 ; iBIN < NB ; iBIN++){
+        //  int index = iAD*NB + iBIN;
+        //-- Measured IDB events of the dth Antineutrino Detector (background is substracted)
+        Nobs1 = (data_spect_histo[0]->GetBinContent(iBIN+1))*IBDrate_data[0][0]*0.7644*daqTime[0];
+        Nobs2 = (data_spect_histo[1]->GetBinContent(iBIN+1))*IBDrate_data[1][0]*0.7644*daqTime[1];
       
-      sqrerror = ( Nobs2/(pow(Nobs1,2)) ) + ( (pow(Nobs2,2))/(pow(Nobs1,3)) );
+        sqrerror = ( Nobs2/(pow(Nobs1,2)) ) + ( (pow(Nobs2,2))/(pow(Nobs1,3)) );
 
         //- 12.11.2018 -Begins
-      if (e<0) {
- 
-             if (iBIN == 0)
-                spcNew[0][iBIN] = spc[0][iBIN] + f_eNeg[iBIN+1]*spc[0][iBIN+1];            
-             else if (iBIN<NB-1)
+        if (e < 0) {
+            if (iBIN == 0){
+                spcNew[0][iBIN] = spc[0][iBIN] + f_eNeg[iBIN+1]*spc[0][iBIN+1];
+                spcNew[1][iBIN] = spc[1][iBIN] + f_eNeg[iBIN+1]*spc[1][iBIN+1];
+            }
+            else if (iBIN<NB-1){
                 spcNew[0][iBIN] = spc[0][iBIN] - f_eNeg[iBIN+1]*spc[0][iBIN] + f_eNeg[iBIN+2]*spc[0][iBIN+1];
-             else
-                spcNew[0][iBIN] = spc[0][iBIN] - f_eNeg[iBIN]*spc[0][iBIN] ;
+                spcNew[1][iBIN] = spc[1][iBIN] - f_eNeg[iBIN+1]*spc[1][iBIN] + f_eNeg[iBIN+2]*spc[1][iBIN+1];
+            }
+            else{
+                spcNew[0][iBIN] = spc[0][iBIN] - f_eNeg[iBIN]*spc[0][iBIN];
+                spcNew[1][iBIN] = spc[1][iBIN] - f_eNeg[iBIN]*spc[1][iBIN];
+            }
+        }
 
-         //}
+        if (e >= 0) {
+            if (iBIN == 0){
+                spcNew[0][iBIN] = spc[0][iBIN] - f_ePos[iBIN+1]*spc[0][iBIN];
+                spcNew[1][iBIN] = spc[1][iBIN] - f_ePos[iBIN+1]*spc[1][iBIN];
+            }
+            else if (iBIN<NB-1){
+                spcNew[0][iBIN] = spc[0][iBIN] + f_ePos[iBIN]*spc[0][iBIN-1] - f_ePos[iBIN+1]*spc[0][iBIN];
+                spcNew[1][iBIN] = spc[1][iBIN] + f_ePos[iBIN]*spc[1][iBIN-1] - f_ePos[iBIN+1]*spc[1][iBIN];
+            }
+            else{
+                spcNew[0][iBIN] = spc[0][iBIN] + f_ePos[iBIN]*spc[0][iBIN-1];
+                spcNew[1][iBIN] = spc[1][iBIN] + f_ePos[iBIN]*spc[1][iBIN-1];
+            }
+        }
         //- 12.11.2018 -Ends
-        //added 02.11.2018 (MAAO & AAAA)
         
+        //added 02.11.2018 (MAAO & AAAA)
         Nexp1 = 0.0;
         Nexp2 = 0.0;
-        for (iNR = 0 ; iNR < nNR ; iNR++)
-        {
+        for (iNR = 0 ; iNR < nNR ; iNR++){
             //Nexp1 += (1+fr[iNR])*wrd_array[0][iNR]*spc[0][iBIN]*(SurvPavg1*noOsc_IBDrate_perday[0]/NoscTot[0])*0.7644*daqTime[0];
             Nexp1 += (1+fr[iNR])*wrd_array[0][iNR]*spcNew[0][iBIN]*(SurvPavg1*noOsc_IBDrate_perday[0]/NoscTot[0])*0.7644*daqTime[0];
 
@@ -195,23 +210,21 @@ double chi2(const double *xx)
         //Nexp1 = spc[0][iBIN]*(SurvPavg1*noOsc_IBDrate_perday[0]/NoscTot[0])*0.7644*daqTime[0];
         //Nexp2 = spc[1][iBIN]*(SurvPavg2*noOsc_IBDrate_perday[1]/NoscTot[1])*0.7644*daqTime[1];
 
-      // Compute of the ratios of Data and expect spectra
+        // Compute of the ratios of Data and expect spectra
       
-      OFN = Nobs2/Nobs1;
+        OFN = Nobs2/Nobs1;
         //TFN = ( Nexp2 - b_d[1] )/( Nexp1 - b_d[0]);
         //TFN = ( (1.0 + epsilon + e)*Nexp2 - b_d[1] )/( (1.0 + epsilon + e)*Nexp1 - b_d[0]);
         TFN = ( (1.0 + epsilon)*Nexp2 - b_d[1] )/( (1.0 + epsilon)*Nexp1 - b_d[0]);
 
-      //cout << " OFN = " << OFN << " Nobs = " << Nobs <<endl;
+        //cout << " OFN = " << OFN << " Nobs = " << Nobs <<endl;
 
-      // Chi^2 funtion
+        // Chi^2 funtion
         //sqr_chi += pow( OFN - (TFN*(1.0 + epsilon + e ) ) ,2 )/sqrerror;
         sqr_chi += pow( OFN - TFN ,2 )/sqrerror;
-
     }
   
-  for (iAD = 0 ; iAD < nAD ; iAD++)
-    {
+    for (iAD = 0 ; iAD < nAD ; iAD++){
       //-- Background error of the dth Antineutrino Detector
       //sB = totalBgd[iAD][1]*0.7644*daqTime[iAD];
         sqr_chi +=  pow(b_d[iAD]/sB[iAD],2) ;
@@ -222,8 +235,8 @@ double chi2(const double *xx)
         sqr_chi += pow(fr[iNR]/sfr_r,2);
     }
 
-    //sqr_chi += pow(epsilon/seps,2) + pow(e/sesc,2) ;
-    sqr_chi += pow(epsilon/seps,2);
+    sqr_chi += pow(epsilon/seps,2) + pow(e/sesc,2) ;
+    //sqr_chi += pow(epsilon/seps,2);
 
   return sqr_chi;
   
@@ -274,7 +287,7 @@ int RENO_minuit_spect(const char * minName = "Minuit",
   //const double lo = 1.2;  
   //const double hi = 8.4;
   //const int nd = 2;
-  double xbins[NB+1];
+  //double xbins[NB+1];
   //xbins[0] = 1.2;
   //cout << xbins[0] <<endl;
   double delta_bins2 = (6.0 - 1.2)/24; // 0.2 MeV/bin

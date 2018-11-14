@@ -8,8 +8,8 @@ echo '0) Define Grid'
 echo '=========================================='
 echo 
 
-export NS2T=40
-export NDM2=40
+export NS2T=10
+export NDM2=10
 
 export LO_S2T=0.01
 export HI_S2T=0.20
@@ -36,7 +36,7 @@ echo '=========================================='
 echo '1) Running renograph.C'
 echo '=========================================='
 echo 
-root -b -l -n -q renograph.C
+#root -b -l -n -q renograph.C
 
 echo
 
@@ -48,7 +48,7 @@ echo '=========================================='
 echo '2) Running ldist_2x6_RENO.C'
 echo '=========================================='
 echo 
-root -b -l -n -q ldist_2x6_RENO.C
+#root -b -l -n -q ldist_2x6_RENO.C
 
 echo
 
@@ -60,7 +60,7 @@ echo '=========================================='
 echo 
 export NTUPLE_EVENTS=1000000
 echo $NTUPLE_EVENTS ntuple events
-root -b -l -n -q RENO_ntuple_spect.C
+#root -b -l -n -q RENO_ntuple_spect.C
 
 echo
 
@@ -70,7 +70,7 @@ echo '=========================================='
 echo '4) Running RENO_osc_spect.C'
 echo '=========================================='
 echo
-root -b -l -n -q RENO_osc_spect.C
+#root -b -l -n -q RENO_osc_spect.C
 
 #-----------------------------------------------------------------------------
 # run minimization
