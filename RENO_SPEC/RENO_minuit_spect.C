@@ -171,8 +171,8 @@ double chi2(const double *xx)
                 spcNew[1][iBIN] = spc[1][iBIN] + f_eNeg[iBIN+1]*spc[1][iBIN+1];
             }
             else if (iBIN<NB-1){
-                spcNew[0][iBIN] = spc[0][iBIN] - f_eNeg[iBIN+1]*spc[0][iBIN] + f_eNeg[iBIN+2]*spc[0][iBIN+1];
-                spcNew[1][iBIN] = spc[1][iBIN] - f_eNeg[iBIN+1]*spc[1][iBIN] + f_eNeg[iBIN+2]*spc[1][iBIN+1];
+                spcNew[0][iBIN] = spc[0][iBIN] - f_eNeg[iBIN]*spc[0][iBIN] + f_eNeg[iBIN+1]*spc[0][iBIN+1];
+                spcNew[1][iBIN] = spc[1][iBIN] - f_eNeg[iBIN]*spc[1][iBIN] + f_eNeg[iBIN+1]*spc[1][iBIN+1];
             }
             else{
                 spcNew[0][iBIN] = spc[0][iBIN] - f_eNeg[iBIN]*spc[0][iBIN];
