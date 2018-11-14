@@ -100,14 +100,14 @@ double chi2(const double *xx)
     //Pull parameters considered in the chi² function
     epsilon = xx[0];
     e       = xx[1];
-    b_d[0]  = xx[1];
-    b_d[1]  = xx[2];
-    fr[0]   = xx[3];
-    fr[1]   = xx[4];
-    fr[2]   = xx[5];
-    fr[3]   = xx[6];
-    fr[4]   = xx[7];
-    fr[5]   = xx[8];
+    b_d[0]  = xx[2];
+    b_d[1]  = xx[3];
+    fr[0]   = xx[4];
+    fr[1]   = xx[5];
+    fr[2]   = xx[6];
+    fr[3]   = xx[7];
+    fr[4]   = xx[8];
+    fr[5]   = xx[9];
     //---*****************************************************---//
     int iAD;
     int iNR;
@@ -378,8 +378,7 @@ int RENO_minuit_spect(const char * minName = "Minuit",
 	  double step[N_params] = {stp,stp,stp,stp,stp,stp,stp,stp,stp,stp};
 
 	  //-- Initial parameter values
-        //double start[N_params] = {0.0,0.0,
-        //0.0,0.0};
+        //double start[N_params] = {0.0,0.0,0.0,0.0};
         double start[N_params] = {0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0};
 
 	  //-- Calling Minuit function setting
@@ -390,15 +389,15 @@ int RENO_minuit_spect(const char * minName = "Minuit",
 	  
     min->SetLimitedVariable(0,  "epsilon", start[0],  step[0],  -lim, lim);
     min->SetLimitedVariable(1,  "e",       start[1],  step[1],  -lim, lim);
-    min->SetLimitedVariable(2,  "b_0",     start[1],  step[1],  -lim, lim);
-    min->SetLimitedVariable(3,  "b_1",     start[2],  step[2],  -lim, lim);
+    min->SetLimitedVariable(2,  "b_0",     start[2],  step[2],  -lim, lim);
+    min->SetLimitedVariable(3,  "b_1",     start[3],  step[3],  -lim, lim);
     
-    min->SetLimitedVariable(4,  "f_0",     start[3],  step[3],  -lim,  lim);
-    min->SetLimitedVariable(5,  "f_1",     start[4],  step[4],  -lim,  lim);
-    min->SetLimitedVariable(6,  "f_2",     start[5],  step[5],  -lim, lim);
-    min->SetLimitedVariable(7,  "f_3",     start[6],  step[6],  -lim, lim);
-    min->SetLimitedVariable(8,  "f_4",     start[7],  step[7],  -lim,  lim);
-    min->SetLimitedVariable(9,  "f_5",     start[8],  step[8],  -lim,  lim);
+    min->SetLimitedVariable(4,  "f_0",     start[4],  step[4],  -lim, lim);
+    min->SetLimitedVariable(5,  "f_1",     start[5],  step[5],  -lim, lim);
+    min->SetLimitedVariable(6,  "f_2",     start[6],  step[6],  -lim, lim);
+    min->SetLimitedVariable(7,  "f_3",     start[7],  step[7],  -lim, lim);
+    min->SetLimitedVariable(8,  "f_4",     start[8],  step[8],  -lim, lim);
+    min->SetLimitedVariable(9,  "f_5",     start[9],  step[9],  -lim, lim);
 	  
 	
     /*min->SetFixedVariable(0,  "epsilon", start[0]);
