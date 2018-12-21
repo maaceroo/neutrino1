@@ -27,22 +27,14 @@
 //---*****************************************************************************---//
 //------------------------ CONSTANTS ------------------------------------------------//
 //---*****************************************************************************---//
-// histogram binning for the simulated data
-//#define  NB 27
-//#define  lo 1.2
-//#define  hi 8.4
 //Number of Antineutrino Detectors
-#define  nAD 2
+#define nAD 2
 //Number of Nuclear Reactors
 #define nNR 6
 //Fixed neutrino oscillations parameters
 #define dm2_21 7.53e-5 //eV^2,                  // 1610.0432v5 (2017)
 //#define dm2_ee 2.62e-3 //eV^2,                  // 1610.0432v5 (2017)
 #define s22th_12 0.846
-//For the sin^2(2th_13) loop
-//#define N_s2t  100                            //number of points in the grid
-//#define N_dm2  100	                           //number of points in the grid
-//#define hi_dm2 3.5e-3                       //dm2 max
 double ran = N_dm2 * N_s2t;
 //---*****************************************************---//
 
@@ -50,7 +42,6 @@ double ran = N_dm2 * N_s2t;
 //-- Global variables and quantities ------------------------//
 //---*****************************************************---//
 //(IBD candidates)/(DAQ live time -days-) from PRL 1610.0432v5 (2017)
-//double IBDrate_data[nAD][2] = { {634.20,1.18},{64.38,0.36} };
 double IBDrate_data[nAD][2] = { {616.67,1.14},{61.24,0.42} };
 //IBD rate (per day), total background and efficiencies (1610.0432v5 (2017))
 double totalBgd[nAD][2] = { {17.54,0.83},{3.14,0.23} };
@@ -60,10 +51,6 @@ double daqTime[nAD] = {458.49,489.93};
 // Information obtained by executing the script "RENO_osc_rate.C"
 //IBD rate per day w/o oscillations
 double noOsc_IBDrate_perday[nAD] = { 622.68,  65.39};
-//<sin^2(1.267 dm2_21 L/E)> for each AD
-//double avgSinDelta21[nAD] = { 0.000110395, 0.001236837};
-//<sin^2(1.267 dm2_ee L/E)> for each AD
-//double avgSinDeltaee[nAD] = { 0.109914046, 0.717994798};
 //---*****************************************************---//
 double s2th_13; //oscillation parameter to be fitted
 double dm2_ee;   //oscillation parameter to be fitted
@@ -72,7 +59,6 @@ double e; //Escale Pull term
 double epsilon; //Efficiency Pull term
 double wrd_array[nAD][nNR];
 double fr[nNR];
-//double eps_d[nAD];
 double b_d[nAD];
 double spc[nAD][NB];
 double NoscTot[nAD];
@@ -82,10 +68,8 @@ int iAD;
 int iNR;
 double xbins[NB+1];
 //---*****************************************************---//
-//const int nd = nAD;
 TH1F *ratio_histo[nAD];
 TH1F *data_spect_histo[nAD];
-//TH1F *BkGd_spect_histo[nAD];
 //---*****************************************************---//
 TH1F *nosc_spect_hist[nAD];
 TH1F *nosc_spect_hist_1[nAD];
@@ -132,7 +116,7 @@ double chi2(const double *xx)
     SurvPavg1 = NoscTot[0]/noNoscTot[0];
     SurvPavg2 = NoscTot[1]/noNoscTot[1];
 
-    //- 12.11.2018 -Begins
+    //- 12.11.2018 -Begins - This part allows to include properly the energy scale pull term
     double f_ePos[NB] = {0.0};
     double f_eNeg[NB] = {0.0};
     double spcNew[nAD][NB];
@@ -157,14 +141,13 @@ double chi2(const double *xx)
     //- 12.11.2018 -Ends
 
     for (int iBIN = 0 ; iBIN < NB ; iBIN++){
-        //  int index = iAD*NB + iBIN;
         //-- Measured IDB events of the dth Antineutrino Detector (background is substracted)
         Nobs1 = (data_spect_histo[0]->GetBinContent(iBIN+1))*IBDrate_data[0][0]*0.7644*daqTime[0];
         Nobs2 = (data_spect_histo[1]->GetBinContent(iBIN+1))*IBDrate_data[1][0]*0.7644*daqTime[1];
       
         sqrerror = ( Nobs2/(pow(Nobs1,2)) ) + ( (pow(Nobs2,2))/(pow(Nobs1,3)) );
 
-        //- 12.11.2018 -Begins
+        //- 12.11.2018 -Begins - This part allows to include properly the energy scale pull term
         if (e < 0) {
             if (iBIN == 0){
                 spcNew[0][iBIN] = spc[0][iBIN] + f_eNeg[iBIN+1]*spc[0][iBIN+1];
@@ -196,37 +179,27 @@ double chi2(const double *xx)
         }
         //- 12.11.2018 -Ends
         
-        //added 02.11.2018 (MAAO & AAAA)
         Nexp1 = 0.0;
         Nexp2 = 0.0;
         for (iNR = 0 ; iNR < nNR ; iNR++){
-            //Nexp1 += (1+fr[iNR])*wrd_array[0][iNR]*spc[0][iBIN]*(SurvPavg1*noOsc_IBDrate_perday[0]/NoscTot[0])*0.7644*daqTime[0];
             Nexp1 += (1+fr[iNR])*wrd_array[0][iNR]*spcNew[0][iBIN]*(SurvPavg1*noOsc_IBDrate_perday[0]/NoscTot[0])*0.7644*daqTime[0];
 
-            //Nexp2 += (1+fr[iNR])*wrd_array[1][iNR]*spc[1][iBIN]*(SurvPavg2*noOsc_IBDrate_perday[1]/NoscTot[1])*0.7644*daqTime[1];
             Nexp2 += (1+fr[iNR])*wrd_array[1][iNR]*spcNew[1][iBIN]*(SurvPavg2*noOsc_IBDrate_perday[1]/NoscTot[1])*0.7644*daqTime[1];
         }
-        // Number expected Events from the simulation
-        //Nexp1 = spc[0][iBIN]*(SurvPavg1*noOsc_IBDrate_perday[0]/NoscTot[0])*0.7644*daqTime[0];
-        //Nexp2 = spc[1][iBIN]*(SurvPavg2*noOsc_IBDrate_perday[1]/NoscTot[1])*0.7644*daqTime[1];
+        //Nexp1 = 1.123*Nexp1;
+        Nexp2 = Nexp2*1.006; //fudge normalization factor
 
         // Compute of the ratios of Data and expect spectra
-      
         OFN = Nobs2/Nobs1;
-        //TFN = ( Nexp2 - b_d[1] )/( Nexp1 - b_d[0]);
-        //TFN = ( (1.0 + epsilon + e)*Nexp2 - b_d[1] )/( (1.0 + epsilon + e)*Nexp1 - b_d[0]);
         TFN = ( (1.0 + epsilon)*Nexp2 - b_d[1] )/( (1.0 + epsilon)*Nexp1 - b_d[0]);
-
         //cout << " OFN = " << OFN << " Nobs = " << Nobs <<endl;
 
         // Chi^2 funtion
-        //sqr_chi += pow( OFN - (TFN*(1.0 + epsilon + e ) ) ,2 )/sqrerror;
         sqr_chi += pow( OFN - TFN ,2 )/sqrerror;
     }
   
     for (iAD = 0 ; iAD < nAD ; iAD++){
       //-- Background error of the dth Antineutrino Detector
-      //sB = totalBgd[iAD][1]*0.7644*daqTime[iAD];
         sqr_chi +=  pow(b_d[iAD]/sB[iAD],2) ;
     }
   
@@ -236,12 +209,10 @@ double chi2(const double *xx)
     }
 
     sqr_chi += pow(epsilon/seps,2) + pow(e/sesc,2) ;
-    //sqr_chi += pow(epsilon/seps,2);
 
   return sqr_chi;
   
 }
-//break;
 //---*****************************************************---//
 
 int RENO_minuit_spect(const char * minName = "Minuit",
@@ -262,9 +233,7 @@ int RENO_minuit_spect(const char * minName = "Minuit",
 
          //cout << wrd_array[0][iNR] << "   " << wrd_array[1][iNR]  << endl;
      }
-     
-  
-  
+    
   //-------------------
   // Energy Histograms
   //-------------------
@@ -282,14 +251,6 @@ int RENO_minuit_spect(const char * minName = "Minuit",
     
   }
 
-  // define number of bins //
-  //const int  NB = 27; 
-  //const double lo = 1.2;  
-  //const double hi = 8.4;
-  //const int nd = 2;
-  //double xbins[NB+1];
-  //xbins[0] = 1.2;
-  //cout << xbins[0] <<endl;
   double delta_bins2 = (6.0 - 1.2)/24; // 0.2 MeV/bin
   
   for (int i = 0 ; i < (NB-2) ; i++)
@@ -299,8 +260,6 @@ int RENO_minuit_spect(const char * minName = "Minuit",
   xbins[25] = xbins[24] + 0.4;
   xbins[26] = 8.4 - 1.4;
   xbins[27] = 8.4;
-  
-  //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   
   for(int iAD = 0 ; iAD < nAD ; iAD++)
     {
@@ -328,16 +287,18 @@ int RENO_minuit_spect(const char * minName = "Minuit",
   minimPullT_file.open((pterms).c_str());
   
   
-  ifstream file("./files/RENO_gridOscSpectra_test.txt"); //50x50 parameter space-grid
-  //ifstream file("files/RENO_gridOscSpectra.txt");
+  ifstream file("./files/RENO_gridOscSpectra_test.txt");
   cout << "Reading file - Loop in progress..." << endl;
   int iad = 0;
-  //int inr = 0;
   int first2 = 1;
   
-  while (file >> iAD >> s2th_13 >> dm2_ee  >> spc[iad][0] >> spc[iad][1] >> spc[iad][2] >> spc[iad][3] >> spc[iad][4] >> spc[iad][5] >> spc[iad][6] >> spc[iad][7] >> spc[iad][8] >> spc[iad][9] >> spc[iad][10] >> spc[iad][11] >> spc[iad][12] >> spc[iad][13] >> spc[iad][14] >> spc[iad][15] >> spc[iad][16] >> spc[iad][17] >> spc[iad][18] >> spc[iad][19] >> spc[iad][20] >> spc[iad][21] >> spc[iad][22] >> spc[iad][23] >> spc[iad][24] >> spc[iad][25] >> spc[iad][26] >> NoscTot[iad])
-    //    break;
-    {//file loop
+  while (file >> iAD >> s2th_13 >> dm2_ee  >> spc[iad][0] >> spc[iad][1] >> spc[iad][2] >>
+         spc[iad][3] >> spc[iad][4] >> spc[iad][5] >> spc[iad][6] >> spc[iad][7] >> spc[iad][8] >>
+         spc[iad][9] >> spc[iad][10] >> spc[iad][11] >> spc[iad][12] >> spc[iad][13] >> spc[iad][14] >>
+         spc[iad][15] >> spc[iad][16] >> spc[iad][17] >> spc[iad][18] >> spc[iad][19] >> spc[iad][20] >>
+         spc[iad][21] >> spc[iad][22] >> spc[iad][23] >> spc[iad][24] >> spc[iad][25] >> spc[iad][26] >>
+         NoscTot[iad])
+  {//file loop
      // cout << " a = " << spc[0][26] << endl; 
       if(first2 <= 2)
 	{
@@ -350,10 +311,7 @@ int RENO_minuit_spect(const char * minName = "Minuit",
 	    }
 	  
 	  cout << " iAD = " << iAD  /*<< " iNR = " << iNR */ << "  first2 = " << first2 << endl;
-	  //nosc_spect_hist[iAD-1]->Print("all"); // ---- 2017-08-07
-	  cout << "Number of events: " << nosc_spect_hist[iAD-1]->Integral() << endl; // ---- 2017-08-07
-	  //cout << "NoscTot: " << NoscTot[iad][inr] << endl; // ---- 2017-08-07
-	  //cout << "NoscTot         : " << NoscTot[iad] << endl; // ---- 2017-08-07
+	  cout << "Number of events: " << nosc_spect_hist[iAD-1]->Integral() << endl;
 	  noNoscTot[iad] = NoscTot[iad];
 	  
 	  first2++;
@@ -369,23 +327,20 @@ int RENO_minuit_spect(const char * minName = "Minuit",
 	  iad = 0;
 	  
 	  //cout << "Start Minimization..." << endl;
-        //const int N_params = 4; //-- Number of parameter of the chi² function --//
         const int N_params = 10; //-- Number of parameter of the chi² function --//
-        //const int N_params = 9; //-- Number of parameter of the chi² function --//
 	  ROOT::Math::Functor f(&chi2,N_params); //-- Setting the function to be minimized by using Minuit --//
 	  //-- Steps
 	  double stp = 1.0e-4;
 	  double step[N_params] = {stp,stp,stp,stp,stp,stp,stp,stp,stp,stp};
 
 	  //-- Initial parameter values
-        //double start[N_params] = {0.0,0.0,0.0,0.0};
         double start[N_params] = {0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0};
 
 	  //-- Calling Minuit function setting
 	  min->SetFunction(f);
 	  
 	  //-- Setting variables
-    double lim = 5.0e-1;
+    double lim = 5.0e-2;
 	  
     min->SetLimitedVariable(0,  "epsilon", start[0],  step[0],  -lim, lim);
     min->SetLimitedVariable(1,  "e",       start[1],  step[1],  -lim, lim);
@@ -427,7 +382,10 @@ int RENO_minuit_spect(const char * minName = "Minuit",
 	  }
 	  
 	  //-- Uncomment if you want to print the pull parameters (also Line 205)
-        minimPullT_file  << s2th_13 << "\t" << dm2_ee  << "\t" << xs[0] << "\t" << xs[1] << "\t" << xs[2] << "\t" << xs[3] << "\t" << xs[4] << "\t" << xs[5] << "\t" << xs[6] << "\t" << xs[7] << "\t" << xs[8] /*<< "\t" << xs[9]*/ << "\t" << chi2Min << endl;
+        minimPullT_file  << s2th_13 << "\t" << dm2_ee  << "\t"
+            << xs[0] << "\t" << xs[1] << "\t" << xs[2] << "\t" << xs[3] << "\t" << xs[4] << "\t"
+            << xs[5] << "\t" << xs[6] << "\t" << xs[7] << "\t" << xs[8] << "\t" << xs[9] << "\t"
+            << chi2Min << endl;
 	  //}
 	  
 	  if (dm2_ee == hi_dm2)
@@ -452,7 +410,7 @@ int RENO_minuit_spect(const char * minName = "Minuit",
   nosc_spect_hist_1[1]->Draw();
   c2->Print("Plots/nosc_far.pdf");
 
-  //////////////////////////////////////////////// Chi2 minimun value ///////////////////////////////////////////////////////////////////
+  ///// Chi2 minimun value /////
     
   ofstream chi2min;
   string chiminima = "files/chi2_minimun_spect.txt";
@@ -483,10 +441,11 @@ int RENO_minuit_spect(const char * minName = "Minuit",
       }
     }
   }  
-  cout << "sin2t_13 = " << matr[0][n]   << " dm2_ee = " << matr[1][n]  << " chi2 = " << matr[2][n]  << " n = " << n  << endl;
+  cout << "sin2t_13 = " << matr[0][n]   << " dm2_ee = " << matr[1][n]
+       << " chi2 = " << matr[2][n]  << " n = " << n  << endl;
   chi2min  << matr[0][n]   <<  "\t" << matr[1][n]  << "\t" << matr[2][n]  << endl;
   chi2min <<endl;
-  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  //-----------
   
   int m;
   const int rows3 = nAD*ran + nAD;
