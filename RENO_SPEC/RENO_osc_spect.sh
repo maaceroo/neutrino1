@@ -36,7 +36,7 @@ echo '=========================================='
 echo '1) Running renograph.C'
 echo '=========================================='
 echo 
-time root -b -l -n -q renograph.C
+#time root -b -l -n -q renograph.C
 
 echo
 
@@ -48,7 +48,7 @@ echo '=========================================='
 echo '2) Running ldist_2x6_RENO.C'
 echo '=========================================='
 echo 
-time root -b -l -n -q ldist_2x6_RENO.C
+#time root -b -l -n -q ldist_2x6_RENO.C
 
 echo
 
@@ -60,7 +60,7 @@ echo '=========================================='
 echo 
 export NTUPLE_EVENTS=1000000
 echo $NTUPLE_EVENTS ntuple events
-time root -b -l -n -q RENO_ntuple_spect.C
+#time root -b -l -n -q RENO_ntuple_spect.C
 
 echo
 
@@ -70,7 +70,7 @@ echo '=========================================='
 echo '4) Running RENO_osc_spect.C'
 echo '=========================================='
 echo
-time root -b -l -n -q RENO_osc_spect.C
+#time root -b -l -n -q RENO_osc_spect.C
 
 #-----------------------------------------------------------------------------
 # run minimization
@@ -93,7 +93,7 @@ echo 'compiling  RENO_margin_spect.cpp'
 echo '=========================================='
 echo
 ##g++ -o RENO_margin_spect.exe RENO_margin_spect.cpp
-clang++ -o RENO_margin_spect.exe RENO_margin_spect.cpp
+#clang++ -o RENO_margin_spect.exe RENO_margin_spect.cpp
 
 echo
 #-----------------------------------------------------------------------------

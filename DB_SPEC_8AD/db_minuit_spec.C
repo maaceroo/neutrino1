@@ -462,96 +462,99 @@ int db_minuit_spec(const char * minName = "Minuit",
                 double lim = 1.0e-1;
                 
 		min->SetLimitedVariable(0,  "e_1", start[0],  step[0],  -lim, lim);
-                min->SetLimitedVariable(1,  "e_2", start[1],  step[1],  -lim, lim);
-                min->SetLimitedVariable(2,  "e_3", start[2],  step[2],  -lim, lim);
-                min->SetLimitedVariable(3,  "e_4", start[3],  step[3],  -lim, lim);
-                min->SetLimitedVariable(4,  "e_5", start[4],  step[4],  -lim, lim);
-                min->SetLimitedVariable(5,  "e_6", start[5],  step[5],  -lim, lim);
-                min->SetLimitedVariable(6,  "e_7", start[6],  step[6],  -lim, lim);
-                min->SetLimitedVariable(7,  "e_8", start[7],  step[7],  -lim, lim);
+        min->SetLimitedVariable(1,  "e_2", start[1],  step[1],  -lim, lim);
+        min->SetLimitedVariable(2,  "e_3", start[2],  step[2],  -lim, lim);
+        min->SetLimitedVariable(3,  "e_4", start[3],  step[3],  -lim, lim);
+        min->SetLimitedVariable(4,  "e_5", start[4],  step[4],  -lim, lim);
+        min->SetLimitedVariable(5,  "e_6", start[5],  step[5],  -lim, lim);
+        min->SetLimitedVariable(6,  "e_7", start[6],  step[6],  -lim, lim);
+        min->SetLimitedVariable(7,  "e_8", start[7],  step[7],  -lim, lim);
 		
                 
 		min->SetLimitedVariable(8,  "n_1", start[8],  step[8],  -lim, lim);
-                min->SetLimitedVariable(9,  "n_2", start[9],  step[9],  -lim, lim);
-                min->SetLimitedVariable(10, "n_3", start[10], step[10], -lim, lim);
-                min->SetLimitedVariable(11, "n_4", start[11], step[11], -lim, lim);
-                min->SetLimitedVariable(12, "n_5", start[12], step[12], -lim, lim);
-                min->SetLimitedVariable(13, "n_6", start[13], step[13], -lim, lim);
-                min->SetLimitedVariable(14, "n_7", start[14], step[14], -lim, lim);
-                min->SetLimitedVariable(15, "n_8", start[15], step[15], -lim, lim);
+        min->SetLimitedVariable(9,  "n_2", start[9],  step[9],  -lim, lim);
+        min->SetLimitedVariable(10, "n_3", start[10], step[10], -lim, lim);
+        min->SetLimitedVariable(11, "n_4", start[11], step[11], -lim, lim);
+        min->SetLimitedVariable(12, "n_5", start[12], step[12], -lim, lim);
+        min->SetLimitedVariable(13, "n_6", start[13], step[13], -lim, lim);
+        min->SetLimitedVariable(14, "n_7", start[14], step[14], -lim, lim);
+        min->SetLimitedVariable(15, "n_8", start[15], step[15], -lim, lim);
 		
                 
 		min->SetLimitedVariable(16, "a_1", start[16], step[16], -lim, lim);
-                min->SetLimitedVariable(17, "a_2", start[17], step[17], -lim, lim);
-                min->SetLimitedVariable(18, "a_3", start[18], step[18], -lim, lim);
-                min->SetLimitedVariable(19, "a_4", start[19], step[19], -lim, lim);
-                min->SetLimitedVariable(20, "a_5", start[20], step[20], -lim, lim);
-                min->SetLimitedVariable(21, "a_6", start[21], step[21], -lim, lim);
+        min->SetLimitedVariable(17, "a_2", start[17], step[17], -lim, lim);
+        min->SetLimitedVariable(18, "a_3", start[18], step[18], -lim, lim);
+        min->SetLimitedVariable(19, "a_4", start[19], step[19], -lim, lim);
+        min->SetLimitedVariable(20, "a_5", start[20], step[20], -lim, lim);
+        min->SetLimitedVariable(21, "a_6", start[21], step[21], -lim, lim);
 		
-                min->SetLimitedVariable(22, "eps", start[22], step[22], -lim, lim);
+        min->SetLimitedVariable(22, "eps", start[22], step[22], -lim, lim);
 		//-----------------------------------------------------------------//
 		/*
-                min->SetFixedVariable(0,  "e_1", start[0]);
-                min->SetFixedVariable(1,  "e_2", start[1]);
-                min->SetFixedVariable(2,  "e_3", start[2]);
-                min->SetFixedVariable(3,  "e_4", start[3]);
-                min->SetFixedVariable(4,  "e_5", start[4]);
-                min->SetFixedVariable(5,  "e_6", start[5]);
-                min->SetFixedVariable(6,  "e_7", start[6]);
-                min->SetFixedVariable(7,  "e_8", start[7]);
+        min->SetFixedVariable(0,  "e_1", start[0]);
+        min->SetFixedVariable(1,  "e_2", start[1]);
+        min->SetFixedVariable(2,  "e_3", start[2]);
+        min->SetFixedVariable(3,  "e_4", start[3]);
+        min->SetFixedVariable(4,  "e_5", start[4]);
+        min->SetFixedVariable(5,  "e_6", start[5]);
+        min->SetFixedVariable(6,  "e_7", start[6]);
+        min->SetFixedVariable(7,  "e_8", start[7]);
 		*/
-	        /*
+        /*
 		min->SetFixedVariable(8,  "n_1", start[8]);
-                min->SetFixedVariable(9,  "n_2", start[9]);
-                min->SetFixedVariable(10, "n_3", start[10]);
-                min->SetFixedVariable(11, "n_4", start[11]);
-                min->SetFixedVariable(12, "n_5", start[12]);
-                min->SetFixedVariable(13, "n_6", start[13]);
-                min->SetFixedVariable(14, "n_7", start[14]);
-                min->SetFixedVariable(15, "n_8", start[15]);
+        min->SetFixedVariable(9,  "n_2", start[9]);
+        min->SetFixedVariable(10, "n_3", start[10]);
+        min->SetFixedVariable(11, "n_4", start[11]);
+        min->SetFixedVariable(12, "n_5", start[12]);
+        min->SetFixedVariable(13, "n_6", start[13]);
+        min->SetFixedVariable(14, "n_7", start[14]);
+        min->SetFixedVariable(15, "n_8", start[15]);
 		*/
 		/*
-                min->SetFixedVariable(16, "a_1", start[16]);
-                min->SetFixedVariable(17, "a_2", start[17]);
-                min->SetFixedVariable(18, "a_3", start[18]);
-                min->SetFixedVariable(19, "a_4", start[19]);
-                min->SetFixedVariable(20, "a_5", start[20]);
-                min->SetFixedVariable(21, "a_6", start[21]);
+        min->SetFixedVariable(16, "a_1", start[16]);
+        min->SetFixedVariable(17, "a_2", start[17]);
+        min->SetFixedVariable(18, "a_3", start[18]);
+        min->SetFixedVariable(19, "a_4", start[19]);
+        min->SetFixedVariable(20, "a_5", start[20]);
+        min->SetFixedVariable(21, "a_6", start[21]);
 		*/
-                //min->SetFixedVariable(22, "eps", start[22]);
+        //min->SetFixedVariable(22, "eps", start[22]);
                 min->SetErrorDef(2.3);
-                
-                //-- Calling Minuit minimization
-
-                min->Minimize();
+            
+        //-- Calling Minuit minimization
+        
+        min->Minimize();
           
                 const double *xs = min->X();
                 
-                double chi2Min = min->MinValue();
-                chi2Surface_file << s2th_13 << "\t" << dm2_31 << "\t" << chi2Min << endl;
+        double chi2Min = min->MinValue();
+        chi2Surface_file << s2th_13 << "\t" << dm2_31 << "\t" << chi2Min << endl;
+        
+        if (chi2Min < 0.0) {
+            cout << "Critical error: chi2Min is negative!  " << chi2Min << endl;
+            break;
+        }
                 
-                if (chi2Min < 0.0) {
-                    cout << "Critical error: chi2Min is negative!  " << chi2Min << endl;
-                    break;
-                }
-                
-                minimPullT_file  << s2th_13 << "\t" << dm2_31 << "\t" << xs[0]  << "\t" << xs[1]  << "\t" << xs[2]  << "\t" << xs[3]  << "\t" 
-		<< xs[4]  << "\t" << xs[5]  << "\t" << xs[6]  << "\t" << xs[7]  << "\t" << xs[8]  << "\t" << xs[9]  << "\t" << xs[10] << "\t" 
-		<< xs[11] << "\t" << xs[12] << "\t" << xs[13] << "\t" << xs[14] << "\t" << xs[15] << "\t" << xs[16] << "\t" << xs[17] << "\t" 
-		<< xs[18] << "\t" << xs[19] << "\t" << xs[20] << "\t" << xs[21] << "\t" << xs[22] << "\t" << min->MinValue() << endl;
+        minimPullT_file  << s2th_13 << "\t" << dm2_31 << "\t" << xs[0]  << "\t" << xs[1]
+                << "\t" << xs[2]  << "\t" << xs[3]  << "\t" << xs[4]  << "\t" << xs[5]
+                << "\t" << xs[6]  << "\t" << xs[7]  << "\t" << xs[8]  << "\t" << xs[9]
+                << "\t" << xs[10] << "\t" << xs[11] << "\t" << xs[12] << "\t" << xs[13]
+                << "\t" << xs[14] << "\t" << xs[15] << "\t" << xs[16] << "\t" << xs[17]
+                << "\t" << xs[18] << "\t" << xs[19] << "\t" << xs[20] << "\t" << xs[21]
+                << "\t" << xs[22] << "\t" << min->MinValue() << endl;
                 //}
-                if (dm2_31 == hi_dm2)
-                {
-                    chi2Surface_file << endl;
-                    cout << s2th_13 << "\t" << dm2_31 << "\t" << min->MinValue() << endl;
-                }
-                //minimPullT_file  << endl;
-                //if (is2t%10 == 0)
-                //std::cout << "Succesful run for sin^2(th13) = " << s2th_13 << "!! \t" << min->MinValue() << endl;
-                //}
-            }//if iad END
+        if (dm2_31 == hi_dm2)
+        {
+            chi2Surface_file << endl;
+            cout << s2th_13 << "\t" << dm2_31 << "\t" << min->MinValue() << endl;
+        }
+        //minimPullT_file  << endl;
+        //if (is2t%10 == 0)
+        //std::cout << "Succesful run for sin^2(th13) = " << s2th_13 << "!! \t" << min->MinValue() << endl;
+        //}
+        }//if iad END
 
-        }//file loop END
+    }//file loop END
     std::cout << "Successful run!!" << endl;
     //break;
     //------------------------------------------------------------------------------

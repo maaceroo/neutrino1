@@ -8,8 +8,8 @@ echo '0) Define Grid'
 echo '=========================================='
 echo 
 
-export NS2T=100
-export NDM2=100
+export NS2T=50
+export NDM2=50
 
 export LO_S2T=0.05
 export HI_S2T=0.12
@@ -36,7 +36,7 @@ echo '=========================================='
 echo '1) Running ldist.C'
 echo '=========================================='
 echo 
-#root -b -l -n -q ldist.C
+time root -b -l -n -q ldist.C
 
 echo
 
@@ -48,7 +48,7 @@ echo '=========================================='
 echo 
 export NTUPLE_EVENTS=5000000
 echo $NTUPLE_EVENTS ntuple events
-#root -b -l -n -q db_ntuple.C
+time root -b -l -n -q db_ntuple.C
 
 echo
 
@@ -58,7 +58,7 @@ echo '=========================================='
 echo '3) Running db_osc_spec.C'
 echo '=========================================='
 echo
-#root -b -l -n -q db_osc_spec.C
+time root -b -l -n -q db_osc_spec.C
 
 #-----------------------------------------------------------------------------
 # run minimization
@@ -66,7 +66,7 @@ echo '=========================================='
 echo '3) Running db_minuit.C'
 echo '=========================================='
 echo
-root -b -l -n -q db_minuit_spec.C
+time root -b -l -n -q db_minuit_spec.C
 
 echo
 
@@ -80,10 +80,10 @@ echo '=========================================='
 echo 'compiling  db_chi2_min.cpp and db_margin.cpp'
 echo '=========================================='
 echo
-g++ -o db_chi2_min.exe db_chi2_min.cpp
-g++ -o db_margin.exe db_margin.cpp
-##clang++ -o db_chi2_min.exe db_chi2_min.cpp
-##clang++ -o db_margin.exe db_margin.cpp
+##g++ -o db_chi2_min.exe db_chi2_min.cpp
+##g++ -o db_margin.exe db_margin.cpp
+clang++ -o db_chi2_min.exe db_chi2_min.cpp
+clang++ -o db_margin.exe db_margin.cpp
 
 echo
 #-----------------------------------------------------------------------------

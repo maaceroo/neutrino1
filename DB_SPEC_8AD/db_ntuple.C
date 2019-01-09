@@ -73,16 +73,22 @@ void db_ntuple()
     T->Branch("ir", &ir, "ir/s"); //reactor
     T->Branch("id", &id, "id/s"); //detector
 
-    int Nevents = 5000000; // CAUTION!! This must be commented out when using the script
-    //int Nevents = atoi(getenv("NTUPLE_EVENTS")); // This must be uncommented when using the script
+    //int Nevents = 5000000; // CAUTION!! This must be commented out when using the script
+    int Nevents = atoi(getenv("NTUPLE_EVENTS")); // This must be uncommented when using the script
     printf("Ntuple Events: %d \n",Nevents);
-        for (int i = 0 ; i < Nevents ; i++)
+    
+    //-- 2018.12.21 -
+    //-- Gaussian distribution to include the effect of the detectors and reactors dimensions
+    TF1 *gau = new TF1("gau","exp(-0.5*(x/[0])^2)",-30.0,30.0);
+    gau->SetParameter(0,5);
+    for (int i = 0 ; i < Nevents ; i++)
         {
             // generate a baseline (blid uniquely identifies the baseline)
             blid = histo_ldist->GetRandom();
             id =   (blid/nRea);
             ir =   (blid - id*nRea);
-            Ln =   baselines[id][ir];
+            Ln = baselines[id][ir] + gau->GetRandom();
+            //Ln =   baselines[id][ir];
             
             // generate a neutrino energy
             //if (id is 0 or 1, EH1 spectrum; id is 2 or 3, EH2 spectrum; id is 4 to 7, EH3 spectrum) this is for Ep

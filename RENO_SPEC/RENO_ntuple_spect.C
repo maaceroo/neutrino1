@@ -61,7 +61,9 @@ void RENO_ntuple_spect()
   T->Branch("ir", &ir, "ir/s"); //reactor
   T->Branch("id", &id, "id/s"); //detector
   
-  //int Nevents = 5000000; // CAUTION!! This must be commented out when using the script
+    TF1 *gau = new TF1("gau","exp(-0.5*(x/[0])^2)",-30.0,30.0);
+    gau->SetParameter(0,5);
+    //int Nevents = 5000000; // CAUTION!! This must be commented out when using the script
   int Nevents = atoi(getenv("NTUPLE_EVENTS")); // This must be uncommented when using the script
   for (int i = 0 ; i < Nevents ; i++)
     {
@@ -69,8 +71,9 @@ void RENO_ntuple_spect()
       blid = (int*) histo_ldist_RENO_2x6->GetRandom();
       id =   (int*) (blid/nRea);
       ir =   (int*) (blid - id*nRea);
-      Ln = baselines[id][ir];
-      
+        Ln = baselines[id][ir] + gau->GetRandom();
+        //Ln = baselines[id][ir];
+
       if(id==0)  ad=0;
       else if (id==1) ad=1;
       Ep = data_spect_histo[ad]->GetRandom();
