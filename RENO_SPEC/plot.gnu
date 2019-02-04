@@ -50,9 +50,9 @@ set label 4 "{/Symbol |D}m^{2}_{ee}| (eV^2)" at -0.032,0.0024 center rotate by 9
 #set label 5 "{+ Best-fit}" at 0.12,0.0038 center
 
 ## Mark at the BF
-set label 35 '+' at 0.0873,0.00253 center font 'CharterBT-Roman,15'
+set label 35 '+' at 0.08,0.00253 center font 'CharterBT-Roman,15'
 ## Minimum chi2 value
-min =     6.99978
+min =     8.62073
 
 unset ztics
 set clabel

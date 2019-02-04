@@ -142,6 +142,8 @@ double chi2(const double *xx)
 
     for (int iBIN = 0 ; iBIN < NB ; iBIN++){
         //-- Measured IDB events of the dth Antineutrino Detector (background is substracted)
+	//Corregir: normalizar data_spect_histo para que Nobs tenga unidades de número de eventos
+	//data_spect_histo con área 1 y por el ancho del bin (debe tener chipote en 6-7 MeV)
         Nobs1 = (data_spect_histo[0]->GetBinContent(iBIN+1))*IBDrate_data[0][0]*0.7644*daqTime[0];
         Nobs2 = (data_spect_histo[1]->GetBinContent(iBIN+1))*IBDrate_data[1][0]*0.7644*daqTime[1];
       
@@ -187,7 +189,7 @@ double chi2(const double *xx)
             Nexp2 += (1+fr[iNR])*wrd_array[1][iNR]*spcNew[1][iBIN]*(SurvPavg2*noOsc_IBDrate_perday[1]/NoscTot[1])*0.7644*daqTime[1];
         }
         //Nexp1 = 1.123*Nexp1;
-        Nexp2 = Nexp2*1.006; //fudge normalization factor
+        Nexp2 = Nexp2*1.00; //fudge normalization factor
 
         // Compute of the ratios of Data and expect spectra
         OFN = Nobs2/Nobs1;

@@ -23,11 +23,26 @@ void RENO_ntuple_spect()
   
   //The histogram of near and far data spectra
   const int nd = 2; // Number of detectors
-  TH1F *data_spect_histo[nd];
-  for(int n=0;n<nd;n++){
-    data_spect_histo[n] = (TH1F*) fenergy->Get(Form("data_spect_histo_%d",n));  // Get data
-  }
-  
+//  TH1F *data_spect_histo[nd];
+//  for(int n = 0 ; n < nd ; n++){
+//    data_spect_histo[n] = (TH1F*) fenergy->Get(Form("data_spect_histo_%d",n));  // Get data
+//  }
+  TH1F *noosc_spect_histo[nd];
+  noosc_spect_histo[0] = (TH1F*) fenergy->Get("data_spect_histo_0");  // Set to observed Near spectrum
+  noosc_spect_histo[1] = (TH1F*) fenergy->Get("reno_noosc_histo");  // Set to predicted noOsc in Far spectrum
+
+/*
+//-- Multilping by the bin width - 01.02.2019
+  for(int n = 0 ; n < nd ; n++){
+    int NumB = data_spect_histo[n]->GetNbinsX();
+    for(int i = 0 ; i < NumB ; i++){
+      double binW = data_spect_histo[n]->GetBinWidth(i+1);
+      double cont = data_spect_histo[n]->GetBinContent(i+1);
+      data_spect_histo[n]->SetBinContent(i+1,binW*cont);
+    }
+  } 
+ */
+
   //-------------------
   // Distance Histogram
   //-------------------
@@ -61,8 +76,8 @@ void RENO_ntuple_spect()
   T->Branch("ir", &ir, "ir/s"); //reactor
   T->Branch("id", &id, "id/s"); //detector
   
-    TF1 *gau = new TF1("gau","exp(-0.5*(x/[0])^2)",-30.0,30.0);
-    gau->SetParameter(0,5);
+    TF1 *gau = new TF1("gau","exp(-0.5*(x/[0])^2)",-5.0,5.0);
+    gau->SetParameter(0,1);
     //int Nevents = 5000000; // CAUTION!! This must be commented out when using the script
   int Nevents = atoi(getenv("NTUPLE_EVENTS")); // This must be uncommented when using the script
   for (int i = 0 ; i < Nevents ; i++)
@@ -76,7 +91,8 @@ void RENO_ntuple_spect()
 
       if(id==0)  ad=0;
       else if (id==1) ad=1;
-      Ep = data_spect_histo[ad]->GetRandom();
+      //Ep = data_spect_histo[ad]->GetRandom();
+      Ep = noosc_spect_histo[ad]->GetRandom();
       En = Ep + avg_nRecoilE + avg_constE;
       //En = Mn + Ep - Mp ; // Neutrino energy. Where Mp and Mn are the proton and neutron masses
       
