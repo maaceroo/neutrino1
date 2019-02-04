@@ -14,7 +14,7 @@ void renograph(){
     Double_t sz = 0.04;
     //---------------------------------
 
-	// READING FILES.  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// READING FILES.  //
 
 	//Antineutrino detector #1- near detector. Data (point) and Monte Carlo (histogram).  
 	TGraph *reno_data_neardet  = new TGraph("data/dataneardet.txt","%lg,%lg","");
@@ -41,7 +41,7 @@ void renograph(){
 	TGraph *reno_noosc  = new TGraph("data/noosc.txt","%lg,%lg","");
 		
 
-	// define number of bins //////////////////////////////////////////////////////////////////////////////////////////////77
+	// define number of bins
 	const int  NB = 27; 
  	const double lo = 1.2;  
  	const double hi = 8.4;
@@ -49,41 +49,34 @@ void renograph(){
 	double xbins[NB+1];
 	double delta_bins2 = (6.0 - 1.2)/24; // 0.2 MeV/bin
 	
-	for (int i = 0 ; i < (NB-2) ; i++)
-        {
+	for (int i = 0 ; i < (NB-2) ; i++){
 	  xbins[i] = 1.2 + delta_bins2*i;
 	}
 	xbins[25] = xbins[24] + 0.4;
 	xbins[26] = 8.4 - 1.4;
 	xbins[27] = 8.4;
-	
-	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
- 
-	
+	 	
 	// define the histograms
-	
-	//If nd = 0 then we are talking about data of the Near detector; if nd =1 then is data of the far detector
+	// nd = 0 -> Near detector; nd = 1 -> Far detector
 	TH1F *data_spect_histo[nd];
 	TH1F *spect_histo[nd];
 	for (int n = 0 ; n < nd ; n++){
-	  
-	data_spect_histo[n] = new TH1F(Form("data_spect_histo_%d",n),"",NB,xbins);
-	data_spect_histo[n]->SetLineWidth(2);
-	data_spect_histo[n]->SetMarkerStyle(34);
-	data_spect_histo[n]->SetMarkerSize(1.1);
+        data_spect_histo[n] = new TH1F(Form("data_spect_histo_%d",n),"",NB,xbins);
+        data_spect_histo[n]->SetLineWidth(2);
+        data_spect_histo[n]->SetMarkerStyle(34);
+        data_spect_histo[n]->SetMarkerSize(1.1);
 	
-	spect_histo[n] = new TH1F(Form("spect_histo_%d",n),"",NB,xbins);
-	spect_histo[n]->SetLineColor(kBlue);
+        spect_histo[n] = new TH1F(Form("spect_histo_%d",n),"",NB,xbins);
+        spect_histo[n]->SetLineColor(kBlue);
 	}	
 	
-	//If nd = 0 then we are talking about the ratio between far- Near data; if nd =1 then is spect ratio far-near detector
+    // nd = 0 -> Near detector; nd = 1 -> Far detector
 	TH1F *ratio_histo[nd];
 	for (int n = 0 ; n < nd ; n++){
-	  
-	  ratio_histo[n] = new TH1F(Form("ratio_histo_%d",n),"",NB,xbins);
-	  ratio_histo[n]->SetLineWidth(2);
-	  ratio_histo[n]->SetMarkerStyle(34);
-	  ratio_histo[n]->SetMarkerSize(1.1);
+        ratio_histo[n] = new TH1F(Form("ratio_histo_%d",n),"",NB,xbins);
+        ratio_histo[n]->SetLineWidth(2);
+        ratio_histo[n]->SetMarkerStyle(34);
+        ratio_histo[n]->SetMarkerSize(1.1);
 	}
 	
 	// Define the legend of the plots
@@ -93,10 +86,10 @@ void renograph(){
 	
 	
 	// Near detector backgrounds
-	TH1F *reno_bg_near_fast_histo = new TH1F("reno_bg_near_fast_histo","",NB,xbins);
+	TH1F *reno_bg_near_fast_histo      = new TH1F("reno_bg_near_fast_histo","",NB,xbins);
 	TH1F *reno_bg_near_accident_histo  = new TH1F("reno_bg_near_accident_histo", "",NB,xbins);
-	TH1F *reno_bg_near_lihe_histo  = new TH1F("reno_bg_near_lihe_histo", "",NB,xbins);
-	TH1F *reno_bg_near_cf_histo  = new TH1F("reno_bg_near_cf_histo", "",NB,xbins);
+	TH1F *reno_bg_near_lihe_histo      = new TH1F("reno_bg_near_lihe_histo", "",NB,xbins);
+	TH1F *reno_bg_near_cf_histo        = new TH1F("reno_bg_near_cf_histo", "",NB,xbins);
 	
 	TLegend *leg2 = new TLegend(.75,.80,.95,.95,"Near Detector");
 	leg2->AddEntry(reno_bg_near_cf_histo,"Cf");
@@ -169,91 +162,86 @@ void renograph(){
 	double cont1,cont2;
 	double sum = 0;
 	for (int j = 0 ; j < NB ; j++)
-	  {
-
-	    ////////////////////////////////////////////// ratio histo
+	  {// ratio histo
+          ctnt = reno_data_neardet->GetY()[j];
+          ctnt1 = reno_data_fardet->GetY()[j];
+          cont1 = ctnt1/ctnt;
+          ratio_histo[0]->SetBinContent(j+1,cont1);
+          //cout << "j + 1 = " << j + 1 << "   ctnt1 = " << ctnt1 << "ctnt = " << ctnt << "cont1 = " << cont1 <<endl;
+          ratio_obs  << cont1 << "\t"  << endl;
 	    
-	    ctnt = reno_data_neardet->GetY()[j];
-	    ctnt1 = reno_data_fardet->GetY()[j];
-	    cont1 = ctnt1/ctnt;
-	    ratio_histo[0]->SetBinContent(j+1,cont1);
-	    //cout << "j + 1 = " << j + 1 << "   ctnt1 = " << ctnt1 << "ctnt = " << ctnt << "cont1 = " << cont1 <<endl;	
-	    ratio_obs  << cont1 << "\t"  << endl;
+          ctnt = reno_espect_neardet->GetY()[j];
+          ctnt1 = reno_espect_fardet->GetY()[j];
+          cont2 = ctnt1/ctnt;
+          ratio_histo[1]->SetBinContent(j+1,cont2);
+          //cout << "j + 1 = " << j + 1 << "   ctnt1 = " << ctnt1 << "ctnt = " << ctnt << "cont2 = " << cont2 <<endl;
 	    
-	    ctnt = reno_espect_neardet->GetY()[j];
-	    ctnt1 = reno_espect_fardet->GetY()[j];
-	    cont2 = ctnt1/ctnt;
-	    ratio_histo[1]->SetBinContent(j+1,cont2);
-	    //cout << "j + 1 = " << j + 1 << "   ctnt1 = " << ctnt1 << "ctnt = " << ctnt << "cont2 = " << cont2 <<endl;	
+          ratio_spect << cont2 << "\t" << endl;
+          //	ratio <<endl;
 	    
-	    ratio_spect << cont2 << "\t" << endl;
-	    //	ratio <<endl;
+          //Near detector
+          // data and Monte carlo
+          
+          ctnt = reno_data_neardet->GetY()[j];
+          data_spect_histo[0]->SetBinContent(j+1,ctnt);
+          // cout << "j + 1 = " << j + 1 << "   ctnt = " << ctnt << "ctnt = " << ctnt1 <<endl;
 	    
-	    /////////////////////////////////////////////////////////////////////////////////////////
-	    
-	    //Near detector
-	    // data and Monte carlo
-	    
-	    ctnt = reno_data_neardet->GetY()[j];
-	    data_spect_histo[0]->SetBinContent(j+1,ctnt);
-	    // cout << "j + 1 = " << j + 1 << "   ctnt = " << ctnt << "ctnt = " << ctnt1 <<endl;
-	    
-	    ctnt = reno_espect_neardet->GetY()[j];
-	    spect_histo[0]->SetBinContent(j+1,ctnt);
-
-	    //////////////////////////////////////////////////////////////////
-	   		
-	    // Backgrounds
-
-	    // lihe
-	    ctnt = reno_bg_near_lihe->GetY()[j];
-	    reno_bg_near_lihe_histo->SetBinContent(j+1,ctnt);
-	    
-	    // Accidental
-	    ctnt = reno_bg_near_accident->GetY()[j];
-	    reno_bg_near_accident_histo->SetBinContent(j+1,ctnt);
-		
-	    // Fast
-	    ctnt = reno_bg_near_fast->GetY()[j];
-	    reno_bg_near_fast_histo->SetBinContent(j+1,ctnt);
-	    
-	    // cf
-	    ctnt = reno_bg_near_cf->GetY()[j];
-	    reno_bg_near_cf_histo->SetBinContent(j+1,ctnt);
-
-	    // Far detector
-	    
-	    ctnt = reno_espect_fardet->GetY()[j];
-	    //cout << "j + 1 = " << j + 1 << "   ctnt = " << ctnt << endl;
-	    spect_histo[1]->SetBinContent(j+1,ctnt);	
-	    
-	    ctnt = reno_data_fardet->GetY()[j];
-	    data_spect_histo[1]->SetBinContent(j+1,ctnt);
-	    
-	    // Backgrounds
-	    // lihe
-	    ctnt = reno_bg_far_lihe->GetY()[j];
-	    reno_bg_far_lihe_histo->SetBinContent(j+1,ctnt);
-	    
-	    // Accidental
-	    ctnt = reno_bg_far_accident->GetY()[j];
-	    reno_bg_far_acci_histo->SetBinContent(j+1,ctnt);
-	    
-	    // cf
-	    ctnt = reno_bg_far_cf->GetY()[j];
-	    reno_bg_far_cf_histo->SetBinContent(j+1,ctnt);
-	    
-	    // Fast
-	    ctnt = reno_bg_far_fast->GetY()[j];
-	    reno_bg_far_fast_histo->SetBinContent(j+1,ctnt);
-	    //cout << "j + 1 = " << j + 1 << "   ctnt = " << ctnt << endl;
-	    
-	    //Prediction best fit and Prediction no oscillation
-	    ctnt = reno_bestfit->GetY()[j];
-	    reno_bestfit_histo->SetBinContent(j+1,ctnt);
-	    ctnt = reno_noosc->GetY()[j];
-	    reno_noosc_histo->SetBinContent(j+1,ctnt);
-	    
+          ctnt = reno_espect_neardet->GetY()[j];
+          spect_histo[0]->SetBinContent(j+1,ctnt);
+          
+          //////////////////////////////////////////////////////////////////
+          
+          // Backgrounds
+          
+          // lihe
+          ctnt = reno_bg_near_lihe->GetY()[j];
+          reno_bg_near_lihe_histo->SetBinContent(j+1,ctnt);
+          
+          // Accidental
+          ctnt = reno_bg_near_accident->GetY()[j];
+          reno_bg_near_accident_histo->SetBinContent(j+1,ctnt);
+          
+          // Fast
+          ctnt = reno_bg_near_fast->GetY()[j];
+          reno_bg_near_fast_histo->SetBinContent(j+1,ctnt);
+          
+          // cf
+          ctnt = reno_bg_near_cf->GetY()[j];
+          reno_bg_near_cf_histo->SetBinContent(j+1,ctnt);
+          
+          // Far detector
+          
+          ctnt = reno_espect_fardet->GetY()[j];
+          //cout << "j + 1 = " << j + 1 << "   ctnt = " << ctnt << endl;
+          spect_histo[1]->SetBinContent(j+1,ctnt);
+          
+          ctnt = reno_data_fardet->GetY()[j];
+          data_spect_histo[1]->SetBinContent(j+1,ctnt);
+          
+          // Backgrounds
+          // lihe
+          ctnt = reno_bg_far_lihe->GetY()[j];
+          reno_bg_far_lihe_histo->SetBinContent(j+1,ctnt);
+          
+          // Accidental
+          ctnt = reno_bg_far_accident->GetY()[j];
+          reno_bg_far_acci_histo->SetBinContent(j+1,ctnt);
+          
+          // cf
+          ctnt = reno_bg_far_cf->GetY()[j];
+          reno_bg_far_cf_histo->SetBinContent(j+1,ctnt);
+          
+          // Fast
+          ctnt = reno_bg_far_fast->GetY()[j];
+          reno_bg_far_fast_histo->SetBinContent(j+1,ctnt);
+          //cout << "j + 1 = " << j + 1 << "   ctnt = " << ctnt << endl;
+          
+          //Prediction best fit and Prediction no oscillation
+          ctnt = reno_bestfit->GetY()[j];
+          reno_bestfit_histo->SetBinContent(j+1,ctnt);
+          ctnt = reno_noosc->GetY()[j];
+          reno_noosc_histo->SetBinContent(j+1,ctnt);
+          
 	  }	
 	
 	TH2F *frame_spect_histo = new TH2F("frame_spect_histo","",NB,1,hi,10,0,18300);
@@ -343,12 +331,24 @@ void renograph(){
 	reno_bestfit_histo->Write();
 	reno_noosc_histo->Write();
 	
+    //-- 2019.02.04 - Begin
+    //-- Normalizing data histograms: it would have unity area and each bin would have units of
+    //-- number of events
+    double area = 0.0;
 	for (int i = 0 ; i < nd ; i++)
 	  {
-	    data_spect_histo[i]->Write();
-	    spect_histo[i]->Write();
-	    ratio_histo[i]->Write();
+          for (int nbin = 0 ; nbin < NB; nbin++) {
+              double widt = data_spect_histo[i]->GetBinWidth(nbin+1);
+              double cont = data_spect_histo[i]->GetBinContent(nbin+1);
+              data_spect_histo[i]->SetBinContent(nbin+1,widt*cont);
+          }
+          area = data_spect_histo[i]->Integral();
+          data_spect_histo[i]->Scale(1.0/area);
+          data_spect_histo[i]->Write();
+          spect_histo[i]->Write();
+          ratio_histo[i]->Write();
 	  }
+    //-- 2019.02.04 - End
 
 	reno_bg_near_lihe_histo->Write();
 	reno_bg_near_accident_histo->Write();

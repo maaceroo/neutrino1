@@ -31,17 +31,17 @@ void RENO_ntuple_spect()
   noosc_spect_histo[0] = (TH1F*) fenergy->Get("data_spect_histo_0");  // Set to observed Near spectrum
   noosc_spect_histo[1] = (TH1F*) fenergy->Get("reno_noosc_histo");  // Set to predicted noOsc in Far spectrum
 
-/*
+
 //-- Multilping by the bin width - 01.02.2019
-  for(int n = 0 ; n < nd ; n++){
-    int NumB = data_spect_histo[n]->GetNbinsX();
+  for(int n = 0 ; n < nd-1 ; n++){
+    int NumB = noosc_spect_histo[n]->GetNbinsX();
     for(int i = 0 ; i < NumB ; i++){
-      double binW = data_spect_histo[n]->GetBinWidth(i+1);
-      double cont = data_spect_histo[n]->GetBinContent(i+1);
-      data_spect_histo[n]->SetBinContent(i+1,binW*cont);
+      double binW = noosc_spect_histo[n]->GetBinWidth(i+1);
+      double cont = noosc_spect_histo[n]->GetBinContent(i+1);
+      noosc_spect_histo[n]->SetBinContent(i+1,binW*cont);
     }
   } 
- */
+
 
   //-------------------
   // Distance Histogram
