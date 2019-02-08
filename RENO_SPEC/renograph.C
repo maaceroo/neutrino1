@@ -340,10 +340,10 @@ void renograph(){
           for (int nbin = 0 ; nbin < NB; nbin++) {
               double widt = data_spect_histo[i]->GetBinWidth(nbin+1);
               double cont = data_spect_histo[i]->GetBinContent(nbin+1);
-              data_spect_histo[i]->SetBinContent(nbin+1,widt*cont);
+              data_spect_histo[i]->SetBinContent(nbin+1,0.2*widt*cont);
           }
-          area = data_spect_histo[i]->Integral();
-          data_spect_histo[i]->Scale(1.0/area);
+          //area = data_spect_histo[i]->Integral();
+          //data_spect_histo[i]->Scale(1.0/area);
           data_spect_histo[i]->Write();
           spect_histo[i]->Write();
           ratio_histo[i]->Write();

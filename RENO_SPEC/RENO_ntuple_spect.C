@@ -33,14 +33,14 @@ void RENO_ntuple_spect()
 
 
 //-- Multilping by the bin width - 01.02.2019
-  for(int n = 0 ; n < nd-1 ; n++){
-    int NumB = noosc_spect_histo[n]->GetNbinsX();
+  //for(int n = 1 ; n < nd ; n++){
+    int NumB = noosc_spect_histo[1]->GetNbinsX();
     for(int i = 0 ; i < NumB ; i++){
-      double binW = noosc_spect_histo[n]->GetBinWidth(i+1);
-      double cont = noosc_spect_histo[n]->GetBinContent(i+1);
-      noosc_spect_histo[n]->SetBinContent(i+1,binW*cont);
+        double binW = noosc_spect_histo[1]->GetBinWidth(i+1);
+        double cont = noosc_spect_histo[1]->GetBinContent(i+1);
+        noosc_spect_histo[1]->SetBinContent(i+1,0.2*binW*cont);
     }
-  } 
+  //}
 
 
   //-------------------
@@ -93,7 +93,7 @@ void RENO_ntuple_spect()
       else if (id==1) ad=1;
       //Ep = data_spect_histo[ad]->GetRandom();
       Ep = noosc_spect_histo[ad]->GetRandom();
-      En = Ep + avg_nRecoilE + avg_constE;
+      En = 1.06*Ep + avg_nRecoilE + avg_constE;
       //En = Mn + Ep - Mp ; // Neutrino energy. Where Mp and Mn are the proton and neutron masses
       
       

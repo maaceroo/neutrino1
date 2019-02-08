@@ -8,8 +8,8 @@ echo '0) Define Grid'
 echo '=========================================='
 echo 
 
-export NS2T=20
-export NDM2=20
+export NS2T=30
+export NDM2=30
 
 export LO_S2T=0.01
 export HI_S2T=0.20
