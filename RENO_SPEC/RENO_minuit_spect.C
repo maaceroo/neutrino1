@@ -188,8 +188,8 @@ double chi2(const double *xx)
 
             Nexp2 += (1+fr[iNR])*wrd_array[1][iNR]*spcNew[1][iBIN]*(SurvPavg2*noOsc_IBDrate_perday[1]/NoscTot[1])*0.7644*daqTime[1];
         }
-        //Nexp1 = 1.123*Nexp1;
-        Nexp2 = Nexp2*1.00; //fudge normalization factor
+        Nexp1 = 1.002*Nexp1;
+        //Nexp2 = Nexp2*1.00; //fudge normalization factor
 
         // Compute of the ratios of Data and expect spectra
         OFN = Nobs2/Nobs1;

@@ -217,15 +217,15 @@ void db_PRD95_1230days_plots()
     
     TH2F *frame_spectra1 = new TH2F("frame_spectra1","",NB,lo,hi,10,0,3.5);
     frame_spectra1->GetXaxis()->SetTitle("Prompt Energy (MeV)");
-    frame_spectra1->GetYaxis()->SetTitle("Events/MeV");
+    frame_spectra1->GetYaxis()->SetTitle("Events/(MeV #times 10^{5})");
     
     TH2F *frame_spectra2 = new TH2F("frame_spectra2","",NB,lo,hi,10,0,3.15);
     frame_spectra2->GetXaxis()->SetTitle("Prompt Energy (MeV)");
-    frame_spectra2->GetYaxis()->SetTitle("Events/MeV");
+    frame_spectra2->GetYaxis()->SetTitle("Events/(MeV #times 10^{5})");
     
     TH2F *frame_spectra3 = new TH2F("frame_spectra3","",NB,lo,hi,10,0,1.0);
     frame_spectra3->GetXaxis()->SetTitle("Prompt Energy (MeV)");
-    frame_spectra3->GetYaxis()->SetTitle("Events/MeV");
+    frame_spectra3->GetYaxis()->SetTitle("Events/(MeV #times 10^{5})");
     
     TH2F *frame_ratios12 = new TH2F("frame_ratios12","",NB,lo,hi,10,0.93,1.05);
     frame_ratios12->GetXaxis()->SetTitle("Prompt Energy (MeV)");

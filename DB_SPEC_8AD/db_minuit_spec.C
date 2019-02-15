@@ -173,7 +173,7 @@ double chi2(const double *xx)
             Md = (data_sigplusbg - simu_bg)*daqTime[iAD];
             //cout << "iAD = " << iAD << "  iBin = " << iBIN << "  Md = " << Md << " Td = " << Td << endl;
             //-- Background of the dth Antineutrino Detector
-            Bd = simu_bg;
+            Bd = simu_bg*daqTime[iAD];
 	
             sqrerror = Md + Bd;
             
@@ -188,7 +188,7 @@ double chi2(const double *xx)
         
             predi_vector(index,0) = Td*(1.0 + epsilon + eps_d[iAD] + wrd) - eta_d[iAD];
             //delta_vector(index,0) = Md - Td*(1.0 + epsilon + eps_d[iAD] + wrd) + eta_d[iAD];
-            delta_vector(index,0) = Md - Td*(1.0 + epsilon + eps_d[iAD] + wrd) + eta_d[iAD]*Bd;
+            delta_vector(index,0) = Md - Td*(1.0 + epsilon + eps_d[iAD] + wrd) + eta_d[iAD];
             transp_delta_vector(0,index) = delta_vector(index,0);
             
             //cout << "iAD = " << iAD << "  iBin = " << iBIN << "  Md = " << Md << " Td = " << Td
@@ -206,8 +206,8 @@ double chi2(const double *xx)
 
     for (int i = 0 ; i < NBx_cov ; i++) {
         for (int j = 0 ; j < NBy_cov ; j++) {
-            fullCovaMatrix_matrix(i,j) = statErroMatrix_matrix(i,j)
-            + 0.0*predi_vector(i,0)*predi_vector(j,0)*fracCovaMatrix_matrix(i,j); // ** test A.A. 7/sep/18
+            fullCovaMatrix_matrix(i,j) = statErroMatrix_matrix(i,j);
+            //+ 0.0*predi_vector(i,0)*predi_vector(j,0)*fracCovaMatrix_matrix(i,j); // ** test A.A. 7/sep/18
             //+ predi_vector(i,0)*predi_vector(j,0)*fracCovaMatrix_matrix(i,j);
         }
     }
@@ -243,8 +243,8 @@ double chi2(const double *xx)
    for (iAD = 0 ; iAD < nAD ; iAD++)
        {
            //-- Background error of the dth Antineutrino Detector
-           //sB = totalBgd[iAD][1]*emuem[iAD]*daqTime[iAD];
-           sB = totalBgd[iAD][1]/totalBgd[iAD][0];
+           sB = totalBgd[iAD][1]*emuem[iAD]*daqTime[iAD];
+           //sB = totalBgd[iAD][1]/totalBgd[iAD][0];
            sqr_chi += pow(eps_d[iAD]/seps_d,2) + pow(eta_d[iAD]/sB,2);
        }
     
