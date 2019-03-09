@@ -77,7 +77,7 @@ void db_CovaMatrix_8AD_8x35bins()
                             {0.0,0.0,0.0,0.0,0.0,0.0,0.0,1.0}};
     
     //Construct correlation matrix upper triangle
-    double corr_start = 0.9999;
+    double corr_start = 0.999;
     for (int j = 0 ; j < 8 ; j++){
         for (int k = 0 ; k < 8 ; k++){
             for (int i = 0 ; i < 8 ; i++) {

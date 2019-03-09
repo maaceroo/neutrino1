@@ -1,52 +1,21 @@
-//----------------------------------------------------------//
-//-- db_minuit_spec.C  -  By M.A. Acero O.  -  2018-08-18 --//
-//----------------------------------------------------------//
-//-- Using 'NumericalMinimization.C' macro example to     --//
-//-- minimize a chi2 function. It uses a Minimizer class  --//
-//-- in ROOT.                                             --//
-//-- input : minimizer name + algorithm name              --//
-//-- randomSeed: = <0 : fixed value: 0 random with seed 0;--//
-//-- >0 random with given seed.                           --//
-//----------------------------------------------------------//
-//-- Analysis of the Daya Bay data from F.P. An et al.,   --//
-//-- PRD 95 072006 (2017)                                 --//
-//----------------------------------------------------------//
-//-- This macro can be executed under ROOT typing "root[0] .x db_minuit_spectral.C" --//
-//-- In the simplest case (only minimization) the script will print the message     --//
-//-- "Minimum: f(x[i]): chi^2(min)" where x[i] are the values of the parameters     --//
-//-- which minimize the chi^2-function and chi^2(min) is the minimum value of the   --//
-//-- chi^2-function. In the complete case, the results are printed in a  file, with --//
-//-- the following information:        sin^2(2th_13)  delta(m31)^2  chi^2(min)      --//
-//-- In this case, chi^2(min) is the minimum chi^2 for  the pull terms.             --//
-//---*****************************************************---//
-//-- FOR THE SPECTRAL ANALYSIS ONLY                        --//
-//---*****************************************************---//
-//---*****************************************************---//
-//---------- CONSTANTS --------------------------------------//
-//---*****************************************************---//
+//-----------------------------------------------------------------------------//
+//--       db_minuit_spec_CovMat.C  -  By M.A. Acero O.  -  2019-03-08       --//
+//-----------------------------------------------------------------------------//
+//-- Analysis of the Daya Bay data from F.P. An et al., PRD 95 072006 (2017) --//
+//-----------------------------------------------------------------------------//
+//-- This macro can be executed under ROOT typing "root[0] .x db_minuit_specCovMat.C" --//
+//-- In the simplest case (only minimization) the script will print the message       --//
+//-- "Minimum: f(x[i]): chi^2(min)" where x[i] are the values of the parameters       --//
+//-- which minimize the chi^2-function and chi^2(min) is the minimum value of the     --//
+//-- chi^2-function. In the complete case, the results are printed in a  file, with   --//
+//-- the following information:        sin^2(2th_13)  delta(m31)^2  chi^2(min)        --//
+//-- In this case, chi^2(min) is the minimum chi^2 for  the pull terms.               --//
+//---********************************************************************************---//
+//--                        FOR THE SPECTRAL ANALYSIS ONLY                            --//
+//---********************************************************************************---//
+//---********************************************************************************---//
+//---- CONSTANTS ----//
 #include "constants.h"
-// histogram binning for the simulated data
-//#define  NB 26
-//#define  lo 0.7
-//#define  hi 12.0
-//Number of Antineutrino Detectors
-//#define nAD 6
-//Number of Nuclear Reactors
-//#define nNR 6
-//Fixed neutrino oscillations parameters
-//#define dm2_21 7.59e-5 //eV^2,                //PRL 108 171803 (2012)
-//#define s22th_12 0.861
-//For the sin^2(2th_13) loop
-//#define N_s2t  5                           //number of points in the grid
-//#define lo_s2t 0.01                         //sin^2(2th_13) min
-//#define lo_s2t 0.0                          //sin^2(2th_13) min
-//#define hi_s2t 0.3                          //sin^2(2th_13) max
-//For the delta(m31)^2 loop
-//#define N_dm2  5                           //number of points in the grid
-//#define lo_dm2 1.0e-4                       //delta(m31)^2 min
-//#define hi_dm2 1.0e-2                       //delta(m31)^2 max
-//---*****************************************************---//
-
 //---*****************************************************---//
 //-- Global variables and quantities ------------------------//
 //---*****************************************************---//
@@ -71,7 +40,6 @@ double alpha[nNR];  //'uncorrelated reactor uncertainty' pull term
 double eps_d[nAD];  //'uncorrelated detection uncertainty' pull term
 double eta_d[nAD];  //'background' pull term
 double spc[nAD][NB];
-double e;           //01.03.2019 energy scale parameter
 double NoscTot[nAD];
 double noNoscTot[nAD];
 double xbins[NB+1];
@@ -90,9 +58,8 @@ TH1F *bfit_spect_hist[nAD];
 // Covariance-matrix Histograms
 //-------------------
 //** Declarar la matriz de covarianza fraccionaria como un TH2F
-TH2F *fracCovaMatrix_hist;    //Se carga dentro de la función principal db_minuot_spec()
 //TFile *fracCovaMatrix_File = new TFile("files_data/db_CovaMatrix_6AD_6x26bins.root","READ");
-//fracCovaMatrix_histo->(TH1F*)(fracCovaMatrix_File->Get("covaMat_histo_6x6Det"));
+TH2F *fracCovaMatrix_hist;    //Se carga dentro de la función principal db_minuot_spec()
 int NBx_cov;
 int NBy_cov;
 TMatrixD *statErroMatrix_matrix;
@@ -135,7 +102,6 @@ double chi2(const double *xx)
     alpha[4] = xx[20];
     alpha[5] = xx[21];
     epsilon  = xx[22];
-    e        = xx[23]; //-- energy scale pull term
   
     //---*****************************************************---//
     int iNR;
@@ -148,79 +114,15 @@ double chi2(const double *xx)
     double sB           = 0.0;
     double seps_d       = 1.0*0.002;
     double salph_r      = 1.0*0.008;
-    double sesc         = 0.005; //-- energy scale pull term
-
-    //- 01.03.2019 -Begins - This part allows to include properly the energy scale pull term
-    double f_ePos[NB] = {0.0};
-    double f_eNeg[NB] = {0.0};
-    double spcNew[nAD][NB];
-    double Eold_i,Enew_i,Enew_j;
-    
-    if (e < 0) {
-        for (int iBIN = 0 ; iBIN < NB ; iBIN++) {
-            Eold_i   = xbins[iBIN];
-            Enew_i = (1+e)*xbins[iBIN];
-            Enew_j = (1+e)*xbins[iBIN+1];
-            f_eNeg[iBIN] = (Eold_i - Enew_i)/(Enew_j - Enew_i);
-        }
-    }//if
-    else {
-        for (int iBIN = 0 ; iBIN < NB ; iBIN++){
-            Eold_i   = xbins[iBIN+1];
-            Enew_i = (1+e)*xbins[iBIN+1];
-            Enew_j = (1+e)*xbins[iBIN];
-            f_ePos[iBIN] = (Enew_i - Eold_i)/(Enew_i - Enew_j);
-        }
-    } //else
-    //- 01.03.2019 -Ends
-
+    //cout << "ChiSq function... " << endl;
     for (iAD = 0 ; iAD < nAD ; iAD++){
         SurvPavg = NoscTot[iAD]/noNoscTot[iAD];
         for (int iBIN = 0 ; iBIN < NB ; iBIN++)
         {
-            //- 01.03.2019 -Begins----------------------------------------------------
-            //- This part allows to include properly the energy scale pull term
-            if (e < 0) {
-                if (iBIN == 0){
-                    spcNew[iAD][iBIN] = spc[iAD][iBIN] + f_eNeg[iBIN+1]*spc[iAD][iBIN+1];
-                    //spcNew[1][iBIN] = spc[1][iBIN] + f_eNeg[iBIN+1]*spc[1][iBIN+1];
-                }
-                else if (iBIN<NB-1){
-                    spcNew[iAD][iBIN] = spc[iAD][iBIN] - f_eNeg[iBIN]*spc[iAD][iBIN] + f_eNeg[iBIN+1]*spc[iAD][iBIN+1];
-                    //spcNew[1][iBIN] = spc[1][iBIN] - f_eNeg[iBIN]*spc[1][iBIN] + f_eNeg[iBIN+1]*spc[1][iBIN+1];
-                }
-                else{
-                    spcNew[iAD][iBIN] = spc[iAD][iBIN] - f_eNeg[iBIN]*spc[iAD][iBIN];
-                    //spcNew[1][iBIN] = spc[1][iBIN] - f_eNeg[iBIN]*spc[1][iBIN];
-                }
-            }
-            
-            if (e >= 0) {
-                if (iBIN == 0){
-                    spcNew[iAD][iBIN] = spc[iAD][iBIN] - f_ePos[iBIN+1]*spc[iAD][iBIN];
-                    //spcNew[1][iBIN] = spc[1][iBIN] - f_ePos[iBIN+1]*spc[1][iBIN];
-                }
-                else if (iBIN<NB-1){
-                    spcNew[iAD][iBIN] = spc[iAD][iBIN] + f_ePos[iBIN]*spc[iAD][iBIN-1] - f_ePos[iBIN+1]*spc[iAD][iBIN];
-                    //spcNew[1][iBIN] = spc[1][iBIN] + f_ePos[iBIN]*spc[1][iBIN-1] - f_ePos[iBIN+1]*spc[1][iBIN];
-                }
-                else{
-                    spcNew[iAD][iBIN] = spc[iAD][iBIN] + f_ePos[iBIN]*spc[iAD][iBIN-1];
-                    //spcNew[1][iBIN] = spc[1][iBIN] + f_ePos[iBIN]*spc[1][iBIN-1];
-                }
-            }
-            //- 01.03.2019 -Ends----------------------------------------------------
-
             int index = iAD*NB + iBIN;
-            //-- Survival Probability equation. Terms depending on dM²_21 and dM²_32(~dM²_31) are averaged
-            //SurvP = 1.0 - 0.25*pow((1.0 + sqrt(1.0 - s2th_13)),2)*(s22th_12)*(avgSinDelta21[iAD]) - s2th_13*(avgSinDelta31[iAD]);
-        
             //-- Predicted IBD from neutrino oscillations of the dth Antineutrino Detector
-            //Td = (SurvP * noOsc_IBDrate_perday[iAD])*emuem[iAD]*daqTime[iAD];
-            //Td = spc[iAD][iBIN]*(SurvPavg*noOsc_IBDrate_perday[iAD]/NoscTot[iAD])*emuem[iAD]*daqTime[iAD];
-            Td = spcNew[iAD][iBIN]*(SurvPavg*noOsc_IBDrate_perday[iAD]/NoscTot[iAD])*emuem[iAD]*daqTime[iAD];
+            Td = spc[iAD][iBIN]*(SurvPavg*noOsc_IBDrate_perday[iAD]/NoscTot[iAD])*emuem[iAD]*daqTime[iAD];
             //-- Measured IDB events of the dth Antineutrino Detector (background is substracted)
-            //Md = (IBDrate_data[iAD][0] - totalBgd[iAD][0]*emuem[iAD])*daqTime[iAD];
             int idx = -1;
             if (iAD < 2) {
                 idx = 0;
@@ -249,7 +151,6 @@ double chi2(const double *xx)
                 wrd += wrd_array[iAD][iNR]*alpha[iNR];
         
             predi_vector(index,0) = Td*(1.0 + epsilon + eps_d[iAD] + wrd) - eta_d[iAD];
-            //delta_vector(index,0) = Md - Td*(1.0 + epsilon + eps_d[iAD] + wrd) + eta_d[iAD];
             delta_vector(index,0) = Md - Td*(1.0 + epsilon + eps_d[iAD] + wrd) + eta_d[iAD];
             transp_delta_vector(0,index) = delta_vector(index,0);
             
@@ -268,9 +169,9 @@ double chi2(const double *xx)
 
     for (int i = 0 ; i < NBx_cov ; i++) {
         for (int j = 0 ; j < NBy_cov ; j++) {
-            fullCovaMatrix_matrix(i,j) = statErroMatrix_matrix(i,j);
+            fullCovaMatrix_matrix(i,j) = statErroMatrix_matrix(i,j)
             //+ 0.0*predi_vector(i,0)*predi_vector(j,0)*fracCovaMatrix_matrix(i,j); // ** test A.A. 7/sep/18
-            //+ predi_vector(i,0)*predi_vector(j,0)*fracCovaMatrix_matrix(i,j);
+            + predi_vector(i,0)*predi_vector(j,0)*fracCovaMatrix_matrix(i,j);
         }
     }
     //predi_vector->Print();
@@ -287,11 +188,13 @@ double chi2(const double *xx)
         break;
     }
     
-/*    TMatrixD *a_vector(NBx_cov,1);
+    /*
+    TMatrixD *a_vector(NBx_cov,1);
     a_vector = inv_fullCovaMatrix_matrix*delta_vector;
     
     TMatrixD *product_matrix(1,1);
-    product_matrix = transp_delta_vector*a_vector;*/
+    product_matrix = transp_delta_vector*a_vector;
+    */
 
     for (int i = 0 ; i < NBx_cov ; i++) {
         for (int j = 0 ; j < NBy_cov ; j++) {
@@ -312,17 +215,15 @@ double chi2(const double *xx)
     
     for (iNR = 0 ; iNR < nNR ; iNR++)
          sqr_chi += pow(alpha[iNR]/salph_r,2);
-
-    sqr_chi += pow(e/sesc,2);
     
     //cout << "AD " << iAD << "  chi2 = " << sqr_chi << endl;
     return sqr_chi;
 }
 //---*****************************************************---//
 
-int db_minuit_spec(const char * minName = "Minuit",
-                    const char *algoName = "" ,
-                    int randomSeed = +10)
+int db_minuit_spec_CovMat(const char * minName = "Minuit",
+                          const char *algoName = "" ,
+                          int randomSeed = +10)
     //int randomSeed = -1)
 {
     cout << "Let's begin..." << endl;
@@ -366,7 +267,6 @@ int db_minuit_spec(const char * minName = "Minuit",
 
         }
     }
-
 
     //cout << "Done with the matrix!" << endl;
     //fracCovaMatrix_matrix->Print();
@@ -466,7 +366,7 @@ int db_minuit_spec(const char * minName = "Minuit",
            spc[iad][30] >> spc[iad][31] >> spc[iad][32] >> spc[iad][33] >> spc[iad][34] >>
            NoscTot[iad])
         {//file loop
-            cout << s2th_13 << "\t" << dm2_31 << endl;
+            //cout << s2th_13 << "\t" << dm2_31 << endl;
             if(first8 <= 8) //Must go up to 8 to take the 8 ADs (I think) ---- 2017-08-07
             {
                 for(int ibin = 1 ; ibin <= NB ; ibin++)
@@ -508,127 +408,124 @@ int db_minuit_spec(const char * minName = "Minuit",
                 iad = 0;
                 
                 //This is executed for every 6 lines of the file
-                //const int N_params = 23; //-- Number of parameter of the chi² function --//
-                const int N_params = 24; //-- Number of parameter of the chi² function --//
+                const int N_params = 23; //-- Number of parameter of the chi² function --//
                 ROOT::Math::Functor f(&chi2,N_params); //-- Setting the function to be minimized by using Minuit --//
                 //-- Steps
                 double stp = 1.0e-3;
                 double step[N_params] = {stp,stp,stp,stp,stp,stp,stp,stp,
                                          stp,stp,stp,stp,stp,stp,stp,stp,
-                                         stp,stp,stp,stp,stp,stp,stp,stp};
+                                         stp,stp,stp,stp,stp,stp,stp};
                 //-- Initial parameter values
                 double start[N_params] = {0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,
                                           0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,
-                                          0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0};
+                                          0.0,0.0,0.0,0.0,0.0,0.0,0.0};
                 
                 //-- Calling Minuit function setting
                 min->SetFunction(f);
                 
                 //-- Setting variables
                 double lim = 1.0e-1;
-                
-		min->SetLimitedVariable(0,  "e_1", start[0],  step[0],  -lim, lim);
-        min->SetLimitedVariable(1,  "e_2", start[1],  step[1],  -lim, lim);
-        min->SetLimitedVariable(2,  "e_3", start[2],  step[2],  -lim, lim);
-        min->SetLimitedVariable(3,  "e_4", start[3],  step[3],  -lim, lim);
-        min->SetLimitedVariable(4,  "e_5", start[4],  step[4],  -lim, lim);
-        min->SetLimitedVariable(5,  "e_6", start[5],  step[5],  -lim, lim);
-        min->SetLimitedVariable(6,  "e_7", start[6],  step[6],  -lim, lim);
-        min->SetLimitedVariable(7,  "e_8", start[7],  step[7],  -lim, lim);
+                /*
+                min->SetLimitedVariable(0,  "e_1", start[0],  step[0],  -lim, lim);
+                min->SetLimitedVariable(1,  "e_2", start[1],  step[1],  -lim, lim);
+                min->SetLimitedVariable(2,  "e_3", start[2],  step[2],  -lim, lim);
+                min->SetLimitedVariable(3,  "e_4", start[3],  step[3],  -lim, lim);
+                min->SetLimitedVariable(4,  "e_5", start[4],  step[4],  -lim, lim);
+                min->SetLimitedVariable(5,  "e_6", start[5],  step[5],  -lim, lim);
+                min->SetLimitedVariable(6,  "e_7", start[6],  step[6],  -lim, lim);
+                min->SetLimitedVariable(7,  "e_8", start[7],  step[7],  -lim, lim);
+                 */
+                /*
+                min->SetLimitedVariable(8,  "n_1", start[8],  step[8],  -lim, lim);
+                min->SetLimitedVariable(9,  "n_2", start[9],  step[9],  -lim, lim);
+                min->SetLimitedVariable(10, "n_3", start[10], step[10], -lim, lim);
+                min->SetLimitedVariable(11, "n_4", start[11], step[11], -lim, lim);
+                min->SetLimitedVariable(12, "n_5", start[12], step[12], -lim, lim);
+                min->SetLimitedVariable(13, "n_6", start[13], step[13], -lim, lim);
+                min->SetLimitedVariable(14, "n_7", start[14], step[14], -lim, lim);
+                min->SetLimitedVariable(15, "n_8", start[15], step[15], -lim, lim);
+                 */
+                /*
+                min->SetLimitedVariable(16, "a_1", start[16], step[16], -lim, lim);
+                min->SetLimitedVariable(17, "a_2", start[17], step[17], -lim, lim);
+                min->SetLimitedVariable(18, "a_3", start[18], step[18], -lim, lim);
+                min->SetLimitedVariable(19, "a_4", start[19], step[19], -lim, lim);
+                min->SetLimitedVariable(20, "a_5", start[20], step[20], -lim, lim);
+                min->SetLimitedVariable(21, "a_6", start[21], step[21], -lim, lim);
+                 */
+                min->SetLimitedVariable(22, "eps", start[22], step[22], -lim, lim);
+                //-----------------------------------------------------------------//
 		
+                min->SetFixedVariable(0,  "e_1", start[0]);
+                min->SetFixedVariable(1,  "e_2", start[1]);
+                min->SetFixedVariable(2,  "e_3", start[2]);
+                min->SetFixedVariable(3,  "e_4", start[3]);
+                min->SetFixedVariable(4,  "e_5", start[4]);
+                min->SetFixedVariable(5,  "e_6", start[5]);
+                min->SetFixedVariable(6,  "e_7", start[6]);
+                min->SetFixedVariable(7,  "e_8", start[7]);
                 
-		min->SetLimitedVariable(8,  "n_1", start[8],  step[8],  -lim, lim);
-        min->SetLimitedVariable(9,  "n_2", start[9],  step[9],  -lim, lim);
-        min->SetLimitedVariable(10, "n_3", start[10], step[10], -lim, lim);
-        min->SetLimitedVariable(11, "n_4", start[11], step[11], -lim, lim);
-        min->SetLimitedVariable(12, "n_5", start[12], step[12], -lim, lim);
-        min->SetLimitedVariable(13, "n_6", start[13], step[13], -lim, lim);
-        min->SetLimitedVariable(14, "n_7", start[14], step[14], -lim, lim);
-        min->SetLimitedVariable(15, "n_8", start[15], step[15], -lim, lim);
-		
                 
-		min->SetLimitedVariable(16, "a_1", start[16], step[16], -lim, lim);
-        min->SetLimitedVariable(17, "a_2", start[17], step[17], -lim, lim);
-        min->SetLimitedVariable(18, "a_3", start[18], step[18], -lim, lim);
-        min->SetLimitedVariable(19, "a_4", start[19], step[19], -lim, lim);
-        min->SetLimitedVariable(20, "a_5", start[20], step[20], -lim, lim);
-        min->SetLimitedVariable(21, "a_6", start[21], step[21], -lim, lim);
-		
-        min->SetLimitedVariable(22, "eps", start[22], step[22], -lim, lim);
-        
-        min->SetLimitedVariable(23, "e",   start[23], step[23], -lim, lim);
-		//-----------------------------------------------------------------//
-		/*
-        min->SetFixedVariable(0,  "e_1", start[0]);
-        min->SetFixedVariable(1,  "e_2", start[1]);
-        min->SetFixedVariable(2,  "e_3", start[2]);
-        min->SetFixedVariable(3,  "e_4", start[3]);
-        min->SetFixedVariable(4,  "e_5", start[4]);
-        min->SetFixedVariable(5,  "e_6", start[5]);
-        min->SetFixedVariable(6,  "e_7", start[6]);
-        min->SetFixedVariable(7,  "e_8", start[7]);
-		*/
-        /*
-		min->SetFixedVariable(8,  "n_1", start[8]);
-        min->SetFixedVariable(9,  "n_2", start[9]);
-        min->SetFixedVariable(10, "n_3", start[10]);
-        min->SetFixedVariable(11, "n_4", start[11]);
-        min->SetFixedVariable(12, "n_5", start[12]);
-        min->SetFixedVariable(13, "n_6", start[13]);
-        min->SetFixedVariable(14, "n_7", start[14]);
-        min->SetFixedVariable(15, "n_8", start[15]);
-		*/
-		/*
-        min->SetFixedVariable(16, "a_1", start[16]);
-        min->SetFixedVariable(17, "a_2", start[17]);
-        min->SetFixedVariable(18, "a_3", start[18]);
-        min->SetFixedVariable(19, "a_4", start[19]);
-        min->SetFixedVariable(20, "a_5", start[20]);
-        min->SetFixedVariable(21, "a_6", start[21]);
-		*/
-        //min->SetFixedVariable(22, "eps", start[22]);
+                min->SetFixedVariable(8,  "n_1", start[8]);
+                min->SetFixedVariable(9,  "n_2", start[9]);
+                min->SetFixedVariable(10, "n_3", start[10]);
+                min->SetFixedVariable(11, "n_4", start[11]);
+                min->SetFixedVariable(12, "n_5", start[12]);
+                min->SetFixedVariable(13, "n_6", start[13]);
+                min->SetFixedVariable(14, "n_7", start[14]);
+                min->SetFixedVariable(15, "n_8", start[15]);
+                
+                
+                min->SetFixedVariable(16, "a_1", start[16]);
+                min->SetFixedVariable(17, "a_2", start[17]);
+                min->SetFixedVariable(18, "a_3", start[18]);
+                min->SetFixedVariable(19, "a_4", start[19]);
+                min->SetFixedVariable(20, "a_5", start[20]);
+                min->SetFixedVariable(21, "a_6", start[21]);
+                
+                //min->SetFixedVariable(22, "eps", start[22]);
                 min->SetErrorDef(2.3);
             
-        //-- Calling Minuit minimization
-        
-        min->Minimize();
+                //-- Calling Minuit minimization
+                //cout << "Calling minimization..." << endl;
+                min->Minimize();
           
                 const double *xs = min->X();
                 
-        double chi2Min = min->MinValue();
-        chi2Surface_file << s2th_13 << "\t" << dm2_31 << "\t" << chi2Min << endl;
+                double chi2Min = min->MinValue();
+                chi2Surface_file << s2th_13 << "\t" << dm2_31 << "\t" << chi2Min << endl;
         
-        if (chi2Min < 0.0) {
-            cout << "Critical error: chi2Min is negative!  " << chi2Min << endl;
-            break;
-        }
+                if (chi2Min < 0.0) {
+                    cout << "Critical error: chi2Min is negative!  " << chi2Min << endl;
+                    break;
+                }
                 
-        minimPullT_file  << s2th_13 << "\t" << dm2_31 << "\t" << xs[0]  << "\t" << xs[1]
-                << "\t" << xs[2]  << "\t" << xs[3]  << "\t" << xs[4]  << "\t" << xs[5]
-                << "\t" << xs[6]  << "\t" << xs[7]  << "\t" << xs[8]  << "\t" << xs[9]
-                << "\t" << xs[10] << "\t" << xs[11] << "\t" << xs[12] << "\t" << xs[13]
-                << "\t" << xs[14] << "\t" << xs[15] << "\t" << xs[16] << "\t" << xs[17]
-                << "\t" << xs[18] << "\t" << xs[19] << "\t" << xs[20] << "\t" << xs[21]
-                << "\t" << xs[22] << "\t" << xs[23] << "\t" << min->MinValue() << endl;
+                minimPullT_file  << s2th_13 << "\t" << dm2_31 << "\t" << xs[0]  << "\t" << xs[1]
+                    << "\t" << xs[2]  << "\t" << xs[3]  << "\t" << xs[4]  << "\t" << xs[5]
+                    << "\t" << xs[6]  << "\t" << xs[7]  << "\t" << xs[8]  << "\t" << xs[9]
+                    << "\t" << xs[10] << "\t" << xs[11] << "\t" << xs[12] << "\t" << xs[13]
+                    << "\t" << xs[14] << "\t" << xs[15] << "\t" << xs[16] << "\t" << xs[17]
+                    << "\t" << xs[18] << "\t" << xs[19] << "\t" << xs[20] << "\t" << xs[21]
+                    << "\t" << xs[22] << "\t" << min->MinValue() << endl;
+                    //}
+                if (dm2_31 == hi_dm2)
+                {
+                    chi2Surface_file << endl;
+                    cout << s2th_13 << "\t" << dm2_31 << "\t" << min->MinValue() << endl;
+                }
+                //cout << s2th_13 << "\t" << dm2_31 << "\t" << min->MinValue() << endl;
+                //minimPullT_file  << endl;
+                //if (is2t%10 == 0)
+                //std::cout << "Succesful run for sin^2(th13) = " << s2th_13 << "!! \t" << min->MinValue() << endl;
                 //}
-        if (dm2_31 == hi_dm2)
-        {
-            chi2Surface_file << endl;
-            cout << s2th_13 << "\t" << dm2_31 << "\t" << min->MinValue() << endl;
-        }
-        cout << s2th_13 << "\t" << dm2_31 << "\t" << min->MinValue() << endl;
-        //minimPullT_file  << endl;
-        //if (is2t%10 == 0)
-        //std::cout << "Succesful run for sin^2(th13) = " << s2th_13 << "!! \t" << min->MinValue() << endl;
-        //}
-        }//if iad END
+            }//if iad END
 
-    }//file loop END
-    std::cout << "Successful run!!" << endl;
-    //break;
-    //------------------------------------------------------------------------------
-    //------------------------------------------------------------------------------
-    //Drawing no-oscillated spectra
+        }//file loop END
+        std::cout << "Successful run!!" << endl;
+        //break;
+        //------------------------------------------------------------------------------
+        //------------------------------------------------------------------------------
+        //Drawing no-oscillated spectra
     TCanvas *canv0 = new TCanvas("canv0","",3*700,2*350);
     canv0->Divide(3,2);
     for(int iAD = 0 ; iAD < 6 ; iAD++)

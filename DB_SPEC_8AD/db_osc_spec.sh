@@ -8,8 +8,8 @@ echo '0) Define Grid'
 echo '=========================================='
 echo 
 
-export NS2T=50
-export NDM2=50
+export NS2T=10
+export NDM2=10
 
 export LO_S2T=0.05
 export HI_S2T=0.12
@@ -36,7 +36,7 @@ echo '=========================================='
 echo '1) Running ldist.C'
 echo '=========================================='
 echo 
-time root -b -l -n -q ldist.C
+#time root -b -l -n -q ldist.C
 
 echo
 
@@ -66,7 +66,8 @@ echo '=========================================='
 echo '3) Running db_minuit.C'
 echo '=========================================='
 echo
-time root -b -l -n -q db_minuit_spec.C
+#time root -b -l -n -q db_minuit_spec.C
+time root -b -l -n -q db_minuit_spec_CovMat.C
 
 echo
 

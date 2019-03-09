@@ -97,7 +97,7 @@ void db_ntuple()
             else if (id > 3) ad = 2;
             
             Ep = nu_nosc_spect_histo[ad]->GetRandom();
-            En = Ep + avg_nRecoilE + avg_constE;
+            En = Ep*1.03 + avg_nRecoilE + avg_constE;
         
             T->Fill();
             

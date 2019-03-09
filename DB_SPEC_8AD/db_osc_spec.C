@@ -68,10 +68,10 @@ void db_osc_spec()
         {599.71,1.12},{593.82,1.18},
         { 74.25,0.28},{ 74.60,0.28},{73.98,0.28},{74.73,0.30}
     };
-    IBDrate_perday[4][0] = 1.005*IBDrate_perday[4][0];
-    IBDrate_perday[5][0] = 1.005*IBDrate_perday[5][0];
-    IBDrate_perday[6][0] = 1.005*IBDrate_perday[6][0];
-    IBDrate_perday[7][0] = 1.005*IBDrate_perday[7][0];
+    IBDrate_perday[4][0] = 1.00*IBDrate_perday[4][0];
+    IBDrate_perday[5][0] = 1.00*IBDrate_perday[5][0];
+    IBDrate_perday[6][0] = 1.00*IBDrate_perday[6][0];
+    IBDrate_perday[7][0] = 1.00*IBDrate_perday[7][0];
 
     //Computing <POsc(s2t_BF,dm2_31)> for each AD
     // AD1 -> id = 0; AD2 -> id = 1; AD3 -> id = 2; AD4 -> id = 4; AD5 -> id = 5; AD6 -> id = 6

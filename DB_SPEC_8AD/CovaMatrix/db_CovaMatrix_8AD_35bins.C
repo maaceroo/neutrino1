@@ -90,7 +90,10 @@ void db_CovaMatrix_8AD_35bins()
     for (int i=0;i<NB;i++){
       double xpoint = e_syst_histo1->GetBinCenter(i+1);
       e_syst[i] = errgr->Eval(xpoint);
+        //cout << e_syst[i] << endl; //checking
     }
+    //cout << endl; //checking
+    //cout << "end Check" << endl; //checking
 
     //---Fill e_syst_histo1 and e_syst_histo2
     for (int i = 0 ; i < NB ; i++) {
@@ -107,8 +110,11 @@ void db_CovaMatrix_8AD_35bins()
             double rho_ij = corrMat_histo->GetBinContent(i+1,j+1);
             double cont = sigma_i*sigma_j*rho_ij;
             covaMat_histo->SetBinContent(i+1,j+1,cont);
+            //if (i == j)
+                //cout << cont << endl;
         }
     }
+    //cout << "End Check" << endl;
     
 
     //covaMat_histo->SetMinimum(-1.0);
@@ -164,11 +170,13 @@ void db_CovaMatrix_8AD_35bins()
     }
     fixedMatScaled.Print();
 
-    covaMat_matrix = fixedMatScaled; // replace covaMat_Matrix with fixed matrix
+    //covaMat_matrix = fixedMatScaled; // replace covaMat_Matrix with fixed matrix
+    covaMat_matrix = fixedMat; // replace covaMat_Matrix with fixed matrix
     //Replace histo
     for (int k = 0 ; k < NB ; k++) {
         for (int l = 0 ; l < NB ; l++) {
-            covaMat_histo->SetBinContent(k+1,l+1,fixedMatScaled(k,l));
+            //covaMat_histo->SetBinContent(k+1,l+1,fixedMatScaled(k,l));
+            covaMat_histo->SetBinContent(k+1,l+1,fixedMat(k,l)); // 08.03.2019 - Fixing fixedMat.
         }
     }
 
