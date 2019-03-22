@@ -68,10 +68,10 @@ void db_osc_spec()
         {599.71,1.12},{593.82,1.18},
         { 74.25,0.28},{ 74.60,0.28},{73.98,0.28},{74.73,0.30}
     };
-    IBDrate_perday[4][0] = 1.00*IBDrate_perday[4][0];
-    IBDrate_perday[5][0] = 1.00*IBDrate_perday[5][0];
-    IBDrate_perday[6][0] = 1.00*IBDrate_perday[6][0];
-    IBDrate_perday[7][0] = 1.00*IBDrate_perday[7][0];
+    IBDrate_perday[4][0] = 1.002*IBDrate_perday[4][0];
+    IBDrate_perday[5][0] = 1.002*IBDrate_perday[5][0];
+    IBDrate_perday[6][0] = 1.002*IBDrate_perday[6][0];
+    IBDrate_perday[7][0] = 1.002*IBDrate_perday[7][0];
 
     //Computing <POsc(s2t_BF,dm2_31)> for each AD
     // AD1 -> id = 0; AD2 -> id = 1; AD3 -> id = 2; AD4 -> id = 4; AD5 -> id = 5; AD6 -> id = 6
@@ -98,7 +98,8 @@ void db_osc_spec()
         sel = iAD;
         //------------------------------------------------
         //Filling Ocillation prpbability at BF - histogram
-        T->Draw(Form("(1.0 - 0.0841*((sin( 1.267 * 2.50e-3 * Ln/En ))**2) - ((cos(0.5 * asin(sqrt(0.0841))))**4) * 0.841 * (sin( 1.267 * 7.59e-5 * Ln/En ))**2) >> Posc_AD_BF_%d",iAD),Form("id==%d",sel));
+        //T->Draw(Form("(1.0 - 0.0841*((sin( 1.267 * 2.50e-3 * Ln/En ))**2) - ((cos(0.5 * asin(sqrt(0.0841))))**4) * 0.841 * (sin( 1.267 * 7.59e-5 * Ln/En ))**2) >> Posc_AD_BF_%d",iAD),Form("id==%d",sel));
+        T->Draw(Form("(1.0 - 0.0841*((sin( 1.267 * 2.50e-3 * Ln/En ))**2) - ((cos(0.5 * asin(sqrt(0.0841))))**4) * 0.844 * (sin( 1.267 * 7.53e-5 * Ln/En ))**2) >> Posc_AD_BF_%d",iAD),Form("id==%d",sel));
         integ = Posc_AD_BF[iAD]->Integral();
         Posc_AD_BF[iAD]->Scale(1.0/integ); //Used to plot the Survival Probabilities for each AD with BF parameters (normalized)
         //Average oscillation Probability
@@ -119,7 +120,8 @@ void db_osc_spec()
         //nu_nosc_spect_histo[iAD]->Scale(noOsc_IBDrate_perday[iAD]/TotNosc[iAD]); //normalize per day HERE? (2017-07-13)
         
         //condition to fill BF-oscillation- Ep spectra
-        cutBF = Form("(1.0 - 0.0841*((sin( 1.267 * 2.50e-3 * Ln/En ))**2) - ((cos(0.5 * asin(sqrt(0.0841))))**4) * 0.841 * (sin( 1.267 * 7.59e-5 * Ln/En ))**2)*(id==%d)",iAD);
+        //cutBF = Form("(1.0 - 0.0841*((sin( 1.267 * 2.50e-3 * Ln/En ))**2) - ((cos(0.5 * asin(sqrt(0.0841))))**4) * 0.841 * (sin( 1.267 * 7.59e-5 * Ln/En ))**2)*(id==%d)",iAD);
+        cutBF = Form("(1.0 - 0.0841*((sin( 1.267 * 2.50e-3 * Ln/En ))**2) - ((cos(0.5 * asin(sqrt(0.0841))))**4) * 0.846 * (sin( 1.267 * 7.53e-5 * Ln/En ))**2)*(id==%d)",iAD);
 
         //Filling and normalizing BF-oscillation Ep spectra
         T->Draw(Form("Ep >> BFit_spect_histo_%d",sel),cutBF,"");
@@ -221,7 +223,8 @@ void db_osc_spec()
                 //else if (iAD >= 3) sel = iAD +1;
                 sel = iAD;    
                 // Condition to fill oscilated spectra for (s2t_pt,dm2_pt), i.e. wosc_spect_histo[iAD]
-                cut = Form("(1.0 - %e*((sin( 1.267 * %e * Ln/En ))**2) - (0.25*(1 + sqrt(1 - %e))**2) * 0.861 * (sin( 1.267 * 7.59e-5 * Ln/En ))**2)*(id==%d)" ,s2t_pt,dm2_pt,s2t_pt,sel);
+                //cut = Form("(1.0 - %e*((sin( 1.267 * %e * Ln/En ))**2) - (0.25*(1 + sqrt(1 - %e))**2) * 0.861 * (sin( 1.267 * 7.59e-5 * Ln/En ))**2)*(id==%d)" ,s2t_pt,dm2_pt,s2t_pt,sel);
+                cut = Form("(1.0 - %e*((sin( 1.267 * %e * Ln/En ))**2) - (0.25*(1 + sqrt(1 - %e))**2) * 0.846 * (sin( 1.267 * 7.53e-5 * Ln/En ))**2)*(id==%d)" ,s2t_pt,dm2_pt,s2t_pt,sel);
                 // Filling oscilated spectra for (s2t_pt,dm2_pt)
                 int ih = is2t*N_dm2 + idm2;
                 //cout << "AD " << iAD + 1 << "\t s2t_pt =  " << s2t_pt << "\t dm2_pt =  " << dm2_pt  << "\t ih = " << ih << endl;

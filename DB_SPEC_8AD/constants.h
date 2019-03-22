@@ -21,8 +21,10 @@ const int nAD = 8;
 const int nNR = 6;
 
 //Fixed neutrino oscillations parameters
-double   dm2_21 = 7.59e-5; //eV^2,                //PRL 108 171803 (2012)
-double s22th_12 = 0.861;
+//double   dm2_21 = 7.59e-5; //eV^2,                //PRL 108 171803 (2012)
+//double s22th_12 = 0.861;
+double   dm2_21 = 7.53e-5; //eV^2,                //PRD 95 072006 (2017) - DB1230Days
+double s22th_12 = 0.846;
 
 //Grid of oscillation parameters.
 const int     N_s2t = atoi(getenv("NS2T"));

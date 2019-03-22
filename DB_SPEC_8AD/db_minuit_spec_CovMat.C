@@ -452,7 +452,7 @@ int db_minuit_spec_CovMat(const char * minName = "Minuit",
                 min->SetLimitedVariable(19, "a_4", start[19], step[19], -lim, lim);
                 min->SetLimitedVariable(20, "a_5", start[20], step[20], -lim, lim);
                 min->SetLimitedVariable(21, "a_6", start[21], step[21], -lim, lim);
-                 */
+                */
                 min->SetLimitedVariable(22, "eps", start[22], step[22], -lim, lim);
                 //-----------------------------------------------------------------//
 		

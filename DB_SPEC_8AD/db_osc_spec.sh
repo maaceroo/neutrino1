@@ -8,8 +8,8 @@ echo '0) Define Grid'
 echo '=========================================='
 echo 
 
-export NS2T=10
-export NDM2=10
+export NS2T=50
+export NDM2=50
 
 export LO_S2T=0.05
 export HI_S2T=0.12
@@ -48,7 +48,7 @@ echo '=========================================='
 echo 
 export NTUPLE_EVENTS=5000000
 echo $NTUPLE_EVENTS ntuple events
-time root -b -l -n -q db_ntuple.C
+#time root -b -l -n -q db_ntuple.C
 
 echo
 
@@ -81,10 +81,10 @@ echo '=========================================='
 echo 'compiling  db_chi2_min.cpp and db_margin.cpp'
 echo '=========================================='
 echo
-##g++ -o db_chi2_min.exe db_chi2_min.cpp
-##g++ -o db_margin.exe db_margin.cpp
-clang++ -o db_chi2_min.exe db_chi2_min.cpp
-clang++ -o db_margin.exe db_margin.cpp
+g++ -o db_chi2_min.exe db_chi2_min.cpp
+g++ -o db_margin.exe db_margin.cpp
+##clang++ -o db_chi2_min.exe db_chi2_min.cpp
+##clang++ -o db_margin.exe db_margin.cpp
 
 echo
 #-----------------------------------------------------------------------------
