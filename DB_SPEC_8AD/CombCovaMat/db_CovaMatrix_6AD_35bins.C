@@ -168,7 +168,8 @@ void db_CovaMatrix_6AD_35bins()
         cout << "eigen-value " << i << " is " << values(i) << " " << values2(i) << endl;
     }
     cout << "Printing Fixed Matrix Scaled..." << endl;
-    fixedMatScaled.Print();
+    //fixedMatScaled.Print();
+    fixedMat.Print();
     
     //covaMat_matrix = fixedMatScaled; // replace covaMat_Matrix with fixed matrix
     covaMat_matrix = fixedMat; // replace covaMat_Matrix with fixed matrix
