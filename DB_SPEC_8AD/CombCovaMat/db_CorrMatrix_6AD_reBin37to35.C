@@ -263,7 +263,7 @@ void db_CorrMatrix_6AD_reBin37to35()
     }
 
     double corrMatChk[NBC][NBC];
-    TH2F *corrMatchkHisto = new TH2F("corrMatChkHisto","",NBC,0,NBC,NBC,0,NBC);
+    TH2F *corrMatChkHisto = new TH2F("corrMatChkHisto","",NBC,0,NBC,NBC,0,NBC);
     for (int k = 0 ; k < NBC ; k++) {
         for (int l = 0 ; l < NBC; l++) {
             corrMatChk[k][l] = 0.0;
