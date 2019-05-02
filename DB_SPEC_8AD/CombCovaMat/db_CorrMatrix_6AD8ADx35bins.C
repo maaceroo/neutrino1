@@ -15,7 +15,7 @@ void set_plot_style()
 }
 //------------------------------------------------------
 
-void db_CovaMatrix_6AD_35bins()
+void db_CorrMatrix_6AD8ADx35bins()
 {// begin
 
     //------------- Style --------------
@@ -28,19 +28,18 @@ void db_CovaMatrix_6AD_35bins()
     Double_t sz = 0.04;
     //------------------------------------------------------------------
 
+    //--6AD 8x8 correlation matrix
     TFile *fmat = new TFile("db_CorrMatrix_6AD_35bins.root");
-    TH2F *corrMat_histo = (TH2F*)fmat->Get("corrMatRebHisto");
-    cout << "Bins: " << corrMat_histo->GetXaxis()->GetNbins() << endl;
+    TH2F *corrMat_histo_6Det_8x8 = (TH2F*)fmat->Get("corrMat_histo_8x8_6Det");
+    cout << "6AD Bins: " << corrMat_histo_6Det_8x8->GetXaxis()->GetNbins() << endl;
+    //--8AD 1x1 correlation matrix
+    TFile *fmat = new TFile("db_CorrMatrix_8AD_35bins.root");
+    TH2F *corrMat_histo_8Det_1x1 = (TH2F*)fmat->Get("corrMatRebHisto");
+    cout << "8AD Bins: " << corrMat_histo_8Det_1x1->GetXaxis()->GetNbins() << endl;
     //matrix definition
     
-    //double e_syst[NB] = {1.124, 1.046, 1.035, 1.030, 1.028,
-    //                    1.026, 1.025, 1.024, 1.023, 1.024,
-    //                    1.025, 1.026, 1.028, 1.029, 1.032,
-    //                    1.033, 1.038, 1.041, 1.043, 1.046,
-    //                    1.052, 1.060, 1.068, 1.078, 1.240,
-    //                    1.440};
-    
-    
+    //--- It's all to be done (from here) - 2019.05.02
+
     //--- Graph with errors from https://arxiv.org/pdf/1508.04233.pdf  Fig. 2
     const int Ngr = 26;
     double erxx[Ngr] = {0.975,1.375,1.625,1.875,2.125,2.375,2.625,2.875,3.125,3.375,
