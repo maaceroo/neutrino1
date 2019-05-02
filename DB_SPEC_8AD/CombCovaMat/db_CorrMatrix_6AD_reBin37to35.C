@@ -237,9 +237,9 @@ void db_CorrMatrix_6AD_reBin37to35()
     cout << "P8. Checking Eigenvalues of Rebined Matrix" << endl;
     TVectorD values;
     TMatrixD vectors = corrMatReb_matrix.EigenVectors(values);
-    for (Int_t i = 0; i < values.GetNrows(); ++i) {
+    /*for (Int_t i = 0; i < values.GetNrows(); ++i) {
         cout << "eigen-value " << i << " is " << values(i) << " with eigen-vector" << endl;
-    }
+    }*/
 
     TMatrixD invReb_mat(NBCreb,NBCreb);
     TMatrixD unoReb_mat(NBCreb,NBCreb);
@@ -273,6 +273,39 @@ void db_CorrMatrix_6AD_reBin37to35()
             corrMatChkHisto->SetBinContent(k+1,l+1,corrMatChk[k][l]);
         }
     }
+
+//---------------------------------------------------------------------------
+    
+    //-- Number of detectors
+    int NBx = NBCreb;
+    int NBy = NBCreb;
+    int nDet = 6+2;
+    int    NBx_8x8 = NBx*nDet;
+    double lox_8x8 = 0;
+    double hix_8x8 = NBx*nDet;
+    int    NBy_8x8 = NBy*nDet;
+    double loy_8x8 = 0;
+    double hiy_8x8 = NBy*nDet;
+    TH2F *corrMat_histo_8x8_6Det = new TH2F("corrMat_histo_8x8_6Det","",NBx_8x8,lox_8x8,hix_8x8,NBy_8x8,loy_8x8,hiy_8x8);
+    cout << NBx_8x8 << "  " << NBy_8x8 << endl;
+    for (int i = 0 ; i < NBx_8x8 ; i++) {
+        for (int j = i ; j < NBy_8x8 ; j++) {
+            int ii = i%NBx;
+            int jj = j%NBy;
+            int iB = int(i/NBx);
+            int jB = int(j/NBy);
+            //cout << i << " " << j << "   -   " << ii << " " << jj << "   -   " << iB << " " << jB << endl;
+            double value = corrMatRebHisto->GetBinContent(ii+1,jj+1);
+	    if (iB == 3 || iB == 7)
+	       value = 0.0;
+	    if (jB == 3 || jB == 7)
+	       value = 0.0;
+	    corrMat_histo_8x8_6Det->SetBinContent(i+1,j+1,value);
+            corrMat_histo_8x8_6Det->SetBinContent(j+1,i+1,value);
+        }
+    }
+
+//---------------------------------------------------------------------------
 
     cout << "P9. Drawing Section" << endl;
     // Drawing section
@@ -342,11 +375,17 @@ void db_CorrMatrix_6AD_reBin37to35()
     //canv1->Print("canv1.pdf");
     //canv2->Print("canv2.pdf");
     
+    //Draw the 8x8 6Det matrix!!
+    //---------------------------------------------------------
+    TCanvas *canv5 = new TCanvas("canv5","6Det (8x8) Matrix",500,500);
+    corrMat_histo_8x8_6Det->Draw("COLZ");
+    //------------------------------------------------------------------
     //---------------------------------------------------------
     // Write the rebinned correlation matrix to output file
     TFile *fout = new TFile("./db_CorrMatrix_6AD_35bins.root","recreate");
     fout->cd();
     corrMatRebHisto->Write();
+    corrMat_histo_8x8_6Det->Write();
     
     fout->Close();
     
