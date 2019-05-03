@@ -32,8 +32,9 @@ void db_CorrMatrix_6AD_reBin37to35()
     Double_t sz = 0.04;
     //---------------------------------
 
-    TFile *fmat = new TFile("db_CorrMatrix_6AD_37bins.root");
-    TH2F *CorMat_histo = (TH2F*)fmat->Get("CorMat_histo");
+    //--6AD 1x1 correlation matrix
+    TFile *fmat6 = new TFile("db_CorrMatrix_6AD_37bins.root");
+    TH2F *CorMat_histo = (TH2F*)fmat6->Get("CorMat_histo");
     TH2F *RedCorMat_histo = new TH2F("RedCorMat_histo","",NBC,0,NBC,NBC,0,NBC);
     cout << "Bins: " << CorMat_histo->GetXaxis()->GetNbins() << endl;
     //matrix definition
@@ -275,7 +276,55 @@ void db_CorrMatrix_6AD_reBin37to35()
     }
 
 //---------------------------------------------------------------------------
+// 8x8 correlation matrix (constructed by hand ... and by "eye")
     
+    double rho_array[8][8]={{1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0},
+                            {0.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0},
+                            {0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0},
+                            {0.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0},
+                            {0.0,0.0,0.0,0.0,1.0,0.0,0.0,0.0},
+                            {0.0,0.0,0.0,0.0,0.0,1.0,0.0,0.0},
+                            {0.0,0.0,0.0,0.0,0.0,0.0,1.0,0.0},
+                            {0.0,0.0,0.0,0.0,0.0,0.0,0.0,1.0}};
+    
+    //Construct correlation matrix upper triangle
+    double corr_start = 0.999;
+    for (int j = 0 ; j < 8 ; j++){
+        for (int k = 0 ; k < 8 ; k++){
+            for (int i = 0 ; i < 8 ; i++) {
+                    int ij = i+j;
+                    int ik = i+k;
+                    if ( (ij)<8 && (ik<8) ) {
+                        if (ij==ik)
+                            rho_array[ij][ik]=1.0;
+                        else if ( ik==(ij+1) )
+                            rho_array[ij][ik]=corr_start;
+                        else if ( ij<(8-1) )
+                            rho_array[ij][ik] = rho_array[ij][ik-1]*rho_array[ij+1][ik];
+                }//if
+            }//for i
+        }//for k
+    }//for j
+    
+    //Assign correlation matrixlower triangle
+    double corrMat_8x8Block[8][8];
+    for(int ii = 0 ; ii < 8 ; ii++){
+        for(int jj = ii+1 ; jj < 8 ; jj++){
+            rho_array[jj][ii] = rho_array[ii][jj];
+        }
+    }
+    
+    cout << "The AD-correlation Matrix is:" << endl;
+    for(int ii = 0 ; ii < 8 ; ii++){
+        for(int jj = 0 ; jj < 8 ; jj++){
+            corrMat_8x8Block[ii][jj] =  rho_array[ii][jj];
+            cout << setprecision(4) << corrMat_8x8Block[ii][jj] << "\t";
+        }
+        cout << endl;
+    }
+
+//---------------------------------------------------------------------------
+
     //-- Number of detectors
     int NBx = NBCreb;
     int NBy = NBCreb;
@@ -294,8 +343,9 @@ void db_CorrMatrix_6AD_reBin37to35()
             int jj = j%NBy;
             int iB = int(i/NBx);
             int jB = int(j/NBy);
+            double block_corrFact_ij = corrMat_8x8Block[iB][jB];
             //cout << i << " " << j << "   -   " << ii << " " << jj << "   -   " << iB << " " << jB << endl;
-            double value = corrMatRebHisto->GetBinContent(ii+1,jj+1);
+            double value = corrMatRebHisto->GetBinContent(ii+1,jj+1)*block_corrFact_ij;
 	    if (iB == 3 || iB == 7)
 	       value = 0.0;
 	    if (jB == 3 || jB == 7)
