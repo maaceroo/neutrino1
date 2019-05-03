@@ -29,16 +29,40 @@ void db_CorrMatrix_6AD8ADx35bins()
     //------------------------------------------------------------------
 
     //--6AD 8x8 correlation matrix
-    TFile *fmat = new TFile("db_CorrMatrix_6AD_35bins.root");
-    TH2F *corrMat_histo_6Det_8x8 = (TH2F*)fmat->Get("corrMat_histo_8x8_6Det");
+    TFile *fmat6 = new TFile("db_CorrMatrix_6AD_35bins.root");
+    TH2F *corrMat_histo_6Det_8x8 = (TH2F*)fmat6->Get("corrMat_histo_8x8_6Det");
     cout << "6AD Bins: " << corrMat_histo_6Det_8x8->GetXaxis()->GetNbins() << endl;
     //--8AD 1x1 correlation matrix
-    TFile *fmat = new TFile("db_CorrMatrix_8AD_35bins.root");
-    TH2F *corrMat_histo_8Det_1x1 = (TH2F*)fmat->Get("corrMatRebHisto");
+    TFile *fmat8 = new TFile("db_CorrMatrix_8AD_35bins.root");
+    TH2F *corrMat_histo_8Det_1x1 = (TH2F*)fmat8->Get("corrMatRebHisto");
     cout << "8AD Bins: " << corrMat_histo_8Det_1x1->GetXaxis()->GetNbins() << endl;
     //matrix definition
     
-    //--- It's all to be done (from here) - 2019.05.02
+    //---------------------------------------------------------------------------
+    //-- buildon the large (8*35)x(8*35) 8AD Correlation matrix
+    //-- Number of detectors
+    int    NBx_8x8 = corrMat_histo_6Det_8x8->GetXaxis()->GetNbins();
+    double lox_8x8 = 0;
+    double hix_8x8 = NBx_8x8;
+    int    NBy_8x8 = corrMat_histo_6Det_8x8->GetYaxis()->GetNbins();
+    double loy_8x8 = 0;
+    double hiy_8x8 = NBy_8x8;
+    TH2F *corrMat_histo_8Det_8x8 = new TH2F("corrMat_histo_8Det_8x8","",NBx_8x8,lox_8x8,hix_8x8,NBy_8x8,loy_8x8,hiy_8x8);
+    cout << NBx_8x8 << "  " << NBy_8x8 << endl;
+    for (int i = 0 ; i < NBx_8x8 ; i++) {
+        for (int j = i ; j < NBy_8x8 ; j++) {
+            int ii = i%NBx_8x8;
+            int jj = j%NBy_8x8;
+            int iB = int(i/NBx_8x8);
+            int jB = int(j/NBy_8x8);
+            //cout << i << " " << j << "   -   " << ii << " " << jj << "   -   " << iB << " " << jB << endl;
+            double value = corrMat_histo_8Det_1x1->GetBinContent(ii+1,jj+1);
+            corrMat_histo_8Det_8x8->SetBinContent(i+1,j+1,value);
+            corrMat_histo_8Det_8x8->SetBinContent(j+1,i+1,value);
+        }
+    }
+    break;
+    //---------------------------------------------------------------------------
 
     //--- Graph with errors from https://arxiv.org/pdf/1508.04233.pdf  Fig. 2
     const int Ngr = 26;
