@@ -141,28 +141,32 @@ void db_CorrMatrix_6AD8ADx35bins()
     }
     TMatrixD offDiagBlock_6DetX8Det(NBx_8x8,NBy_8x8);
     offDiagBlock_6DetX8Det.Mult(corrMat_mat_8x8_6Det,corrMat_mat_8x8_8Det);
+    //offDiagBlock_6DetX8Det.Print();
     //---------------------------------------------------------------------------
     double corrMat_2x2BigBlock[2][2] = {{1.0,0.99},{0.99,1.0}};
     double value;
     TH2F *corrMat_histo_6Det8Det = new TH2F("corrMat_histo_6Det8Det","",2*NBx_8x8,0,2*NBx_8x8,2*NBy_8x8,0,2*NBy_8x8);
     //-- there is something worng here, with the matrix filling - 2019.05.03
     for (int i = 0 ; i < 2*NBx_8x8 ; i++) {
-        for (int j = 0 ; j < 2*NBy_8x8 ; j++) {
-            if ( (i < NBx_8x8) && (j < NBy_8x8) ) {
-                value = corrMat_mat_8x8_6Det(i,j);
-                corrMat_histo_6Det8Det->SetBinContent(i+1,j+1,value);
-                corrMat_histo_6Det8Det->SetBinContent(j+1,i+1,value);
+        for (int j = i ; j < 2*NBy_8x8 ; j++) {
+
+            if ( (i < NBx_8x8) ) {
+                if ( (j < NBy_8x8) ) {
+                    value = corrMat_mat_8x8_6Det(i,j);
+                }
+                else {
+                    value = offDiagBlock_6DetX8Det(i,j-NBy_8x8);
+                    //value = 0.0;
+                }
             }
-            if ( (i >= NBx_8x8) && (j >= NBy_8x8) ) {
-                value = corrMat_mat_8x8_8Det(i-NBx_8x8,j-NBy_8x8);
-                corrMat_histo_6Det8Det->SetBinContent(i+1,j+1,value);
-                corrMat_histo_6Det8Det->SetBinContent(j+1,i+1,value);
-            }/*
-            if ( (i < NBx_8x8) && (j >= NBy_8x8) ) {
-                value = offDiagBlock_6DetX8Det(i,j-NBy_8x8);
-                corrMat_histo_6Det8Det->SetBinContent(i+1,j+1,value);
-                corrMat_histo_6Det8Det->SetBinContent(j+1,i+1,value);
-            }*/
+            
+            if ( (i >= NBx_8x8) )
+                if ( (j >= NBy_8x8) ) {
+                    value = corrMat_mat_8x8_8Det(i-NBx_8x8,j-NBy_8x8);
+                }
+            
+            corrMat_histo_6Det8Det->SetBinContent(i+1,j+1,value);
+            corrMat_histo_6Det8Det->SetBinContent(j+1,i+1,value);
         }
     }
     
