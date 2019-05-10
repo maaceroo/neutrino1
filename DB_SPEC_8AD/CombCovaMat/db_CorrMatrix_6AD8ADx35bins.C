@@ -147,7 +147,7 @@ void db_CorrMatrix_6AD8ADx35bins()
     TH2F *corrMat_histo_6Det8Det = new TH2F("corrMat_histo_6Det8Det","",2*NBx_8x8,0,2*NBx_8x8,2*NBy_8x8,0,2*NBy_8x8);
     //-- there is something worng here, with the matrix filling - 2019.05.03
     for (int i = 0 ; i < 2*NBx_8x8 ; i++) {
-        for (int j = i ; j < 2*NBy_8x8 ; j++) {
+        for (int j = 0 ; j < 2*NBy_8x8 ; j++) {
             if ( (i < NBx_8x8) && (j < NBy_8x8) ) {
                 value = corrMat_mat_8x8_6Det(i,j);
                 corrMat_histo_6Det8Det->SetBinContent(i+1,j+1,value);
@@ -157,26 +157,26 @@ void db_CorrMatrix_6AD8ADx35bins()
                 value = corrMat_mat_8x8_8Det(i-NBx_8x8,j-NBy_8x8);
                 corrMat_histo_6Det8Det->SetBinContent(i+1,j+1,value);
                 corrMat_histo_6Det8Det->SetBinContent(j+1,i+1,value);
-            }
+            }/*
             if ( (i < NBx_8x8) && (j >= NBy_8x8) ) {
                 value = offDiagBlock_6DetX8Det(i,j-NBy_8x8);
                 corrMat_histo_6Det8Det->SetBinContent(i+1,j+1,value);
                 corrMat_histo_6Det8Det->SetBinContent(j+1,i+1,value);
-            }
+            }*/
         }
     }
     
     //---------------------------------------------------------
     set_plot_style();
-    
+    /*
     TCanvas *canv0 = new TCanvas("canv0","",2*500,500);
     canv0->Divide(2,1);
     canv0->cd(1);
     corrMat_histo_8x8_6Det->Draw("COLZ");
     canv0->cd(2);
-    corrMat_histo_8x8_8Det->Draw("COLZ");
+    corrMat_histo_8x8_8Det->Draw("COLZ");*/
     //---------------------------------------------------------
-    TCanvas *canv1 = new TCanvas("canv1","",500,500);
+    TCanvas *canv1 = new TCanvas("canv1","",900,100,500,500);
     canv1->cd(1);
     corrMat_histo_6Det8Det->Draw("COLZ");
     
