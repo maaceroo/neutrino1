@@ -31,11 +31,11 @@ void db_CorrMatrix_6AD8ADx35bins()
     //--6AD 8x8 correlation matrix
     TFile *fmat6 = new TFile("db_CorrMatrix_6AD_35bins.root");
     TH2F *corrMat_histo_6Det_1x1 = (TH2F*)fmat6->Get("corrMatRebHisto");
-    cout << "6AD Bins: " << corrMat_histo_6Det_1x1->GetXaxis()->GetNbins() << endl;
+    std::cout << "6AD Bins: " << corrMat_histo_6Det_1x1->GetXaxis()->GetNbins() << std::endl;
     //--8AD 1x1 correlation matrix
     TFile *fmat8 = new TFile("db_CorrMatrix_8AD_35bins.root");
     TH2F *corrMat_histo_8Det_1x1 = (TH2F*)fmat8->Get("corrMatRebHisto");
-    cout << "8AD Bins: " << corrMat_histo_8Det_1x1->GetXaxis()->GetNbins() << endl;
+    std::cout << "8AD Bins: " << corrMat_histo_8Det_1x1->GetXaxis()->GetNbins() << std::endl;
     //matrix definition
     
     //---------------------------------------------------------------------------
@@ -44,12 +44,12 @@ void db_CorrMatrix_6AD8ADx35bins()
     
     double rho_array[8][8]={{1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0},
                             {0.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0},
-        {0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0},
-        {0.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0},
-        {0.0,0.0,0.0,0.0,1.0,0.0,0.0,0.0},
-        {0.0,0.0,0.0,0.0,0.0,1.0,0.0,0.0},
-        {0.0,0.0,0.0,0.0,0.0,0.0,1.0,0.0},
-        {0.0,0.0,0.0,0.0,0.0,0.0,0.0,1.0}};
+                            {0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0},
+                            {0.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0},
+                            {0.0,0.0,0.0,0.0,1.0,0.0,0.0,0.0},
+                            {0.0,0.0,0.0,0.0,0.0,1.0,0.0,0.0},
+                            {0.0,0.0,0.0,0.0,0.0,0.0,1.0,0.0},
+                            {0.0,0.0,0.0,0.0,0.0,0.0,0.0,1.0}};
     
     //Construct correlation matrix upper triangle
     double corr_start = 0.999;
@@ -78,13 +78,13 @@ void db_CorrMatrix_6AD8ADx35bins()
         }
     }
     
-    cout << "The AD-correlation Matrix is:" << endl;
+    std::cout << "The AD-correlation Matrix is:" << std::endl;
     for(int ii = 0 ; ii < 8 ; ii++){
         for(int jj = 0 ; jj < 8 ; jj++){
             corrMat_8x8Block[ii][jj] =  rho_array[ii][jj];
-            cout << setprecision(4) << corrMat_8x8Block[ii][jj] << "\t";
+            std::cout << setprecision(4) << corrMat_8x8Block[ii][jj] << "\t";
         }
-        cout << endl;
+        std::cout << std::endl;
     }
     //-- building the large (8*35)x(8*35) 6AD Correlation matrix
     //-- Number of detectors
@@ -99,7 +99,7 @@ void db_CorrMatrix_6AD8ADx35bins()
     double hiy_8x8 = NBy*nDet;
     TMatrixD corrMat_mat_8x8_6Det(NBx_8x8,NBy_8x8);
     TH2F *corrMat_histo_8x8_6Det = new TH2F("corrMat_histo_8x8_6Det","",NBx_8x8,lox_8x8,hix_8x8,NBy_8x8,loy_8x8,hiy_8x8);
-    cout << NBx_8x8 << "  " << NBy_8x8 << endl;
+    std::cout << NBx_8x8 << "  " << NBy_8x8 << std::endl;
     for (int i = 0 ; i < NBx_8x8 ; i++) {
         for (int j = i ; j < NBy_8x8 ; j++) {
             int ii = i%NBx;
@@ -123,7 +123,7 @@ void db_CorrMatrix_6AD8ADx35bins()
     //-- building the large (8*35)x(8*35) 8AD Correlation matrix
     TMatrixD corrMat_mat_8x8_8Det(NBx_8x8,NBy_8x8);
     TH2F *corrMat_histo_8x8_8Det = new TH2F("corrMat_histo_8x8_8Det","",NBx_8x8,lox_8x8,hix_8x8,NBy_8x8,loy_8x8,hiy_8x8);
-    cout << NBx_8x8 << "  " << NBy_8x8 << endl;
+    std::cout << NBx_8x8 << "  " << NBy_8x8 << std::endl;
     for (int i = 0 ; i < NBx_8x8 ; i++) {
         for (int j = i ; j < NBy_8x8 ; j++) {
             int ii = i%NBx;
@@ -141,12 +141,26 @@ void db_CorrMatrix_6AD8ADx35bins()
     }
     TMatrixD offDiagBlock_6DetX8Det(NBx_8x8,NBy_8x8);
     offDiagBlock_6DetX8Det.Mult(corrMat_mat_8x8_6Det,corrMat_mat_8x8_8Det);
-    //offDiagBlock_6DetX8Det.Print();
-    //---------------------------------------------------------------------------
+    //offDiagBlock_6DetX8Det = corrMat_mat_8x8_8Det;
+    //ElementMult(offDiagBlock_6DetX8Det,corrMat_mat_8x8_6Det);
+
+    //-- 13.05.2019 -- Getting the maximum value of the offDiagBlock_6DetX8Det matrix
+    //-- Used to "normalize the content of this matrix to be used in the large correlation matrix
+    //-- I have no mathematical explanation to proceed this way, though
+    TH1F *diagMat_histo = new TH1F("diagMat_histo","",NBx_8x8,0,NBx_8x8);
+    for (int i = 0 ; i < NBx_8x8; i++) {
+        diagMat_histo->SetBinContent(i+1,offDiagBlock_6DetX8Det(i,i));
+    }
+    double max_offDiagBlock_value = diagMat_histo->GetMaximum();
+    std::cout << "\n The maximum value od the diagonal is \n"
+    << "\t " << max_offDiagBlock_value << std::endl;
+        //---------------------------------------------------------------------------
     double corrMat_2x2BigBlock[2][2] = {{1.0,0.99},{0.99,1.0}};
     double value;
     TH2F *corrMat_histo_6Det8Det = new TH2F("corrMat_histo_6Det8Det","",2*NBx_8x8,0,2*NBx_8x8,2*NBy_8x8,0,2*NBy_8x8);
     //-- there is something worng here, with the matrix filling - 2019.05.03
+    corrMat_histo_6Det8Det->SetMinimum(-1.0);
+    corrMat_histo_6Det8Det->SetMaximum(+1.0);
     for (int i = 0 ; i < 2*NBx_8x8 ; i++) {
         for (int j = i ; j < 2*NBy_8x8 ; j++) {
 
@@ -155,7 +169,8 @@ void db_CorrMatrix_6AD8ADx35bins()
                     value = corrMat_mat_8x8_6Det(i,j);
                 }
                 else {
-                    value = offDiagBlock_6DetX8Det(i,j-NBy_8x8);
+                    //-- 13.05.2019 -- "normalizing" the content of the matrix
+                    value = offDiagBlock_6DetX8Det(i,j-NBy_8x8)/(1.01*max_offDiagBlock_value);
                     //value = 0.0;
                 }
             }
@@ -169,7 +184,7 @@ void db_CorrMatrix_6AD8ADx35bins()
             corrMat_histo_6Det8Det->SetBinContent(j+1,i+1,value);
         }
     }
-    
+
     //---------------------------------------------------------
     set_plot_style();
     /*
@@ -180,10 +195,14 @@ void db_CorrMatrix_6AD8ADx35bins()
     canv0->cd(2);
     corrMat_histo_8x8_8Det->Draw("COLZ");*/
     //---------------------------------------------------------
-    TCanvas *canv1 = new TCanvas("canv1","",900,100,500,500);
+    TCanvas *canv1 = new TCanvas("canv1","",900,100,700,700);
     canv1->cd(1);
     corrMat_histo_6Det8Det->Draw("COLZ");
-    
+/*
+    TCanvas *canv2 = new TCanvas("canv2","",200,100,700,700);
+    canv2->cd(1);
+    corrMat_histo_6Det8Det->Draw("TEXT");
+*/
 
     /*
     //---------------------------------------------------------------------------
