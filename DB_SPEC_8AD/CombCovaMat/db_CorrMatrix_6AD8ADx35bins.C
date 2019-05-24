@@ -1,3 +1,7 @@
+#include "TMatrixD.h"
+#include "TVectorD.h"
+#include "TF1.h"
+
 //Constants definition
 const int NB = 35;      //Correlation matrix Number of bins
 //------------------------------------------------------
@@ -141,6 +145,73 @@ void db_CorrMatrix_6AD8ADx35bins()
     }
     TMatrixD offDiagBlock_6DetX8Det(NBx_8x8,NBy_8x8);
     offDiagBlock_6DetX8Det.Mult(corrMat_mat_8x8_6Det,corrMat_mat_8x8_8Det);
+    //offDiagBlock_6DetX8Det = corrMat_mat_8x8_6Det*corrMat_mat_8x8_8Det;
+
+    TMatrixDSym mtm(TMatrixDSym::kAtA,offDiagBlock_6DetX8Det);
+    TDecompSVD svd(offDiagBlock_6DetX8Det);
+    TVectorD sig = svd.GetSig(); sig.Sqr();
+    //const TMatrixDSymEigen eigen(mtm);
+    const TMatrixDSymEigen eigen(mtm);
+    const TVectorD eigenVal = eigen.GetEigenValues();
+    const Bool_t ok = VerifyVectorIdentity(sig,eigenVal,1,1.e-14);
+    eigenVal.Print();
+    
+    TMatrixD Q = eigen.GetEigenVectors();
+    TMatrixD QInv = Q;
+    QInv.Invert();
+    TMatrixD one(NBx_8x8,NBy_8x8);
+    one.Mult(Q,QInv);
+    //one.Print();
+    TH2F *one_histo = new TH2F("one_histo","",NBx_8x8,0,NBx_8x8,NBy_8x8,0,NBy_8x8);
+    for (int k = 0 ; k < NBx_8x8 ; k++) {
+        for (int l = 0 ; l < NBy_8x8 ; l++) {
+            one_histo->SetBinContent(k+1,l+1,one(k,l));
+        }
+    }
+    
+    TMatrixD diag(NBx_8x8,NBy_8x8);
+    TMatrixD test(NBx_8x8,NBy_8x8);
+    test = QInv*offDiagBlock_6DetX8Det;
+    diag = test*Q;
+    //diag.Print();
+    
+    TH2F *diagQ_histo = new TH2F("diagQ_histo","",NBx_8x8,0,NBx_8x8,NBy_8x8,0,NBy_8x8);
+    for (int k = 0 ; k < NBx_8x8 ; k++) {
+        for (int l = 0 ; l < NBy_8x8 ; l++) {
+            diagQ_histo->SetBinContent(k+1,l+1,diag(k,l));
+        }
+    }
+
+
+/*
+    TVectorD values;
+    //-- Computing the square root offfDiagBlock_6DetX8Det
+    TMatrixD Q = offDiagBlock_6DetX8Det.EigenVectors(values);
+    
+    //Q.Print();
+    //values.Print();
+    TMatrixD Qt = Q;
+    Qt.Invert();
+    TMatrixD one(NBx_8x8,NBy_8x8);
+    one.Mult(Q,Qt);
+    //one.Print();
+    TMatrixD diag(NBx_8x8,NBy_8x8);
+    TMatrixD test(NBx_8x8,NBy_8x8);
+    test = Qt*offDiagBlock_6DetX8Det;
+    diag = test*Q;
+    diag.Print();
+
+    TH2F *diagQ_histo = new TH2F("diagQ_histo","",NBx_8x8,0,NBx_8x8,NBy_8x8,0,NBy_8x8);
+    for (int k = 0 ; k < NBx_8x8 ; k++) {
+        for (int l = 0 ; l < NBy_8x8 ; l++) {
+            diagQ_histo->SetBinContent(k+1,l+1,diag(k,l));
+        }
+    }
+*/
+    
+    //TMatrixD SqrtOffDiag(NBx_8x8,NBy_8x8);
+    
+    
     //offDiagBlock_6DetX8Det = corrMat_mat_8x8_8Det;
     //ElementMult(offDiagBlock_6DetX8Det,corrMat_mat_8x8_6Det);
 
@@ -154,13 +225,16 @@ void db_CorrMatrix_6AD8ADx35bins()
     double max_offDiagBlock_value = diagMat_histo->GetMaximum();
     std::cout << "\n The maximum value od the diagonal is \n"
     << "\t " << max_offDiagBlock_value << std::endl;
+    
+    //std::cout << "\n det6x6 = " << corrMat_mat_8x8_6Det.Determinant() << std::endl;
+    //std::cout << "\n det8x8 = " << corrMat_mat_8x8_8Det.Determinant() << std::endl;
         //---------------------------------------------------------------------------
     double corrMat_2x2BigBlock[2][2] = {{1.0,0.99},{0.99,1.0}};
     double value;
     TH2F *corrMat_histo_6Det8Det = new TH2F("corrMat_histo_6Det8Det","",2*NBx_8x8,0,2*NBx_8x8,2*NBy_8x8,0,2*NBy_8x8);
     //-- there is something worng here, with the matrix filling - 2019.05.03
-    corrMat_histo_6Det8Det->SetMinimum(-1.0);
-    corrMat_histo_6Det8Det->SetMaximum(+1.0);
+    //corrMat_histo_6Det8Det->SetMinimum(-1.0);
+    //corrMat_histo_6Det8Det->SetMaximum(+1.0);
     for (int i = 0 ; i < 2*NBx_8x8 ; i++) {
         for (int j = i ; j < 2*NBy_8x8 ; j++) {
 
@@ -170,7 +244,8 @@ void db_CorrMatrix_6AD8ADx35bins()
                 }
                 else {
                     //-- 13.05.2019 -- "normalizing" the content of the matrix
-                    value = offDiagBlock_6DetX8Det(i,j-NBy_8x8)/(1.01*max_offDiagBlock_value);
+                    //value = offDiagBlock_6DetX8Det(i,j-NBy_8x8)/(1.01*max_offDiagBlock_value);
+                    value = offDiagBlock_6DetX8Det(i,j-NBy_8x8)/sqrt(280);
                     //value = 0.0;
                 }
             }
@@ -187,6 +262,7 @@ void db_CorrMatrix_6AD8ADx35bins()
 
     //---------------------------------------------------------
     set_plot_style();
+    
     /*
     TCanvas *canv0 = new TCanvas("canv0","",2*500,500);
     canv0->Divide(2,1);
@@ -195,14 +271,20 @@ void db_CorrMatrix_6AD8ADx35bins()
     canv0->cd(2);
     corrMat_histo_8x8_8Det->Draw("COLZ");*/
     //---------------------------------------------------------
+    
     TCanvas *canv1 = new TCanvas("canv1","",900,100,700,700);
     canv1->cd(1);
     corrMat_histo_6Det8Det->Draw("COLZ");
-/*
-    TCanvas *canv2 = new TCanvas("canv2","",200,100,700,700);
+    
+
+    TCanvas *canv2 = new TCanvas("canv2","",200,100,500,500);
     canv2->cd(1);
-    corrMat_histo_6Det8Det->Draw("TEXT");
-*/
+    one_histo->Draw("COLZ");
+    
+    TCanvas *canv3 = new TCanvas("canv3","",200,100,700,700);
+    canv3->cd(1);
+    diagQ_histo->Draw("LEGO");
+    
 
     /*
     //---------------------------------------------------------------------------

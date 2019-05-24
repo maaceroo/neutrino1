@@ -159,7 +159,7 @@ void db_CorrMatrix_8AD_FixPosDef_37bins()
     TMatrixD fixedMat(NBx,NBy);
     TMatrixD fixedMatScaled(NBx,NBy);
     fixedMat = temp*vectors_I;
-
+    //-- Forced correlation matrix to have ones in the diagonal and scales off-diagonal elements.
     for (int i = 0 ; i < NBx ; i++)
         for (int j = 0 ; j < NBy ; j++)
             fixedMatScaled(i,j) = fixedMat(i,j)/sqrt(fixedMat(i,i)*fixedMat(j,j));
