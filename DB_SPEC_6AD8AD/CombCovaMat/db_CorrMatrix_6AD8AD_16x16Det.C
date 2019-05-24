@@ -296,9 +296,18 @@ void db_CorrMatrix_6AD8AD_16x16Det()
     canv4->cd(1);
     corrMat_histo_16x16_Scaled->Draw("COLZ");
     
-    /*
-    //---------------------------------------------------------------------------
+    //---------------------------------------------------------
+    // Write the rebinned correlation matrix to output file
+    TFile *fout = new TFile("./db_CorrMatrix_6AD8AD_16x16Det.root","recreate");
+    fout->cd();
+    corrMat_histo_16x16_Scaled->Write();
+    corrMat_mat_16x16_Scaled.Write();
+    
+    fout->Close();
 
+     
+    /*
+     //---------------------------------------------------------------------------
     //--- Graph with errors from https://arxiv.org/pdf/1508.04233.pdf  Fig. 2
     const int Ngr = 26;
     double erxx[Ngr] = {0.975,1.375,1.625,1.875,2.125,2.375,2.625,2.875,3.125,3.375,
