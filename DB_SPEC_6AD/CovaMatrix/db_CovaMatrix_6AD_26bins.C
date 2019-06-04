@@ -33,6 +33,7 @@ void db_CovaMatrix_6AD_26bins()
     cout << "Bins: " << corrMat_histo->GetXaxis()->GetNbins() << endl;
     //matrix definition
     
+    //-- Information obtained from Fig. 2 of PRL 116, 061801 (2016)
     double e_syst[NB] = {1.124, 1.046, 1.035, 1.030, 1.028,
                         1.026, 1.025, 1.024, 1.023, 1.024,
                         1.025, 1.026, 1.028, 1.029, 1.032,
