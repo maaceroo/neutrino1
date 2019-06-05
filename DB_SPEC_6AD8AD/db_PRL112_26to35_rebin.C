@@ -61,7 +61,7 @@ void db_PRL112_26to35_rebin()
     xbins[35] = hi;
 
     TH1F *data_spect_35B_histoPerMeV[nEH];
-    for (int i = 0 ; i < NB ; i++) {
+    for (int i = 0 ; i < nEH ; i++) {
         data_spect_35B_histoPerMeV[i] = new TH1F(Form("data_spect_35B_histoPerMeV_%d",i),"",NB,xbins);
         data_spect_35B_histoPerMeV[i]->SetLineColor(kBlue);
     }
@@ -103,6 +103,18 @@ void db_PRL112_26to35_rebin()
         //std::cout << "Hist35Bins 34: " << data_spect_35B_histoPerMeV[j]->GetBinContent(34) << "\n" << std::endl;
         data_spect_35B_histoPerMeV[j]->SetBinContent(35,86*cont26/98);
         //std::cout << "Hist35Bins 35: " << data_spect_35B_histoPerMeV[j]->GetBinContent(35) << "\n" << std::endl;
+    }
+
+    //-- comparing the total number of events in each spectrum
+    double Nevents26, Nevents35;
+    for (int l = 0 ; l < nEH ; l++){
+	Nevents26 = data_spect_26B_histoPerMeV[l]->Integral();
+	Nevents35 = data_spect_35B_histoPerMeV[l]->Integral();
+	std::cout << "26Bins Spectrum EH " << l << ":\t" << Nevents26 << std::endl;
+	std::cout << "35Bins Spectrum EH " << l << ":\t" << Nevents35 << std::endl;
+	std::cout << std::endl;
+	Nevents26 = 0.0;
+	Nevents35 = 0.0;
     }
     
     //----------------------------------------------------------------------------------------
