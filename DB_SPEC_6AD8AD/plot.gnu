@@ -21,15 +21,6 @@ set rmargin at screen 0.97
 set bmargin at screen 0.15
 set tmargin at screen 0.95
 
-## Contour settings
-unset surface
-set view 0,0
-set size 2.0,2.0
-set contour base
-set cntrparam bspline
-set cntrparam order 10
-set cntrparam levels discret 2.30,6.18,11.83
-
 ## x-axis settings
 xmin = 0.05
 xmax = 0.12
@@ -58,21 +49,42 @@ unset key
 set grid ytics lc rgb "#bbbbbb" lw 1 lt 0
 set grid xtics lc rgb "#bbbbbb" lw 1 lt 0
 
-#splot 'files_data/chi2_s2t-dm2_surface_SPEC-noFL.txt' u 1:(1e3*($2)):(($3)-min) w l lw 2
-splot 2.5*(20*x)**2 + sin(10*y) w l lt 1 dt solid
-
-#unset xtics
-#unset ytics
-#unset label 4
-#unset label 2
-
+## Set Legend information
 set arrow 11 from 0.09,2.85 to 0.1,2.85 nohead lw 2
 set label 11 'Our Ana. (+ BF)' at 0.102,2.85 font 'CharterBT-Roman,11'
-set arrow 22 from 0.09,2.8 to 0.1,2.8 nohead lw 1 dt 4
+set arrow 22 from 0.09,2.8 to 0.1,2.8 nohead lw 2 dt 4
 set label 22 'DB Ana. (* BF)' at 0.102,2.8 font 'CharterBT-Roman,11'
 set label 35 '*' at 0.0841,2.50 center font 'CharterBT-Roman,15'
 
-splot 'files_data/DB_DeltaChiSq_1230days.txt' u 1:(1e3*($2)):3 w l lt 1 dt 4
+## Contour settings - Our Results
+unset surface
+set view 0,0
+set size 2.0,2.0
+set contour base
+set cntrparam bspline
+set cntrparam order 10
+set cntrparam levels discret 2.30,6.18,11.83
+
+## Our Result - Surface
+splot 'files_data/chi2_s2t-dm2_surface_SPEC-noFL.txt' u 1:(1e3*($2)):(($3)-min) w l lw 2
+
+## Contour settings - DB 1230-Days Results
+#--Contour color and dashtype--
+set linetype 101 lc 2 dt 4
+set linetype 102 lc 3 dt 4
+set linetype 103 lc 4 dt 4
+#------------------------------
+unset surface
+set view 0,0
+set size 2.0,2.0
+set contour base
+set cntrparam bspline
+set cntrparam order 10
+set cntrparam levels discret 2.30,6.18,11.83
+set cntrparam firstlinetype 101
+
+## DB1230 Result - Surface
+splot 'files_data/DB_DeltaChiSq_1230days.txt' u 1:(1e3*($2)):3 w l lw 2
 
 ########################################################################################
 
