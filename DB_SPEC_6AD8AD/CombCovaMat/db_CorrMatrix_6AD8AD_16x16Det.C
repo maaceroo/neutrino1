@@ -8,6 +8,7 @@
 //Constants definition
 const int NB = 35;      //Single detector Correlation matrix Number of bins
 //------------------------------------------------------
+/*
 void set_plot_style()
 {
     const Int_t NRGBs = 5;
@@ -20,6 +21,7 @@ void set_plot_style()
     TColor::CreateGradientColorTable(NRGBs, stops, red, green, blue, NCont);
     gStyle->SetNumberContours(NCont);
 }
+*/
 //------------------------------------------------------
 
 void db_CorrMatrix_6AD8AD_16x16Det()
