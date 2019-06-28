@@ -158,7 +158,7 @@ void db_CovaMatrix_6AD8AD_16x16Det()
     //set_plot_style();
 
     //covaMat_histo_16x16->SetMaximum( 1e-4);
-    covaMat_histo_16x16->SetMinimum(1e-8);
+    //covaMat_histo_16x16->SetMinimum(1e-8);
 
     TCanvas *canv2 = new TCanvas("canv2","one",200,100,2*700,700);
     canv2->Divide(2,1);
