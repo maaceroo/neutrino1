@@ -95,7 +95,7 @@ void ldist()
     double integ_eh3 = histo_ldist_eh3->Integral();
     histo_ldist_eh3->Scale(1.0/integ_eh3);
     
-    TFile *fout = new TFile("files_data/daya-bay-ldist.root","recreate");
+    TFile *fout = new TFile("files_data/daya-bay-ldist8AD.root","recreate");
     fout->cd();
     histo_ldist->Write();
     histo_ldist_eh3->Write();

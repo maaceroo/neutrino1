@@ -35,7 +35,7 @@ void db_ntuple()
     //-------------------
     // Distance Histogram
     //-------------------
-    TFile *fpathl = new TFile("files_data/daya-bay-ldist.root","read");
+    TFile *fpathl = new TFile("files_data/daya-bay-ldist8AD.root","read");
     //8 detectors (PRD95 072006, 2017)
     TH1F *histo_ldist = (TH1F*) fpathl->Get("histo_ldist");
 
@@ -60,7 +60,7 @@ void db_ntuple()
     };
 
     //make ntuple
-    TFile *fout = new TFile("files_data/db-ntuple.root","RECREATE");
+    TFile *fout = new TFile("files_data/db8AD-ntuple.root","RECREATE");
     TTree *T = new TTree("T","Monte Carlo neutrino events");
 
     float Ep, En, Ln;

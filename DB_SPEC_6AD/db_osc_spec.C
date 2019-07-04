@@ -21,7 +21,7 @@ void db_osc_spec()
 
     //---------------------------------------------------
     // Open ntuple file to read simulated data
-    TFile *fntuple = new TFile("files_data/db-ntuple.root","READ");
+    TFile *fntuple = new TFile("files_data/db6AD-ntuple.root","READ");
     TTree *T = (TTree*)fntuple->Get("T");
     TCut cutBF;
     //---------------------------------------------------
@@ -32,7 +32,7 @@ void db_osc_spec()
     double    xbins[27];
     xbins[0] = lo;
     double delta_bins2 = (7.3 - 1.3)/24.;// = 0.25 MeV/bin
-    for (int i=0;i<(NB-1);i++)
+    for (int i = 0 ; i < (NB-1) ; i++)
     {
         xbins[i+1] = 1.3 + delta_bins2*i;
     }
@@ -68,7 +68,11 @@ void db_osc_spec()
         {581.97,2.33},
         { 73.31,0.66},{ 73.03,0.66},{72.20,0.66}
     };
-  
+    IBDrate_perday[3][0] = 1.002*IBDrate_perday[3][0];
+    IBDrate_perday[4][0] = 1.002*IBDrate_perday[4][0];
+    IBDrate_perday[5][0] = 1.002*IBDrate_perday[5][0];
+
+    
     //Computing <POsc(s2t_BF,dm2_31)> for each AD
     // AD1 -> id = 0; AD2 -> id = 1; AD3 -> id = 2; AD4 -> id = 4; AD5 -> id = 5; AD6 -> id = 6
 
@@ -81,6 +85,9 @@ void db_osc_spec()
        const double s22th12 = 0.861;              //PRL 108 171803 (2012)
        */
 
+    FILE *file_IBDrates;
+    file_IBDrates = fopen("files_data/db6AD_noOsc_IBDrates_perday.txt","w");
+    
     int sel;
     double TotNosc[nAD];
     double avgPosc_AD[nAD]; //<POsc(s2t_BF,dm2_31)>
@@ -102,6 +109,7 @@ void db_osc_spec()
         //Printing results
         cout << "(avgPosc_AD,noOsc_IBDrate_perday)_" << sel << " = (" << avgPosc_AD[iAD]
         << ", " << noOsc_IBDrate_perday[iAD] << ") " << endl;
+        fprintf(file_IBDrates,"%f \n", noOsc_IBDrate_perday[iAD]);
         //------------------------------------------------
 
         //------------------------------------------------
@@ -119,7 +127,8 @@ void db_osc_spec()
         BFit_spect_histo[iAD]->Scale(1.0/integ);
         //------------------------------------------------
     }
-    
+    fclose(file_IBDrates);
+
     //---------------------------------------------------
     //Definition of the grid of oscillation parameters
     double s2t_pt, dm2_pt;
@@ -173,7 +182,7 @@ void db_osc_spec()
     //file << setprecision(5);
     
     FILE *file;
-    file = fopen("files_data/db_gridOscSpectra.txt","w");
+    file = fopen("files_data/db6AD_gridOscSpectra.txt","w");
     //file = fopen("files_data/db_gridOscSpectra_100x100.txt","w");
 
     //write non-oscillated spectra for each AD to file
@@ -334,7 +343,7 @@ void db_osc_spec()
     }
     leg_avgs->Draw();
     
-    canv1->Print("files_plots/POsc_avg.pdf");
+    canv1->Print("files_plots/POsc_avg_6AD.pdf");
     //---------------------------------------------------
 
 } //end

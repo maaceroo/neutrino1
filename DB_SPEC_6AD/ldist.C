@@ -101,7 +101,7 @@ void ldist()
     double integ_6Det = histo_ldist_6Det->Integral();
     histo_ldist_6Det->Scale(1.0/integ_6Det);
     
-    TFile *fout = new TFile("files_data/daya-bay-ldist.root","recreate");
+    TFile *fout = new TFile("files_data/daya-bay-ldist6AD.root","recreate");
     fout->cd();
     histo_ldist->Write();
     histo_ldist_eh3->Write();
@@ -160,6 +160,8 @@ void ldist()
     histo_ldist_gen->Draw("PE same");
 
     canv0->Print("files_plots/ldist.pdf");
+    //canv0->Print("files_plots/ldist.eps");
+    //canv0->Print("files_plots/ldist.jpg");
 
 /*
     TCanvas *canv1 = new TCanvas("canv1","",600,470);
@@ -177,5 +179,7 @@ void ldist()
     histo_ldist_6Det->Draw("hist");
     
     canv2->Print("files_plots/ldist_6Det.pdf");
-    
+    //canv2->Print("files_plots/ldist_6Det.eps");
+    //canv2->Print("files_plots/ldist_6Det.jpg");
+
 } //end

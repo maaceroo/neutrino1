@@ -19,7 +19,7 @@ void db_ntuple()
     //-------------------
     // Energy Histograms
     //-------------------
-    TFile *fenergy = new TFile("PRL112_data.root","read");
+    TFile *fenergy = new TFile("PRL112_217days_data.root","read");
     //Three sets of histograms one for each Experimental Hall
     const int nEH = 3;
     TH1F *nosc_spect_histo[nEH];
@@ -35,7 +35,7 @@ void db_ntuple()
     //-------------------
     // Distance Histogram
     //-------------------
-    TFile *fpathl = new TFile("files_data/daya-bay-ldist.root","read");
+    TFile *fpathl = new TFile("files_data/daya-bay-ldist6AD.root","read");
     //Only 6 detectors (PRL112 061801, 2014)
     TH1F *histo_ldist_6Det = (TH1F*) fpathl->Get("histo_ldist_6Det");
 
@@ -49,16 +49,16 @@ void db_ntuple()
     {
         {362.380, 371.763,  903.466, 817.158,1353.618,1265.315},
         {357.940, 368.414,  903.347, 816.896,1354.229,1265.886},
-	{1332.479,1358.148, 467.574, 489.577, 557.579, 499.207},
-	{1337.429,1362.876, 472.971, 495.346, 558.707, 501.071},
-	{1919.632,1894.337,1533.180,1533.628,1551.384,1524.940},
-	{1917.519,1891.977,1534.919,1535.032,1554.767,1528.079},
-	{1925.255,1899.861,1538.930,1539.468,1556.344,1530.078},
-	{1923.149,1897.507,1540.667,1540.872,1559.721,1533.179}
+        {1332.479,1358.148, 467.574, 489.577, 557.579, 499.207},
+        {1337.429,1362.876, 472.971, 495.346, 558.707, 501.071},
+        {1919.632,1894.337,1533.180,1533.628,1551.384,1524.940},
+        {1917.519,1891.977,1534.919,1535.032,1554.767,1528.079},
+        {1925.255,1899.861,1538.930,1539.468,1556.344,1530.078},
+        {1923.149,1897.507,1540.667,1540.872,1559.721,1533.179}
     };
 
     //make ntuple
-    TFile *fout = new TFile("files_data/db-ntuple.root","RECREATE");
+    TFile *fout = new TFile("files_data/db6AD-ntuple.root","RECREATE");
     TTree *T = new TTree("T","Monte Carlo neutrino events");
 
     float Ep, En, Ln;
@@ -74,22 +74,27 @@ void db_ntuple()
     //int Nevents = 1000000;
     int Nevents = atoi(getenv("NTUPLE_EVENTS"));
     printf("Ntuple Events: %d \n",Nevents);
-        for (int i = 0 ; i < Nevents ; i++)
+    
+    //-- 2018.12.21 -
+    //-- Gaussian distribution to include the effect of the detectors and reactors dimensions
+    TF1 *gau = new TF1("gau","exp(-0.5*(x/[0])^2)",-30.0,30.0);
+    gau->SetParameter(0,5);
+    for (int i = 0 ; i < Nevents ; i++)
         {
             // generate a baseline (blid uniquely identifies the baseline)
             blid = histo_ldist_6Det->GetRandom();
             id =   (blid/nRea);
             ir =   (blid - id*nRea);
-            Ln = baselines[id][ir];
-            
+            Ln = baselines[id][ir] + gau->GetRandom();
+
             // generate a neutrino energy
-            //if (id is 0 or 1, espectro de EH1; id is 2, espectro de EH2; id is 4 to 6,espectro de EH3) esto para Ep
+            //if (id is 0 or 1, espectrum from EH1; id is 2, espectrum form EH2; id is 4 to 6,espectrum from EH3) this is for Ep
             if (id < 2)       ad = 0;
             else if (id == 2) ad = 1;
             else if (id > 3 && id < 7) ad = 2;
             
             Ep = nu_nosc_spect_histo[ad]->GetRandom();
-            En = Ep + avg_nRecoilE + avg_constE;
+            En = Ep*1.03 + avg_nRecoilE + avg_constE;
         
             T->Fill();
             

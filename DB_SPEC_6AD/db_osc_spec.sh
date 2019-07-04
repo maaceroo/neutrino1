@@ -36,7 +36,7 @@ echo '=========================================='
 echo '1) Running ldist.C'
 echo '=========================================='
 echo 
-root -b -l -n -q ldist.C
+time root -b -l -n -q ldist.C
 
 echo
 
@@ -48,7 +48,7 @@ echo '=========================================='
 echo 
 export NTUPLE_EVENTS=5000000
 echo $NTUPLE_EVENTS ntuple events
-root -b -l -n -q db_ntuple.C
+time root -b -l -n -q db_ntuple.C
 
 echo
 
@@ -58,7 +58,7 @@ echo '=========================================='
 echo '3) Running db_osc_spec.C'
 echo '=========================================='
 echo
-root -b -l -n -q db_osc_spec.C
+time root -b -l -n -q db_osc_spec.C
 
 #-----------------------------------------------------------------------------
 # run minimization
@@ -66,13 +66,13 @@ echo '=========================================='
 echo '3) Running db_minuit.C'
 echo '=========================================='
 echo
-root -b -l -n -q db_minuit_spec.C
+#root -b -l -n -q db_minuit_spec.C
 
 echo
 
 #-----------------------------------------------------------------------------
 #Remove first line from file 
-tail -n +2 files_data/chi2_s2t-dm2_surface_SPEC.txt > files_data/chi2_s2t-dm2_surface_SPEC-noFL.txt
+#tail -n +2 files_data/chi2_s2t-dm2_surface_SPEC.txt > files_data/chi2_s2t-dm2_surface_SPEC-noFL.txt
 
 #-----------------------------------------------------------------------------
 #compile routines for minimization and marginalization
@@ -80,8 +80,8 @@ echo '=========================================='
 echo 'compiling  db_chi2_min.cpp and db_margin.cpp'
 echo '=========================================='
 echo
-g++ -o db_chi2_min.exe db_chi2_min.cpp
-g++ -o db_margin.exe db_margin.cpp
+#g++ -o db_chi2_min.exe db_chi2_min.cpp
+#g++ -o db_margin.exe db_margin.cpp
 ##clang++ -o db_chi2_min.exe db_chi2_min.cpp
 ##clang++ -o db_margin.exe db_margin.cpp
 
@@ -91,15 +91,15 @@ echo '=========================================='
 echo 'executing  db_chi2_min.exe and db_margin.exe'
 echo '=========================================='
 echo
-./db_chi2_min.exe $NS2T $NDM2 ./
-./db_margin.exe $NS2T $NDM2 ./
+#./db_chi2_min.exe $NS2T $NDM2 ./
+#./db_margin.exe $NS2T $NDM2 ./
 
 echo
 
 #-----------------------------------------------------------------------------
 #Extract BF_CHI2, BF_S2T, BF_DM2 from chi2_minumum_SPEC.txt
 
-read BF_CHI2 BF_S2T BF_DM2 <<< `cat files_data/chi2_minumum_SPEC.txt`
+#read BF_CHI2 BF_S2T BF_DM2 <<< `cat files_data/chi2_minumum_SPEC.txt`
 
 #----------------------------------------------------------------------------
 #----------------------------------------------------------------------------
@@ -108,9 +108,9 @@ echo '=========================================='
 echo 'Editting gnu plot script ...'
 echo
 #Create temporary file with new line in place
-sed -i "132s/.*/set label 35 '+' at $BF_S2T,$BF_DM2*1e3 center font 'CharterBT-Roman,15'/" multi_plot_margin_SPEC.gnu
+#sed -i "132s/.*/set label 35 '+' at $BF_S2T,$BF_DM2*1e3 center font 'CharterBT-Roman,15'/" multi_plot_margin_SPEC.gnu
 
-sed -i "134s/.*/min = $BF_CHI2/" multi_plot_margin_SPEC.gnu
+#sed -i "134s/.*/min = $BF_CHI2/" multi_plot_margin_SPEC.gnu
 
 echo
 
@@ -120,13 +120,13 @@ echo '=========================================='
 echo 'Runnign gnuplot macro'
 echo '=========================================='
 echo
-gnuplot multi_plot_margin_SPEC.gnu
+#gnuplot multi_plot_margin_SPEC.gnu
 
 echo
 
 #----------------------------------------------------------------------------
 #Open in ghostview
-gv files_plots/db_plots_SPEC.eps &
+#gv files_plots/db_plots_SPEC.eps &
 
 #----------------------------------------------------------------------------
 echo Done!

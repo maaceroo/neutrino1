@@ -21,7 +21,7 @@ void db_osc_spec()
 
     //---------------------------------------------------
     // Open  file to read simulated data
-    TFile *fntuple = new TFile("files_data/db-ntuple.root","READ");
+    TFile *fntuple = new TFile("files_data/db8AD-ntuple.root","READ");
     TTree *T = (TTree*)fntuple->Get("T");
     TCut cutBF;
     //---------------------------------------------------
@@ -86,7 +86,7 @@ void db_osc_spec()
        */
 
     FILE *file_IBDrates;
-    file_IBDrates = fopen("files_data/db_noOsc_IBDrates_perday.txt","w");
+    file_IBDrates = fopen("files_data/db8AD_noOsc_IBDrates_perday.txt","w");
 
     int sel;
     double TotNosc[nAD];
@@ -96,9 +96,9 @@ void db_osc_spec()
     for (int iAD = 0 ; iAD < nAD ; iAD++)
     {
         sel = iAD;
+
         //------------------------------------------------
         //Filling Ocillation prpbability at BF - histogram
-        //T->Draw(Form("(1.0 - 0.0841*((sin( 1.267 * 2.50e-3 * Ln/En ))**2) - ((cos(0.5 * asin(sqrt(0.0841))))**4) * 0.841 * (sin( 1.267 * 7.59e-5 * Ln/En ))**2) >> Posc_AD_BF_%d",iAD),Form("id==%d",sel));
         T->Draw(Form("(1.0 - 0.0841*((sin( 1.267 * 2.50e-3 * Ln/En ))**2) - ((cos(0.5 * asin(sqrt(0.0841))))**4) * 0.844 * (sin( 1.267 * 7.53e-5 * Ln/En ))**2) >> Posc_AD_BF_%d",iAD),Form("id==%d",sel));
         integ = Posc_AD_BF[iAD]->Integral();
         Posc_AD_BF[iAD]->Scale(1.0/integ); //Used to plot the Survival Probabilities for each AD with BF parameters (normalized)
@@ -110,7 +110,6 @@ void db_osc_spec()
         cout << "(avgPosc_AD,noOsc_IBDrate_perday)_" << sel << " = (" << avgPosc_AD[iAD]
         << ", " << noOsc_IBDrate_perday[iAD] << ") " << endl;
         fprintf(file_IBDrates,"%f \n", noOsc_IBDrate_perday[iAD]);
-
         //------------------------------------------------
 
         //------------------------------------------------
@@ -120,7 +119,6 @@ void db_osc_spec()
         //nu_nosc_spect_histo[iAD]->Scale(noOsc_IBDrate_perday[iAD]/TotNosc[iAD]); //normalize per day HERE? (2017-07-13)
         
         //condition to fill BF-oscillation- Ep spectra
-        //cutBF = Form("(1.0 - 0.0841*((sin( 1.267 * 2.50e-3 * Ln/En ))**2) - ((cos(0.5 * asin(sqrt(0.0841))))**4) * 0.841 * (sin( 1.267 * 7.59e-5 * Ln/En ))**2)*(id==%d)",iAD);
         cutBF = Form("(1.0 - 0.0841*((sin( 1.267 * 2.50e-3 * Ln/En ))**2) - ((cos(0.5 * asin(sqrt(0.0841))))**4) * 0.846 * (sin( 1.267 * 7.53e-5 * Ln/En ))**2)*(id==%d)",iAD);
 
         //Filling and normalizing BF-oscillation Ep spectra
@@ -130,7 +128,6 @@ void db_osc_spec()
         //------------------------------------------------
     }
     fclose(file_IBDrates);
-    
 
     //---------------------------------------------------
     //Definition of the grid of oscillation parameters
@@ -184,7 +181,7 @@ void db_osc_spec()
     //file << setprecision(5);
     
     FILE *file;
-    file = fopen("files_data/db_gridOscSpectra.txt","w");
+    file = fopen("files_data/db8AD_gridOscSpectra.txt","w");
 
     //write non-oscillated spectra for each AD to file
     for (int iAD = 0 ; iAD < nAD ; iAD++)
@@ -345,7 +342,7 @@ void db_osc_spec()
     }
     leg_avgs->Draw();
     
-    canv1->Print("files_plots/POsc_avg.pdf");
+    canv1->Print("files_plots/POsc_avg_8AD.pdf");
     //---------------------------------------------------
 
 } //end
