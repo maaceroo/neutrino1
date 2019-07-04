@@ -1,4 +1,4 @@
-# neutrino1
+# Daya Bay Spectral Analysis - 1230 days
 Oscillation analysis of Daya-Bay experiment.
 Files in this package are intended to be used to analyze data of the Daya Bay reactor antineutrino experiment.
 Data are taken from the 6AD (PRL 112, 061801 (2014)) and 8AD (PRD 95, 072006 (2017)) periods in order to perform a full data analysis
