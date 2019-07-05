@@ -52,7 +52,6 @@
 //---*****************************************************---//
 //EH1(AD1, AD2),EH2(AD3),EH3(AD4, AD5, AD6)
 //(IBD candidates)/(DAQ live time -days-) from PRD 95 072006 (2017)
-// for 6AD and for 8AD separately - TO BE DONE!
 double daqTime_Total[nAD]         = {1117.178,1117.178,1114.337,924.933,1106.915,1106.915,1106.915,917.417};
 double IBDrate_data_Total[nAD][2] = { {534.93,0.69},{542.75,0.70},{509.00,0.68},{503.83,0.74},{ 72.71,0.26},{ 72.94,0.26},{72.33,0.26},{72.88,0.28} };
 //IBD rate (per day), total background (8AD) and efficiencies (PRD 95 072006 (2017))
@@ -68,7 +67,7 @@ double IBDrate_data_6AD[nAD][2]   = { {530.31,1.67},{536.75,1.68},{489.93,1.61},
 double totalBgd_6AD[nAD][2]       = { {13.20,0.98}, { 13.01,0.98},{  9.57,0.71},{0,0},        {  3.52,0.14},{ 3.48,0.14},{ 3.43,0.14},{0,0}        };
 double emuem_6AD[nAD]             = {0.7957,0.7927,0.8282,0,0,0.9577,0.9568,0.9566,0.0};
 //IBD rate per day w/o oscillations
-double noOsc_IBDrate_perday[nAD] = {663.15,673.95,591.86,78.75,78.46,77.58}; //-- Modify the macro "db_osc_rate.C"
+double noOsc_IBDrate_perday_6AD[nAD]//; = {663.15,673.95,591.86,78.75,78.46,77.58}; //-- Modify the macro "db_osc_rate.C"
 //---*****************************************************---//
 //---*****************************************************---//
 //-- Information for 8AD
