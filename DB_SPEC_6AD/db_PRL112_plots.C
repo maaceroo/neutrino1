@@ -260,17 +260,35 @@ void db_PRL112_plots()
     //-------------------
     
     TH2F *frame_spectra1 = new TH2F("frame_spectra1","",NB,lo,hi,10,0,64.5e3);
-    frame_spectra1->GetXaxis()->SetTitle("Prompt Reconstructed Energy (MeV)");
     frame_spectra1->GetYaxis()->SetTitle("Events/MeV");
-    
+    frame_spectra1->GetYaxis()->SetTitleFont(ft);
+    frame_spectra1->GetYaxis()->SetTitleOffset(0.7);
+    frame_spectra1->GetYaxis()->SetTitleSize(1.4*sz);
+    frame_spectra1->GetYaxis()->SetLabelSize(1.4*sz);
+    frame_spectra1->GetYaxis()->SetLabelFont(ft);
+
     TH2F *frame_spectra2 = new TH2F("frame_spectra2","",NB,lo,hi,10,0,29.5e3);
-    frame_spectra2->GetXaxis()->SetTitle("Prompt Reconstructed Energy (MeV)");
     frame_spectra2->GetYaxis()->SetTitle("Events/MeV");
-    
+    frame_spectra2->GetYaxis()->SetTitleFont(ft);
+    frame_spectra2->GetYaxis()->SetTitleOffset(0.7);
+    frame_spectra2->GetYaxis()->SetTitleSize(1.4*sz);
+    frame_spectra2->GetYaxis()->SetLabelSize(1.4*sz);
+    frame_spectra2->GetYaxis()->SetLabelFont(ft);
+
     TH2F *frame_spectra3 = new TH2F("frame_spectra3","",NB,lo,hi,10,0,13.55e3);
     frame_spectra3->GetXaxis()->SetTitle("Prompt Reconstructed Energy (MeV)");
+    frame_spectra3->GetXaxis()->SetTitleFont(ft);
+    frame_spectra3->GetXaxis()->SetTitleOffset(0.9);
+    frame_spectra3->GetXaxis()->SetTitleSize(1.4*sz);
+    frame_spectra3->GetXaxis()->SetLabelSize(1.4*sz);
+    frame_spectra3->GetXaxis()->SetLabelFont(ft);
     frame_spectra3->GetYaxis()->SetTitle("Events/MeV");
-    
+    frame_spectra3->GetYaxis()->SetTitleFont(ft);
+    frame_spectra3->GetYaxis()->SetTitleOffset(0.7);
+    frame_spectra3->GetYaxis()->SetTitleSize(1.4*sz);
+    frame_spectra3->GetYaxis()->SetLabelSize(1.4*sz);
+    frame_spectra3->GetYaxis()->SetLabelFont(ft);
+
     TH2F *frame_ratios = new TH2F("frame_ratios","",NB,lo,hi,10,0.83,1.12);
     frame_ratios->GetXaxis()->SetTitle("Prompt Reconstructed Energy (MeV)");
     frame_ratios->GetYaxis()->SetTitle("Data - Background / Prediction");
@@ -373,27 +391,28 @@ void db_PRL112_plots()
     TLatex *lat = new TLatex();
     lat->SetNDC();
     lat->SetTextFont(ft);
-    lat->SetTextSize(1.6*sz);
+    lat->SetTextSize(2.6*sz);
 
     TLegend *leg1 = new TLegend(0.6,0.5,0.8,0.8);
     leg1->SetTextFont(ft);
-    leg1->SetTextSize(1.1*sz);
+    leg1->SetTextSize(1.7*sz);
     leg1->SetFillColor(0);
     leg1->SetLineColor(0);
     
-    leg1->AddEntry(data_spect_histo[0],"Datos Daya Bay","pl");
-    leg1->AddEntry(nosc_spect_histo[0],"Sin Oscilaci#acute{o}n","l");
-    leg1->AddEntry(BFit_spect_histo[0],"Mejor Ajuste","l");
-    leg1->AddEntry(bkgd_spect_histo[0],"Background Total","f");
+    leg1->AddEntry(data_spect_histo[0],"Daya Bay Data","pl");
+    leg1->AddEntry(nosc_spect_histo[0],"No Oscillations","l");
+    //leg1->AddEntry(BFit_spect_histo[0],"Mejor Ajuste","l");
+    leg1->AddEntry(bkgd_spect_histo[0],"Total Background","l");
 
     TCanvas *ca = new TCanvas("ca", "canvas", 700, 900);
-    
+    TGaxis::SetMaxDigits(3);
+
     TPad *pad1 = new TPad("pad1", "pad1", 0, 2./3., 1, 1.0);
     pad1->SetBottomMargin(0); // Upper and lower plot are joined
     pad1->Draw();             // Draw the upper pad: pad1
     pad1->cd();               // pad1 becomes the current pad
     frame_spectra1->Draw();
-    BFit_spect_histoPerMeV[0]->Draw("same hist");
+    //BFit_spect_histoPerMeV[0]->Draw("same hist");
     data_spect_histoPerMeV[0]->Draw("P same hist");
     nosc_spect_histoPerMeV[0]->Draw("same");
     bkgd_spect_histoPerMeV[0]->Draw("same");
@@ -409,7 +428,7 @@ void db_PRL112_plots()
     pad2->Draw();
     pad2->cd();       // pad2 becomes the current pad
     frame_spectra2->Draw();
-    BFit_spect_histoPerMeV[1]->Draw("same hist");
+    //BFit_spect_histoPerMeV[1]->Draw("same hist");
     data_spect_histoPerMeV[1]->Draw("P same hist");
     nosc_spect_histoPerMeV[1]->Draw("same");
     bkgd_spect_histoPerMeV[1]->Draw("same");
@@ -418,13 +437,13 @@ void db_PRL112_plots()
     
     // lower plot will be in pad
     ca->cd();          // Go back to the main canvas before defining pad2
-    TPad *pad3 = new TPad("pad3", "pad3", 0, 0.0., 1, 1./3.);
+    TPad *pad3 = new TPad("pad3", "pad3", 0, 0.0, 1, 1./3.);
     pad3->SetTopMargin(0);
-    pad3->SetBottomMargin(0.1);
+    pad3->SetBottomMargin(0.11);
     pad3->Draw();
     pad3->cd();       // pad2 becomes the current pad
     frame_spectra3->Draw();
-    BFit_spect_histoPerMeV[2]->Draw("same hist");
+    //BFit_spect_histoPerMeV[2]->Draw("same hist");
     data_spect_histoPerMeV[2]->Draw("P same hist");
     nosc_spect_histoPerMeV[2]->Draw("same");
     bkgd_spect_histoPerMeV[2]->Draw("same");
@@ -447,10 +466,10 @@ void db_PRL112_plots()
 
     TCanvas *ce = new TCanvas("ce", "canvas", 700, 900);
     
-    TPad *pad1 = new TPad("pad1", "pad1", 0, 2./3., 1, 1.0);
-    pad1->SetBottomMargin(0); // Upper and lower plot are joined
-    pad1->Draw();             // Draw the upper pad: pad1
-    pad1->cd();               // pad1 becomes the current pad
+    TPad *pad4 = new TPad("pad4", "pad4", 0, 2./3., 1, 1.0);
+    pad4->SetBottomMargin(0); // Upper and lower plot are joined
+    pad4->Draw();             // Draw the upper pad: pad1
+    pad4->cd();               // pad1 becomes the current pad
     frame_eventsEH1->Draw();
     BFit_spect_histo[0]->Draw("same hist");
     data_spect_histo[0]->Draw("P same hist");
@@ -462,11 +481,11 @@ void db_PRL112_plots()
     
     // lower plot will be in pad
     ce->cd();          // Go back to the main canvas before defining pad2
-    TPad *pad2 = new TPad("pad2", "pad2", 0, 1./3., 1, 2./3.);
-    pad2->SetTopMargin(0);
-    pad2->SetBottomMargin(0);
-    pad2->Draw();
-    pad2->cd();       // pad2 becomes the current pad
+    TPad *pad5 = new TPad("pad5", "pad5", 0, 1./3., 1, 2./3.);
+    pad5->SetTopMargin(0);
+    pad5->SetBottomMargin(0);
+    pad5->Draw();
+    pad5->cd();       // pad2 becomes the current pad
     frame_eventsEH2->Draw();
     BFit_spect_histo[1]->Draw("same hist");
     data_spect_histo[1]->Draw("P same hist");
@@ -477,11 +496,11 @@ void db_PRL112_plots()
     
     // lower plot will be in pad
     ce->cd();          // Go back to the main canvas before defining pad2
-    TPad *pad3 = new TPad("pad3", "pad3", 0, 0.0., 1, 1./3.);
-    pad3->SetTopMargin(0);
-    pad3->SetBottomMargin(0.1);
-    pad3->Draw();
-    pad3->cd();       // pad2 becomes the current pad
+    TPad *pad6 = new TPad("pad6", "pad6", 0, 0.0, 1, 1./3.);
+    pad6->SetTopMargin(0);
+    pad6->SetBottomMargin(0.1);
+    pad6->Draw();
+    pad6->cd();       // pad2 becomes the current pad
     frame_eventsEH3->Draw();
     BFit_spect_histo[2]->Draw("same hist");
     data_spect_histo[2]->Draw("P same hist");

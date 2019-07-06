@@ -36,7 +36,7 @@ echo '=========================================='
 echo '1) Running renograph.C'
 echo '=========================================='
 echo 
-#time root -b -l -n -q renograph.C
+time root -b -l -n -q renograph.C
 
 echo
 
@@ -78,13 +78,13 @@ echo '=========================================='
 echo '5) Running RENO_minuit_spect.C'
 echo '=========================================='
 echo
-time root -b -l -n -q RENO_minuit_spect.C
+#time root -b -l -n -q RENO_minuit_spect.C
 
 echo
 
 #-----------------------------------------------------------------------------
 #Remove first line from file 
-tail -n +2 files/chi2_s2t-dm2_surface_spect.txt > files/chi2_s2t-dm2_surface_spect-noFL.txt
+#tail -n +2 files/chi2_s2t-dm2_surface_spect.txt > files/chi2_s2t-dm2_surface_spect-noFL.txt
 
 #-----------------------------------------------------------------------------
 #compile routines for minimization and marginalization
@@ -92,7 +92,7 @@ echo '=========================================='
 echo 'compiling  RENO_margin_spect.cpp'
 echo '=========================================='
 echo
-g++ -o RENO_margin_spect.exe RENO_margin_spect.cpp
+#g++ -o RENO_margin_spect.exe RENO_margin_spect.cpp
 #clang++ -o RENO_margin_spect.exe RENO_margin_spect.cpp
 
 echo
@@ -101,14 +101,14 @@ echo '=========================================='
 echo 'executing RENO_margin_spect.exe'
 echo '=========================================='
 echo
-time ./RENO_margin_spect.exe $NS2T $NDM2 ./
+#time ./RENO_margin_spect.exe $NS2T $NDM2 ./
 
 echo
 
 #-----------------------------------------------------------------------------
 #Extract BF_CHI2, BF_S2T, BF_DM2 from chi2_minumum_SPEC.txt
 
-read BF_S2T BF_DM2 BF_CHI2 <<< `cat files/chi2_minimun_spect.txt`
+#read BF_S2T BF_DM2 BF_CHI2 <<< `cat files/chi2_minimun_spect.txt`
 
 #----------------------------------------------------------------------------
 #----------------------------------------------------------------------------
@@ -116,9 +116,9 @@ read BF_S2T BF_DM2 BF_CHI2 <<< `cat files/chi2_minimun_spect.txt`
 echo '=========================================='
 echo 'Editting gnu plot script ...'
 echo
-sed -i "136s/.*/set label 35 '+' at $BF_S2T,$BF_DM2 center font 'CharterBT-Roman,15'/" multi_plot_margin_spect_RENO.gnu
+#sed -i "136s/.*/set label 35 '+' at $BF_S2T,$BF_DM2 center font 'CharterBT-Roman,15'/" multi_plot_margin_spect_RENO.gnu
 
-sed -i "138s/.*/min = $BF_CHI2/" multi_plot_margin_spect_RENO.gnu
+#sed -i "138s/.*/min = $BF_CHI2/" multi_plot_margin_spect_RENO.gnu
 
 echo
 
@@ -128,13 +128,13 @@ echo '=========================================='
 echo 'Runnign gnuplot macro'
 echo '=========================================='
 echo
-gnuplot multi_plot_margin_spect_RENO.gnu
+#gnuplot multi_plot_margin_spect_RENO.gnu
 
 echo
 
 #----------------------------------------------------------------------------
 #Open in ghostview
-gv Plots/RENO_plots_SPEC.eps &
+#gv Plots/RENO_plots_SPEC.eps &
 
 #----------------------------------------------------------------------------
 echo Done!

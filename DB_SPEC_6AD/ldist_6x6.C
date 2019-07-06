@@ -1,23 +1,31 @@
-void ldist()
+//-- This macro creates a plot showing the event probability distribution for each baseline
+//-- considering all the information about the Daya-Bay experiment with 6 Anti-neutrino detectors
+//-- and 6 Reactors.
+//-- This macro and its results are not used in the analysis.
+void ldist_6x6()
 { // begin
 
     //------------- Style --------------
     gROOT->SetStyle("Plain");
     gStyle->SetOptStat(0);
     //------------- Style --------------
-
+    //----------  Text Style  ---------
+    //ft = 10 * fontID + precision
+    Int_t ft = 10 * 4 + 2;
+    Double_t sz = 0.04;
+    //---------------------------------
 
     const int nDet = 8; //Number of detectorr = 8
     const int nRea = 6; //Number of reactors  = 6
     
     //Baseline Distances (cm)
     const char *detNames[nDet] = {"EH1-AD1", "EH1-AD2", "EH2-AD1", "EH2-AD2",
-          	                  "EH3-AD1", "EH3-AD2", "EH3-AD3", "EH3-AD4"};
+                                  "EH3-AD1", "EH3-AD2", "EH3-AD3", "EH3-AD4"};
 
     //From Nucl.Inst.Meth.Phys.Research A 811 (2016) 133–161 (Table 2)
     double baselines[nDet][nRea] = {
 		{362.380,371.763,903.466,817.158,1353.618,1265.315},
-        	{357.940,368.414,903.347,816.896,1354.229,1265.886},
+        {357.940,368.414,903.347,816.896,1354.229,1265.886},
 		{1332.479,1358.148,467.574,489.577,557.579,499.207},
 		{1337.429,1362.876,472.971,495.346,558.707,501.071},
 		{1919.632,1894.337,1533.180,1533.628,1551.384,1524.940},
@@ -69,7 +77,24 @@ void ldist()
     double hi = 48;
     TH1F *histo_ldist = new TH1F("histo_ldist","",nb,lo,hi);
     TH1F *histo_ldist_eh3 = new TH1F("histo_ldist_eh3","",nb,lo,hi);
-    TH1F *histo_ldist_6Det = new TH1F("histo_ldist_6Det","",nb,lo,hi);
+    int nb6 = 36;
+    double lo6 = 0;
+    double hi6 = 36;
+    TH1F *histo_ldist_6Det = new TH1F("histo_ldist_6Det","",nb6,lo6,hi6);
+    histo_ldist_6Det->SetLineWidth(2);
+    histo_ldist_6Det->SetLineColor(kBlue);
+    histo_ldist_6Det->GetXaxis()->SetTitle("Baseline index");
+    histo_ldist_6Det->GetXaxis()->SetTitleFont(ft);
+    histo_ldist_6Det->GetXaxis()->SetTitleOffset(1);
+    histo_ldist_6Det->GetXaxis()->SetTitleSize(1.1*sz);
+    histo_ldist_6Det->GetXaxis()->SetLabelSize(1.0*sz);
+    histo_ldist_6Det->GetXaxis()->SetLabelFont(ft);
+    histo_ldist_6Det->GetYaxis()->SetTitle("Probability (a.u.)");
+    histo_ldist_6Det->GetYaxis()->SetTitleFont(ft);
+    histo_ldist_6Det->GetYaxis()->SetTitleOffset(1.1);
+    histo_ldist_6Det->GetYaxis()->SetTitleSize(1.1*sz);
+    histo_ldist_6Det->GetYaxis()->SetLabelSize(1.0*sz);
+    histo_ldist_6Det->GetYaxis()->SetLabelFont(ft);
 
     for (int id=0; id<nDet; id++){
         for (int ir=0; ir<nRea; ir++){
@@ -92,6 +117,26 @@ void ldist()
         } //for ir
     } //for id
     
+    //------------------------------------------------------
+    int ii;
+    double wgt;
+    for (int id = 0 ; id < nDet-2 ; id++){
+        for (int ir = 0 ; ir < nRea ; ir++){
+            if (id < 3) {
+                ii = id*nRea+ir;
+                wgt = massesDet[id]*th_pow[ir]/(pow(baselines[id][ir],2));
+                histo_ldist_6Det->SetBinContent(ii+1,wgt);
+            }
+            if (id > 2){
+                ii = (id+1)*nRea+ir;
+                wgt = massesDet[id+1]*th_pow[ir]/(pow(baselines[id+1][ir],2));
+                histo_ldist_6Det->SetBinContent(ii-5,wgt);
+            }
+            //std::cout << "id = " << id << "\t" << ii+1 << "\t" << wgt << std::endl;
+        } //for ir
+    } //for id
+    //------------------------------------------------------
+
     double integ = histo_ldist->Integral();
     histo_ldist->Scale(1.0/integ);
 
@@ -171,7 +216,7 @@ void ldist()
     
     canv1->Print("files_plots/ldist_eh3.pdf");
 */  
-    TCanvas *canv2 = new TCanvas("canv2","",600,470);
+    TCanvas *canv2 = new TCanvas("canv2","",700,500);
     canv2->cd();
     
     histo_ldist_6Det->Draw("hist");
