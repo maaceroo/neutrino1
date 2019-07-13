@@ -9,7 +9,7 @@
 // rate at the six AD reported in article 1610.04326 (2017)                                 //
 //------------------------------------------------------------------------------------------//
 
-#include <constants.h>
+#include "constants.h"
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -48,9 +48,9 @@ void RENO_osc_spect()
     {
       
       wrd_array_near[ir] = wrd_histo_near->GetBinContent(ir+1);
-      // cout << blid << "  " << wrd_array_near[ir]  << endl;
+      // std::cout << blid << "  " << wrd_array_near[ir]  << std::endl;
       wrd_array_far[ir] = wrd_histo_far->GetBinContent(ir+1);
-      // cout << blid << "  " << wrd_array_far[ir]  << endl;
+      // std::cout << blid << "  " << wrd_array_far[ir]  << std::endl;
       
     }
 
@@ -141,7 +141,7 @@ void RENO_osc_spect()
 	  //Filling Oscillation probability at BF - histogram
 	  T->Draw(Form("(1.0 - 0.087*((sin( 1.267 * 2.49e-3 * Ln/En ))**2) - ((cos(0.5 * asin(sqrt(0.087))))**4) * 0.846 * (sin( 1.267 * 7.53e-5 * Ln/En ))**2) >> Posc_AD_BF_%d_%d",iAD,iNR),Form("id==%d  && ir==%d",iAD,iNR));
 	  integ = Posc_AD_BF[iAD][iNR]->Integral();
-	  //cout << "integ = " << integ <<endl;
+	  //std::cout << "integ = " << integ <<std::endl;
 	  Posc_AD_BF[iAD][iNR]->Scale(1.0/integ); //Used to plot the Survival Probabilities for each AD and each NR with BF parameters (normalized)
 	  //Average oscillation Probability
 	  avgPosc[iAD][iNR] = Posc_AD_BF[iAD][iNR]->GetMean();
@@ -149,8 +149,8 @@ void RENO_osc_spect()
 	  noOsc_IBDrate_perday[0][iNR] = (IBDrate_perday[0][0]/avgPosc[0][iNR])*wrd_array_near[iNR];
 	  noOsc_IBDrate_perday[1][iNR] = (IBDrate_perday[1][0]/avgPosc[1][iNR])*wrd_array_far[iNR];
 	  //Printing results
-	  cout << "(avgPosc,noOsc_IBDrate_perday)_" << iAD << "_" << iNR << " = (" << avgPosc[iAD][iNR]
-	       << ", " << noOsc_IBDrate_perday[iAD][iNR] << ") " << endl;
+	  std::cout << "(avgPosc,noOsc_IBDrate_perday)_" << iAD << "_" << iNR << " = (" << avgPosc[iAD][iNR]
+	       << ", " << noOsc_IBDrate_perday[iAD][iNR] << ") " << std::endl;
 	  //------------------------------------------------
 	  
 	}
@@ -168,7 +168,7 @@ void RENO_osc_spect()
       //Filling and normalizing BF-oscillation Ep spectra
       T->Draw(Form("Ep >> BFit_spect_histo_d_%d",iAD),cutBF,"");
       integ = BFit_spect_histo_d[iAD]->Integral();
-      //cout << "integ = " << integ <<endl;
+      //std::cout << "integ = " << integ <<std::endl;
       BFit_spect_histo[iAD]->Scale(1.0/integ);
       //BFit_spect_histo_d[iAD]->Scale(integ);
       //------------------------------------------------
@@ -225,147 +225,155 @@ void RENO_osc_spect()
 	{
 	  nebf = BFit_spect_histo_d[iAD]->GetBinContent(ib+1);
 	  neno = nebf/avgPosc_AD[iAD]/*IBDrate_perday[iAD][0]*daqTime[iAD]*/;
-	  //cout << " neno = " << neno <<endl;
+	  //std::cout << " neno = " << neno <<std::endl;
 	  Nevtexp[iAD]->SetBinContent(ib+1,neno);
 	}
     }
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   
-  FILE *file;
-  file = fopen("files/RENO_gridOscSpectra_test.txt","w");
-  
-  for (int iAD = 0 ; iAD < nAD ; iAD++)
-    {      
-      //write non-oscillated spectra for each AD and NR to file
-      //file << iAD + 1 << " " << s2t_pt << "\t" << dm2_pt;double daqTime[nAD] = {458.49,489.93};
-      fprintf(file,"%d %8.2e %8.2e",iAD+1,s2t_pt,dm2_pt);
-      //print bin-content of non-oscillated spectra per day
-      for (int ib = 0 ; ib < NB ; ib++)
-	{
-	  double contNO = nosc_spect_histo[iAD]->GetBinContent(ib+1);
-	  //file << "\t" << contNO;
-	  //	  cout <<  contNO << "  "; 
-	  fprintf(file," %10.2f ",contNO);
-	}
-      
-      fprintf(file," %10.2f\n",TotNosc[iAD]);
-      
-    }
-  //} // for iAD
-  //file << endl;
-  fprintf(file,"\n");
-  
-  for (int is2t = 0 ; is2t < N_s2t ; is2t++)
-    {
-      //s2t_pt = 10**(log10(lo_s2t) + double(is2t)*DeltaLog_s2t);
-      s2t_pt = lo_s2t + double(is2t)*DeltaLin_s2t;
-      
-      for (int idm2 = 0 ; idm2 < N_dm2 ; idm2++)
-	{
-	  //dm2_pt = 10**(log10(lo_dm2) + double(idm2)*DeltaLog_dm2);
-	  dm2_pt = lo_dm2 + double(idm2)*DeltaLin_dm2;
-	  
-	  for (int iAD = 0 ; iAD < nAD ; iAD++)
-	    {
-	      // Condition to fill oscillated spectra for (s2t_pt,dm2_pt), i.e. wosc_spect_histo[iAD]
-	      cut = Form("((1.0 - %e*((sin( 1.267 * %e * Ln/En ))**2) - (0.25*(1 + sqrt(1 - %e))**2) * 0.861 * (sin( 1.267 * 7.53e-5 * Ln/En ))**2))*((id==%d))",s2t_pt,dm2_pt,s2t_pt,iAD);
-	      
-	      // Filling oscilated spectra for (s2t_pt,dm2_pt)
-	      int ih = is2t*N_dm2 + idm2;
-	      //cout << "AD " << iAD + 1 << "\t s2t_pt =  " << s2t_pt << "\t dm2_pt =  " << dm2_pt  << "\t ih = " << ih << endl;
-	      //cout << "cut computed" << endl;
-	      //cout << "Test No. " << idm2 << endl;
-	      T->Draw(Form("Ep >> wosc_spect_histo_%d",ih),cut,"");
-	      TotWosc[ih] =  wosc_spect_histo[ih]->Integral();
-	      //cout << TotWosc1[10] <<endl; 
-	      // Survival probability for (s2t_pt,dm2_pt) to fill histogram at each detector, i.e. Posc_AD_surv[iAD]
-	      //T->Draw(Form("(1.0 - %e*((sin( 1.267 * %e * Ln/En ))**2) - (0.25*(1 + sqrt(1 - %e))**2) * 0.861 * (sin( 1.267 * 7.53e-5 * Ln/En ))**2) >> Posc_AD_surv_%d",s2t_pt,dm2_pt,s2t_pt,iAD),Form("id==%d",sel));
-	      //Average survival probability for (s2t_pt,dm2_pt) at each detector
-	      //SurvP = Posc_AD_surv[iAD]->GetMean();
-	      
-	      //file << iAD + 1 << " " << s2t_pt << "\t" << dm2_pt;
-	      fprintf(file,"%d %8.2e %8.2e",iAD+1,s2t_pt,dm2_pt);
-	      //Printing bin-content for the oscilated spectra for (s2t_pt,dm2_pt)
-	      for (int ib = 0 ; ib < NB ; ib++)
-		{
-		  double cont   = wosc_spect_histo[ih]->GetBinContent(ib+1);
-		  //cout << " cont = " << cont << " ih = " << ih <<endl; 
-		  
-		  //file << "\t" << cont;
-		  fprintf(file," %10.5f",cont);
-		  //cout << "cont =  " << cont1 <<endl;
-		}
-	      
-	      //file << " \t" << TotWosc[ih] << endl;
-	      fprintf(file," %10.2f\n",TotWosc[ih]);
-	      
-	      //Printing check-points info
-	      if (ih%10 == 0)
-		{
-		  cout << ih << "  Done with detector " << iAD+1  << " for "<< s2t_pt << "\t" << dm2_pt << endl;
-		  // cout << " \t" << TotNosc[iAD] << endl;
-		}
-	      
-	      //Normalizing the oscilated spectra for (s2t_pt,dm2_pt)
-	      //*CHECK if this is nneded .. guess is NO 
-	      integ = wosc_spect_histo[ih]->Integral();
-	      wosc_spect_histo[ih]->Scale(1.0/integ);
-	      //} // for idm2
-	    }
-	  //file << endl;
-	  fprintf(file,"\n");
-	}//for is2t
-      //cout << "  Done with detector " << iAD+1 << endl;
-      //file << endl;
-      fprintf(file,"");
-    }//for iAD
-  
-  //file.close();
-  fclose(file);
-  
-  const int columns = 31;
-  //const int rows2 = rows-3;
-  const int rows = nAD*N_s2t*N_dm2 + nAD;
-  const int rows2 = rows/2;
-  ofstream Ratio;
-  string Ratio_spectra = "files/RENO_gridOscSpectra_Ratio.txt";
-  Ratio.open((Ratio_spectra).c_str());
-  
-  ifstream matriz("files/RENO_gridOscSpectra_test.txt"); 
-  double ** matr;  
-  matr = new double*[rows];
-  for(int k = 0 ; k < rows ; k++){
-    matr[k] = new double[columns];
-  }		
-  
-  
-  for(int j = 0 ; j < rows ; j++){
-    for(int l = 0 ; l < columns ; l++){    
-      matriz >> matr[j][l];
-      //cout << matr[j][l] << " "; 
-      
-    }
-    //cout << endl; 
-  }
+    //FILE *file;
+    //file = fopen("files/RENO_gridOscSpectra_test.txt","w");
+    ofstream file;
+    string grid_name = "files/RENO_gridOscSpectra_test.txt";
+    file.open((grid_name).c_str());
+    file << fixed;
+    file << setprecision(6);
 
-  for(int i = 0; i < rows2 ; i++ ){
-    int k = 2*i;
-    int n = 2*i + 1;
-    Ratio << matr[k][1] << "  " << matr[k][2] << "  ";
-    for(int l = 3 ; l < columns ; l++){   
+    s2t_pt = 0.0;
+    dm2_pt = 0.0;
+    for (int iAD = 0 ; iAD < nAD ; iAD++)
+    {
+        //write non-oscillated spectra for each AD and NR to file
+        file << iAD + 1 << "\t" << s2t_pt << "\t" << dm2_pt;
+        //fprintf(file,"%d %8.2e %8.2e",iAD+1,s2t_pt,dm2_pt);
+        //print bin-content of non-oscillated spectra per day
+        for (int ib = 0 ; ib < NB ; ib++)
+        {
+            double contNO = nosc_spect_histo[iAD]->GetBinContent(ib+1);
+            file << "\t" << contNO;
+            //	  std::cout <<  contNO << "  ";
+            //fprintf(file," %10.2f ",contNO);
+        }
       
-      //cout << matr[n][l] << "  " << matr[k][l] << "  ";
-      double ratio = matr[n][l]/matr[k][l];
-      Ratio << ratio << "  " ;
+        //fprintf(file," %10.2f\n",TotNosc[iAD]);
+        file << "\t" << TotNosc[iAD] << std::endl;
+      
+    }
+    //} // for iAD
+    file << std::endl;
+    //fprintf(file,"\n");
+  
+    for (int is2t = 0 ; is2t < N_s2t ; is2t++)
+        {
+            //s2t_pt = 10**(log10(lo_s2t) + double(is2t)*DeltaLog_s2t);
+            s2t_pt = lo_s2t + double(is2t)*DeltaLin_s2t;
+      
+            for (int idm2 = 0 ; idm2 < N_dm2 ; idm2++)
+            {
+                //dm2_pt = 10**(log10(lo_dm2) + double(idm2)*DeltaLog_dm2);
+                dm2_pt = lo_dm2 + double(idm2)*DeltaLin_dm2;
+	  
+                for (int iAD = 0 ; iAD < nAD ; iAD++)
+                {
+                    // Condition to fill oscillated spectra for (s2t_pt,dm2_pt), i.e. wosc_spect_histo[iAD]
+                    cut = Form("((1.0 - %e*((sin( 1.267 * %e * Ln/En ))**2) - (0.25*(1 + sqrt(1 - %e))**2) * 0.861 * (sin( 1.267 * 7.53e-5 * Ln/En ))**2))*((id==%d))",s2t_pt,dm2_pt,s2t_pt,iAD);
+	      
+                    // Filling oscilated spectra for (s2t_pt,dm2_pt)
+                    int ih = is2t*N_dm2 + idm2;
+                    //std::cout << "AD " << iAD + 1 << "\t s2t_pt =  " << s2t_pt << "\t dm2_pt =  " << dm2_pt  << "\t ih = " << ih << std::endl;
+                    //std::cout << "cut computed" << std::endl;
+                    //std::cout << "Test No. " << idm2 << std::endl;
+                    T->Draw(Form("Ep >> wosc_spect_histo_%d",ih),cut,"");
+                    TotWosc[ih] =  wosc_spect_histo[ih]->Integral();
+                    //std::cout << TotWosc1[10] <<std::endl;
+                    // Survival probability for (s2t_pt,dm2_pt) to fill histogram at each detector, i.e. Posc_AD_surv[iAD]
+                    //T->Draw(Form("(1.0 - %e*((sin( 1.267 * %e * Ln/En ))**2) - (0.25*(1 + sqrt(1 - %e))**2) * 0.861 * (sin( 1.267 * 7.53e-5 * Ln/En ))**2) >> Posc_AD_surv_%d",s2t_pt,dm2_pt,s2t_pt,iAD),Form("id==%d",sel));
+                    //Average survival probability for (s2t_pt,dm2_pt) at each detector
+                    //SurvP = Posc_AD_surv[iAD]->GetMean();
+	      
+                    file << iAD + 1 << "\t" << s2t_pt << "\t" << dm2_pt;
+                    //fprintf(file,"%d %8.2e %8.2e",iAD+1,s2t_pt,dm2_pt);
+                    //Printing bin-content for the oscilated spectra for (s2t_pt,dm2_pt)
+                    for (int ib = 0 ; ib < NB ; ib++)
+                    {
+                        double cont   = wosc_spect_histo[ih]->GetBinContent(ib+1);
+                        //std::cout << " cont = " << cont << " ih = " << ih <<std::endl;
+		  
+                        file << "\t" << cont;
+                        //fprintf(file," %10.5f",cont);
+                        //std::cout << "cont =  " << cont1 <<std::endl;
+                    }
+                    
+                    file << " \t" << TotWosc[ih] << std::endl;
+                    //fprintf(file," %10.2f\n",TotWosc[ih]);
+	      
+                    //Printing check-points info
+                    if (ih%10 == 0)
+                    {
+                        std::cout << ih << "  Done with detector " << iAD+1  << " for "<< s2t_pt << "\t" << dm2_pt << std::endl;
+                        // std::cout << " \t" << TotNosc[iAD] << std::endl;
+                    }
+	      
+                    //Normalizing the oscilated spectra for (s2t_pt,dm2_pt)
+                    //*CHECK if this is nneded .. guess is NO
+                    integ = wosc_spect_histo[ih]->Integral();
+                    wosc_spect_histo[ih]->Scale(1.0/integ);
+                }//for iAD
+                file << std::endl;
+                //fprintf(file,"\n");
+            }//for idm2
+            //std::cout << "  Done with detector " << iAD+1 << std::endl;
+            file << std::endl;
+            //fprintf(file,"");
+        }//for is2t
+  
+    file.close();
+    //fclose(file);
+  
+    const int columns = 31;
+    //const int rows2 = rows-3;
+    const int rows = nAD*N_s2t*N_dm2 + nAD;
+    const int rows2 = rows/2;
+    ofstream Ratio;
+    string Ratio_spectra = "files/RENO_gridOscSpectra_Ratio.txt";
+    Ratio.open((Ratio_spectra).c_str());
+  
+    ifstream matriz("files/RENO_gridOscSpectra_test.txt");
+    double ** matr;
+    matr = new double*[rows];
+    for(int k = 0 ; k < rows ; k++)
+    {
+        matr[k] = new double[columns];
     }
     
-    Ratio << endl;
+    for(int j = 0 ; j < rows ; j++)
+    {
+        for(int l = 0 ; l < columns ; l++)
+        {
+            matriz >> matr[j][l];
+            //std::cout << matr[j][l] << " ";
+        }
+    //std::cout << std::endl;
+    }
+
+    for(int i = 0; i < rows2 ; i++ )
+    {
+        int k = 2*i;
+        int n = 2*i + 1;
+        Ratio << matr[k][1] << "  " << matr[k][2] << "  ";
+        for(int l = 3 ; l < columns ; l++)
+        {
+            //std::cout << matr[n][l] << "  " << matr[k][l] << "  ";
+            double ratio = matr[n][l]/matr[k][l];
+            Ratio << ratio << "  " ;
+        }
+        Ratio << std::endl;
     
-  }
+    }
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////7
   
-  break;    
-  
+  //break;
+  /*
   //---------------------------------------------------
   // Drawing section
   
@@ -432,9 +440,9 @@ void RENO_osc_spect()
   
   printf("******************************************************************************************\n");
   
-  
-  break;
-  
+  */
+  //break;
+  /*
   //---------------------------------------------------
   // Drawing Survival Probabilities at the six ADs
   TH2F *frame_POscBF = new TH2F("frame_POscBF","",1000,0.89,1.01,10,-0.01,0.13);
@@ -472,7 +480,7 @@ void RENO_osc_spect()
   
   canv0->Print("POsc_avg.pdf");
   //---------------------------------------------------
-  
+  */
   
   
   

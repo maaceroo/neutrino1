@@ -181,31 +181,36 @@ void db_osc_spec()
     //file.open (result.c_str());
     //file << setprecision(5);
     
-    FILE *file;
-    file = fopen("files_data/db6AD_gridOscSpectra.txt","w");
-    //file = fopen("files_data/db_gridOscSpectra_100x100.txt","w");
-
+    //FILE *file;
+    //file = fopen("files_data/db6AD_gridOscSpectra.txt","w");
+    ofstream file;
+    string grid_name = "files_data/db6AD_gridOscSpectra.txt";
+    file.open((grid_name).c_str());
+    file << fixed;
+    file << setprecision(6);
+    
+    s2t_pt = 0.0;
+    dm2_pt = 0.0;
     //write non-oscillated spectra for each AD to file
     for (int iAD = 0 ; iAD < nAD ; iAD++)
     {
        if      (iAD <  3) sel = iAD;
        else if (iAD >= 3) sel = iAD+1;
 
-      //file << iAD + 1 << " " << s2t_pt << "\t" << dm2_pt;
-       fprintf(file,"%d %8.2e %8.2e",iAD+1,s2t_pt,dm2_pt);
+       file << iAD + 1 << "\t" << s2t_pt << "\t" << dm2_pt;
+       //fprintf(file,"%d %8.2e %8.2e",iAD+1,s2t_pt,dm2_pt);
       //print bin-content of non-oscilated spectra per day
       for (int ib = 0 ; ib < 26 ; ib++)
       {
          double contNO   = nu_nosc_spect_histo[iAD]->GetBinContent(ib+1);
-         //file << "\t" << contNO;
-          fprintf(file," %10.2f",contNO);
+         file << "\t" << contNO;
+          //fprintf(file," %10.2f",contNO);
       }
-      //file << " \t" << TotNosc[iAD] /*<< "\t" << "1.00000"*/ << endl;
-        fprintf(file," %10.2f\n",TotNosc[iAD]);
+      file << " \t" << TotNosc[iAD] /*<< "\t" << "1.00000"*/ << endl;
+        //fprintf(file," %10.2f\n",TotNosc[iAD]);
     } // for iAD
-    //file << endl;
-    fprintf(file,"\n");
-
+    file << endl;
+    //fprintf(file,"\n");
 
     for (int is2t = 0 ; is2t < N_s2t ; is2t++)
     {
@@ -236,17 +241,17 @@ void db_osc_spec()
                 //Average survival probability for (s2t_pt,dm2_pt) at each detector
                 //SurvP = Posc_AD_surv[iAD]->GetMean();
 
-                //file << iAD + 1 << " " << s2t_pt << "\t" << dm2_pt;
-                fprintf(file,"%d %8.2e %8.2e",iAD+1,s2t_pt,dm2_pt);
+                file << iAD + 1 << "\t" << s2t_pt << "\t" << dm2_pt;
+                //fprintf(file,"%d %8.2e %8.2e",iAD+1,s2t_pt,dm2_pt);
                 //Printing bin-content for the oscilated spectra for (s2t_pt,dm2_pt)
                 for (int ib = 0 ; ib < 26 ; ib++)
                 {
                     double cont   = wosc_spect_histo[ih]->GetBinContent(ib+1);
-                    //file << "\t" << cont;
-                    fprintf(file," %10.2f",cont);
+                    file << "\t" << cont;
+                    //fprintf(file," %10.2f",cont);
                 }
-                //file << " \t" << TotWosc[ih] << endl;
-                fprintf(file," %10.2f\n",TotWosc[ih]);
+                file << " \t" << TotWosc[ih] << endl;
+                //fprintf(file," %10.2f\n",TotWosc[ih]);
                 
                 //Printing check-points info
                 if (ih%10 == 0)
@@ -260,16 +265,16 @@ void db_osc_spec()
                 integ = wosc_spect_histo[ih]->Integral();
                 wosc_spect_histo[ih]->Scale(1.0/integ);
             } // for idm2
-            //file << endl;
-            fprintf(file,"\n");
+            file << endl;
+            //fprintf(file,"\n");
         }//for is2t
         //cout << "  Done with detector " << iAD+1 << endl;
-        //file << endl;
-        fprintf(file,"\n");
+        file << endl;
+        //fprintf(file,"\n");
     }//for iAD
 
-    //file.close();
-    fclose(file);
+    file.close();
+    //fclose(file);
     
     //break;
     //---------------------------------------------------

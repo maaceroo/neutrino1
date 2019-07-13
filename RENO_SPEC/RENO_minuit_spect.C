@@ -24,6 +24,8 @@
 //-----------------------------------------------------------------------------------//
 #include "constants.h"
 #include <math.h>
+#include <iostream>
+#include <string>
 //---*****************************************************************************---//
 //------------------------ CONSTANTS ------------------------------------------------//
 //---*****************************************************************************---//
@@ -222,26 +224,25 @@ int RENO_minuit_spect(const char * minName = "Minuit",
 			   int randomSeed = 10)
 //int randomSeed = -1)
 {
-  cout << "Let's begin..." << endl;
+    cout << "Let's begin..." << endl;
    
-     TFile *wrd_File = new TFile("files_root/ldist_RENO_2x6.root","READ");
+    TFile *wrd_File = new TFile("files_root/ldist_RENO_2x6.root","READ");
     TH1F *wrd_histo0 = ((TH1F*)(wrd_File->Get("histo_ldist_RENO_near")));;
     TH1F *wrd_histo1 = ((TH1F*)(wrd_File->Get("histo_ldist_RENO_far")));;
-     double mm;
-     for (int iNR = 0 ; iNR < nNR ; iNR++)
-     {
-         wrd_array[0][iNR] = wrd_histo0->GetBinContent(iNR+1);
-         wrd_array[1][iNR] = wrd_histo1->GetBinContent(iNR+1);
-
+    double mm;
+    for (int iNR = 0 ; iNR < nNR ; iNR++)
+    {
+        wrd_array[0][iNR] = wrd_histo0->GetBinContent(iNR+1);
+        wrd_array[1][iNR] = wrd_histo1->GetBinContent(iNR+1);
          //cout << wrd_array[0][iNR] << "   " << wrd_array[1][iNR]  << endl;
-     }
+    }
     
-  //-------------------
-  // Energy Histograms
-  //-------------------
-  TFile *fenergy = new TFile("files_root/RENOplots.root","read");
-  //The histogram of near and far data spectra
-  for(int n = 0 ; n < nAD ; n++){
+    //-------------------
+    // Energy Histograms
+    //-------------------
+    TFile *fenergy = new TFile("files_root/RENOplots.root","read");
+    //The histogram of near and far data spectra
+    for(int n = 0 ; n < nAD ; n++){
     
     data_spect_histo[n] = (TH1F*) fenergy->Get(Form("data_spect_histo_%d",n));
     double dfactor = 1.0/data_spect_histo[n]->Integral();
@@ -250,235 +251,248 @@ int RENO_minuit_spect(const char * minName = "Minuit",
     ratio_histo[n] = (TH1F*) fenergy->Get(Form("ratio_histo_%d",n));
     double rfactor = 1.0/ratio_histo[n]->Integral();
     ratio_histo[n]->Scale(rfactor);
-    
-  }
-
-  double delta_bins2 = (6.0 - 1.2)/24; // 0.2 MeV/bin
-  
-  for (int i = 0 ; i < (NB-2) ; i++)
-    {
-      xbins[i] = 1.2 + delta_bins2*i;
     }
-  xbins[25] = xbins[24] + 0.4;
-  xbins[26] = 8.4 - 1.4;
-  xbins[27] = 8.4;
+
+    double delta_bins2 = (6.0 - 1.2)/24; // 0.2 MeV/bin
   
-  for(int iAD = 0 ; iAD < nAD ; iAD++)
+    for (int i = 0 ; i < (NB-2) ; i++)
     {
-      nosc_spect_hist[iAD] = new TH1F(Form("nosc_spect_hist_%d",iAD),"",NB,xbins);
-      nosc_spect_hist_1[iAD] = new TH1F(Form("nosc_spect_hist_1_%d",iAD),"",NB,xbins);
-      nosc_spect_hist_bf[iAD] = new TH1F(Form("nosc_spect_hist_bf_%d",iAD),"",NB,xbins);
+        xbins[i] = 1.2 + delta_bins2*i;
+    }
+    xbins[25] = xbins[24] + 0.4;
+    xbins[26] = 8.4 - 1.4;
+    xbins[27] = 8.4;
+  
+    for(int iAD = 0 ; iAD < nAD ; iAD++)
+    {
+        nosc_spect_hist[iAD] = new TH1F(Form("nosc_spect_hist_%d",iAD),"",NB,xbins);
+        nosc_spect_hist_1[iAD] = new TH1F(Form("nosc_spect_hist_1_%d",iAD),"",NB,xbins);
+        nosc_spect_hist_bf[iAD] = new TH1F(Form("nosc_spect_hist_bf_%d",iAD),"",NB,xbins);
     }
   
-  cout << "Minimization settings..." << endl;
-  ROOT::Math::Minimizer* min = ROOT::Math::Factory::CreateMinimizer(minName, algoName);
+    cout << "Minimization settings..." << endl;
+    ROOT::Math::Minimizer* min = ROOT::Math::Factory::CreateMinimizer(minName, algoName);
   
-  //-- Set tolerance , etc...
-  min->SetMaxFunctionCalls(1000000); // for Minuit/Minuit2
-  min->SetMaxIterations(10000);      // for GSL
-  min->SetTolerance(0.001);
-  min->SetPrintLevel(-1);
+    //-- Set tolerance , etc...
+    min->SetMaxFunctionCalls(1000000); // for Minuit/Minuit2
+    min->SetMaxIterations(10000);      // for GSL
+    min->SetTolerance(0.001);
+    min->SetPrintLevel(-1);
   
-  //-- File to print oscillation parameters and chi2 values
-  ofstream chi2Surface_file;
-  string s2t_dm2 = "files/chi2_s2t-dm2_surface_spect.txt";  //(sin^2(2th13), a, chi^2_min)
-  ofstream minimPullT_file;
-  string pterms = "files/chi2_pullTerms_spect.txt";
-  //string s2t_eps = "chi2_s2t_curve.txt"; //(sin^2(2th13), chi^2_min)
-  chi2Surface_file.open((s2t_dm2).c_str());
-  minimPullT_file.open((pterms).c_str());
+    //-- File to print oscillation parameters and chi2 values
+    ofstream chi2Surface_file;
+    string s2t_dm2 = "files/chi2_s2t-dm2_surface_spect.txt";  //(sin^2(2th13), a, chi^2_min)
+    ofstream minimPullT_file;
+    string pterms = "files/chi2_pullTerms_spect.txt";
+    //string s2t_eps = "chi2_s2t_curve.txt"; //(sin^2(2th13), chi^2_min)
+    chi2Surface_file.open((s2t_dm2).c_str());
+    minimPullT_file.open((pterms).c_str());
   
+    //ifstream grid_file("./files/RENO_gridOscSpectra_test.txt",ifstream::in);
+    cout << "Reading file - Loop in progress..." << endl;
+    //string grid_spectra = "./files/RENO_gridOscSpectra_test.txt";
+    //std::stringstream line;
+    ifstream grid_file;
+    grid_file.open("./files/RENO_gridOscSpectra_test.txt");
+    std::cout << "Is the file open? \t";
+    if (grid_file.is_open() == 1)
+        std::cout << "Yes! \n" << std::endl;
+    else
+        std::cout << "No! Check it out! \n" << std::endl;
+    int iad = 0;
+    int first2 = 1;
   
-  ifstream file("./files/RENO_gridOscSpectra_test.txt");
-  cout << "Reading file - Loop in progress..." << endl;
-  int iad = 0;
-  int first2 = 1;
-  
-  while (file >> iAD >> s2th_13 >> dm2_ee  >> spc[iad][0] >> spc[iad][1] >> spc[iad][2] >>
-         spc[iad][3] >> spc[iad][4] >> spc[iad][5] >> spc[iad][6] >> spc[iad][7] >> spc[iad][8] >>
-         spc[iad][9] >> spc[iad][10] >> spc[iad][11] >> spc[iad][12] >> spc[iad][13] >> spc[iad][14] >>
-         spc[iad][15] >> spc[iad][16] >> spc[iad][17] >> spc[iad][18] >> spc[iad][19] >> spc[iad][20] >>
-         spc[iad][21] >> spc[iad][22] >> spc[iad][23] >> spc[iad][24] >> spc[iad][25] >> spc[iad][26] >>
-         NoscTot[iad])
-  {//file loop
-     // cout << " a = " << spc[0][26] << endl; 
-      if(first2 <= 2)
-	{
-	  for(int ibin = 1 ; ibin <= NB ; ibin++)
-	    {
-	      double bincont = spc[iad][ibin-1]*(noOsc_IBDrate_perday[iAD-1]/NoscTot[iad])*emuem[iAD-1]*daqTime[iAD-1];
-	      double bincontent = bincont/0.2;
-	      nosc_spect_hist[iAD-1]->SetBinContent(ibin,bincont);
-	      nosc_spect_hist_1[iAD-1]->SetBinContent(ibin,bincontent);
-	    }
+    while (grid_file >> iAD >> s2th_13 >> dm2_ee  >> spc[iad][0] >> spc[iad][1] >> spc[iad][2] >> spc[iad][3] >> spc[iad][4] >> spc[iad][5] >> spc[iad][6] >> spc[iad][7] >> spc[iad][8] >> spc[iad][9] >> spc[iad][10] >> spc[iad][11] >> spc[iad][12] >> spc[iad][13] >> spc[iad][14] >> spc[iad][15] >> spc[iad][16] >> spc[iad][17] >> spc[iad][18] >> spc[iad][19] >> spc[iad][20] >> spc[iad][21] >> spc[iad][22] >> spc[iad][23] >> spc[iad][24] >> spc[iad][25] >> spc[iad][26] >> NoscTot[iad])
+    {//file loop
+        //std::cout << "Inside the while loop!" << std::endl;
+        if (!grid_file.good()){
+            std::cout << "\n \t File is not good! \n" << std::endl;
+            break;
+        }
+        
+        cout << " a = " << spc[0][26] << endl;
+        if(first2 <= 2)
+        {
+            for(int ibin = 1 ; ibin <= NB ; ibin++)
+            {
+                double bincont = spc[iad][ibin-1]*(noOsc_IBDrate_perday[iAD-1]/NoscTot[iad])*emuem[iAD-1]*daqTime[iAD-1];
+                double bincontent = bincont/0.2;
+                nosc_spect_hist[iAD-1]->SetBinContent(ibin,bincont);
+                nosc_spect_hist_1[iAD-1]->SetBinContent(ibin,bincontent);
+            }
 	  
-	  cout << " iAD = " << iAD  /*<< " iNR = " << iNR */ << "  first2 = " << first2 << endl;
-	  cout << "Number of events: " << nosc_spect_hist[iAD-1]->Integral() << endl;
-	  noNoscTot[iad] = NoscTot[iad];
+            cout << " iAD = " << iAD  /*<< " iNR = " << iNR */ << "  first2 = " << first2 << endl;
+            cout << "Number of events: " << nosc_spect_hist[iAD-1]->Integral() << endl;
+            noNoscTot[iad] = NoscTot[iad];
 	  
-	  first2++;
-	}//if first2 loop END
+            first2++;
+        }//if first2 loop END
       
-      iad++;
+        iad++;
       
-      if(iad == 2)
-	{
-	  //At this point, we have read the two AD spectra (two lines) for one point (s2th_13,dm2_31) in the grid
-	  //if iad BEGIN
-	  //cout << endl;
-	  iad = 0;
+        if(iad == 2)
+        {
+            //At this point, we have read the two AD spectra (two lines) for one point (s2th_13,dm2_31) in the grid
+            //if iad BEGIN
+            //cout << endl;
+            iad = 0;
 	  
-	  //cout << "Start Minimization..." << endl;
-        const int N_params = 10; //-- Number of parameter of the chi² function --//
-	  ROOT::Math::Functor f(&chi2,N_params); //-- Setting the function to be minimized by using Minuit --//
-	  //-- Steps
-	  double stp = 1.0e-4;
-	  double step[N_params] = {stp,stp,stp,stp,stp,stp,stp,stp,stp,stp};
+            //cout << "Start Minimization..." << endl;
+            const int N_params = 10; //-- Number of parameter of the chi² function --//
+            ROOT::Math::Functor f(&chi2,N_params); //-- Setting the function to be minimized by using Minuit --//
+            //-- Steps
+            double stp = 1.0e-4;
+            double step[N_params] = {stp,stp,stp,stp,stp,stp,stp,stp,stp,stp};
 
-	  //-- Initial parameter values
-        double start[N_params] = {0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0};
+            //-- Initial parameter values
+            double start[N_params] = {0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0};
 
-	  //-- Calling Minuit function setting
-	  min->SetFunction(f);
+            //-- Calling Minuit function setting
+            min->SetFunction(f);
+            
+            //-- Setting variables
+            double lim = 5.0e-2;
 	  
-	  //-- Setting variables
-    double lim = 5.0e-2;
-	  
-    min->SetLimitedVariable(0,  "epsilon", start[0],  step[0],  -lim, lim);
-    min->SetLimitedVariable(1,  "e",       start[1],  step[1],  -lim, lim);
-    min->SetLimitedVariable(2,  "b_0",     start[2],  step[2],  -lim, lim);
-    min->SetLimitedVariable(3,  "b_1",     start[3],  step[3],  -lim, lim);
+            min->SetLimitedVariable(0,  "epsilon", start[0],  step[0],  -lim, lim);
+            min->SetLimitedVariable(1,  "e",       start[1],  step[1],  -lim, lim);
+            min->SetLimitedVariable(2,  "b_0",     start[2],  step[2],  -lim, lim);
+            min->SetLimitedVariable(3,  "b_1",     start[3],  step[3],  -lim, lim);
     
-    min->SetLimitedVariable(4,  "f_0",     start[4],  step[4],  -lim, lim);
-    min->SetLimitedVariable(5,  "f_1",     start[5],  step[5],  -lim, lim);
-    min->SetLimitedVariable(6,  "f_2",     start[6],  step[6],  -lim, lim);
-    min->SetLimitedVariable(7,  "f_3",     start[7],  step[7],  -lim, lim);
-    min->SetLimitedVariable(8,  "f_4",     start[8],  step[8],  -lim, lim);
-    min->SetLimitedVariable(9,  "f_5",     start[9],  step[9],  -lim, lim);
-	  
-	
-    /*min->SetFixedVariable(0,  "epsilon", start[0]);
-    min->SetFixedVariable(1,  "e",       start[1]);
-    min->SetFixedVariable(2,  "b_0",     start[2]);
-    min->SetFixedVariable(3,  "b_1",     start[3]);
-    min->SetFixedVariable(1,  "e",       start[1]);/*
-    /*min->SetFixedVariable(4,  "f_0",     start[4]);
-    min->SetFixedVariable(5,  "f_1",     start[5]);
-    min->SetFixedVariable(6,  "f_2",     start[6]);
-    min->SetFixedVariable(7,  "f_3",     start[7]);
-    min->SetFixedVariable(8,  "f_4",     start[8]);
-    min->SetFixedVariable(9,  "f_5",     start[9]);*/
-    min->SetErrorDef(2.3);
+            min->SetLimitedVariable(4,  "f_0",     start[4],  step[4],  -lim, lim);
+            min->SetLimitedVariable(5,  "f_1",     start[5],  step[5],  -lim, lim);
+            min->SetLimitedVariable(6,  "f_2",     start[6],  step[6],  -lim, lim);
+            min->SetLimitedVariable(7,  "f_3",     start[7],  step[7],  -lim, lim);
+            min->SetLimitedVariable(8,  "f_4",     start[8],  step[8],  -lim, lim);
+            min->SetLimitedVariable(9,  "f_5",     start[9],  step[9],  -lim, lim);
+	  	
+            /*
+             min->SetFixedVariable(0,  "epsilon", start[0]);
+             min->SetFixedVariable(1,  "e",       start[1]);
+             min->SetFixedVariable(2,  "b_0",     start[2]);
+             min->SetFixedVariable(3,  "b_1",     start[3]);
+             min->SetFixedVariable(1,  "e",       start[1]);
+             */
+            /*
+             min->SetFixedVariable(4,  "f_0",     start[4]);
+             min->SetFixedVariable(5,  "f_1",     start[5]);
+             min->SetFixedVariable(6,  "f_2",     start[6]);
+             min->SetFixedVariable(7,  "f_3",     start[7]);
+             min->SetFixedVariable(8,  "f_4",     start[8]);
+             min->SetFixedVariable(9,  "f_5",     start[9]);
+             */
+            min->SetErrorDef(2.3);
 
-	  //-- Calling Minuit minimization
-	  min->Minimize();
+            //-- Calling Minuit minimization
+            min->Minimize();
 	  
-	  const double *xs = min->X();
+            const double *xs = min->X();
 	  
-	  double chi2Min = min->MinValue();
-	  chi2Surface_file << s2th_13 << "\t" << dm2_ee << "\t" << chi2Min << endl;
+            double chi2Min = min->MinValue();
+            chi2Surface_file << s2th_13 << "\t" << dm2_ee << "\t" << chi2Min << endl;
 	  
-	  if (chi2Min < 0.0) {
-	    cout << "Critical error: chi2Min is negative!  " << chi2Min << endl;
-	    break;
-	  }
+            if (chi2Min < 0.0) {
+                cout << "Critical error: chi2Min is negative!  " << chi2Min << endl;
+                break;
+            }
 	  
-	  //-- Uncomment if you want to print the pull parameters (also Line 205)
-        minimPullT_file  << s2th_13 << "\t" << dm2_ee  << "\t"
-            << xs[0] << "\t" << xs[1] << "\t" << xs[2] << "\t" << xs[3] << "\t" << xs[4] << "\t"
-            << xs[5] << "\t" << xs[6] << "\t" << xs[7] << "\t" << xs[8] << "\t" << xs[9] << "\t"
-            << chi2Min << endl;
-	  //}
-	  
-	  if (dm2_ee == hi_dm2)
-	    {
-	      chi2Surface_file << endl;
-	      cout << s2th_13 << "\t" << dm2_ee << "\t" << min->MinValue() << endl;
-	    }
-	}  
+            //-- Uncomment if you want to print the pull parameters (also Line 205)
+            minimPullT_file  << s2th_13 << "\t" << dm2_ee  << "\t"
+                << xs[0] << "\t" << xs[1] << "\t" << xs[2] << "\t" << xs[3] << "\t" << xs[4] << "\t"
+                << xs[5] << "\t" << xs[6] << "\t" << xs[7] << "\t" << xs[8] << "\t" << xs[9] << "\t"
+                << chi2Min << endl;
+            //}
+            
+            if (dm2_ee == hi_dm2)
+            {
+                chi2Surface_file << endl;
+                cout << s2th_13 << "\t" << dm2_ee << "\t" << min->MinValue() << endl;
+            }
+        }
     }
   //
-
-  std::cout << "Succesful run!!" << endl;
-  
-  // Drawing section
-  TCanvas *c1 = new TCanvas("c1");
-  nosc_spect_hist_1[0]->Draw();
-  //nosc_spect_hist_1[1]->Draw("same");
-  c1->Print("Plots/nosc_near.pdf");
-  
-  TCanvas *c2 = new TCanvas("c2");
-  //nosc_spect_hist_1[0]->Draw();
-  nosc_spect_hist_1[1]->Draw();
-  c2->Print("Plots/nosc_far.pdf");
-
-  ///// Chi2 minimun value /////
     
-  ofstream chi2min;
-  string chiminima = "files/chi2_minimun_spect.txt";
-  chi2min.open((chiminima).c_str());
-  int n;
-  const int rows = 3;
-  const int columns = ran;
-  ifstream matriz("files/chi2_s2t-dm2_surface_spect.txt"); 
-  double ** matr;  
-  double minimo[rows];
-  matr = new double*[rows];
-  for(int k = 0 ; k < rows ; k++){
-    matr[k] = new double[columns];
-  }		
+    std::cout << "Succesful run!!" << endl;
+    grid_file.close();
+
+    /*
+     // Drawing section
+     TCanvas *c1 = new TCanvas("c1");
+     nosc_spect_hist_1[0]->Draw();
+     //nosc_spect_hist_1[1]->Draw("same");
+     c1->Print("Plots/nosc_near.pdf");
   
-  for(int l = 0 ; l < columns ; l++){		
-    for(int j = 0 ; j < rows ; j++){
-      matriz >> matr[j][l];
-    }
-  }
-  
-  for(int i = 0 ; i < rows ; i++){
-    minimo [i] = matr[i][0];
-    for(int ll = 0 ; ll < columns ; ll++){
-      if(matr[i][ll] < minimo[i]){
-	minimo[i] = matr[i][ll];
-	n =ll;
-      }
-    }
-  }  
-  cout << "sin2t_13 = " << matr[0][n]   << " dm2_ee = " << matr[1][n]
-       << " chi2 = " << matr[2][n]  << " n = " << n  << endl;
-  chi2min  << matr[0][n]   <<  "\t" << matr[1][n]  << "\t" << matr[2][n]  << endl;
-  chi2min <<endl;
-  //-----------
-  
-  int m;
-  const int rows3 = nAD*ran + nAD;
-  const int columns3 = 31;
-  ifstream matriz3("files/RENO_gridOscSpectra_test.txt"); 
-  double ** matr3;  
-  double bfit[rows3];
-  matr3 = new double*[rows3];
-  for(int k = 0 ; k < rows3 ; k++){
-    matr3[k] = new double[columns3];
-  }		
-  
-  for(int j = 0 ; j < rows3 ; j++){
-    for(int l = 0 ; l < columns3 ; l++){		
-      matriz3 >> matr3[j][l];
-    }
-  }
-  
-  for(int i = 0 ; i < rows3 ; i++){
-    if(matr3[i][2] == matr[1][n] && matr3[i][1] == matr[0][n] ){
-      m = i;
-    }
-  }
+     TCanvas *c2 = new TCanvas("c2");
+     //nosc_spect_hist_1[0]->Draw();
+     nosc_spect_hist_1[1]->Draw();
+     c2->Print("Plots/nosc_far.pdf");
+     */
+     ///// Chi2 minimun value /////
     
-  double best_fit[nAD][NB];
-  double NoscTot_bf[nAD];
+    ofstream chi2min;
+    string chiminima = "files/chi2_minimun_spect.txt";
+    chi2min.open((chiminima).c_str());
+    int n;
+    const int rows = 3;
+    const int columns = ran;
+    ifstream matriz("files/chi2_s2t-dm2_surface_spect.txt");
+    double ** matr;
+    double minimo[rows];
+    matr = new double*[rows];
+    for(int k = 0 ; k < rows ; k++){
+        matr[k] = new double[columns];
+    }
   
-  NoscTot_bf[0] = matr3[m-1][30];
-  NoscTot_bf[1] = matr3[m][30];
+    for(int l = 0 ; l < columns ; l++){
+        for(int j = 0 ; j < rows ; j++){
+            matriz >> matr[j][l];
+        }
+    }
   
-  for(int i=0 ; i < NB ; i++ ){
+    for(int i = 0 ; i < rows ; i++){
+        minimo [i] = matr[i][0];
+        for(int ll = 0 ; ll < columns ; ll++){
+            if(matr[i][ll] < minimo[i]){
+                minimo[i] = matr[i][ll];
+                n = ll;
+            }
+        }
+    }
+    cout << "sin2t_13 = " << matr[0][n]   << " dm2_ee = " << matr[1][n]
+        << " chi2 = " << matr[2][n]  << " n = " << n  << endl;
+    chi2min  << matr[0][n]   <<  "\t" << matr[1][n]  << "\t" << matr[2][n]  << endl;
+    chi2min <<endl;
+    //-----------
+    /*
+    int m;
+    const int rows3 = nAD*ran + nAD;
+    const int columns3 = 31;
+    ifstream matriz3("files/RENO_gridOscSpectra_test.txt");
+    double ** matr3;
+    double bfit[rows3];
+    matr3 = new double*[rows3];
+    for(int k = 0 ; k < rows3 ; k++){
+        matr3[k] = new double[columns3];
+    }
+  
+    for(int j = 0 ; j < rows3 ; j++){
+        for(int l = 0 ; l < columns3 ; l++){
+            matriz3 >> matr3[j][l];
+        }
+    }
+  
+    for(int i = 0 ; i < rows3 ; i++){
+        if(matr3[i][2] == matr[1][n] && matr3[i][1] == matr[0][n] ){
+            m = i;
+        }
+    }
+    
+    double best_fit[nAD][NB];
+    double NoscTot_bf[nAD];
+  
+    NoscTot_bf[0] = matr3[m-1][30];
+    NoscTot_bf[1] = matr3[m][30];
+  
+    for(int i=0 ; i < NB ; i++ ){
     
     best_fit[0][i] = matr3[m-1][i+3];
     best_fit[1][i] = matr3[m][i+3];
@@ -486,7 +500,8 @@ int RENO_minuit_spect(const char * minName = "Minuit",
     //  cout << "near = " << best_fit[0][i] << " far = " << best_fit[1][i] << endl; 
     
   }
-  
+     */
+/*
   for(int iAD = 0 ; iAD < nAD ; iAD++)
     {
       for(int ibin = 0 ; ibin < NB ; ibin++)
@@ -508,6 +523,7 @@ int RENO_minuit_spect(const char * minName = "Minuit",
   nosc_spect_hist_bf[1]->Draw();
   //nosc_spect_hist_1[1]->Draw("same");
   c4->Print("Plots/nosc_far_bestfit.pdf");
-  
+  */
+    
   return 0;
 }

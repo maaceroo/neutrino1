@@ -5,6 +5,7 @@
 const int NBC = 37;         //Correlation matrix Number of bins
 const int NBCreb = 26;      //Rebinned Correlation matrix Number of bins
 //------------------------------------------------------
+/*
 void set_plot_style()
 {
     const Int_t NRGBs = 5;
@@ -17,6 +18,7 @@ void set_plot_style()
     TColor::CreateGradientColorTable(NRGBs, stops, red, green, blue, NCont);
     gStyle->SetNumberContours(NCont);
 }
+ */
 //------------------------------------------------------
 
 void db_CorrMatrix_6AD_reBin37to26()
@@ -265,7 +267,7 @@ void db_CorrMatrix_6AD_reBin37to26()
     }
 
     double corrMatChk[NBC][NBC];
-    TH2F *corrMatchkHisto = new TH2F("corrMatChkHisto","",NBC,0,NBC,NBC,0,NBC);
+    TH2F *corrMatChkHisto = new TH2F("corrMatChkHisto","",NBC,0,NBC,NBC,0,NBC);
     for (int k = 0 ; k < NBC ; k++) {
         for (int l = 0 ; l < NBC; l++) {
             corrMatChk[k][l] = 0.0;

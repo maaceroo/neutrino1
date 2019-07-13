@@ -60,6 +60,7 @@ void renograph(){
 	// nd = 0 -> Near detector; nd = 1 -> Far detector
 	TH1F *data_spect_histo[nd];
 	TH1F *spect_histo[nd];
+    TH1F *bkgd_histo[nd];
 	for (int n = 0 ; n < nd ; n++){
         data_spect_histo[n] = new TH1F(Form("data_spect_histo_%d",n),"",NB,xbins);
         data_spect_histo[n]->SetLineWidth(2);
@@ -68,6 +69,10 @@ void renograph(){
 	
         spect_histo[n] = new TH1F(Form("spect_histo_%d",n),"",NB,xbins);
         spect_histo[n]->SetLineColor(kBlue);
+        
+        bkgd_histo[n] = new TH1F(Form("bkgd_histo_%d",n),"",NB,xbins);
+        bkgd_histo[n]->SetLineWidth(2);
+        bkgd_histo[n]->SetLineColor(6);
 	}	
 	
     // nd = 0 -> Near detector; nd = 1 -> Far detector
@@ -196,6 +201,7 @@ void renograph(){
           // lihe
           ctnt = reno_bg_near_lihe->GetY()[j];
           reno_bg_near_lihe_histo->SetBinContent(j+1,ctnt);
+          bkgd_histo[0]->SetBinContent(j+1,ctnt);
           
           // Accidental
           ctnt = reno_bg_near_accident->GetY()[j];
@@ -222,7 +228,8 @@ void renograph(){
           // lihe
           ctnt = reno_bg_far_lihe->GetY()[j];
           reno_bg_far_lihe_histo->SetBinContent(j+1,ctnt);
-          
+          bkgd_histo[1]->SetBinContent(j+1,ctnt);
+
           // Accidental
           ctnt = reno_bg_far_accident->GetY()[j];
           reno_bg_far_acci_histo->SetBinContent(j+1,ctnt);
@@ -242,19 +249,44 @@ void renograph(){
           ctnt = reno_noosc->GetY()[j];
           reno_noosc_histo->SetBinContent(j+1,ctnt);
           
-	  }	
+	  }
+    
+    std::cout << "Background" << std::endl;
+    //-- Total background histograms --
+    bkgd_histo[0]->Add(reno_bg_near_accident_histo);
+    bkgd_histo[0]->Add(reno_bg_near_cf_histo);
+    bkgd_histo[0]->Add(reno_bg_near_fast_histo);
+
+    bkgd_histo[1]->Add(reno_bg_far_acci_histo);
+    bkgd_histo[1]->Add(reno_bg_far_cf_histo);
+    bkgd_histo[1]->Add(reno_bg_far_fast_histo);
+    //---------------------------------
 	
 	TH2F *frame_spect_histo = new TH2F("frame_spect_histo","",NB,1,hi,10,0,18300);
 	frame_spect_histo->GetXaxis()->SetTitle("Prompt Energy (MeV)");
 	frame_spect_histo->GetYaxis()->SetTitle("Events/0.2 MeV");	 
 	
 	TH2F *frame_spectrafd = new TH2F("frame_spectrafd","",NB,1,hi,10,0,1890);
-	frame_spectrafd->GetXaxis()->SetTitle("Prompt Energy (MeV)");
-	frame_spectrafd->GetYaxis()->SetTitle("Events/0.2 MeV");
+    frame_spectrafd->GetXaxis()->SetTitle("Prompt Reconstructed Energy (MeV)");
+    frame_spectrafd->GetXaxis()->SetTitleFont(ft);
+    frame_spectrafd->GetXaxis()->SetTitleOffset(0.9);
+    frame_spectrafd->GetXaxis()->SetTitleSize(1.4*sz);
+    frame_spectrafd->GetXaxis()->SetLabelSize(1.4*sz);
+    frame_spectrafd->GetXaxis()->SetLabelFont(ft);
+    frame_spectrafd->GetYaxis()->SetTitle("Events/0.2 MeV");
+    frame_spectrafd->GetYaxis()->SetTitleFont(ft);
+    frame_spectrafd->GetYaxis()->SetTitleOffset(0.7);
+    frame_spectrafd->GetYaxis()->SetTitleSize(1.4*sz);
+    frame_spectrafd->GetYaxis()->SetLabelSize(1.4*sz);
+    frame_spectrafd->GetYaxis()->SetLabelFont(ft);
 	
 	TH2F *frame_spectrand = new TH2F("frame_spectrand","",NB,1,hi,10,0,18300);
-	frame_spectrand->GetXaxis()->SetTitle("Prompt Energy (MeV)");
-	frame_spectrand->GetYaxis()->SetTitle("Events/0.2 MeV");
+    frame_spectrand->GetYaxis()->SetTitle("Events/0.2 MeV");
+    frame_spectrand->GetYaxis()->SetTitleFont(ft);
+    frame_spectrand->GetYaxis()->SetTitleOffset(0.7);
+    frame_spectrand->GetYaxis()->SetTitleSize(1.4*sz);
+    frame_spectrand->GetYaxis()->SetLabelSize(1.4*sz);
+    frame_spectrand->GetYaxis()->SetLabelFont(ft);
 	
 	TH2F *frame_backnd = new TH2F("frame_backnd","",NB,1,hi,10,0,800);
 	frame_backnd->GetXaxis()->SetTitle("Prompt Energy (MeV)");
@@ -330,6 +362,53 @@ void renograph(){
 	
 	reno_bestfit_histo->Write();
 	reno_noosc_histo->Write();
+    
+    //------------------------------------
+    /////////////////////////
+    TLatex *lat = new TLatex();
+    lat->SetNDC();
+    lat->SetTextFont(ft);
+    lat->SetTextSize(2.6*sz);
+    
+    TLegend *leg11 = new TLegend(0.6,0.5,0.8,0.8);
+    leg11->SetTextFont(ft);
+    leg11->SetTextSize(1.7*sz);
+    leg11->SetFillColor(0);
+    leg11->SetLineColor(0);
+    
+    leg11->AddEntry(data_spect_histo[0],"RENO Data","p");
+    leg11->AddEntry(spect_histo[0],"RENO MC","l");
+    leg11->AddEntry(bkgd_histo[0],"Total Background","l");
+
+    TCanvas *canv0 = new TCanvas("canv0","",700,600);
+    TGaxis::SetMaxDigits(3);
+    
+    TPad *pad1 = new TPad("pad1", "pad1", 0, 1./2., 1, 1.0);
+    pad1->SetBottomMargin(0); // Upper and lower plot are joined
+    pad1->Draw();             // Draw the upper pad: pad1
+    pad1->cd();               // pad1 becomes the current pad
+    frame_spectrand->Draw();
+    data_spect_histo[0]->Draw("P same");
+    bkgd_histo[0]->Draw("same");
+    spect_histo[0]->Draw("same");
+    leg11->Draw();
+    gPad->SetTicks(1,1);
+    
+    canv0->cd();          // Go back to the main canvas before defining pad2
+    TPad *pad2 = new TPad("pad2", "pad2", 0, 0, 1, 1./2.);
+    pad2->SetTopMargin(0);
+    pad2->SetBottomMargin(0.11);
+    pad2->Draw();
+    pad2->cd();       // pad2 becomes the current pad
+    frame_spectrafd->Draw();
+    data_spect_histo[1]->Draw("P same");
+    bkgd_histo[1]->Draw("same");
+    spect_histo[1]->Draw("same");
+    gPad->RedrawAxis();
+    gPad->SetTicks(1,1);
+    
+    canv0->Print("Plots/canv_RENO.pdf");
+    //------------------------------------
 	
     //-- 2019.02.04 - Begin
     //-- Normalizing data histograms: it would have unity area and each bin would have units of

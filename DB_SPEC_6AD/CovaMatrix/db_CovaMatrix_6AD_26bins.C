@@ -1,6 +1,7 @@
 //Constants definition
 const int NB = 26;      //Correlation matrix Number of bins
 //------------------------------------------------------
+/*
 void set_plot_style()
 {
     const Int_t NRGBs = 5;
@@ -13,6 +14,7 @@ void set_plot_style()
     TColor::CreateGradientColorTable(NRGBs, stops, red, green, blue, NCont);
     gStyle->SetNumberContours(NCont);
 }
+*/
 //------------------------------------------------------
 
 void db_CovaMatrix_6AD_26bins()

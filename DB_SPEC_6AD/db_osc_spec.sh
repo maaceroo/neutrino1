@@ -8,8 +8,8 @@ echo '0) Define Grid'
 echo '=========================================='
 echo 
 
-export NS2T=10
-export NDM2=10
+export NS2T=5
+export NDM2=5
 
 export LO_S2T=0.01
 export HI_S2T=0.20
@@ -35,8 +35,8 @@ echo
 echo '=========================================='
 echo '1) Running ldist.C'
 echo '=========================================='
-echo 
-time root -b -l -n -q ldist.C
+echo
+#time root -b -l -n -q ldist.C
 
 echo
 
@@ -45,10 +45,10 @@ echo
 echo '=========================================='
 echo '2) Running ntuple.C'
 echo '=========================================='
-echo 
+echo
 export NTUPLE_EVENTS=5000000
 echo $NTUPLE_EVENTS ntuple events
-time root -b -l -n -q db_ntuple.C
+#time root -b -l -n -q db_ntuple.C
 
 echo
 
@@ -58,7 +58,7 @@ echo '=========================================='
 echo '3) Running db_osc_spec.C'
 echo '=========================================='
 echo
-time root -b -l -n -q db_osc_spec.C
+#time root -b -l -n -q db_osc_spec.C
 
 #-----------------------------------------------------------------------------
 # run minimization
@@ -76,21 +76,21 @@ tail -n +2 files_data/chi2_s2t-dm2_surface_SPEC.txt > files_data/chi2_s2t-dm2_su
 
 #-----------------------------------------------------------------------------
 #compile routines for minimization and marginalization
-echo '=========================================='
-echo 'compiling  db_chi2_min.cpp and db_margin.cpp'
-echo '=========================================='
-echo
-g++ -o db_chi2_min.exe db_chi2_min.cpp
-g++ -o db_margin.exe db_margin.cpp
-##clang++ -o db_chi2_min.exe db_chi2_min.cpp
-##clang++ -o db_margin.exe db_margin.cpp
+#echo '=========================================='
+#echo 'compiling  db_chi2_min.cpp and db_margin.cpp'
+#echo '=========================================='
+#echo
+#g++ -o db_chi2_min.exe db_chi2_min.cpp
+#g++ -o db_margin.exe db_margin.cpp
+clang++ -o db_chi2_min.exe db_chi2_min.cpp
+clang++ -o db_margin.exe db_margin.cpp
 
 echo
 #-----------------------------------------------------------------------------
-echo '=========================================='
-echo 'executing  db_chi2_min.exe and db_margin.exe'
-echo '=========================================='
-echo
+#echo '=========================================='
+#echo 'executing  db_chi2_min.exe and db_margin.exe'
+#echo '=========================================='
+#echo
 ./db_chi2_min.exe $NS2T $NDM2 ./
 ./db_margin.exe $NS2T $NDM2 ./
 
@@ -107,9 +107,9 @@ read BF_CHI2 BF_S2T BF_DM2 <<< `cat files_data/chi2_minumum_SPEC.txt`
 echo '=========================================='
 echo 'Editting gnu plot script ...'
 echo
-sed -i "132s/.*/set label 35 '+' at $BF_S2T,$BF_DM2*1e3 center font 'CharterBT-Roman,15'/" multi_plot_margin_SPEC.gnu
+sed -i'' "132s/.*/set label 35 '+' at $BF_S2T,$BF_DM2*1e3 center font 'CharterBT-Roman,15'/" multi_plot_margin_SPEC.gnu
 
-sed -i "134s/.*/min = $BF_CHI2/" multi_plot_margin_SPEC.gnu
+sed -i'' "134s/.*/min = $BF_CHI2/" multi_plot_margin_SPEC.gnu
 
 echo
 
