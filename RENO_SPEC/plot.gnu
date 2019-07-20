@@ -50,9 +50,9 @@ set label 4 "{/Symbol |D}m^{2}_{ee}| (eV^2)" at -0.032,0.0024 center rotate by 9
 #set label 5 "{+ Best-fit}" at 0.12,0.0038 center
 
 ## Mark at the BF
-set label 35 '+' at 0.081,0.00259 center font 'CharterBT-Roman,15'
+set label 35 '+' at 0.079796,0.002702 center font 'CharterBT-Roman,15'
 ## Minimum chi2 value
-min = 21.9127
+min = 30.6404
 
 unset ztics
 set clabel
@@ -60,8 +60,8 @@ unset key
 set grid ytics lc rgb "#bbbbbb" lw 1 lt 0
 set grid xtics lc rgb "#bbbbbb" lw 1 lt 0
 
-#splot 'files/chi2_s2t-dm2_surface_spect-noFL.txt' u 1:2:(($3)-min) w l lw 2
-splot 'files/test.txt' u 1:2:(($3)-min) w l lw 2
+splot 'files/chi2_s2t-dm2_surface_spect-noFL.txt' u 1:2:(($3)-min) w l lw 2
+#splot 'files/test.txt' u 1:2:(($3)-min) w l lw 2
 
 unset xtics
 unset ytics
@@ -72,7 +72,7 @@ set arrow 11 from 0.11,3.4e-3 to 0.14,3.4e-3 nohead lw 2
 set label 11 'Our Ana. (+ BF)' at 0.145,3.4e-3 font 'CharterBT-Roman,11'
 set arrow 22 from 0.11,3.2e-3 to 0.14,3.2e-3 nohead lw 2 dt 4
 set label 22 'RENO Ana. (* BF)' at 0.145,3.2e-3 font 'CharterBT-Roman,11'
-set label 35 '*' at 0.082,0.00262 center font 'CharterBT-Roman,15'
+set label 25 '*' at 0.082,0.00262 center font 'CharterBT-Roman,15'
 
 plot  'files/RENO_68CL.txt' u 1:(($2)*1e-3) w l lt 4 lw 2 dt 4, \
       'files/RENO_95CL.txt' u 1:(($2)*1e-3) w l lt 3 lw 2 dt 4, \

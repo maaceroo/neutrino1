@@ -142,6 +142,10 @@ double chi2(const double *xx)
     } //else
     //- 12.11.2018 -Ends
 
+    //-- Adding artificial noice to the no-osccilated spectra - 19-07-2019 ----
+    TF1 *gauNoise = new TF1("gauNoise","exp(-0.5*((x)/[0])^2)",-5.0e-3,5.0e-3);
+    gauNoise->SetParameter(0,0.001);
+    //-------------------------------------------------------------------------
     for (int iBIN = 0 ; iBIN < NB ; iBIN++){
         //-- Measured IDB events of the dth Antineutrino Detector (background is substracted)
 	//Corregir: normalizar data_spect_histo para que Nobs tenga unidades de número de eventos
@@ -195,12 +199,16 @@ double chi2(const double *xx)
 
         // Compute of the ratios of Data and expect spectra
         OFN = Nobs2/Nobs1;
-        TFN = ( (1.0 + epsilon)*Nexp2 - b_d[1] )/( (1.0 + epsilon)*Nexp1 - b_d[0]);
+        //TFN = ( (1.0 + epsilon)*Nexp2 - b_d[1] )/( (1.0 + epsilon)*Nexp1 - b_d[0]);
+        //-- Adding artificial noise to the no-osccilated spectra -----------------------------
+        double noise = gauNoise->GetRandom();
+        TFN = ( (1.0 + epsilon)*Nexp2 - b_d[1] )/( (1.0 + epsilon)*Nexp1 - b_d[0]) + noise;
+        //-------------------------------------------------------------------------------------
         //cout << " OFN = " << OFN << " Nobs = " << Nobs <<endl;
 
         // Chi^2 funtion
         sqr_chi += pow( OFN - TFN ,2 )/sqrerror;
-    }
+    }//-- for(iBin) - End
   
     for (iAD = 0 ; iAD < nAD ; iAD++){
       //-- Background error of the dth Antineutrino Detector
@@ -310,7 +318,6 @@ int RENO_minuit_spect(const char * minName = "Minuit",
             break;
         }
         
-        cout << " a = " << spc[0][26] << endl;
         if(first2 <= 2)
         {
             for(int ibin = 1 ; ibin <= NB ; ibin++)

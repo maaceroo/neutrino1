@@ -36,7 +36,7 @@ echo '=========================================='
 echo '1) Running renograph.C'
 echo '=========================================='
 echo 
-time root -b -l -n -q renograph.C
+#time root -b -l -n -q renograph.C
 
 echo
 
@@ -48,7 +48,7 @@ echo '=========================================='
 echo '2) Running ldist_2x6_RENO.C'
 echo '=========================================='
 echo 
-time root -b -l -n -q ldist_2x6_RENO.C
+#time root -b -l -n -q ldist_2x6_RENO.C
 
 echo
 
