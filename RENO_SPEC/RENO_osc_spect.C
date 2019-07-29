@@ -74,7 +74,8 @@ void RENO_osc_spect()
   
   TH1F *nosc_spect_histo[nAD];
   TH1F *BFit_spect_histo[nAD];
-  TH1F *Posc_AD_BF[nAD][nNR];
+    //TH1F *Posc_AD_BF[nAD][nNR];
+    TH1F *Posc_AD_BF[nAD];
   TH1F *Posc_AD_surv[nAD][nNR];
   TH1F *BFit_spect_histo_d[nAD];
   TH1F *Nevtexp[nAD];
@@ -96,12 +97,12 @@ void RENO_osc_spect()
       nosc_spect_histo[i] = new TH1F(Form("nosc_spect_histo_%d",i),"",NB,xbins);// info from db-ntuple.root
       nosc_spect_histo[i]->SetLineColor(i+3);
       
+        //Oscillation probability at BF - histogram
+        Posc_AD_BF[i]  = new TH1F(Form("Posc_AD_BF_%d",i),"",1000,0,1);//to store <POsc(BF)>
+        Posc_AD_BF[i]->SetLineColor(i+1);
+        
       for (int j = 0 ; j < nNR ; j++)
 	{
-	  
-	  //Oscillation probability at BF - histogram
-	  Posc_AD_BF[i][j]  = new TH1F(Form("Posc_AD_BF_%d_%d",i,j),"",1000,0,1);//to store <POsc(BF)>
-	  Posc_AD_BF[i][j]->SetLineColor(i+1);
 	  
 	  //Oscillation probability at (s2th,dm2) - histogram
 	  Posc_AD_surv[i][j]  = new TH1F(Form("Posc_AD_surv_%d_%d",i,j),"",1000,0,1);//to store <POsc(s2th,dm2)>
@@ -127,33 +128,45 @@ void RENO_osc_spect()
   /*/
   
   double TotNosc[nAD];
-  double avgPosc[nAD][nNR];              //<POsc(s2t_BF,dm2_ee)>
+    //double avgPosc[nAD][nNR];              //<POsc(s2t_BF,dm2_ee)>
+    double avgPosc[nAD];              //<POsc(s2t_BF,dm2_ee)>
   double avgPosc_AD[nAD];           //<POsc(s2t_BF,dm2_ee)>
-  double noOsc_IBDrate_perday[nAD][nNR]; //IBD rate per day w/o oscillations
+    //double noOsc_IBDrate_perday[nAD][nNR]; //IBD rate per day w/o oscillations
+    double noOsc_IBDrate_perday[nAD]; //IBD rate per day w/o oscillations
   double noOsc_IBDrate_perday_AD[nAD]; //IBD rate per day w/o oscillations
   double integ;
   
+    FILE *file_IBDrates;
+    file_IBDrates = fopen("files/RENO_noOsc_IBDrates_perday.txt","w");
+    
   for (int iAD = 0 ; iAD < nAD ; iAD++)
     {
-      for (int iNR = 0 ; iNR < nNR ; iNR++)
-	{
+      //for (int iNR = 0 ; iNR < nNR ; iNR++)
+	//{
 	  //------------------------------------------------
 	  //Filling Oscillation probability at BF - histogram
-	  T->Draw(Form("(1.0 - 0.087*((sin( 1.267 * 2.49e-3 * Ln/En ))**2) - ((cos(0.5 * asin(sqrt(0.087))))**4) * 0.846 * (sin( 1.267 * 7.53e-5 * Ln/En ))**2) >> Posc_AD_BF_%d_%d",iAD,iNR),Form("id==%d  && ir==%d",iAD,iNR));
-	  integ = Posc_AD_BF[iAD][iNR]->Integral();
+        //T->Draw(Form("(1.0 - 0.087*((sin( 1.267 * 2.49e-3 * Ln/En ))**2) - ((cos(0.5 * asin(sqrt(0.087))))**4) * 0.846 * (sin( 1.267 * 7.53e-5 * Ln/En ))**2) >> Posc_AD_BF_%d_%d",iAD,iNR),Form("id==%d  && ir==%d",iAD,iNR));
+        T->Draw(Form("(1.0 - 0.087*((sin( 1.267 * 2.49e-3 * Ln/En ))**2) - ((cos(0.5 * asin(sqrt(0.087))))**4) * 0.846 * (sin( 1.267 * 7.53e-5 * Ln/En ))**2) >> Posc_AD_BF_%d",iAD),Form("id==%d",iAD));
+        //integ = Posc_AD_BF[iAD][iNR]->Integral();
+        integ = Posc_AD_BF[iAD]->Integral();
 	  //std::cout << "integ = " << integ <<std::endl;
-	  Posc_AD_BF[iAD][iNR]->Scale(1.0/integ); //Used to plot the Survival Probabilities for each AD and each NR with BF parameters (normalized)
+        //Posc_AD_BF[iAD][iNR]->Scale(1.0/integ); //Used to plot the Survival Probabilities for each AD and each NR with BF parameters (normalized)
+        Posc_AD_BF[iAD]->Scale(1.0/integ); //Used to plot the Survival Probabilities for each AD and each NR with BF parameters (normalized)
 	  //Average oscillation Probability
-	  avgPosc[iAD][iNR] = Posc_AD_BF[iAD][iNR]->GetMean();
+        //avgPosc[iAD][iNR] = Posc_AD_BF[iAD][iNR]->GetMean();
+        avgPosc[iAD] = Posc_AD_BF[iAD]->GetMean();
 	  //No-oscillation IDB rate (per day)
-	  noOsc_IBDrate_perday[0][iNR] = (IBDrate_perday[0][0]/avgPosc[0][iNR])*wrd_array_near[iNR];
-	  noOsc_IBDrate_perday[1][iNR] = (IBDrate_perday[1][0]/avgPosc[1][iNR])*wrd_array_far[iNR];
+        //noOsc_IBDrate_perday[0][iNR] = (IBDrate_perday[0][0]/avgPosc[0][iNR])*wrd_array_near[iNR];
+        //noOsc_IBDrate_perday[1][iNR] = (IBDrate_perday[1][0]/avgPosc[1][iNR])*wrd_array_far[iNR];
+        noOsc_IBDrate_perday[iAD] = IBDrate_perday[iAD][0]/avgPosc[iAD];
 	  //Printing results
-	  std::cout << "(avgPosc,noOsc_IBDrate_perday)_" << iAD << "_" << iNR << " = (" << avgPosc[iAD][iNR]
-	       << ", " << noOsc_IBDrate_perday[iAD][iNR] << ") " << std::endl;
-	  //------------------------------------------------
-	  
-	}
+        //std::cout << "(avgPosc,noOsc_IBDrate_perday)_" << iAD << "_" << iNR << " = (" << avgPosc[iAD][iNR]
+        //<< ", " << noOsc_IBDrate_perday[iAD][iNR] << ") " << std::endl;
+        std::cout << "(avgPosc,noOsc_IBDrate_perday)_" << iAD << " = (" << avgPosc[iAD]
+        << ", " << noOsc_IBDrate_perday[iAD] << ") " << std::endl;
+        fprintf(file_IBDrates,"%f \n", noOsc_IBDrate_perday[iAD]);
+        //------------------------------------------------
+    //}
       
       //Filling the non-oscillated Ep spectra
       T->Draw(Form("Ep >> nosc_spect_histo_%d",iAD),Form("(id==%d)",iAD),"");
@@ -174,6 +187,7 @@ void RENO_osc_spect()
       //------------------------------------------------
       
     }
+    fclose(file_IBDrates);
   
   //---------------------------------------------------
   //Definition of the grid of oscillation parameters
@@ -222,12 +236,13 @@ void RENO_osc_spect()
   for (int iAD = 0 ; iAD < nAD ; iAD++)
     {
       for (int ib = 0 ; ib < NB ; ib++)
-	{
-	  nebf = BFit_spect_histo_d[iAD]->GetBinContent(ib+1);
-	  neno = nebf/avgPosc_AD[iAD]/*IBDrate_perday[iAD][0]*daqTime[iAD]*/;
-	  //std::cout << " neno = " << neno <<std::endl;
-	  Nevtexp[iAD]->SetBinContent(ib+1,neno);
-	}
+      {
+          nebf = BFit_spect_histo_d[iAD]->GetBinContent(ib+1);
+          //neno = nebf/avgPosc_AD[iAD]/*IBDrate_perday[iAD][0]*daqTime[iAD]*/;
+          neno = nebf/avgPosc[iAD]/*IBDrate_perday[iAD][0]*daqTime[iAD]*/;
+          //std::cout << " neno = " << neno <<std::endl;
+          Nevtexp[iAD]->SetBinContent(ib+1,neno);
+      }
     }
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   

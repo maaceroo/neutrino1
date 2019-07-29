@@ -52,7 +52,7 @@ double daqTime[nAD] = {458.49,489.93};
 //---*****************************************************---//
 // Information obtained by executing the script "RENO_osc_rate.C"
 //IBD rate per day w/o oscillations
-double noOsc_IBDrate_perday[nAD] = { 622.68,  65.39};
+double noOsc_IBDrate_perday[nAD];// = { 622.68,  65.39};
 //---*****************************************************---//
 double s2th_13; //oscillation parameter to be fitted
 double dm2_ee;   //oscillation parameter to be fitted
@@ -143,8 +143,10 @@ double chi2(const double *xx)
     //- 12.11.2018 -Ends
 
     //-- Adding artificial noice to the no-osccilated spectra - 19-07-2019 ----
-    TF1 *gauNoise = new TF1("gauNoise","exp(-0.5*((x)/[0])^2)",-5.0e-3,5.0e-3);
-    gauNoise->SetParameter(0,0.001);
+    TF1 *gauNoise1 = new TF1("gauNoise","exp(-0.5*((x)/[0])^2)",-5.0e1,5.0e1);
+    gauNoise1->SetParameter(0,10.0);
+    TF1 *gauNoise2 = new TF1("gauNoise","exp(-0.5*((x)/[0])^2)",-5.0e-0,5.0e-0);
+    gauNoise2->SetParameter(0,1.0);
     //-------------------------------------------------------------------------
     for (int iBIN = 0 ; iBIN < NB ; iBIN++){
         //-- Measured IDB events of the dth Antineutrino Detector (background is substracted)
@@ -154,6 +156,7 @@ double chi2(const double *xx)
         Nobs2 = (data_spect_histo[1]->GetBinContent(iBIN+1))*IBDrate_data[1][0]*0.7644*daqTime[1];
       
         sqrerror = ( Nobs2/(pow(Nobs1,2)) ) + ( (pow(Nobs2,2))/(pow(Nobs1,3)) );
+        //std::cout << "error = " << sqrerror << std::endl;
 
         //- 12.11.2018 -Begins - This part allows to include properly the energy scale pull term
         if (e < 0) {
@@ -199,10 +202,12 @@ double chi2(const double *xx)
 
         // Compute of the ratios of Data and expect spectra
         OFN = Nobs2/Nobs1;
-        //TFN = ( (1.0 + epsilon)*Nexp2 - b_d[1] )/( (1.0 + epsilon)*Nexp1 - b_d[0]);
+        TFN = ( (1.0 + epsilon)*Nexp2 - b_d[1] )/( (1.0 + epsilon)*Nexp1 - b_d[0]);
         //-- Adding artificial noise to the no-osccilated spectra -----------------------------
-        double noise = gauNoise->GetRandom();
-        TFN = ( (1.0 + epsilon)*Nexp2 - b_d[1] )/( (1.0 + epsilon)*Nexp1 - b_d[0]) + noise;
+        //double noise1 = gauNoise1->GetRandom();
+        //double noise2 = gauNoise2->GetRandom();
+        //TFN = ( (1.0 + epsilon)*Nexp2 - b_d[1] )/( (1.0 + epsilon)*Nexp1 - b_d[0] ) + noise;
+        //TFN = ( (1.0 + epsilon)*Nexp2 - b_d[1]  + noise2)/( (1.0 + epsilon)*Nexp1 - b_d[0]  + noise1);
         //-------------------------------------------------------------------------------------
         //cout << " OFN = " << OFN << " Nobs = " << Nobs <<endl;
 
@@ -287,6 +292,15 @@ int RENO_minuit_spect(const char * minName = "Minuit",
     min->SetTolerance(0.001);
     min->SetPrintLevel(-1);
   
+    //-- File to get noOsc normalizations
+    ifstream IBDrates_file("files/RENO_noOsc_IBDrates_perday.txt");
+    cout << "Reading noOsc normalizations file ..." << endl;
+    for (int i=0; i< nAD; i ++)
+        {
+            IBDrates_file >> noOsc_IBDrate_perday[i];
+            cout << "noOscIBD_rates_perday " << i << ": " << noOsc_IBDrate_perday[i] << endl;
+        }//for
+
     //-- File to print oscillation parameters and chi2 values
     ofstream chi2Surface_file;
     string s2t_dm2 = "files/chi2_s2t-dm2_surface_spect.txt";  //(sin^2(2th13), a, chi^2_min)

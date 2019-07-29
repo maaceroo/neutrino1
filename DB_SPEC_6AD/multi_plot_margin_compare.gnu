@@ -129,19 +129,20 @@ set label 4 "{/Symbol D}m^{2}_{31} (eV^2)" at -0.0175,2.5 center rotate by 90
 #set label 4 "{/Symbol D}m^{2}_{31} (10^{-3} eV^2)" at 0.006,2.5 center rotate by 90
 
 ## Mark at the BF
-set label 35 "+" at 0.0842000000,0.0027600000*1e3 center font "CharterBT-Roman,15"
+set label 35 "+" at 0.087551,0.002643*1e3 center font "CharterBT-Roman,15"
 set label 36 "x" at 0.09,2.59 center font "CharterBT-Roman,15"
 set label 37 "x  DB PRL112 BF" at 0.17,1.6 center font "CharterBT-Roman,10"
 ## Minimum chi2 value
-min = 89.8858000000
+min = 66.8486
 
 unset ztics
 set clabel
 unset key
 
 #splot 'files_data/chi2_s2t-dm2_surface_SPEC.txt' u 1:2:(()-min) w l lw 2
-#splot 'files_data/chi2_s2t-dm2_surface_SPEC.txt' u 1:(10**3*($2)):(($3)-min) w l lw 2
-splot 'files_data/plot.dat' u 1:(10**3*($2)):(($3)-min) w l lw 2,\
+splot 'files_data/chi2_s2t-dm2_surface_SPEC-noFL.txt' u 1:(10**3*($2)):(($3)-min) w l lw 2,\
+      'files_data/chi2_scan.dat' u 1:2:3 w l
+#splot 'files_data/plot.dat' u 1:(10**3*($2)):(($3)-min) w l lw 2,\
       'files_data/chi2_scan.dat' u 1:2:3 w l
 
 ########################################################################################

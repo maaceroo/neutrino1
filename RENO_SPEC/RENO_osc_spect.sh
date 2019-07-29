@@ -14,7 +14,8 @@ export NDM2=10
 export LO_S2T=0.01
 export HI_S2T=0.20
 
-export LO_DM2=1.2e-3
+#export LO_DM2=1.2e-3
+export LO_DM2=1.5e-3
 export HI_DM2=3.5e-3
 
 echo 'Grid in to be used:'
@@ -36,7 +37,7 @@ echo '=========================================='
 echo '1) Running renograph.C'
 echo '=========================================='
 echo 
-#time root -b -l -n -q renograph.C
+time root -b -l -n -q renograph.C
 
 echo
 
@@ -48,14 +49,14 @@ echo '=========================================='
 echo '2) Running ldist_2x6_RENO.C'
 echo '=========================================='
 echo 
-#time root -b -l -n -q ldist_2x6_RENO.C
+time root -b -l -n -q ldist_2x6_RENO.C
 
 echo
 
 #-----------------------------------------------------------------------------
 # Construct ntuple
 echo '=========================================='
-echo '3) Running RENO_ntuple_noosc_spect.C'
+echo '3) Running RENO_ntuple_spect.C'
 echo '=========================================='
 echo
 export NTUPLE_EVENTS=5000000

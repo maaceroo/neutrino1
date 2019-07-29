@@ -107,9 +107,9 @@ read BF_CHI2 BF_S2T BF_DM2 <<< `cat files_data/chi2_minumum_SPEC.txt`
 echo '=========================================='
 echo 'Editting gnu plot script ...'
 echo
-sed -i'' "132s/.*/set label 35 '+' at $BF_S2T,$BF_DM2*1e3 center font 'CharterBT-Roman,15'/" multi_plot_margin_SPEC.gnu
+sed -i'' -e "132s/.*/set label 35 '+' at $BF_S2T,$BF_DM2*1e3 center font 'CharterBT-Roman,15'/" multi_plot_margin_SPEC.gnu
 
-sed -i'' "134s/.*/min = $BF_CHI2/" multi_plot_margin_SPEC.gnu
+sed -i'' -e "134s/.*/min = $BF_CHI2/" multi_plot_margin_SPEC.gnu
 
 echo
 
