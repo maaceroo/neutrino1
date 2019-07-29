@@ -8,8 +8,8 @@ echo '0) Define Grid'
 echo '=========================================='
 echo 
 
-export NS2T=10
-export NDM2=10
+export NS2T=50
+export NDM2=50
 
 export LO_S2T=0.01
 export HI_S2T=0.20
@@ -93,8 +93,8 @@ echo '=========================================='
 echo 'compiling  RENO_margin_spect.cpp'
 echo '=========================================='
 echo
-#g++ -o RENO_margin_spect.exe RENO_margin_spect.cpp
-clang++ -o RENO_margin_spect.exe RENO_margin_spect.cpp
+g++ -o RENO_margin_spect.exe RENO_margin_spect.cpp
+#clang++ -o RENO_margin_spect.exe RENO_margin_spect.cpp
 
 echo
 #-----------------------------------------------------------------------------

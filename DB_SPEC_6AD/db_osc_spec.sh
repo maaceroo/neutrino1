@@ -8,8 +8,8 @@ echo '0) Define Grid'
 echo '=========================================='
 echo 
 
-export NS2T=50
-export NDM2=50
+export NS2T=100
+export NDM2=100
 
 export LO_S2T=0.01
 export HI_S2T=0.20
@@ -76,21 +76,21 @@ tail -n +2 files_data/chi2_s2t-dm2_surface_SPEC.txt > files_data/chi2_s2t-dm2_su
 
 #-----------------------------------------------------------------------------
 #compile routines for minimization and marginalization
-#echo '=========================================='
-#echo 'compiling  db_chi2_min.cpp and db_margin.cpp'
-#echo '=========================================='
-#echo
-#g++ -o db_chi2_min.exe db_chi2_min.cpp
-#g++ -o db_margin.exe db_margin.cpp
-clang++ -o db_chi2_min.exe db_chi2_min.cpp
-clang++ -o db_margin.exe db_margin.cpp
+echo '=========================================='
+echo 'compiling  db_chi2_min.cpp and db_margin.cpp'
+echo '=========================================='
+echo
+g++ -o db_chi2_min.exe db_chi2_min.cpp
+g++ -o db_margin.exe db_margin.cpp
+#clang++ -o db_chi2_min.exe db_chi2_min.cpp
+#clang++ -o db_margin.exe db_margin.cpp
 
 echo
 #-----------------------------------------------------------------------------
-#echo '=========================================='
-#echo 'executing  db_chi2_min.exe and db_margin.exe'
-#echo '=========================================='
-#echo
+echo '=========================================='
+echo 'executing  db_chi2_min.exe and db_margin.exe'
+echo '=========================================='
+echo
 ./db_chi2_min.exe $NS2T $NDM2 ./
 ./db_margin.exe $NS2T $NDM2 ./
 

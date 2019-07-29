@@ -60,7 +60,7 @@ double daqTime[nAD]         = {191.001,191.001,189.645,189.779,189.779,189.779};
 //---*****************************************************---//
 // Information obtained by executing the script "db_osc_rate.C"
 //IBD rate per day w/o oscillations
-double noOsc_IBDrate_perday[nAD] = {663.15,673.95,591.86,78.75,78.46,77.58};
+double noOsc_IBDrate_perday[nAD];// = {663.15,673.95,591.86,78.75,78.46,77.58};
 //---*****************************************************---//
 //const int dim = N_s2t*N_dm2;
 double s2th_13;     //oscillation parameter to be fitted
@@ -404,6 +404,15 @@ int db_minuit_spec(const char * minName = "Minuit",
     min->SetTolerance(0.001);
     min->SetPrintLevel(-1);
     
+    //-- File to get noOsc normalizations
+    ifstream IBDrates_file("files_data/db6AD_noOsc_IBDrates_perday.txt");
+    cout << "Reading noOsc normalizations file ..." << endl;
+    for (int i=0; i< nAD; i ++)
+	{
+	    IBDrates_file >> noOsc_IBDrate_perday[i];
+      	    cout << "noOscIBD_rates_perday " << i << ": " << noOsc_IBDrate_perday[i] << endl;
+    	}//for
+ 
     //-- File to print oscillation parameters and chi2 values
     ofstream chi2Surface_file;
     string s2t_dm2 = "files_data/chi2_s2t-dm2_surface_SPEC.txt";  //(sin^2(2th13), dm2, chi^2_min)

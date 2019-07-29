@@ -433,7 +433,7 @@ int db_minuit_spec(const char * minName = "Minuit",
     min->SetPrintLevel(-1);
   
     //-- File to get noOsc normalizations
-    ifstream IBDrates_file("files_data/db_noOsc_IBDrates_perday.txt");
+    ifstream IBDrates_file("files_data/db8AD_noOsc_IBDrates_perday.txt");
     cout << "Reading noOsc normalizations file ..." << endl;
     for (int i=0; i< nAD; i ++)
 	{
