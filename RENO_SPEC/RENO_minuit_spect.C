@@ -143,10 +143,10 @@ double chi2(const double *xx)
     //- 12.11.2018 -Ends
 
     //-- Adding artificial noice to the no-osccilated spectra - 19-07-2019 ----
-    TF1 *gauNoise1 = new TF1("gauNoise","exp(-0.5*((x)/[0])^2)",-5.0e1,5.0e1);
-    gauNoise1->SetParameter(0,10.0);
-    TF1 *gauNoise2 = new TF1("gauNoise","exp(-0.5*((x)/[0])^2)",-5.0e-0,5.0e-0);
-    gauNoise2->SetParameter(0,1.0);
+    //TF1 *gauNoise1 = new TF1("gauNoise","exp(-0.5*((x)/[0])^2)",-5.0e1,5.0e1);
+    //gauNoise1->SetParameter(0,10.0);
+    //TF1 *gauNoise2 = new TF1("gauNoise","exp(-0.5*((x)/[0])^2)",-5.0e-0,5.0e-0);
+    //gauNoise2->SetParameter(0,1.0);
     //-------------------------------------------------------------------------
     for (int iBIN = 0 ; iBIN < NB ; iBIN++){
         //-- Measured IDB events of the dth Antineutrino Detector (background is substracted)

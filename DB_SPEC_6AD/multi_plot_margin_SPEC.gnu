@@ -76,9 +76,10 @@ ymax =  17
 set yrange[ymin:ymax]
 set ylabel "{/Symbol D}{/Symbol c}^{2}"
 
-set key at 0.30,8.0
+set key at 0.30,9.0
 
-plot 'files_data/db_s2t_chi2_SPEC.txt' u 1:2 w l lw 1 t "", \
+plot 'files_data/db_s2t_chi2_SPEC.txt' u 1:2 w l lw 1 t "Spectral", \
+'../DB_RATE_6AD/files_data/db_s2t_chi2_RATE.txt' u 1:2 w l lw 1 lc black dt 8 t "Rate-only", \
 16.0 lt 6 lw 2 t "99.99% C.L. (4{/Symbol s})", \
 9.0 lt 2 lw 2 t "99.73% C.L. (3{/Symbol s})", \
 4.0 lt 3 lw 2 t "95.45% C.L. (2{/Symbol s})", \
@@ -125,13 +126,13 @@ ymax = 3.5
 set yrange[ymin:ymax]
 set ytics 1.5,0.5,3.4
 #set format y "10^{%T}"
-set label 4 "{/Symbol D}m^{2}_{31} (eV^2)" at -0.0175,2.5 center rotate by 90
-#set label 4 "{/Symbol D}m^{2}_{31} (10^{-3} eV^2)" at 0.006,2.5 center rotate by 90
+#set label 4 "{/Symbol D}m^{2}_{ee} (eV^2)" at -0.0175,2.5 center rotate by 90
+set label 4 "{/Symbol D}m^{2}_{ee} (10^{-3} eV^2)" at -0.0175,2.5 center rotate by 90
 
 ## Mark at the BF
-set label 35 '+' at 0.087551,0.002643*1e3 center font 'CharterBT-Roman,15'
+set label 35 '+' at 0.0886870000,0.0026720000*1e3 center font 'CharterBT-Roman,15'
 ## Minimum chi2 value
-min = 66.8486
+min = 67.1889000000
 
 unset ztics
 set clabel

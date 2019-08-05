@@ -362,7 +362,7 @@ void db_PRL112_plots()
     
     //---------------------------------------------------------
     // write to output file
-    TFile *fout = new TFile("PRL112_data.root","recreate");
+    TFile *fout = new TFile("PRL112_217days_data.root","recreate");
     fout->cd();
 
     for (int i = 0 ; i < nEH ; i++)

@@ -8,14 +8,14 @@ echo '0) Define Grid'
 echo '=========================================='
 echo 
 
-export NS2T=50
-export NDM2=50
+export NS2T=100
+export NDM2=100
 
 export LO_S2T=0.01
 export HI_S2T=0.20
 
+export LO_DM2=1.5e-3 #to use for the combined (DB+RENO) ana.
 #export LO_DM2=1.2e-3
-export LO_DM2=1.5e-3
 export HI_DM2=3.5e-3
 
 echo 'Grid in to be used:'
@@ -37,7 +37,7 @@ echo '=========================================='
 echo '1) Running renograph.C'
 echo '=========================================='
 echo 
-time root -b -l -n -q renograph.C
+#time root -b -l -n -q renograph.C
 
 echo
 
@@ -49,7 +49,7 @@ echo '=========================================='
 echo '2) Running ldist_2x6_RENO.C'
 echo '=========================================='
 echo 
-time root -b -l -n -q ldist_2x6_RENO.C
+#time root -b -l -n -q ldist_2x6_RENO.C
 
 echo
 
@@ -61,7 +61,7 @@ echo '=========================================='
 echo
 export NTUPLE_EVENTS=5000000
 echo $NTUPLE_EVENTS ntuple events
-time root -b -l -n -q RENO_ntuple_spect.C
+#time root -b -l -n -q RENO_ntuple_spect.C
 
 echo
 
@@ -71,7 +71,7 @@ echo '=========================================='
 echo '4) Running RENO_osc_spect.C'
 echo '=========================================='
 echo
-time root -b -l -n -q RENO_osc_spect.C
+#time root -b -l -n -q RENO_osc_spect.C
 
 #-----------------------------------------------------------------------------
 # run minimization
@@ -121,6 +121,10 @@ sed -i'' -e "136s/.*/set label 35 '+' at $BF_S2T,$BF_DM2 center font 'CharterBT-
 
 sed -i'' -e "138s/.*/min = $BF_CHI2/" multi_plot_margin_spect_RENO.gnu
 
+sed -i'' -e "53s/.*/set label 35 '+' at $BF_S2T,$BF_DM2 center font 'CharterBT-Roman,15'/" plot.gnu
+
+sed -i'' -e "55s/.*/min = $BF_CHI2/" plot.gnu
+
 echo
 
 #----------------------------------------------------------------------------
@@ -130,12 +134,14 @@ echo 'Runnign gnuplot macro'
 echo '=========================================='
 echo
 gnuplot multi_plot_margin_spect_RENO.gnu
+gnuplot plot.gnu
 
 echo
 
 #----------------------------------------------------------------------------
 #Open in ghostview
 gv Plots/RENO_plots_SPEC.eps &
+gv Plots/plot_SPEC.eps &
 
 #----------------------------------------------------------------------------
 echo Done!

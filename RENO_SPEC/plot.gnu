@@ -50,9 +50,9 @@ set label 4 "{/Symbol |D}m^{2}_{ee}| (eV^2)" at -0.032,0.0024 center rotate by 9
 #set label 5 "{+ Best-fit}" at 0.12,0.0038 center
 
 ## Mark at the BF
-set label 35 '+' at 0.079796,0.002643 center font 'CharterBT-Roman,15'
+set label 35 '+' at 0.082929,0.002631 center font 'CharterBT-Roman,15'
 ## Minimum chi2 value
-min = 17.6928
+min = 20.9205
 
 unset ztics
 set clabel
@@ -60,8 +60,8 @@ unset key
 set grid ytics lc rgb "#bbbbbb" lw 1 lt 0
 set grid xtics lc rgb "#bbbbbb" lw 1 lt 0
 
-splot 'files/chi2_s2t-dm2_surface_spect-noFL.txt' u 1:2:(($3)-min) w l lw 2
-#splot 'files/test.txt' u 1:2:(($3)-min) w l lw 2
+#splot 'files/chi2_s2t-dm2_surface_spect-noFL.txt' u 1:2:(($3)-min) w l lw 2
+splot 'files/test.txt' u 1:2:(($3)-min) w l lw 2
 
 unset xtics
 unset ytics

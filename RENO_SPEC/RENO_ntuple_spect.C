@@ -94,8 +94,8 @@ void RENO_ntuple_spect()
             else if (id==1) ad=1;
             //Ep = data_spect_histo[ad]->GetRandom();
             Ep = noosc_spect_histo[ad]->GetRandom();
-            En = 1.06*Ep + avg_nRecoilE + avg_constE;
-            //En = 1.03*Ep + avg_nRecoilE + avg_constE;
+            //En = 1.06*Ep + avg_nRecoilE + avg_constE;
+            En = 1.03*Ep + avg_nRecoilE + avg_constE;
             //En = Mn + Ep - Mp ; // Neutrino energy. Where Mp and Mn are the proton and neutron masses
             
             T->Fill();

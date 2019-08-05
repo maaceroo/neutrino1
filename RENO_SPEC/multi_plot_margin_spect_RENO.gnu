@@ -133,9 +133,9 @@ set label 5 "{+ Best-fit}" at 0.12,0.0038 center
 #set label 6 "{* Best-fit}" at 0.12,0.0037 center 
 
 ## Mark at the BF
-set label 35 '+' at 0.073333,0.002611 center font 'CharterBT-Roman,15'
+set label 35 '+' at 0.082929,0.002631 center font 'CharterBT-Roman,15'
 ## Minimum chi2 value
-min = 21.9017
+min = 20.9205
 
 unset ztics
 set clabel

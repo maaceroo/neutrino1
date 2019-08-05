@@ -129,21 +129,24 @@ set label 4 "{/Symbol D}m^{2}_{31} (eV^2)" at -0.0175,2.5 center rotate by 90
 #set label 4 "{/Symbol D}m^{2}_{31} (10^{-3} eV^2)" at 0.006,2.5 center rotate by 90
 
 ## Mark at the BF
-set label 35 "+" at 0.087551,0.002643*1e3 center font "CharterBT-Roman,15"
-set label 36 "x" at 0.09,2.59 center font "CharterBT-Roman,15"
-set label 37 "x  DB PRL112 BF" at 0.17,1.6 center font "CharterBT-Roman,10"
+set label 35 "+" at 0.088687,0.002672*1e3 center font "CharterBT-Roman,15"
 ## Minimum chi2 value
-min = 66.8486
+min = 67.1889
 
 unset ztics
 set clabel
 unset key
 
 #splot 'files_data/chi2_s2t-dm2_surface_SPEC.txt' u 1:2:(()-min) w l lw 2
-splot 'files_data/chi2_s2t-dm2_surface_SPEC-noFL.txt' u 1:(10**3*($2)):(($3)-min) w l lw 2,\
-      'files_data/chi2_scan.dat' u 1:2:3 w l
-#splot 'files_data/plot.dat' u 1:(10**3*($2)):(($3)-min) w l lw 2,\
-      'files_data/chi2_scan.dat' u 1:2:3 w l
+splot 'files_data/chi2_s2t-dm2_surface_SPEC-noFL.txt' u 1:(10**3*($2)):(($3)-min) w l lw 2
+
+set arrow 11 from 0.09,1.7 to 0.12,1.7 nohead lw 2
+set label 11 'Our Ana. (+ BF)' at 0.125,1.7 font 'CharterBT-Roman,11'
+set arrow 22 from 0.09,1.6 to 0.12,1.6 nohead lw 2 dt 4
+set label 22 'DB PRL112 Ana. (x BF)' at 0.125,1.6 font 'CharterBT-Roman,11'
+set label 25 'x' at 0.09,2.59 center font 'CharterBT-Roman,15'
+
+splot 'files_data/chi2_scan.dat' u 1:2:3 w l dt 4
 
 ########################################################################################
 
