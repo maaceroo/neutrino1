@@ -23,8 +23,8 @@ int main(int argc, char* argv[])
     }
   // path to read/write data
   string path1 = argv[3];
-  //string min_chi = "files_data/chi2_minumum_RATE.txt";
-  string min_chi = "files_data/chi2_minumum_SPEC.txt";
+  string min_chi = "files_data/chi2_minumum_RATE.txt";
+  //string min_chi = "files_data/chi2_minumum_SPEC.txt";
 
   ofstream min_file;
   min_file.open((path1 + min_chi).c_str());
@@ -33,8 +33,8 @@ int main(int argc, char* argv[])
   int sn = atoi(argv[1]);
   int dmn= atoi(argv[2]);
   int cols, val;
-  //string dat_f = "files_data/chi2_s2t-eps_surface_RATE.txt";
-  string dat_f = "files_data/chi2_s2t-eps_surface_SPEC.txt";
+  string dat_f = "files_data/chi2_s2t-eps_surface_RATE.txt";
+  //string dat_f = "files_data/chi2_s2t-eps_surface_SPEC.txt";
   ifstream data((path1 + dat_f).c_str());
   
   cols = COLS;
