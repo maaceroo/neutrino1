@@ -14,7 +14,8 @@ export NDM2=100
 export LO_S2T=0.01
 export HI_S2T=0.20
 
-export LO_DM2=1.5e-3
+export LO_DM2=1.2e-3
+#export LO_DM2=1.5e-3
 export HI_DM2=3.5e-3
 
 echo 'Grid in to be used:'
@@ -80,10 +81,10 @@ echo '=========================================='
 echo 'compiling  db_chi2_min.cpp and db_margin.cpp'
 echo '=========================================='
 echo
-g++ -o db_chi2_min.exe db_chi2_min.cpp
-g++ -o db_margin.exe db_margin.cpp
-#clang++ -o db_chi2_min.exe db_chi2_min.cpp
-#clang++ -o db_margin.exe db_margin.cpp
+#g++ -o db_chi2_min.exe db_chi2_min.cpp
+#g++ -o db_margin.exe db_margin.cpp
+clang++ -o db_chi2_min.exe db_chi2_min.cpp
+clang++ -o db_margin.exe db_margin.cpp
 
 echo
 #-----------------------------------------------------------------------------
@@ -109,7 +110,7 @@ echo 'Editting gnu plot script ...'
 echo
 sed -i'' -e "132s/.*/set label 35 '+' at $BF_S2T,$BF_DM2*1e3 center font 'CharterBT-Roman,15'/" multi_plot_margin_SPEC.gnu
 
-sed -i'' -e "134s/.*/min = $BF_CHI2/" multi_plot_margin_SPEC.gnu
+sed -i'' -e "133s/.*/min = $BF_CHI2/" multi_plot_margin_SPEC.gnu
 
 echo
 

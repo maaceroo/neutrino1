@@ -124,7 +124,12 @@ void RENO_ntuple_noosc_spect()
     T->Branch("ir", &ir, "ir/s"); //reactor
     T->Branch("id", &id, "id/s"); //detector
     T->Branch("Prob_surv", &Prob_surv, "Prob_surv/F"); //Survival Probability
-  
+
+    double osc_prob_nd_allBins = 0.0;
+    double N_events_allBins_nd = 0.0;
+    double osc_prob_fd_allBins = 0.0;
+    double N_events_allBins_fd = 0.0;
+
     int Nevents = 5000000;
     for (int i = 0 ; i < Nevents ; i++){
         // generate a baseline (blid uniquely identifies the baseline)
@@ -140,6 +145,15 @@ void RENO_ntuple_noosc_spect()
         //En = Mn + Ep - Mp ; // Neutrino energy. Where Mp and Mn are the proton and neutron masses
         
         Prob_surv = 1.0 - 0.087*pow(sin( 1.267 * 2.49e-3 * Ln/En ),2) - pow(cos(0.5 * asin(sqrt(0.087))),4) * 0.846 * pow(sin( 1.267 * 7.53e-5 * Ln/En ),2);
+        
+        if (id == 0) {
+            osc_prob_nd_allBins += Prob_surv;
+            N_events_allBins_nd++;
+        }
+        else {
+            osc_prob_fd_allBins += Prob_surv;
+            N_events_allBins_fd++;
+        }
       
         // Computing the average of the oscillation probability per bin
         for (int j = 0 ; j < NB ; j++){
@@ -174,6 +188,12 @@ void RENO_ntuple_noosc_spect()
         osc_prob_fd[j] = osc_prob_fd[j]/N_events_perbin_fd[j];
     }
     
+    osc_prob_nd_allBins = osc_prob_nd_allBins/N_events_allBins_nd;
+    osc_prob_fd_allBins = osc_prob_fd_allBins/N_events_allBins_fd;
+    
+    std::cout << "Osc Prob. ND = " << osc_prob_nd_allBins << std::endl;
+    std::cout << "Osc Prob. FD = " << osc_prob_fd_allBins << std::endl;
+
     //Adding artificial noice to the no-osccilated spectra
     TF1 *gauNoise = new TF1("gauNoise","exp(-0.5*((x)/[0])^2)",-5.0,5.0);
     gauNoise->SetParameter(0,1);
