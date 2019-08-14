@@ -129,9 +129,9 @@ set label 4 "{/Symbol D}m^{2}_{31} (eV^2)" at -0.0175,2.5 center rotate by 90
 #set label 4 "{/Symbol D}m^{2}_{31} (10^{-3} eV^2)" at 0.006,2.5 center rotate by 90
 
 ## Mark at the BF
-set label 35 "+" at 0.094444,0.002664*1e3 center font "CharterBT-Roman,15"
+set label 35 "+" at 0.092821,0.002674*1e3 center font "CharterBT-Roman,15"
 ## Minimum chi2 value
-min = 65.3876
+min = 65.4207
 
 unset ztics
 set clabel

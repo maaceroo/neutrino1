@@ -8,8 +8,8 @@ echo '0) Define Grid'
 echo '=========================================='
 echo 
 
-export NS2T=100
-export NDM2=100
+export NS2T=40
+export NDM2=40
 
 export LO_S2T=0.01
 export HI_S2T=0.20
@@ -108,9 +108,9 @@ read BF_CHI2 BF_S2T BF_DM2 <<< `cat files_data/chi2_minumum_SPEC.txt`
 echo '=========================================='
 echo 'Editting gnu plot script ...'
 echo
-sed -i'' -e "132s/.*/set label 35 '+' at $BF_S2T,$BF_DM2*1e3 center font 'CharterBT-Roman,15'/" multi_plot_margin_SPEC.gnu
+sed -i'' -e "133s/.*/set label 35 '+' at $BF_S2T,$BF_DM2*1e3 center font 'CharterBT-Roman,15'/" multi_plot_margin_SPEC.gnu
 
-sed -i'' -e "133s/.*/min = $BF_CHI2/" multi_plot_margin_SPEC.gnu
+sed -i'' -e "135s/.*/min = $BF_CHI2/" multi_plot_margin_SPEC.gnu
 
 echo
 
