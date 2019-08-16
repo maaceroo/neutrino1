@@ -117,7 +117,7 @@ echo '=========================================='
 echo 'Editting gnu plot script ...'
 echo '=========================================='
 echo
-sed -i'' -e "136s/.*/set label 35 '+' at $BF_S2T,$BF_DM2 center font 'CharterBT-Roman,15'/" multi_plot_margin_spect_RENO.gnu
+sed -i'' -e "136s/.*/set label 35 '+' at $BF_S2T,$BF_DM2*1e3 center font 'CharterBT-Roman,15'/" multi_plot_margin_spect_RENO.gnu
 
 sed -i'' -e "138s/.*/min = $BF_CHI2/" multi_plot_margin_spect_RENO.gnu
 

@@ -233,7 +233,7 @@ void db_CovaMatrix_6AD_26bins()
     corrMat_histo_6x6Det->GetYaxis()->SetLabelFont(ft);
     corrMat_histo_6x6Det->GetZaxis()->SetLabelSize(0.6*sz);
     corrMat_histo_6x6Det->GetZaxis()->SetLabelFont(ft);
-    TCanvas *canv6x6 = new TCanvas("canv6x6","canv6x6",500,500);
+    TCanvas *canv6x6 = new TCanvas("canv6x6","canv6x6",700,700);
     corrMat_histo_6x6Det->Draw("COLZ");
     gPad->SetTicks(1,1);
     

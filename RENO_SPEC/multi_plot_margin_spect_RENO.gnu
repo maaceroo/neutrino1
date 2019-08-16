@@ -26,7 +26,7 @@ set tmargin at screen 0.65
 
 ## x-axis settings
 xmin =  0
-xmax =  10
+xmax =  17
 set xrange[xmin:xmax]
 set xlabel "{/Symbol D}{/Symbol c}^{2}"
 
@@ -34,8 +34,8 @@ set xlabel "{/Symbol D}{/Symbol c}^{2}"
 #set logscale y
 #ymin = +1.2e-3
 #ymax = +1e-2
-ymin = +1.2e-3
-ymax = +3.52e-3
+ymin = +1.2
+ymax = +3.5
 set yrange[ymin:ymax]
 unset ytics
 #set format y "10^{%T}"
@@ -48,7 +48,7 @@ set arrow 3 from  4.00,ymin to 4.00,ymax nohead lt 3 lw 2
 set arrow 5 from  9.00,ymin to 9.00,ymax nohead lt 2 lw 2
 set arrow 7 from 16.00,ymin to 16.00,ymax nohead lt 6 lw 2
 
-plot 'files/RENO_dm2_chi2_SPEC.txt' u 2:1 w l lw 1
+plot 'files/RENO_dm2_chi2_SPEC.txt' u 2:(10**3*($1)) w l lw 1
 
 reset
 
@@ -63,7 +63,7 @@ set tmargin at screen 0.95
 
 ## x-axis settings
 #set logscale x
-xmin = 0.0
+xmin = 0.01
 #xmax = 0.3
 xmax = 0.2
 set xrange[xmin:xmax]
@@ -72,13 +72,14 @@ set format x "10^{%T}"
 
 ## y-axis settings
 ymin =  0
-ymax =  10
+ymax =  17
 set yrange[ymin:ymax]
 set ylabel "{/Symbol D}{/Symbol c}^{2}"
 
-set key at 0.23,8.0
+set key at 0.30,9.0
 
-plot 'files/RENO_s2t_chi2_SPEC.txt' u 1:2 w l lw 1 t "", \
+plot 'files/RENO_s2t_chi2_SPEC.txt' u 1:2 w l lw 1 t "Spectral", \
+'../RENO/files/RENO_s2t_chi2_RATE.txt' u 1:2 w l lw 1 lc black dt 8 t "Rate-only", \
 16.0 lt 6 lw 2 t "99.99% C.L. (4{/Symbol s})", \
 9.0 lt 2 lw 2 t "99.73% C.L. (3{/Symbol s})", \
 4.0 lt 3 lw 2 t "95.45% C.L. (2{/Symbol s})", \
@@ -98,7 +99,7 @@ set tmargin at screen 0.65
 ## Contour settings
 unset surface
 set view 0,0
-set size 2.0,2.0
+set size 1.0,1.0
 set contour base
 set cntrparam bspline
 set cntrparam order 10
@@ -106,36 +107,35 @@ set cntrparam levels discret 2.30,6.18,11.83
 
 ## x-axis settings
 #set logscale x
-xmin = 0.00
+xmin = 0.01
 #xmax = 0.3
 xmax = 0.2
 set xrange[xmin:xmax]
-set xtics 0.0,0.02,0.19
+set xtics 0.0,0.05,0.19
 set mxtics
 #set format x "10^{%T}"
-set label 2 "sin^{2}2{/Symbol q}_{13}" at 0.08,0.0009 center
+set label 2 "sin^{2}2{/Symbol q}_{13}" at 0.1,0.95 center
 
 ## y-axis settings
 #set logscale y
 set ytics offset -43.5
-ymin = +1.2e-3
-ymax = +3.52e-3
-#ymin = 1.5
-#ymax = 3.5
+#ymin = +1.2e-3
+#ymax = +3.52e-3
+ymin = 1.2
+ymax = 3.5
 set yrange[ymin:ymax]
-set ytics 0.0,0.0005,0.0039
-set mytics
+set ytics 1.5,0.5,3.4
 #set format y "10^{%T}"
-set label 4 "{/Symbol |D}m^{2}_{ee}| (eV^2)" at -0.021,0.0028 center rotate by 90
+set label 4 "{/Symbol D}m^{2}_{ee} (eV^2)" at -0.0175,2.5 center rotate by 90
 #set label 4 "{/Symbol D}m^{2}_{31} (10^{-3} eV^2)" at 0.006,2.5 center rotate by 90
 
-set label 5 "{+ Best-fit}" at 0.12,0.0038 center 
+#set label 5 "{+ Best-fit}" at 0.12,0.0038 center
 #set label 6 "{* Best-fit}" at 0.12,0.0037 center 
 
 ## Mark at the BF
-set label 35 '+' at 0.073333,0.002611 center font 'CharterBT-Roman,15'
+set label 35 '+' at 0.082929,0.00264*1e3 center font 'CharterBT-Roman,15'
 ## Minimum chi2 value
-min = 21.9017
+min = 20.9186
 
 unset ztics
 set clabel
@@ -143,8 +143,7 @@ unset key
 set grid ytics lc rgb "#bbbbbb" lw 1 lt 0
 set grid xtics lc rgb "#bbbbbb" lw 1 lt 0
 
-#splot 'files/chi2_s2t-dm2_surface_spect-noFL.txt' u 1:2:(($3)-min) w l lw 2
-splot 'files/chi2_s2t-dm2_surface_spect-noFL.txt' u 1:2:(($3)-min) w l lw 2
+splot 'files/chi2_s2t-dm2_surface_spect-noFL.txt' u 1:(($2)*1e3):(($3)-min) w l lw 2
 
 ########################################################################################
 
