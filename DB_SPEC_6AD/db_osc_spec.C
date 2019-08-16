@@ -99,7 +99,8 @@ void db_osc_spec()
         else if (iAD >= 3) sel = iAD+1;
         //------------------------------------------------
         //Filling Ocillation prpbability at BF - histogram
-        T->Draw(Form("(1.0 - 0.089*((sin( 1.267 * 2.32e-3 * Ln/En ))**2) - ((cos(0.5 * asin(sqrt(0.089))))**4) * 0.861 * (sin( 1.267 * 7.59e-5 * Ln/En ))**2) >> Posc_AD_BF_%d",iAD),Form("id==%d",sel));
+        //T->Draw(Form("(1.0 - 0.089*((sin( 1.267 * 2.32e-3 * Ln/En ))**2) - ((cos(0.5 * asin(sqrt(0.089))))**4) * 0.861 * (sin( 1.267 * 7.59e-5 * Ln/En ))**2) >> Posc_AD_BF_%d",iAD),Form("id==%d",sel));
+        T->Draw(Form("(1.0 - 0.090*((sin( 1.267 * 2.59e-3 * Ln/En ))**2) - ((cos(0.5 * asin(sqrt(0.090))))**4) * 0.857 * (sin( 1.267 * 7.50e-5 * Ln/En ))**2) >> Posc_AD_BF_%d",iAD),Form("id==%d",sel));
         integ = Posc_AD_BF[iAD]->Integral();
         Posc_AD_BF[iAD]->Scale(1.0/integ); //Used to plot the Survival Probabilities for each AD with BF parameters (normalized)
         //Average oscillation Probability
@@ -119,7 +120,8 @@ void db_osc_spec()
         //nu_nosc_spect_histo[iAD]->Scale(noOsc_IBDrate_perday[iAD]/TotNosc[iAD]); //normalize per day HERE? (2017-07-13)
         
         //condition to fill BF-oscillation- Ep spectra
-        cutBF = Form("(1.0 - 0.089*((sin( 1.267 * 2.32e-3 * Ln/En ))**2) - ((cos(0.5 * asin(sqrt(0.089))))**4) * 0.861 * (sin( 1.267 * 7.59e-5 * Ln/En ))**2)*(id==%d)",iAD);
+        //cutBF = Form("(1.0 - 0.089*((sin( 1.267 * 2.32e-3 * Ln/En ))**2) - ((cos(0.5 * asin(sqrt(0.089))))**4) * 0.861 * (sin( 1.267 * 7.59e-5 * Ln/En ))**2)*(id==%d)",iAD);
+        cutBF = Form("(1.0 - 0.090*((sin( 1.267 * 2.59e-3 * Ln/En ))**2) - ((cos(0.5 * asin(sqrt(0.090))))**4) * 0.857 * (sin( 1.267 * 7.50e-5 * Ln/En ))**2)*(id==%d)",iAD);
 
         //Filling and normalizing BF-oscillation Ep spectra
         T->Draw(Form("Ep >> BFit_spect_histo_%d",sel),cutBF,"");
