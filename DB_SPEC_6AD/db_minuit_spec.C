@@ -147,14 +147,10 @@ double chi2(const double *xx)
         for (int iBIN = 0 ; iBIN < NB ; iBIN++)
         {
             int index = iAD*NB + iBIN;
-            //-- Survival Probability equation. Terms depending on dM²_21 and dM²_32(~dM²_31) are averaged
-            //SurvP = 1.0 - 0.25*pow((1.0 + sqrt(1.0 - s2th_13)),2)*(s22th_12)*(avgSinDelta21[iAD]) - s2th_13*(avgSinDelta31[iAD]);
             
             //-- Predicted IBD from neutrino oscillations of the dth Antineutrino Detector
-            //Td = (SurvP * noOsc_IBDrate_perday[iAD])*emuem[iAD]*daqTime[iAD];
             Td = spc[iAD][iBIN]*(SurvPavg*noOsc_IBDrate_perday[iAD]/NoscTot[iAD])*emuem[iAD]*daqTime[iAD];
             //-- Measured IDB events of the dth Antineutrino Detector (background is substracted)
-            //Md = (IBDrate_data[iAD][0] - totalBgd[iAD][0]*emuem[iAD])*daqTime[iAD];
             int idx = -1;
             if (iAD < 2) {
                 idx = 0;

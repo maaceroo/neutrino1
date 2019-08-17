@@ -132,7 +132,7 @@ set label 4 "{/Symbol D}m^{2}_{ee} (10^{-3} eV^2)" at -0.0175,2.5 center rotate 
 ## Mark at the BF
 set label 35 '+' at 0.0928210000,0.0026740000*1e3 center font 'CharterBT-Roman,15'
 ## Minimum chi2 value
-min = 65.4207000000
+min = 65.2964000000
 
 unset ztics
 set clabel
