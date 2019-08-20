@@ -95,7 +95,8 @@ void db_ntuple()
             
             Ep = nu_nosc_spect_histo[ad]->GetRandom();
             En = Ep*1.03 + avg_nRecoilE + avg_constE;
-        
+            //En = Ep*1.0 + avg_nRecoilE + avg_constE;
+
             T->Fill();
             
             if(i%1000000 == 0)

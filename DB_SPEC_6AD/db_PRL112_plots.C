@@ -30,8 +30,8 @@ void db_PRL112_plots()
     //get data from digitized files - EH2
     TGraph *DB_specEH2_DataperMev  = new TGraph("files_data/EH2/DB_specEH2_DataNew.csv","%lg,%lg","");
     TGraph *DB_specEH2_NoOscperMev = new TGraph("files_data/EH2/DB_specEH2_NoOscNew.csv","%lg,%lg","");
-    TGraph *DB_specEH2_BFperMev    = new TGraph("files_data/EH2/DB_specEH2_BF.csv","%lg,%lg","");
-    TGraph *DB_specEH2_BGperMev    = new TGraph("files_data/EH2/DB_specEH2_BG.csv","%lg,%lg","");
+    TGraph *DB_specEH2_BFperMev    = new TGraph("files_data/EH2/DB_specEH2_BFNew.csv","%lg,%lg","");
+    TGraph *DB_specEH2_BGperMev    = new TGraph("files_data/EH2/DB_specEH2_BGNew.csv","%lg,%lg","");
     
     TGraph *DB_ratioEH2_BF   = new TGraph("files_data/EH2/DB_ratioEH2_BF.csv","%lg,%lg","");
     TGraph *DB_ratioEH2_Data = new TGraph("files_data/EH2/DB_ratioEH2_Data.csv","%lg,%lg","");
@@ -43,7 +43,7 @@ void db_PRL112_plots()
     TGraph *DB_specEH3_DataperMev  = new TGraph("files_data/EH3/DB_specEH3_Data.csv","%lg,%lg","");
     TGraph *DB_specEH3_NoOscperMev = new TGraph("files_data/EH3/DB_specEH3_NoOsc.csv","%lg,%lg","");
     TGraph *DB_specEH3_BFperMev    = new TGraph("files_data/EH3/DB_specEH3_BF.csv","%lg,%lg","");
-    TGraph *DB_specEH3_BGperMev    = new TGraph("files_data/EH3/DB_specEH3_BG.csv","%lg,%lg","");
+    TGraph *DB_specEH3_BGperMev    = new TGraph("files_data/EH3/DB_specEH3_BGNew.csv","%lg,%lg","");
     
     TGraph *DB_ratioEH3_BF   = new TGraph("files_data/EH3/DB_ratioEH3_BF.csv","%lg,%lg","");
     TGraph *DB_ratioEH3_Data = new TGraph("files_data/EH3/DB_ratioEH3_Data.csv","%lg,%lg","");

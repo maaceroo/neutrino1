@@ -8,8 +8,8 @@ echo '0) Define Grid'
 echo '=========================================='
 echo 
 
-export NS2T=40
-export NDM2=40
+export NS2T=10
+export NDM2=10
 
 export LO_S2T=0.01
 export HI_S2T=0.20
@@ -37,7 +37,7 @@ echo '=========================================='
 echo '1) Running ldist.C'
 echo '=========================================='
 echo
-#time root -b -l -n -q ldist.C
+time root -b -l -n -q ldist.C
 
 echo
 
@@ -49,7 +49,7 @@ echo '=========================================='
 echo
 export NTUPLE_EVENTS=5000000
 echo $NTUPLE_EVENTS ntuple events
-#time root -b -l -n -q db_ntuple.C
+time root -b -l -n -q db_ntuple.C
 
 echo
 
@@ -59,7 +59,7 @@ echo '=========================================='
 echo '3) Running db_osc_spec.C'
 echo '=========================================='
 echo
-#time root -b -l -n -q db_osc_spec.C
+time root -b -l -n -q db_osc_spec.C
 
 #-----------------------------------------------------------------------------
 # run minimization

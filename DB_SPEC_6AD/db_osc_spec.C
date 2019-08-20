@@ -229,7 +229,7 @@ void db_osc_spec()
                 else if (iAD >= 3) sel = iAD +1;
                     
                 // Condition to fill oscilated spectra for (s2t_pt,dm2_pt), i.e. wosc_spect_histo[iAD]
-                cut = Form("(1.0 - %e*((sin( 1.267 * %e * Ln/En ))**2) - (0.25*(1 + sqrt(1 - %e))**2) * 0.861 * (sin( 1.267 * 7.59e-5 * Ln/En ))**2)*(id==%d)" ,s2t_pt,dm2_pt,s2t_pt,sel);
+                cut = Form("(1.0 - %e*((sin( 1.267 * %e * Ln/En ))**2) - (0.25*(1 + sqrt(1 - %e))**2) * 0.857 * (sin( 1.267 * 7.50e-5 * Ln/En ))**2)*(id==%d)" ,s2t_pt,dm2_pt,s2t_pt,sel);
                 // Filling oscilated spectra for (s2t_pt,dm2_pt)
                 int ih = is2t*N_dm2 + idm2;
                 //cout << "AD " << iAD + 1 << "\t s2t_pt =  " << s2t_pt << "\t dm2_pt =  " << dm2_pt  << "\t ih = " << ih << endl;

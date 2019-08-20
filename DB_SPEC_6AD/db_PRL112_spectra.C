@@ -24,7 +24,7 @@ void db_PRL112_spectra()
     //get data from digitized files - EH2
     TGraph *DB_specEH2_DataperMev  = new TGraph("files_data/EH2/DB_specEH2_DataNew.csv","%lg,%lg","");
     TGraph *DB_specEH2_NoOscperMev = new TGraph("files_data/EH2/DB_specEH2_NoOscNew.csv","%lg,%lg","");
-    TGraph *DB_specEH2_BFperMev    = new TGraph("files_data/EH2/DB_specEH2_BF.csv","%lg,%lg","");
+    TGraph *DB_specEH2_BFperMev    = new TGraph("files_data/EH2/DB_specEH2_BFNew.csv","%lg,%lg","");
     TGraph *DB_specEH2_BGperMev    = new TGraph("files_data/EH2/DB_specEH2_BGNew.csv","%lg,%lg","");
     //---------------------------------------------------------------------------------------------------
     //get data from digitized files - EH3
@@ -77,7 +77,7 @@ void db_PRL112_spectra()
         
         BFit_spect_histoPerMeV[i] = new TH1F(Form("BFit_spect_histoPerMeV_%d",i),"",NB,xbins);
         BFit_spect_histoPerMeV[i]->SetLineWidth(1);
-        BFit_spect_histoPerMeV[i]->SetLineColor(kOrange);
+        BFit_spect_histoPerMeV[i]->SetLineColor(2);
         
         bkgd_spect_histoPerMeV[i] = new TH1F(Form("bkgd_spect_histoPerMeV_%d",i),"",NB,xbins);
         bkgd_spect_histoPerMeV[i]->SetLineWidth(2);
@@ -211,19 +211,19 @@ void db_PRL112_spectra()
     //---------------------------------------------------------
 
     //-- Our Best fit espectra - BEGIN------------------------------------------------------------//
-    double bfOscAD1_array[NB] = {44830.445312, 48525.503906, 65690.703125, 80047.203125, 91762.281250, 100622.945312, 104772.742188, 106734.234375, 104915.367188, 100403.921875, 91802.539062, 83923.070312, 76338.742188, 69961.921875, 62079.875000, 54320.734375, 46995.878906, 39243.304688, 32131.652344, 25395.611328, 19840.394531, 14519.090820, 10490.928711, 7414.633789, 4627.903320, 6935.844238};
-    double bfOscAD2_array[NB] = {45659.839844, 49673.339844, 66808.632812, 81154.804688, 92266.351562, 102364.796875, 106803.710938, 108614.546875, 106782.851562, 101830.375000, 94013.593750, 85225.710938, 77949.195312, 71334.664062, 63393.441406, 55375.582031, 47973.539062, 39824.195312, 32579.154297, 25808.324219, 20375.724609, 14801.668945, 10355.750000, 7589.788086, 4731.012695, 7038.440430};
-    double bfOscAD3_array[NB] = {39366.269531, 43607.937500, 58450.476562, 71456.437500, 81102.109375, 89890.742188, 94097.867188, 96008.195312, 94196.140625, 89930.945312, 82487.898438, 75641.898438, 69216.898438, 62831.027344, 56060.109375, 49975.859375, 42563.449219, 35437.519531, 28585.085938, 23200.431641, 18366.640625, 13834.255859, 9748.004883, 6854.117188, 4725.411133, 16698.916016};
-    double bfOscAD4_array[NB] = {5417.008301, 5620.425781, 7560.541504, 9006.519531, 10413.240234, 11133.336914, 11862.096680, 11856.900391, 11727.947266, 11029.192383, 10212.175781, 9217.815430, 8679.847656, 7899.536621, 7008.798340, 6327.159668, 5405.603027, 4439.207520, 3566.301514, 2929.092529, 2234.992676, 1687.221802, 1195.978027, 764.104980, 519.395874, 593.776367};
-    double bfOscAD5_array[NB] = {5277.126465, 5688.483887, 7524.675293, 9027.935547, 10249.531250, 11208.653320, 11825.549805, 12046.866211, 11896.350586, 11347.019531, 10454.595703, 9458.767578, 8673.900391, 7860.806641, 7074.909180, 6348.411133, 5303.349609, 4550.911133, 3598.490234, 2976.067383, 2356.879639, 1711.177246, 1135.795166, 814.496704, 544.642151, 636.395935};
-    double bfOscAD6_array[NB] = {5385.978027, 5745.570801, 7500.989258, 9171.907227, 10226.217773, 10975.889648, 11578.887695, 11874.760742, 11602.110352, 11081.333008, 10175.903320, 9183.279297, 8536.461914, 7706.292480, 7089.224609, 6090.473633, 5347.640137, 4360.496582, 3666.051270, 2946.402344, 2342.623535, 1607.964844, 1177.772827, 764.228638, 544.112671, 607.320618};
+    double bfOscAD1_array[NB] = {44923.179688, 48640.695312, 65846.484375, 80217.257812, 91964.742188, 100931.882812, 105007.835938, 106902.523438, 105053.367188, 100511.992188, 91955.726562, 84075.023438, 76425.867188, 70040.695312, 62126.417969, 54363.859375, 47031.996094, 39275.808594, 32170.667969, 25420.900391, 19855.759766, 14531.860352, 10498.394531, 7419.506836, 4630.621094, 6938.362305};
+    double bfOscAD2_array[NB] = {45753.960938, 49790.562500, 66968.796875, 81314.257812, 92476.765625, 102681.539062, 107033.632812, 108769.773438, 106918.703125, 101940.265625, 94181.234375, 85365.640625, 78034.429688, 71411.421875, 63438.160156, 55418.308594, 48009.636719, 39859.222656, 32620.236328, 25832.160156, 20392.111328, 14814.250000, 10362.870117, 7594.559082, 4733.692383, 7041.067383};
+    double bfOscAD3_array[NB] = {39544.410156, 43747.273438, 58613.476562, 71693.867188, 81308.460938, 90179.468750, 94306.164062, 96184.609375, 94410.101562, 90107.164062, 82660.015625, 75791.046875, 69316.937500, 62899.125000, 56124.015625, 50032.566406, 42616.984375, 35477.511719, 28607.634766, 23233.873047, 18383.054688, 13853.395508, 9755.124023, 6859.923828, 4729.486328, 16705.773438};
+    double bfOscAD4_array[NB] = {5512.877441, 5539.559082, 7469.577148, 8896.383789, 10338.937500, 11110.057617, 11870.690430, 11852.689453, 11739.267578, 11064.242188, 10250.256836, 9268.994141, 8700.360352, 7938.599609, 7031.878418, 6363.790527, 5421.415527, 4454.815918, 3582.439941, 2939.592773, 2245.497559, 1688.112305, 1203.147827, 766.343445, 522.436096, 601.256531};
+    double bfOscAD5_array[NB] = {5368.732422, 5622.143066, 7425.176270, 8925.012695, 10180.092773, 11159.664062, 11829.381836, 12068.737305, 11908.782227, 11373.059570, 10503.091797, 9504.885742, 8703.018555, 7884.785645, 7097.388672, 6380.542969, 5326.126465, 4563.375977, 3614.833984, 2989.694824, 2362.248047, 1720.823364, 1136.899780, 821.734741, 543.913086, 644.981018};
+    double bfOscAD6_array[NB] = {5482.606934, 5661.974609, 7419.580078, 9081.479492, 10129.814453, 10943.884766, 11571.001953, 11875.160156, 11635.333008, 11106.860352, 10196.017578, 9240.456055, 8562.715820, 7738.964355, 7124.865234, 6104.131348, 5375.571777, 4376.656738, 3680.919434, 2957.970215, 2351.785156, 1610.425659, 1183.924683, 763.532043, 550.173157, 615.812134};
     //-- Our No-Osc. espectra - //
     double NoOscAD1_array[NB] = {46994.0, 50441.0, 67978.0, 82506.0, 94304.0, 103122.0, 107005.0, 108732.0, 106722.0, 101997.0, 93167.0, 85049.0, 77234.0, 70704.0, 62676.0, 54816.0, 47401.0, 39562.0, 32372.0, 25570.0, 19963.0, 14608.0, 10549.0, 7453.0, 4651.0, 6957.0};
     double NoOscAD2_array[NB] = {47834.0, 51600.0, 69122.0, 83595.0, 94786.0, 104867.0, 109016.0, 110610.0, 108594.0, 103420.0, 95404.0, 86346.0, 78853.0, 72082.0, 63993.0, 55871.0, 48376.0, 40144.0, 32818.0, 25981.0, 20502.0, 14889.0, 10412.0, 7629.0, 4754.0, 7060.0};
-    double NoOscAD3_array[NB] = {41843.0, 45699.0, 60877.0, 74047.0, 83659.0, 92423.0, 96405.0, 98112.0, 96088.0, 91539.0, 83808.0, 76736.0, 70117.0, 63577.0, 56685.0, 50496.0, 42967.0, 35743.0, 28819.0, 23375.0, 18496.0, 13925.0, 9808.0, 6894.0, 4751.0, 16754.0};
-    double NoOscAD4_array[NB] = {5537.0, 5880.0, 8076.0, 9771.0, 11405.0, 12250.0, 13067.0, 13043.0, 12864.0, 12051.0, 11111.0, 9983.0, 9360.0, 8480.0, 7493.0, 6737.0, 5735.0, 4692.0, 3758.0, 3077.0, 2341.0, 1763.0, 1247.0, 795.0, 539.0, 608.0};
-    double NoOscAD5_array[NB] = {5390.0, 5950.0, 8034.0, 9793.0, 11222.0, 12334.0, 13027.0, 13253.0, 13049.0, 12400.0, 11375.0, 10245.0, 9354.0, 8441.0, 7563.0, 6761.0, 5626.0, 4812.0, 3792.0, 3127.0, 2469.0, 1788.0, 1184.0, 847.0, 565.0, 652.0};
-    double NoOscAD6_array[NB] = {5501.0, 6007.0, 8006.0, 9941.0, 11197.0, 12076.0, 12755.0, 13064.0, 12728.0, 12111.0, 11074.0, 9949.0, 9207.0, 8275.0, 7581.0, 6487.0, 5675.0, 4610.0, 3865.0, 3096.0, 2455.0, 1680.0, 1228.0, 795.0, 565.0, 622.0};
+    double NoOscAD3_array[NB] = {41865.0, 45682.0, 60841.0, 74055.0, 83655.0, 92428.0, 96394.0, 98111.0, 96097.0, 91527.0, 83816.0, 76738.0, 70120.0, 63581.0, 56686.0, 50490.0, 42971.0, 35752.0, 28811.0, 23384.0, 18497.0, 13933.0, 9808.0, 6895.0, 4752.0, 16754.0};
+    double NoOscAD4_array[NB] = {5664.0, 5890.0, 8093.0, 9752.0, 11397.0, 12262.0, 13080.0, 13016.0, 12836.0, 12039.0, 11099.0, 9986.0, 9331.0, 8475.0, 7476.0, 6739.0, 5721.0, 4684.0, 3756.0, 3073.0, 2341.0, 1756.0, 1249.0, 794.0, 540.0, 614.0};
+    double NoOscAD5_array[NB] = {5512.0, 5977.0, 8042.0, 9783.0, 11220.0, 12318.0, 13036.0, 13255.0, 13021.0, 12377.0, 11373.0, 10241.0, 9334.0, 8420.0, 7545.0, 6758.0, 5620.0, 4800.0, 3790.0, 3126.0, 2463.0, 1790.0, 1180.0, 851.0, 562.0, 659.0};
+    double NoOscAD6_array[NB] = {5628.0, 6016.0, 8033.0, 9949.0, 11165.0, 12079.0, 12752.0, 13043.0, 12725.0, 12089.0, 11043.0, 9959.0, 9185.0, 8264.0, 7577.0, 6466.0, 5674.0, 4603.0, 3861.0, 3093.0, 2453.0, 1675.0, 1229.0, 791.0, 569.0, 629.0};
 
     double noOsc_area = 0.0;
     //Clon no-oscillated spectra
@@ -240,7 +240,7 @@ void db_PRL112_spectra()
 
     const int nAD = 6;
     double totalBgd[nAD][2]     = { {13.20,0.98},{13.01,0.98},{ 9.57,0.71},{ 3.52,0.14},{ 3.48,0.14},{3.43,0.14} };
-    double NoscTot[nAD] = {1494327.473145, 1520329.035156, 1354334.644531, 168308.216797, 169591.787720, 167289.893250};
+    double NoscTot[nAD] = {1496761.428711, 1522757.259277, 1357141.464844, 168373.220032, 169659.126892, 167341.617188};
     double noNoscTot[nAD] = {1522533.0, 1548558.0, 1383643.0, 181663.0, 183053.0, 180550.0};
     double SurvPavg[nAD] = {0.0};
     for (int iAD = 0 ; iAD < nAD ; iAD++) {
@@ -317,6 +317,7 @@ void db_PRL112_spectra()
         our_BFit_histo[i] = new TH1F(Form("our_BFit_histo_%d",i),"",NB,xbins);
         our_BFit_histo[i]->SetLineWidth(2);
         our_BFit_histo[i]->SetLineColor(2);
+        our_BFit_histo[i]->SetLineStyle(2);
         our_noOsc_histo[i] = new TH1F(Form("our_noOsc_histo_%d",i),"",NB,xbins);
         our_noOsc_histo[i]->SetLineWidth(2);
         our_noOsc_histo[i]->SetLineColor(4);
@@ -352,9 +353,14 @@ void db_PRL112_spectra()
     }
     
     TH1F *ratio_histo[nEH];
+    TH1F *ratioBF_histo[nEH];
     for (int j = 0 ; j < nEH ; j++) {
         ratio_histo[j] = (TH1F*)nosc_spect_histoPerMeV[j]->Clone(Form("ratio_histo_%d",j));
         ratio_histo[j]->Divide(our_noOsc_histo[j]);
+        ratio_histo[j]->SetLineColor(4);
+        ratioBF_histo[j] = (TH1F*)BFit_spect_histoPerMeV[j]->Clone(Form("ratioBF_histo_%d",j));
+        ratioBF_histo[j]->Divide(our_BFit_histo[j]);
+        ratioBF_histo[j]->SetLineColor(2);
     }
     
     //-- Our Bes fit espectra - END--//
@@ -384,7 +390,7 @@ void db_PRL112_spectra()
     pad1->Draw();             // Draw the upper pad: pad1
     pad1->cd();               // pad1 becomes the current pad
     frame_spectra1->Draw();
-    //BFit_spect_histoPerMeV[0]->Draw("same hist");
+    BFit_spect_histoPerMeV[0]->Draw("same hist");
     data_spect_histoPerMeV[0]->Draw("P same");
     our_BFit_histo[0]->Draw("same hist");
     nosc_spect_histoPerMeV[0]->Draw("same");
@@ -402,7 +408,7 @@ void db_PRL112_spectra()
     pad2->Draw();
     pad2->cd();       // pad2 becomes the current pad
     frame_spectra2->Draw();
-    //BFit_spect_histoPerMeV[1]->Draw("same hist");
+    BFit_spect_histoPerMeV[1]->Draw("same hist");
     data_spect_histoPerMeV[1]->Draw("P same");
     our_BFit_histo[1]->Draw("same hist");
     nosc_spect_histoPerMeV[1]->Draw("same");
@@ -419,7 +425,7 @@ void db_PRL112_spectra()
     pad3->Draw();
     pad3->cd();       // pad2 becomes the current pad
     frame_spectra3->Draw();
-    //BFit_spect_histoPerMeV[2]->Draw("same hist");
+    BFit_spect_histoPerMeV[2]->Draw("same hist");
     data_spect_histoPerMeV[2]->Draw("P same");
     our_BFit_histo[2]->Draw("same hist");
     nosc_spect_histoPerMeV[2]->Draw("same");
@@ -432,19 +438,33 @@ void db_PRL112_spectra()
     ca->Print("files_plots/DB_spect-PRL112.eps");
 
     //-----
-    TH2F *frame_ratio = new TH2F("frame_ratio","",NB,lo,hi,10,0.970,1.030);
-    frame_ratio->GetXaxis()->SetTitle("Prompt Reconstructed Energy (MeV)");
-    frame_ratio->GetXaxis()->SetTitleFont(ft);
-    frame_ratio->GetXaxis()->SetTitleOffset(0.9);
-    frame_ratio->GetXaxis()->SetTitleSize(1.4*sz);
-    frame_ratio->GetXaxis()->SetLabelSize(1.4*sz);
-    frame_ratio->GetXaxis()->SetLabelFont(ft);
-    frame_ratio->GetYaxis()->SetTitle("(NoOsc DB)/(NoOsc Us)");
-    frame_ratio->GetYaxis()->SetTitleFont(ft);
-    frame_ratio->GetYaxis()->SetTitleOffset(0.7);
-    frame_ratio->GetYaxis()->SetTitleSize(1.4*sz);
-    frame_ratio->GetYaxis()->SetLabelSize(1.4*sz);
-    frame_ratio->GetYaxis()->SetLabelFont(ft);
+    TH2F *frame_ratio1 = new TH2F("frame_ratio1","",NB,lo,hi,10,0.90,1.10);
+    frame_ratio1->GetYaxis()->SetTitle("DB/OUR");
+    frame_ratio1->GetYaxis()->SetTitleFont(ft);
+    frame_ratio1->GetYaxis()->SetTitleOffset(0.7);
+    frame_ratio1->GetYaxis()->SetTitleSize(1.4*sz);
+    frame_ratio1->GetYaxis()->SetLabelSize(1.4*sz);
+    frame_ratio1->GetYaxis()->SetLabelFont(ft);
+    TH2F *frame_ratio2 = new TH2F("frame_ratio2","",NB,lo,hi,10,0.90,1.030);
+    frame_ratio2->GetYaxis()->SetTitle("DB/OUR");
+    frame_ratio2->GetYaxis()->SetTitleFont(ft);
+    frame_ratio2->GetYaxis()->SetTitleOffset(0.7);
+    frame_ratio2->GetYaxis()->SetTitleSize(1.4*sz);
+    frame_ratio2->GetYaxis()->SetLabelSize(1.4*sz);
+    frame_ratio2->GetYaxis()->SetLabelFont(ft);
+    TH2F *frame_ratio3 = new TH2F("frame_ratio3","",NB,lo,hi,10,0.960,1.040);
+    frame_ratio3->GetXaxis()->SetTitle("Prompt Reconstructed Energy (MeV)");
+    frame_ratio3->GetXaxis()->SetTitleFont(ft);
+    frame_ratio3->GetXaxis()->SetTitleOffset(0.9);
+    frame_ratio3->GetXaxis()->SetTitleSize(1.4*sz);
+    frame_ratio3->GetXaxis()->SetLabelSize(1.4*sz);
+    frame_ratio3->GetXaxis()->SetLabelFont(ft);
+    frame_ratio3->GetYaxis()->SetTitle("DB/OUR");
+    frame_ratio3->GetYaxis()->SetTitleFont(ft);
+    frame_ratio3->GetYaxis()->SetTitleOffset(0.7);
+    frame_ratio3->GetYaxis()->SetTitleSize(1.4*sz);
+    frame_ratio3->GetYaxis()->SetLabelSize(1.4*sz);
+    frame_ratio3->GetYaxis()->SetLabelFont(ft);
 
     TCanvas *ra = new TCanvas("ra", "ratios", 700, 600);
     TGaxis::SetMaxDigits(3);
@@ -455,8 +475,9 @@ void db_PRL112_spectra()
     padr1->SetBottomMargin(0); // Upper and lower plot are joined
     padr1->Draw();             // Draw the upper pad: pad1
     padr1->cd();               // pad1 becomes the current pad
-    frame_ratio->Draw();
+    frame_ratio1->Draw();
     ratio_histo[0]->Draw("same h");
+    ratioBF_histo[0]->Draw("same h");
     gPad->SetTicks(1,1);
     line1->Draw();
     lat->DrawLatex(0.7,0.3,"EH1");
@@ -468,8 +489,9 @@ void db_PRL112_spectra()
     padr2->SetBottomMargin(0);
     padr2->Draw();
     padr2->cd();       // pad2 becomes the current pad
-    frame_ratio->Draw();
+    frame_ratio2->Draw();
     ratio_histo[1]->Draw("same h");
+    ratioBF_histo[1]->Draw("same h");
     gPad->SetTicks(1,1);
     line1->Draw();
     lat->DrawLatex(0.7,0.3,"EH2");
@@ -481,8 +503,9 @@ void db_PRL112_spectra()
     padr3->SetBottomMargin(0.11);
     padr3->Draw();
     padr3->cd();       // pad2 becomes the current pad
-    frame_ratio->Draw();
+    frame_ratio3->Draw();
     ratio_histo[2]->Draw("same h");
+    ratioBF_histo[2]->Draw("same h");
     gPad->SetTicks(1,1);
     line1->Draw();
     lat->DrawLatex(0.7,0.3,"EH3");
