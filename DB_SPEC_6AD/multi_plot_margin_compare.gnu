@@ -125,28 +125,28 @@ ymax = 3.5
 set yrange[ymin:ymax]
 set ytics 1.5,0.2,3.4
 #set format y "10^{%T}"
-set label 4 "{/Symbol D}m^{2}_{31} (eV^2)" at -0.0175,2.5 center rotate by 90
+set label 4 "{/Symbol D}m^{2}_{ee} (10^{-3} eV^2)" at -0.0175,2.5 center rotate by 90
 #set label 4 "{/Symbol D}m^{2}_{31} (10^{-3} eV^2)" at 0.006,2.5 center rotate by 90
 
 ## Mark at the BF
-set label 35 "+" at 0.092821,0.002674*1e3 center font "CharterBT-Roman,15"
+set label 35 "+" at 0.092821,0.002556*1e3 center font "CharterBT-Roman,15"
 ## Minimum chi2 value
-min = 65.4207
+min = 67.6181
 
 unset ztics
 set clabel
 unset key
 
 #splot 'files_data/chi2_s2t-dm2_surface_SPEC.txt' u 1:2:(()-min) w l lw 2
-splot 'files_data/chi2_s2t-dm2_surface_SPEC-noFL.txt' u 1:(10**3*($2)):(($3)-min) w l lw 2
+splot 'files_data/chi2_s2t-dm2_surface_SPEC-noFL.txt' u 1:(10**3*($2)):(($3)-min) w l lw 3
 
-set arrow 11 from 0.09,1.7 to 0.12,1.7 nohead lw 2
-set label 11 'Our Ana. (+ BF)' at 0.125,1.7 font 'CharterBT-Roman,11'
-set arrow 22 from 0.09,1.6 to 0.12,1.6 nohead lw 2 dt 4
-set label 22 'DB PRL112 Ana. (x BF)' at 0.125,1.6 font 'CharterBT-Roman,11'
+set arrow 11 from 0.08,1.7 to 0.11,1.7 nohead lw 3
+set label 11 'Our Ana. (+ BF)' at 0.115,1.7 font 'CharterBT-Roman,11'
+set arrow 22 from 0.08,1.6 to 0.11,1.6 nohead lw 1
+set label 22 'DB PRL112 Ana. (x BF)' at 0.115,1.6 font 'CharterBT-Roman,11'
 set label 25 'x' at 0.09,2.59 center font 'CharterBT-Roman,15'
 
-splot 'files_data/chi2_scan.dat' u 1:2:3 w l dt 4
+splot 'files_data/chi2_scan.dat' u 1:2:3 w l lw 1 dt 4
 
 ########################################################################################
 
