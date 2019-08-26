@@ -34,7 +34,7 @@ set xlabel "{/Symbol D}{/Symbol c}^{2}"
 #set logscale y
 #ymin = +1.2e-3
 #ymax = +1e-2
-ymin = +1.5
+ymin = +1.2
 ymax = +3.5
 set yrange[ymin:ymax]
 unset ytics
@@ -119,14 +119,14 @@ set xrange[xmin:xmax]
 set xtics 0.0,0.05,0.19
 #set mxtics
 #set format x "10^{%T}"
-set label 2 "sin^{2}2{/Symbol q}_{13}" at 0.1,1.25 center
+set label 2 "sin^{2}2{/Symbol q}_{13}" at 0.1,0.95 center
 
 ## y-axis settings
 #set logscale y
 set ytics offset -43.5
 #ymin = +1.2
 #ymax = +3.499
-ymin = 1.5
+ymin = 1.2
 ymax = 3.5
 set yrange[ymin:ymax]
 set ytics 1.5,0.5,3.4
@@ -138,11 +138,11 @@ set label 4 "{/Symbol D}m^{2}_{ee} (10^{-3} eV^2)" at -0.0175,2.5 center rotate 
 #set label 6 "{* Best-fit Daya Bay}" at 0.16,3.0 center 
 
 ## Mark at the BF
-set label 35 '+' at 0.086768,2.631 center font 'CharterBT-Roman,15'
+set label 35 '+' at 0.088687,2.594 center font 'CharterBT-Roman,15'
 ## Minimum chi2 value
-min = 20.9205
-min2 = 67.1889
-minC = 0.2053
+min = 20.9186
+min2 = 67.6002
+minC = 0.311
 
 
 unset ztics
@@ -151,8 +151,8 @@ unset key
 set grid ytics lc rgb "#bbbbbb" lw 1 lt 0
 set grid xtics lc rgb "#bbbbbb" lw 1 lt 0
 
-splot 'files/chi2_s2t-dm2_surface_spect-noFL.txt' u 1:(($2)*1e3):(($3)-min) w l lw 1 dt 5
-splot '../DB_SPEC_6AD/files_data/chi2_s2t-dm2_surface_SPEC-noFL.txt' u 1:(($2)*1e3):(($3)-min2) w l lw 1 dt 3
+splot 'files/chi2_s2t-dm2_surface_spect-noFL.txt' u 1:(($2)*1e3):(($3)-min) w l lw 1 dashtype 5
+splot '../DB_SPEC_6AD/files_data/chi2_s2t-dm2_surface_SPEC-noFL.txt' u 1:(($2)*1e3):(($3)-min2) w l lw 1 dashtype 3
 splot '../DB_SPEC_6AD/files_data/chi2_s2t-dm2_surface_COMBINED.txt' u 1:(($2)*1e3):(($3)-minC) w l lw 3
 
 ########################################################################################

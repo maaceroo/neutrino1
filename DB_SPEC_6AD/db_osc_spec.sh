@@ -8,8 +8,8 @@ echo '0) Define Grid'
 echo '=========================================='
 echo 
 
-export NS2T=40
-export NDM2=40
+export NS2T=100
+export NDM2=100
 
 export LO_S2T=0.01
 export HI_S2T=0.20
@@ -59,7 +59,7 @@ echo '=========================================='
 echo '3) Running db_osc_spec.C'
 echo '=========================================='
 echo
-time root -b -l -n -q db_osc_spec.C
+#time root -b -l -n -q db_osc_spec.C
 
 #-----------------------------------------------------------------------------
 # run minimization
@@ -112,6 +112,10 @@ sed -i'' -e "133s/.*/set label 35 '+' at $BF_S2T,$BF_DM2*1e3 center font 'Charte
 
 sed -i'' -e "135s/.*/min = $BF_CHI2/" multi_plot_margin_SPEC.gnu
 
+sed -i'' -e "132s/.*/set label 35 '+' at $BF_S2T,$BF_DM2*1e3 center font 'CharterBT-Roman,15'/" multi_plot_margin_compare.gnu
+
+sed -i'' -e "134s/.*/min = $BF_CHI2/" multi_plot_margin_compare.gnu
+
 echo
 
 #----------------------------------------------------------------------------
@@ -121,12 +125,14 @@ echo 'Runnign gnuplot macro'
 echo '=========================================='
 echo
 gnuplot multi_plot_margin_SPEC.gnu
+gnuplot multi_plot_margin_compare.gnu
 
 echo
 
 #----------------------------------------------------------------------------
 #Open in ghostview
 gv files_plots/db_plots_SPEC.eps &
+gv files_plots/db_plots_COMPARE.eps &
 
 #----------------------------------------------------------------------------
 echo Done!
