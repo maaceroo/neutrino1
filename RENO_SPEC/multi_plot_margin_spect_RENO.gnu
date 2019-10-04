@@ -79,7 +79,7 @@ set ylabel "{/Symbol D}{/Symbol c}^{2}"
 set key at 0.30,9.0
 
 plot 'files/RENO_s2t_chi2_SPEC.txt' u 1:2 w l lw 1 t "Spectral", \
-'../RENO/files/RENO_s2t_chi2_RATE.txt' u 1:2 w l lw 1 lc black dt 8 t "Rate-only", \
+'../RENO/files/RENO_s2t_chi2_RATE.txt' u 1:2 w l lw 1 lc black dt 4 t "Rate-only", \
 16.0 lt 6 lw 2 t "99.99% C.L. (4{/Symbol s})", \
 9.0 lt 2 lw 2 t "99.73% C.L. (3{/Symbol s})", \
 4.0 lt 3 lw 2 t "95.45% C.L. (2{/Symbol s})", \
@@ -126,7 +126,7 @@ ymax = 3.5
 set yrange[ymin:ymax]
 set ytics 1.5,0.5,3.4
 #set format y "10^{%T}"
-set label 4 "{/Symbol D}m^{2}_{ee} (eV^2)" at -0.0175,2.5 center rotate by 90
+set label 4 "{/Symbol D}m^{2}_{ee} (10^{-3} eV^2)" at -0.0175,2.35 center rotate by 90
 #set label 4 "{/Symbol D}m^{2}_{31} (10^{-3} eV^2)" at 0.006,2.5 center rotate by 90
 
 #set label 5 "{+ Best-fit}" at 0.12,0.0038 center
@@ -144,6 +144,21 @@ set grid ytics lc rgb "#bbbbbb" lw 1 lt 0
 set grid xtics lc rgb "#bbbbbb" lw 1 lt 0
 
 splot 'files/chi2_s2t-dm2_surface_spect-noFL.txt' u 1:(($2)*1e3):(($3)-min) w l lw 2
+
+unset xtics
+unset ytics
+unset label 4
+unset label 2
+
+set arrow 11 from 0.11,3.35 to 0.135,3.35 nohead lw 3
+set label 11 'This work ({/Symbol \053} BF)' at 0.14,3.35 font 'CharterBT-Roman,11'
+set arrow 22 from 0.11,3.2 to 0.135,3.2 nohead lw 1 dt (2,8,2,8)
+set label 22 'RENO ({/Symbol \264} BF)' at 0.14,3.2 font 'CharterBT-Roman,11'
+set label 25 '{/Symbol \264}' at 0.082,2.62 center font 'CharterBT-Roman,15'
+
+plot  'files/RENO_68CL.txt' u 1:2 w l lt 4 lw 1 dt (2,8,2,8), \
+'files/RENO_95CL.txt' u 1:2 w l lt 3 lw 1 dt (2,8,2,8), \
+'files/RENO_99CL.txt' u 1:2 w l lt 2 lw 1 dt (2,8,2,8)
 
 ########################################################################################
 

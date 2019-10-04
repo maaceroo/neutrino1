@@ -79,7 +79,7 @@ set ylabel "{/Symbol D}{/Symbol c}^{2}"
 set key at 0.30,9.0
 
 plot 'files_data/db_s2t_chi2_SPEC.txt' u 1:2 w l lw 1 t "Spectral", \
-'../DB_RATE_6AD/files_data/db_s2t_chi2_RATE.txt' u 1:2 w l lw 1 lc black dt 8 t "Rate-only", \
+'../DB_RATE_6AD/files_data/db_s2t_chi2_RATE.txt' u 1:2 w l lw 1 lc black dt 4 t "Rate-only", \
 16.0 lt 6 lw 2 t "99.99% C.L. (4{/Symbol s})", \
 9.0 lt 2 lw 2 t "99.73% C.L. (3{/Symbol s})", \
 4.0 lt 3 lw 2 t "95.45% C.L. (2{/Symbol s})", \
@@ -141,6 +141,23 @@ set grid ytics lc rgb "#bbbbbb" lw 1 lt 0
 set grid xtics lc rgb "#bbbbbb" lw 1 lt 0
 
 splot 'files_data/chi2_s2t-dm2_surface_SPEC-noFL.txt' u 1:(10**3*($2)):(($3)-min) w l lw 2
+
+unset xtics
+unset ytics
+unset label 4
+unset label 2
+
+set arrow 11 from 0.11,3.35 to 0.135,3.35 nohead lw 3
+set label 11 'This work ({/Symbol \053} BF)' at 0.14,3.35 font 'CharterBT-Roman,11'
+set arrow 22 from 0.11,3.2 to 0.135,3.2 nohead lw 1 dt (2,8,2,8)
+set label 22 'Daya Bay ({/Symbol \264} BF)' at 0.14,3.2 font 'CharterBT-Roman,11'
+set label 25 '{/Symbol \264}' at 0.09,2.59 center font 'CharterBT-Roman,15'
+
+set linetype 2 lw 1 dashtype (2,8,2,8)
+set linetype 3 lw 1 dashtype (2,8,2,8)
+set linetype 4 lw 1 dashtype (2,8,2,8)
+
+splot 'files_data/chi2_scan.dat' u 1:2:3 w l lw 1 dt (2,8,2,8)
 
 ########################################################################################
 

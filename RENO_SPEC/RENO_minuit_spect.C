@@ -154,7 +154,9 @@ double chi2(const double *xx)
 	//data_spect_histo con área 1 y por el ancho del bin (debe tener chipote en 6-7 MeV)
         Nobs1 = (data_spect_histo[0]->GetBinContent(iBIN+1))*IBDrate_data[0][0]*0.7644*daqTime[0];
         Nobs2 = (data_spect_histo[1]->GetBinContent(iBIN+1))*IBDrate_data[1][0]*0.7644*daqTime[1];
-      
+        //Nobs1 = (data_spect_histo[0]->GetBinContent(iBIN+1))*IBDrate_data[0][0]*daqTime[0];
+        //Nobs2 = (data_spect_histo[1]->GetBinContent(iBIN+1))*IBDrate_data[1][0]*daqTime[1];
+
         sqrerror = ( Nobs2/(pow(Nobs1,2)) ) + ( (pow(Nobs2,2))/(pow(Nobs1,3)) );
         //std::cout << "error = " << sqrerror << std::endl;
 
@@ -337,6 +339,7 @@ int RENO_minuit_spect(const char * minName = "Minuit",
             for(int ibin = 1 ; ibin <= NB ; ibin++)
             {
                 double bincont = spc[iad][ibin-1]*(noOsc_IBDrate_perday[iAD-1]/NoscTot[iad])*emuem[iAD-1]*daqTime[iAD-1];
+                //double bincont = spc[iad][ibin-1]*(noOsc_IBDrate_perday[iAD-1]/NoscTot[iad])*1.0*daqTime[iAD-1];
                 double bincontent = bincont/0.2;
                 nosc_spect_hist[iAD-1]->SetBinContent(ibin,bincont);
                 nosc_spect_hist_1[iAD-1]->SetBinContent(ibin,bincontent);

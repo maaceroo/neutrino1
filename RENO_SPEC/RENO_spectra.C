@@ -236,6 +236,13 @@ void RENO_spectra(){
     bfit_histo[0]->Scale(areaNDdata_histo/areaNDbf);
     bfit_histo[1]->Scale(areaFDdata_histo/areaFDbf);
     
+    TH1F *bfit_histoFD_bump;
+    bfit_histoFD_bump = (TH1F*) bfit_histo[1]->Clone("bfit_histoFD_bump");
+    double areaFDbf_bump = bfit_histoFD_bump->Integral();
+    double areaFDdt_bump = data_spect_histo[1]->Integral();
+    double ratioFDdt_bf_bump = areaFDdt_bump/areaFDbf_bump;
+    bfit_histoFD_bump->Scale(ratioFDdt_bf_bump);
+
     double areaNDbf_frac = bfit_histo[0]->Integral(1,12) + bfit_histo[0]->Integral(26,27);
     double areaFDbf_frac = bfit_histo[1]->Integral(1,12) + bfit_histo[1]->Integral(26,27);
     double areaNDdt_frac = data_spect_histo[0]->Integral(1,12) + data_spect_histo[0]->Integral(26,27);
@@ -341,5 +348,20 @@ void RENO_spectra(){
     canv0->Print("Plots/canv_RENO.pdf");
     canv0->Print("Plots/canv_RENO.eps");
     //------------------------------------
-	
+
+
+    TCanvas *canv1 = new TCanvas("canv1","",700,300);
+    TGaxis::SetMaxDigits(3);
+    
+    frame_spectrafd->Draw();
+    data_spect_histo[1]->Draw("P same");
+    //noosc_histo[1]->Draw("h same");
+    bfit_histoFD_bump->Draw("h same");
+    lat->DrawLatex(0.7,0.3,"FD");
+    gPad->RedrawAxis();
+    gPad->SetTicks(1,1);
+    
+    canv1->Print("Plots/RENO_bump.eps");
+    canv1->Print("Plots/RENO_bump.pdf");
+
 }

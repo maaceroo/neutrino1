@@ -60,6 +60,7 @@ void db_CovaMatrix_6AD_26bins()
         }//for k
     }//for j
     
+    
     //Assign correlation matrixlower triangle
     double corrMat_6x6Block[6][6];
     for(int ii = 0 ; ii < 6 ; ii++){
@@ -67,13 +68,35 @@ void db_CovaMatrix_6AD_26bins()
             rho_array[jj][ii] = rho_array[ii][jj];
         }
     }
+
+    TH2F *corrMat_6x6Block_histo = new TH2F("corrMat_6x6Block_histo","",6,0,6,6,0,6);
+    corrMat_6x6Block_histo->GetXaxis()->SetLabelSize(1.2*sz);
+    corrMat_6x6Block_histo->GetXaxis()->SetLabelFont(ft);
+    corrMat_6x6Block_histo->GetXaxis()->SetTitle("AD");
+    corrMat_6x6Block_histo->GetXaxis()->SetTitleSize(1.2*sz);
+    corrMat_6x6Block_histo->GetXaxis()->SetTitleFont(ft);
+    corrMat_6x6Block_histo->GetYaxis()->SetLabelSize(1.2*sz);
+    corrMat_6x6Block_histo->GetYaxis()->SetLabelFont(ft);
+    corrMat_6x6Block_histo->GetYaxis()->SetTitle("AD");
+    corrMat_6x6Block_histo->GetYaxis()->SetTitleSize(1.2*sz);
+    corrMat_6x6Block_histo->GetYaxis()->SetTitleFont(ft);
+    corrMat_6x6Block_histo->GetZaxis()->SetLabelSize(0.9*sz);
+    corrMat_6x6Block_histo->GetZaxis()->SetLabelFont(ft);
     
+    corrMat_6x6Block_histo->SetMarkerSize(1.5);
+    //corrMat_6x6Block_histo->GetMarkerAttributes()->SetFont(ft);
+
+    corrMat_6x6Block_histo->SetMaximum(1.0);
+    corrMat_6x6Block_histo->SetMinimum(0.995);
     cout << "The AD-correlation Matrix is:" << endl;
+    
     for(int ii = 0 ; ii < 6 ; ii++){
         for(int jj = 0 ; jj < 6 ; jj++){
             corrMat_6x6Block[ii][jj] =  rho_array[ii][jj];
+            corrMat_6x6Block_histo->SetBinContent(ii+1,jj+1,rho_array[ii][jj]);
         }
     }
+
 
     //-- Number of detectors
     int nDet = 6;
@@ -130,7 +153,8 @@ void db_CovaMatrix_6AD_26bins()
     //e_syst_histo1->SetFillColor(kRed);
     TH1F *e_syst_histo2 = new TH1F("e_syst_histo2","",NB,xbins);
     e_syst_histo2->SetLineColor(kRed);
-    e_syst_histo2->SetFillColorAlpha(kWhite, 1.0);
+    //e_syst_histo2->SetFillColorAlpha(kWhite, 1.0);
+    e_syst_histo2->SetFillColorAlpha(kRed, 1.0);
     //e_syst_histo2->SetFillColor(10);
     for (int i = 0 ; i < NB ; i++) {
         e_syst_histo1->SetBinContent(i+1,e_syst[i]);
@@ -204,25 +228,47 @@ void db_CovaMatrix_6AD_26bins()
     canv2->cd(3);
     unoMat_histo->Draw("COLZ");
     //---------------------------------------------------------
-    TH2F *e_frame = new TH2F("e_frame","",10,0.7,12,10,0.5,1.5);
+    TH1F *systE1_histo;
+    TH1F *systE2_histo;
+    systE1_histo = (TH1F*)e_syst_histo1->Clone("systE1_histo");
+    systE2_histo = (TH1F*)e_syst_histo2->Clone("systE2_histo");
+    for (int i = 0 ; i < NB ; i++) {
+        double cont = systE1_histo->GetBinContent(i+1);
+        systE1_histo->SetBinContent(i+1,cont - 1.0);
+        cont = systE2_histo->GetBinContent(i+1);
+        systE2_histo->SetBinContent(i+1,cont - 1.0);
+    }
+
+    //TH2F *e_frame = new TH2F("e_frame","",10,0.7,12,10,0.5,1.5);
+    TH2F *e_frame = new TH2F("e_frame","",10,0.7,12,10,-0.5,0.5);
     e_frame->GetXaxis()->SetTitle("Prompt Energy (MeV)");
-    //e_frame->GetXaxis()->SetTitleFont(ft);
-    //e_frame->GetXaxis()->SetTitleOffset(0.9);
-    //e_frame->GetXaxis()->SetTitleSize(1.2*sz);
-    //e_frame->GetXaxis()->SetLabelSize(1.2*sz);
-    //e_frame->GetXaxis()->SetLabelFont(ft);
-    //e_frame->GetYaxis()->SetLabelSize(1.2*sz);
-    //e_frame->GetYaxis()->SetLabelFont(ft);
+    e_frame->GetXaxis()->SetTitleFont(ft);
+    e_frame->GetXaxis()->SetTitleOffset(0.9);
+    e_frame->GetXaxis()->SetTitleSize(1.5*sz);
+    e_frame->GetXaxis()->SetLabelSize(1.5*sz);
+    e_frame->GetXaxis()->SetLabelFont(ft);
+    e_frame->GetYaxis()->SetTitle("Syst. Error");
+    e_frame->GetYaxis()->SetTitleFont(ft);
+    e_frame->GetYaxis()->SetTitleOffset(0.9);
+    e_frame->GetYaxis()->SetTitleSize(1.5*sz);
+    e_frame->GetYaxis()->SetLabelSize(1.5*sz);
+    e_frame->GetYaxis()->SetLabelFont(ft);
     TCanvas *canv1 = new TCanvas("canv1","canv1",700,400);
     canv1->cd();
+    gPad->SetBottomMargin(0.13);
+    gPad->SetRightMargin(0.06);
+    gPad->SetLeftMargin(0.11);
     e_frame->Draw();
-    e_syst_histo1->Draw("same hist");
-    e_syst_histo2->Draw("same hist");
+    //e_syst_histo1->Draw("same hist");
+    //e_syst_histo2->Draw("same hist");
+    systE1_histo->Draw("same hist");
+    systE2_histo->Draw("same hist");
     gPad->Update();
     gPad->RedrawAxis();
-    TLine* line1 = new TLine(gPad->GetUxmin(),1,gPad->GetUxmax(),1);
+    TLine* line1 = new TLine(gPad->GetUxmin(),0,gPad->GetUxmax(),0);
     line1->Draw();
     gPad->SetTicks(1,1);
+    canv1->Print("db_systError.eps");
 
     //---------------------------------------------------------
     corrMat_histo_6x6Det->SetMaximum(1.0);
@@ -230,7 +276,13 @@ void db_CovaMatrix_6AD_26bins()
     corrMat_histo_6x6Det->GetXaxis()->SetLabelSize(0.8*sz);
     corrMat_histo_6x6Det->GetXaxis()->SetLabelFont(ft);
     corrMat_histo_6x6Det->GetYaxis()->SetLabelSize(0.8*sz);
+    corrMat_histo_6x6Det->GetXaxis()->SetTitle("Bin");
+    corrMat_histo_6x6Det->GetXaxis()->SetTitleSize(0.8*sz);
+    corrMat_histo_6x6Det->GetXaxis()->SetTitleFont(ft);
     corrMat_histo_6x6Det->GetYaxis()->SetLabelFont(ft);
+    corrMat_histo_6x6Det->GetYaxis()->SetTitle("Bin");
+    corrMat_histo_6x6Det->GetYaxis()->SetTitleSize(0.8*sz);
+    corrMat_histo_6x6Det->GetYaxis()->SetTitleFont(ft);
     corrMat_histo_6x6Det->GetZaxis()->SetLabelSize(0.6*sz);
     corrMat_histo_6x6Det->GetZaxis()->SetLabelFont(ft);
     TCanvas *canv6x6 = new TCanvas("canv6x6","canv6x6",700,700);
@@ -239,5 +291,12 @@ void db_CovaMatrix_6AD_26bins()
     
     canv6x6->Print("canv6x6.eps");
 
+    TCanvas *canvCorr = new TCanvas("canvCorr","canvCorr",750,700);
+    gPad->SetRightMargin(0.15);
+    corrMat_6x6Block_histo->Draw("COLZ TEXT");
+    gPad->SetTicks(1,1);
+    
+    canvCorr->Print("canvCorr.eps");
+    
 }// end
 
