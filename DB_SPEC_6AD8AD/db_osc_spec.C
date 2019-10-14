@@ -86,7 +86,8 @@ void db_osc_spec()
        */
 
     FILE *file_IBDrates;
-    file_IBDrates = fopen("files_data/db_noOsc_IBDrates_perday.txt","w");
+    file_IBDrates1230 = fopen("files_data/db_noOsc_IBDrates_perday_1230.txt","w");
+    file_IBDrates217  = fopen("files_data/db_noOsc_IBDrates_perday_217.txt","w");
 
     int sel;
     double TotNosc[nAD];

@@ -132,18 +132,17 @@ set yrange[ymin:ymax]
 set ytics 1.5,0.5,3.4
 #set format y "10^{%T}"
 #set label 4 "{/Symbol D}m^{2}_{ee} (eV^2)" at -0.021,2.8 center rotate by 90
-set label 4 "{/Symbol D}m^{2}_{ee} (10^{-3} eV^2)" at -0.0175,2.5 center rotate by 90
+set label 4 "{/Symbol D}m^{2}_{ee} (10^{-3} eV^2)" at -0.0175,2.35 center rotate by 90
 
 #set label 5 "{+ Best-fit RENO}" at 0.16,3.2 center 
 #set label 6 "{* Best-fit Daya Bay}" at 0.16,3.0 center 
 
 ## Mark at the BF
-set label 35 '+' at 0.088687,2.594 center font 'CharterBT-Roman,15'
+set label 35 '+' at 0.086768,2.594 center font 'CharterBT-Roman,15'
 ## Minimum chi2 value
 min = 20.9186
-min2 = 67.6002
-minC = 0.311
-
+min2 = 59.9126
+minC = 0.1782
 
 unset ztics
 set clabel
@@ -151,9 +150,17 @@ unset key
 set grid ytics lc rgb "#bbbbbb" lw 1 lt 0
 set grid xtics lc rgb "#bbbbbb" lw 1 lt 0
 
-splot 'files/chi2_s2t-dm2_surface_spect-noFL.txt' u 1:(($2)*1e3):(($3)-min) w l lw 1 dashtype 5
-splot '../DB_SPEC_6AD/files_data/chi2_s2t-dm2_surface_SPEC-noFL.txt' u 1:(($2)*1e3):(($3)-min2) w l lw 1 dashtype 3
 splot '../DB_SPEC_6AD/files_data/chi2_s2t-dm2_surface_COMBINED.txt' u 1:(($2)*1e3):(($3)-minC) w l lw 3
+
+set linetype 2 lw 1 dashtype 5
+set linetype 3 lw 1 dashtype 5
+set linetype 4 lw 1 dashtype 5
+splot 'files/chi2_s2t-dm2_surface_spect-noFL.txt' u 1:(($2)*1e3):(($3)-min) w l lw 1 dashtype 5
+
+set linetype 2 lw 1 dashtype 3
+set linetype 3 lw 1 dashtype 3
+set linetype 4 lw 1 dashtype 3
+splot '../DB_SPEC_6AD/files_data/chi2_s2t-dm2_surface_SPEC-noFL.txt' u 1:(($2)*1e3):(($3)-min2) w l lw 1 dashtype 3
 
 ########################################################################################
 
