@@ -1,5 +1,5 @@
 //---------------------------------------------------------------------//
-//--  db_ntuple.C - By M.A. Acero O. & A.A. Aguilar-A. - 2018-08-14  --//
+//--  db_ntuple.C - By M.A. Acero O. & A.A. Aguilar-A. - 2019-10-25  --//
 //---------------------------------------------------------------------//
 // This macro can be executed under ROOT typing                        //
 // "root[0] .x db_ntuple.C"                                            //
@@ -11,28 +11,59 @@
 // paper PRD95.                                                        //
 //---------------------------------------------------------------------//
 
-#include "constants.h"
+//#include "constants.h"
 
 void db_ntuple()
 { // begin
 
+    //Tenemos que hacer tres n-tuplas
+    //una para 6AD (para obtener el número de enventos no oscilado en ese periodo) - Nosc_217
+    //Una para 2130 dias (para obtener el número de enventos no oscilado en ese análisis -combinado-) - Nosc_2130.
+    //Con Nosc_217 y Nosc_2130, se debe poder calcular Nosc_1913
+    //Una para solo 8AD
+    
     //-------------------
     // Energy Histograms
     //-------------------
-    TFile *fenergy8AD = new TFile("PRD95_1230days_data.root","read");
-    TFile *fenergy6AD = new TFile("PRL112_217days_data.root","read");
+    //TFile *fenergy8AD = new TFile("PRD95_1230days_data.root","read");
+    //TFile *fenergy6AD = new TFile("PRL112_217days_data.root","read");
+    std::cout << "Calling the root file" << std::endl;
+    TFile *fenergy = new TFile("histos_6AD217Days_8AD1913Days_data.root","read");
     //Three sets of histograms one for each Experimental Hall
     const int nEH = 3;
+    //1230 days
+    std::cout << "Creating histograms" << std::endl;
     TH1F *nosc_spect_histo[nEH];
     TH1F *bkgd_spect_histo[nEH];
     TH1F *nu_nosc_spect_histo[nEH];
+    //217 days - 6AD
+    TH1F *nosc_spect_histo6AD[nEH];
+    TH1F *bkgd_spect_histo6AD[nEH];
+    TH1F *nu_nosc_spect_histo6AD[nEH];
+    //1913 days - 8AD
+    TH1F *nosc_spect_histo8AD[nEH];
+    TH1F *bkgd_spect_histo8AD[nEH];
+    TH1F *nu_nosc_spect_histo8AD[nEH];
+    std::cout << "Filling histograms" << std::endl;
     for (int i = 0 ; i < nEH ; i++)
     {
-        nosc_spect_histo[i] = (TH1F*) fenergy->Get(Form("nosc_spect_histo_%d",i));
-        bkgd_spect_histo[i] = (TH1F*) fenergy->Get(Form("bkgd_spect_histo_%d",i));
+        std::cout << "EH " << i << std::endl;
+        nosc_spect_histo[i]    = (TH1F*) fenergy->Get(Form("nosc_spect_6AD8AD_histo_%d",i));
+        bkgd_spect_histo[i]    = (TH1F*) fenergy->Get(Form("bkgd_spect_6AD8AD_histo_%d",i));
         nu_nosc_spect_histo[i] = (TH1F*) nosc_spect_histo[i]->Clone();
         nu_nosc_spect_histo[i]->Add(bkgd_spect_histo[i],-1.0);
+        
+        nosc_spect_histo6AD[i]    = (TH1F*) fenergy->Get(Form("nosc_spect_6AD35B_histo_%d",i));
+        bkgd_spect_histo6AD[i]    = (TH1F*) fenergy->Get(Form("bkgd_spect_6AD35B_histo_%d",i));
+        nu_nosc_spect_histo6AD[i] = (TH1F*) nosc_spect_histo6AD[i]->Clone();
+        nu_nosc_spect_histo6AD[i]->Add(bkgd_spect_histo6AD[i],-1.0);
+
+        nosc_spect_histo8AD[i]    = (TH1F*) fenergy->Get(Form("nosc_spect_8AD35B_histo_%d",i));
+        bkgd_spect_histo8AD[i]    = (TH1F*) fenergy->Get(Form("bkgd_spect_8AD35B_histo_%d",i));
+        nu_nosc_spect_histo8AD[i] = (TH1F*) nosc_spect_histo8AD[i]->Clone();
+        nu_nosc_spect_histo8AD[i]->Add(bkgd_spect_histo8AD[i],-1.0);
     }
+/*
     //-------------------
     // Distance Histogram
     //-------------------
@@ -62,17 +93,17 @@ void db_ntuple()
 
     //make ntuple
     TFile *fout = new TFile("files_data/db-ntuple.root","RECREATE");
-    TTree *T = new TTree("T","Monte Carlo neutrino events");
+    TTree *T6AD = new TTree("TAD","Monte Carlo neutrino events 6AD");
 
     float Ep, En, Ln;
     int   blid,ir,id,ad;
-    T->Branch("Ep"  ,&Ep  ,"Ep/F");	  //prompt reconstructed energy
-    T->Branch("En"  ,&En  ,"En/F");	  //neutrino energy
-    T->Branch("Ln"  ,&Ln  ,"Ln/F");	  //neutrino baseline
-    T->Branch("blid",&blid,"blid/s"); //Baseline id (0-47)
+    T6AD->Branch("Ep"  ,&Ep  ,"Ep/F");	  //prompt reconstructed energy
+    T6AD->Branch("En"  ,&En  ,"En/F");	  //neutrino energy
+    T6AD->Branch("Ln"  ,&Ln  ,"Ln/F");	  //neutrino baseline
+    T6AD->Branch("blid",&blid,"blid/s"); //Baseline id (0-47)
     
-    T->Branch("ir", &ir, "ir/s"); //reactor
-    T->Branch("id", &id, "id/s"); //detector
+    T6AD->Branch("ir", &ir, "ir/s"); //reactor
+    T6AD->Branch("id", &id, "id/s"); //detector
 
     //int Nevents = 5000000; // CAUTION!! This must be commented out when using the script
     int Nevents = atoi(getenv("NTUPLE_EVENTS")); // This must be uncommented when using the script
@@ -100,12 +131,12 @@ void db_ntuple()
             Ep = nu_nosc_spect_histo[ad]->GetRandom();
             En = Ep*1.03 + avg_nRecoilE + avg_constE;
         
-            T->Fill();
+            T6AD->Fill();
             
             if(i%1000000 == 0)
                 cout << "Number of events " << i << " done!" << endl;
         }
     
     fout->Write();
-
+*/
 } // end

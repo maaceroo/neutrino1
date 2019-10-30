@@ -195,25 +195,12 @@ double chi2(const double *xx)
             delta_vector(index2,0) = Md8AD - Td8AD*(1.0 + epsilon + eps_d[iAD] + wrd) + eta_d[iAD];
             transp_delta_vector(0,index)  = delta_vector(index,0);
             transp_delta_vector(0,index2) = delta_vector(index2,0);
-
-            //cout << "iAD = " << iAD << "  iBin = " << iBIN << "  Md = " << Md << " Td = " << Td
-                 //<< " delta = " << delta_vector(index,0) << endl;
         }
     }
-    //cout << "here the test begins." << endl;
-    //-- Tests
-    //TMatrixD *test_mat = new TMatrixD(1,1);
-    //TMatrixD *part_mat = new TMatrixD(NBx_cov,1);
-    //part_mat = fracCovaMatrix_matrix*predi_vector;
-    //test_mat = (predi_vector.T())*part_mat;
-    //test_mat.Print();
-    //cout << "here the test ends." << endl;
 
     for (int i = 0 ; i < NBx_cov ; i++) {
         for (int j = 0 ; j < NBy_cov ; j++) {
-            fullCovaMatrix_matrix(i,j) = statErroMatrix_matrix(i,j)
-            //+ 0.0*predi_vector(i,0)*predi_vector(j,0)*fracCovaMatrix_matrix(i,j); // ** test A.A. 7/sep/18
-            + predi_vector(i,0)*predi_vector(j,0)*fracCovaMatrix_matrix(i,j);
+            fullCovaMatrix_matrix(i,j) = statErroMatrix_matrix(i,j) + predi_vector(i,0)*predi_vector(j,0)*fracCovaMatrix_matrix(i,j);
         }
     }
     //predi_vector->Print();
@@ -230,14 +217,6 @@ double chi2(const double *xx)
         break;
     }
     
-    /*
-    TMatrixD *a_vector(NBx_cov,1);
-    a_vector = inv_fullCovaMatrix_matrix*delta_vector;
-    
-    TMatrixD *product_matrix(1,1);
-    product_matrix = transp_delta_vector*a_vector;
-    */
-
     for (int i = 0 ; i < NBx_cov ; i++) {
         for (int j = 0 ; j < NBy_cov ; j++) {
             double delta_i = transp_delta_vector(0,i);
@@ -271,9 +250,9 @@ int db_minuit_spec_CovMat(const char * minName = "Minuit",
 {
     cout << "Let's begin..." << endl;
   
-    //-------------------
+    //--------------------------------------
     // Covariance-matrix Histograms
-    //-------------------
+    //--------------------------------------
     TFile *fracCovaMatrix_File = new TFile("CombCovaMat/db_CovaMatrix_6AD8AD_16x16Det.root","READ");
     fracCovaMatrix_hist = (TH2F*)(fracCovaMatrix_File->Get("covaMat_histo_16x16"));
     //-- Creating the Rebinned Matrix with root tools.
@@ -320,29 +299,34 @@ int db_minuit_spec_CovMat(const char * minName = "Minuit",
     //-------------------
     // Energy Histograms
     //-------------------
-    TFile *fenergy1230 = new TFile("./PRD95_1230days_data.root","read");
-    TFile *fenergy0217 = new TFile("./PRL112_217days_data.root","read");
+    //TFile *fenergy0217 = new TFile("./PRL112_217days_data.root","read");
+    //TFile *fenergy1230 = new TFile("./PRD95_1230days_data.root","read");
+    TFile *fenergy = new TFile("./histos_6AD217Days_8AD1913Days_data.root","read");
     //Three sets of histograms one for each Experimental Hall
     double bfactor[nEH];
     for (int i = 0 ; i < nEH ; i++)
         {
-            //Data 1230
-            data_spect_histo8AD[i] = (TH1F*) fenergy1230->Get(Form("data_spect_histo_%d",i));
-            double dfactor = 1.0/data_spect_histo8AD[i]->Integral();
-            data_spect_histo8AD[i]->Scale(dfactor);
-            //Background 1230
-            bkgd_spect_histo8AD[i] = (TH1F*) fenergy1230->Get(Form("bkgd_spect_histo_%d",i));
-            bfactor[i] = 1.0/bkgd_spect_histo8AD[i]->Integral();
-            bkgd_spect_histo8AD[i]->Scale(bfactor[i]);
-
             //Data 217
-            data_spect_histo6AD[i] = (TH1F*) fenergy0217->Get(Form("data_spect_histo_%d",i));
+            //data_spect_histo6AD[i] = (TH1F*) fenergy0217->Get(Form("data_spect_histo_%d",i));
+            data_spect_histo6AD[i] = (TH1F*) fenergy->Get(Form("data_spect_6AD35B_histo_%d",i));
             double dfactor = 1.0/data_spect_histo6AD[i]->Integral();
             data_spect_histo6AD[i]->Scale(dfactor);
             //Background 6AD
-            bkgd_spect_histo6AD[i] = (TH1F*) fenergy0217->Get(Form("bkgd_spect_histo_%d",i));
+            //bkgd_spect_histo6AD[i] = (TH1F*) fenergy0217->Get(Form("bkgd_spect_histo_%d",i));
+            bkgd_spect_histo6AD[i] = (TH1F*) fenergy->Get(Form("bkgd_spect_6AD35B_histo_%d",i));
             bfactor[i] = 1.0/bkgd_spect_histo6AD[i]->Integral();
             bkgd_spect_histo6AD[i]->Scale(bfactor[i]);
+
+            //Data 1230
+            //data_spect_histo8AD[i] = (TH1F*) fenergy1230->Get(Form("data_spect_histo_%d",i));
+            data_spect_histo8AD[i] = (TH1F*) fenergy->Get(Form("data_spect_8AD35B_histo_%d",i));
+            double dfactor = 1.0/data_spect_histo8AD[i]->Integral();
+            data_spect_histo8AD[i]->Scale(dfactor);
+            //Background 1230
+            //bkgd_spect_histo8AD[i] = (TH1F*) fenergy1230->Get(Form("bkgd_spect_histo_%d",i));
+            bkgd_spect_histo8AD[i] = (TH1F*) fenergy->Get(Form("bkgd_spect_8AD35B_histo_%d",i));
+            bfactor[i] = 1.0/bkgd_spect_histo8AD[i]->Integral();
+            bkgd_spect_histo8AD[i]->Scale(bfactor[i]);
         }
     
     // histogram binning
@@ -578,79 +562,6 @@ int db_minuit_spec_CovMat(const char * minName = "Minuit",
 
     }//file loop END
     std::cout << "Successful run!!" << endl;
-    
     //------------------------------------------------------------------------------
-    /*
-    //Drawing no-oscillated spectra
-    TCanvas *canv0 = new TCanvas("canv0","",3*700,2*350);
-    canv0->Divide(3,2);
-    for(int iAD = 0 ; iAD < 6 ; iAD++)
-    {
-        canv0->cd(iAD+1);
-        nosc_spect_hist[iAD]->Draw("");
-    }
-    //canv0->Print("files_plots/canv0.pdf");
-    
-    TH1F *data_spect_EHhisto[nEH];
-    //-- ADs 0, 1 -> EH 0
-    data_spect_EHhisto[0] = (TH1F*)data_spect_histo[0]->Clone();
-    data_spect_EHhisto[0]->Scale(IBDrate_data[0][0]*daqTime[0]);
-    data_spect_EHhisto[0]->Add(data_spect_histo[0],IBDrate_data[1][0]*daqTime[1]);
-    //-- AD 2 -> EH 1
-    data_spect_EHhisto[1] = (TH1F*)data_spect_histo[1]->Clone();
-    data_spect_EHhisto[1]->Scale(IBDrate_data[2][0]*daqTime[2]);
-    //-- ADs 3, 4, 5 -> EH 2
-    data_spect_EHhisto[2] = (TH1F*)data_spect_histo[2]->Clone();
-    data_spect_EHhisto[2]->Scale(IBDrate_data[3][0]*daqTime[3]);
-    data_spect_EHhisto[2]->Add(data_spect_histo[2],IBDrate_data[4][0]*daqTime[4]);
-    data_spect_EHhisto[2]->Add(data_spect_histo[2],IBDrate_data[5][0]*daqTime[5]);
-    
-    
-    TH1F *nosc_spect_EHhist[nEH];
-    //-- ADs 0, 1 -> EH 0
-    nosc_spect_EHhist[0] = (TH1F*)nu_nosc_spect_hist[0]->Clone(); // Nus from AD0
-    nosc_spect_EHhist[0]->Add(nu_nosc_spect_hist[1],1); // Nus from AD1
-    nosc_spect_EHhist[0]->Add(bkgd_spect_histo[0],1.0/bfactor[0]); //Background from EH0
-    //-- AD 2 -> EH 1
-    nosc_spect_EHhist[1] = (TH1F*)nu_nosc_spect_hist[2]->Clone(); //Nus from AD2
-    nosc_spect_EHhist[1]->Add(bkgd_spect_histo[1],1.0/bfactor[1]); //Background from EH1
-    //-- ADs 3, 4, 5 -> EH 2
-    nosc_spect_EHhist[2] = (TH1F*)nu_nosc_spect_hist[3]->Clone(); //Nus from AD3
-    nosc_spect_EHhist[2]->Add(nu_nosc_spect_hist[4],1); //Nus from AD4
-    nosc_spect_EHhist[2]->Add(nu_nosc_spect_hist[5],1); //Nus from AD5
-    nosc_spect_EHhist[2]->Add(bkgd_spect_histo[2],1.0/bfactor[2]); //Background from EH2
-
-    TCanvas *canv1 = new TCanvas("canv1","Events",3*700,1*350);
-    canv1->Divide(3,1);
-    for(int iEH = 0 ; iEH < nEH ; iEH++)
-    {
-        canv1->cd(iEH+1);
-        nosc_spect_EHhist[iEH]->Draw("h");
-        data_spect_EHhisto[iEH]->Draw("p same");
-    }
-    //canv1->Print("files_plots/canv1.pdf");
-
-    //---------------------------------------
-    TCanvas *canv2 = new TCanvas("canv2","Events/MeV",3*700,1*350);
-    canv2->Divide(3,1);
-    TH1F *nosc_spect_EHhist_EvtperMeV[nEH];
-    for(int iEH = 0 ; iEH < nEH ; iEH++)
-    {
-        nosc_spect_EHhist_EvtperMeV[iEH] = new TH1F(Form("nosc_spect_EHhist_EvtperMeV_%d",iEH),"",NB,xbins);
-        for(int ibin = 0 ; ibin < NB ; ibin++)
-        {
-            double binw = nosc_spect_EHhist[iEH]->GetBinWidth(ibin+1);
-            double binc = nosc_spect_EHhist[iEH]->GetBinContent(ibin+1);
-            //cout << iEH << "  binw = " << binw << "\t binc = " << binc << endl;
-            nosc_spect_EHhist_EvtperMeV[iEH]->SetBinContent(ibin+1,binc/binw);
-        }
-        canv2->cd(iEH+1);
-        nosc_spect_EHhist_EvtperMeV[iEH]->Draw("h");
-    }
-    //canv2->Print("files_plots/canv2.pdf");
-
-    //------------------------------------------------------------------------------
-    //------------------------------------------------------------------------------
-     */
     return 0;
 }

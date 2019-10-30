@@ -1,5 +1,5 @@
 //-- db_osc_spec.C  -  M.A.Acero O. - A.A.Alexis A. --//
-//For the 8AD spectral analysis, using information from
+//For the 6AD+8AD spectral analysis, using information from
 //F.P. An et al., PRD 95 072006 (2017)
 #include "constants.h"
 #include <iostream>
@@ -23,7 +23,8 @@ void db_osc_spec()
     // Open  file to read simulated data
     TFile *fntuple = new TFile("files_data/db-ntuple.root","READ");
     TTree *T = (TTree*)fntuple->Get("T");
-    TCut cutBF;
+    TCut cutBF_6AD; //-- For the 217-days (6AD) period
+    TCut cutBF_6AD8AD; //-- For the 1230-days (6AD+8AD) period
     //---------------------------------------------------
     // histogram binning for the simulated data
     //double    NB = 35;
@@ -85,9 +86,10 @@ void db_osc_spec()
        const double s22th12 = 0.861;              //PRL 108 171803 (2012)
        */
 
-    FILE *file_IBDrates;
-    file_IBDrates1230 = fopen("files_data/db_noOsc_IBDrates_perday_1230.txt","w");
-    file_IBDrates217  = fopen("files_data/db_noOsc_IBDrates_perday_217.txt","w");
+    FILE *file_IBDrates8AD;
+    FILE *file_IBDrates6AD;
+    file_IBDrates8AD = fopen("files_data/db_noOsc_IBDrates_perday_8AD.txt","w");
+    file_IBDrates6AD = fopen("files_data/db_noOsc_IBDrates_perday_6AD.txt","w");
 
     int sel;
     double TotNosc[nAD];

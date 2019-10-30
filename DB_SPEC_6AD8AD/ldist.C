@@ -70,6 +70,7 @@ void ldist()
     double lo = 0;
     double hi = 48;
     TH1F *histo_ldist = new TH1F("histo_ldist","",nb,lo,hi);
+    histo_ldist->Sumw2();
     TH1F *histo_ldist_eh3 = new TH1F("histo_ldist_eh3","",nb,lo,hi);
 
     for (int id=0; id<nDet; id++){
