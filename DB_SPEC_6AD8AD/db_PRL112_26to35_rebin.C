@@ -20,31 +20,31 @@ void db_PRL112_26to35_rebin()
 
     const int nEH = 3;
     //-- Events
-    TH1F *data_spect_6AD26B_histoPerMeV[nEH];
-    TH1F *data_spect_6AD8AD_histoPerMeV[nEH];
-    TH1F *nosc_spect_6AD26B_histoPerMeV[nEH];
-    TH1F *nosc_spect_6AD8AD_histoPerMeV[nEH];
-    TH1F *bkgd_spect_6AD26B_histoPerMeV[nEH];
-    TH1F *bkgd_spect_6AD8AD_histoPerMeV[nEH];
+    TH1F *data_spect_6AD26B_histo[nEH];
+    TH1F *data_spect_6AD8AD_histo[nEH];
+    TH1F *nosc_spect_6AD26B_histo[nEH];
+    TH1F *nosc_spect_6AD8AD_histo[nEH];
+    TH1F *bkgd_spect_6AD26B_histo[nEH];
+    TH1F *bkgd_spect_6AD8AD_histo[nEH];
     for (int i = 0 ; i < nEH ; i++) {
-        data_spect_6AD26B_histoPerMeV[i] = (TH1F*)fdata6AD->Get(Form("data_spect_histoPerMeV_%d",i));
-        data_spect_6AD8AD_histoPerMeV[i] = (TH1F*)fdata8AD->Get(Form("data_spect_histoPerMeV_%d",i));
-        data_spect_6AD26B_histoPerMeV[i]->SetName(Form("data_spect_6AD26B_histoPerMeV_%d",i));
-        data_spect_6AD8AD_histoPerMeV[i]->SetName(Form("data_spect_6AD8AD_histoPerMeV_%d",i));
-        data_spect_6AD8AD_histoPerMeV[i]->SetLineColor(kRed);
-        data_spect_6AD8AD_histoPerMeV[i]->Sumw2();
+        data_spect_6AD26B_histo[i] = (TH1F*)fdata6AD->Get(Form("data_spect_histo_%d",i));
+        data_spect_6AD8AD_histo[i] = (TH1F*)fdata8AD->Get(Form("data_spect_histo_%d",i));
+        data_spect_6AD26B_histo[i]->SetName(Form("data_spect_6AD26B_histo_%d",i));
+        data_spect_6AD8AD_histo[i]->SetName(Form("data_spect_6AD8AD_histo_%d",i));
+        data_spect_6AD8AD_histo[i]->SetLineColor(kRed);
+        data_spect_6AD8AD_histo[i]->Sumw2();
 
-        nosc_spect_6AD26B_histoPerMeV[i] = (TH1F*)fdata6AD->Get(Form("nosc_spect_histoPerMeV_%d",i));
-        nosc_spect_6AD8AD_histoPerMeV[i] = (TH1F*)fdata8AD->Get(Form("nosc_spect_histoPerMeV_%d",i));
-        nosc_spect_6AD26B_histoPerMeV[i]->SetName(Form("nosc_spect_6AD26B_histoPerMeV_%d",i));
-        nosc_spect_6AD8AD_histoPerMeV[i]->SetName(Form("nosc_spect_6AD8AD_histoPerMeV_%d",i));
-        nosc_spect_6AD8AD_histoPerMeV[i]->SetLineColor(kRed+2);
+        nosc_spect_6AD26B_histo[i] = (TH1F*)fdata6AD->Get(Form("nosc_spect_histo_%d",i));
+        nosc_spect_6AD8AD_histo[i] = (TH1F*)fdata8AD->Get(Form("nosc_spect_histo_%d",i));
+        nosc_spect_6AD26B_histo[i]->SetName(Form("nosc_spect_6AD26B_histo_%d",i));
+        nosc_spect_6AD8AD_histo[i]->SetName(Form("nosc_spect_6AD8AD_histo_%d",i));
+        nosc_spect_6AD8AD_histo[i]->SetLineColor(kRed+2);
 
-        bkgd_spect_6AD26B_histoPerMeV[i] = (TH1F*)fdata6AD->Get(Form("bkgd_spect_histoPerMeV_%d",i));
-        bkgd_spect_6AD8AD_histoPerMeV[i] = (TH1F*)fdata8AD->Get(Form("bkgd_spect_histoPerMeV_%d",i));
-        bkgd_spect_6AD26B_histoPerMeV[i]->SetName(Form("bkgd_spect_6AD26B_histoPerMeV_%d",i));
-        bkgd_spect_6AD8AD_histoPerMeV[i]->SetName(Form("bkgd_spect_6AD8AD_histoPerMeV_%d",i));
-        bkgd_spect_6AD8AD_histoPerMeV[i]->SetLineColor(kRed+1);
+        bkgd_spect_6AD26B_histo[i] = (TH1F*)fdata6AD->Get(Form("bkgd_spect_histo_%d",i));
+        bkgd_spect_6AD8AD_histo[i] = (TH1F*)fdata8AD->Get(Form("bkgd_spect_histo_%d",i));
+        bkgd_spect_6AD26B_histo[i]->SetName(Form("bkgd_spect_6AD26B_histo_%d",i));
+        bkgd_spect_6AD8AD_histo[i]->SetName(Form("bkgd_spect_6AD8AD_histo_%d",i));
+        bkgd_spect_6AD8AD_histo[i]->SetLineColor(kRed+1);
     }
     //----------------------------------------------------------------------------------------
     TLegend *leg0 = new TLegend(0.6,0.7,0.8,0.87);
@@ -53,29 +53,29 @@ void db_PRL112_26to35_rebin()
     leg0->SetFillColor(0);
     leg0->SetLineColor(0);
     
-    leg0->AddEntry(data_spect_6AD26B_histoPerMeV[0],"DB 217 Days - 6AD - 26 bins","l");
+    leg0->AddEntry(data_spect_6AD26B_histo[0],"DB 217 Days - 6AD - 26 bins","l");
 
     //-- 26-bins data spectra
     TCanvas *canv0 = new TCanvas("canv0","6AD data - 26 Bins",0,0,700,3*450);
     canv0->Divide(1,3);
     
     canv0->cd(1);
-    data_spect_6AD26B_histoPerMeV[0]->Draw("hist");
-    nosc_spect_6AD26B_histoPerMeV[0]->Draw("hist same");
-    bkgd_spect_6AD26B_histoPerMeV[0]->Draw("same hist");
+    data_spect_6AD26B_histo[0]->Draw("hist");
+    nosc_spect_6AD26B_histo[0]->Draw("hist same");
+    bkgd_spect_6AD26B_histo[0]->Draw("same hist");
     leg0->Draw();
     gPad->SetTicks(1,1);
     
     canv0->cd(2);
-    data_spect_6AD26B_histoPerMeV[1]->Draw("hist");
-    nosc_spect_6AD26B_histoPerMeV[1]->Draw("hist same");
-    bkgd_spect_6AD26B_histoPerMeV[1]->Draw("same hist");
+    data_spect_6AD26B_histo[1]->Draw("hist");
+    nosc_spect_6AD26B_histo[1]->Draw("hist same");
+    bkgd_spect_6AD26B_histo[1]->Draw("same hist");
     gPad->SetTicks(1,1);
 
     canv0->cd(3);
-    data_spect_6AD26B_histoPerMeV[2]->Draw("hist");
-    nosc_spect_6AD26B_histoPerMeV[2]->Draw("hist same");
-    bkgd_spect_6AD26B_histoPerMeV[2]->Draw("same hist");
+    data_spect_6AD26B_histo[2]->Draw("hist");
+    nosc_spect_6AD26B_histo[2]->Draw("hist same");
+    bkgd_spect_6AD26B_histo[2]->Draw("same hist");
     gPad->SetTicks(1,1);
     
     //----------------------------------------------------------------------------------------
@@ -93,61 +93,63 @@ void db_PRL112_26to35_rebin()
     }
     xbins[35] = hi;
 
-    TH1F *data_spect_6AD35B_histoPerMeV[nEH];
-    TH1F *data_spect_8AD35B_histoPerMeV[nEH];
-    TH1F *nosc_spect_6AD35B_histoPerMeV[nEH];
-    TH1F *nosc_spect_8AD35B_histoPerMeV[nEH];
-    TH1F *bkgd_spect_6AD35B_histoPerMeV[nEH];
-    TH1F *bkgd_spect_8AD35B_histoPerMeV[nEH];
-    
     TH1F *data_spect_6AD35B_histo[nEH];
     TH1F *data_spect_8AD35B_histo[nEH];
-    TH1F *data_spect_6AD8AD_histo[nEH];
-    
+
     TH1F *nosc_spect_6AD35B_histo[nEH];
     TH1F *nosc_spect_8AD35B_histo[nEH];
-    TH1F *nosc_spect_6AD8AD_histo[nEH];
-    
+
     TH1F *bkgd_spect_6AD35B_histo[nEH];
     TH1F *bkgd_spect_8AD35B_histo[nEH];
-    TH1F *bkgd_spect_6AD8AD_histo[nEH];
+    
+    TH1F *data_spect_6AD35B_histoPerMeV[nEH];
+    TH1F *data_spect_8AD35B_histoPerMeV[nEH];
+    TH1F *data_spect_6AD8AD_histoPerMeV[nEH];
+    
+    TH1F *nosc_spect_6AD35B_histoPerMeV[nEH];
+    TH1F *nosc_spect_8AD35B_histoPerMeV[nEH];
+    TH1F *nosc_spect_6AD8AD_histoPerMeV[nEH];
+    
+    TH1F *bkgd_spect_6AD35B_histoPerMeV[nEH];
+    TH1F *bkgd_spect_8AD35B_histoPerMeV[nEH];
+    TH1F *bkgd_spect_6AD8AD_histoPerMeV[nEH];
     for (int i = 0 ; i < nEH ; i++) {
-        data_spect_6AD35B_histoPerMeV[i] = new TH1F(Form("data_spect_6AD35B_histoPerMeV_%d",i),"",NB,xbins);
-        data_spect_6AD35B_histoPerMeV[i]->SetLineColor(kBlue);
-        data_spect_8AD35B_histoPerMeV[i] = new TH1F(Form("data_spect_8AD35B_histoPerMeV_%d",i),"",NB,xbins);
-        data_spect_8AD35B_histoPerMeV[i]->SetLineColor(kGreen);
-
-        nosc_spect_6AD35B_histoPerMeV[i] = new TH1F(Form("nosc_spect_6AD35B_histoPerMeV_%d",i),"",NB,xbins);
-        nosc_spect_6AD35B_histoPerMeV[i]->SetLineColor(kBlue+2);
-        nosc_spect_8AD35B_histoPerMeV[i] = new TH1F(Form("nosc_spect_8AD35B_histoPerMeV_%d",i),"",NB,xbins);
-        nosc_spect_8AD35B_histoPerMeV[i]->SetLineColor(kGreen+2);
-
-        bkgd_spect_6AD35B_histoPerMeV[i] = new TH1F(Form("bkgd_spect_6AD35B_histoPerMeV_%d",i),"",NB,xbins);
-        bkgd_spect_6AD35B_histoPerMeV[i]->SetLineColor(kBlue+1);
-        bkgd_spect_8AD35B_histoPerMeV[i] = new TH1F(Form("bkgd_spect_8AD35B_histoPerMeV_%d",i),"",NB,xbins);
-        bkgd_spect_8AD35B_histoPerMeV[i]->SetLineColor(kGreen+1);
-
         data_spect_6AD35B_histo[i] = new TH1F(Form("data_spect_6AD35B_histo_%d",i),"",NB,xbins);
         data_spect_6AD35B_histo[i]->SetLineColor(kBlue);
         data_spect_8AD35B_histo[i] = new TH1F(Form("data_spect_8AD35B_histo_%d",i),"",NB,xbins);
         data_spect_8AD35B_histo[i]->SetLineColor(kGreen);
-        
+
         nosc_spect_6AD35B_histo[i] = new TH1F(Form("nosc_spect_6AD35B_histo_%d",i),"",NB,xbins);
         nosc_spect_6AD35B_histo[i]->SetLineColor(kBlue+2);
         nosc_spect_8AD35B_histo[i] = new TH1F(Form("nosc_spect_8AD35B_histo_%d",i),"",NB,xbins);
         nosc_spect_8AD35B_histo[i]->SetLineColor(kGreen+2);
-        
+
         bkgd_spect_6AD35B_histo[i] = new TH1F(Form("bkgd_spect_6AD35B_histo_%d",i),"",NB,xbins);
         bkgd_spect_6AD35B_histo[i]->SetLineColor(kBlue+1);
         bkgd_spect_8AD35B_histo[i] = new TH1F(Form("bkgd_spect_8AD35B_histo_%d",i),"",NB,xbins);
         bkgd_spect_8AD35B_histo[i]->SetLineColor(kGreen+1);
 
-        data_spect_6AD8AD_histo[i] = new TH1F(Form("data_spect_6AD8AD_histo_%d",i),"",NB,xbins);
-        data_spect_6AD8AD_histo[i]->SetLineColor(kRed);
-        nosc_spect_6AD8AD_histo[i] = new TH1F(Form("nosc_spect_6AD8AD_histo_%d",i),"",NB,xbins);
-        nosc_spect_6AD8AD_histo[i]->SetLineColor(kRed+2);
-        bkgd_spect_6AD8AD_histo[i] = new TH1F(Form("bkgd_spect_6AD8AD_histo_%d",i),"",NB,xbins);
-        bkgd_spect_6AD8AD_histo[i]->SetLineColor(kRed+1);
+        data_spect_6AD35B_histoPerMeV[i] = new TH1F(Form("data_spect_6AD35B_histoPerMeV_%d",i),"",NB,xbins);
+        data_spect_6AD35B_histoPerMeV[i]->SetLineColor(kBlue);
+        data_spect_8AD35B_histoPerMeV[i] = new TH1F(Form("data_spect_8AD35B_histoPerMeV_%d",i),"",NB,xbins);
+        data_spect_8AD35B_histoPerMeV[i]->SetLineColor(kGreen);
+        
+        nosc_spect_6AD35B_histoPerMeV[i] = new TH1F(Form("nosc_spect_6AD35B_histoPerMeV_%d",i),"",NB,xbins);
+        nosc_spect_6AD35B_histoPerMeV[i]->SetLineColor(kBlue+2);
+        nosc_spect_8AD35B_histoPerMeV[i] = new TH1F(Form("nosc_spect_8AD35B_histoPerMeV_%d",i),"",NB,xbins);
+        nosc_spect_8AD35B_histoPerMeV[i]->SetLineColor(kGreen+2);
+        
+        bkgd_spect_6AD35B_histoPerMeV[i] = new TH1F(Form("bkgd_spect_6AD35B_histoPerMeV_%d",i),"",NB,xbins);
+        bkgd_spect_6AD35B_histoPerMeV[i]->SetLineColor(kBlue+1);
+        bkgd_spect_8AD35B_histoPerMeV[i] = new TH1F(Form("bkgd_spect_8AD35B_histoPerMeV_%d",i),"",NB,xbins);
+        bkgd_spect_8AD35B_histoPerMeV[i]->SetLineColor(kGreen+1);
+
+        data_spect_6AD8AD_histoPerMeV[i] = new TH1F(Form("data_spect_6AD8AD_histoPerMeV_%d",i),"",NB,xbins);
+        data_spect_6AD8AD_histoPerMeV[i]->SetLineColor(kRed);
+        nosc_spect_6AD8AD_histoPerMeV[i] = new TH1F(Form("nosc_spect_6AD8AD_histoPerMeV_%d",i),"",NB,xbins);
+        nosc_spect_6AD8AD_histoPerMeV[i]->SetLineColor(kRed+2);
+        bkgd_spect_6AD8AD_histoPerMeV[i] = new TH1F(Form("bkgd_spect_6AD8AD_histoPerMeV_%d",i),"",NB,xbins);
+        bkgd_spect_6AD8AD_histoPerMeV[i]->SetLineColor(kRed+1);
         //PerMev Versions of these spectra are defined above (lines 23-33)
     }
     
@@ -156,87 +158,88 @@ void db_PRL112_26to35_rebin()
     double nosc26 = 0.0;
     for (int j = 0 ; j < nEH ; j++) {
         //- First bin has the same content for both histograms
-        cont26 = data_spect_6AD26B_histoPerMeV[j]->GetBinContent(1);
-        bkgd26 = bkgd_spect_6AD26B_histoPerMeV[j]->GetBinContent(1);
-        nosc26 = nosc_spect_6AD26B_histoPerMeV[j]->GetBinContent(1);
+        cont26 = data_spect_6AD26B_histo[j]->GetBinContent(1);
+        bkgd26 = bkgd_spect_6AD26B_histo[j]->GetBinContent(1);
+        nosc26 = nosc_spect_6AD26B_histo[j]->GetBinContent(1);
         //std::cout << "Hist26Bins 1: " << cont26 << std::endl;
-        data_spect_6AD35B_histoPerMeV[j]->SetBinContent(1,cont26);
-        bkgd_spect_6AD35B_histoPerMeV[j]->SetBinContent(1,bkgd26);
-        nosc_spect_6AD35B_histoPerMeV[j]->SetBinContent(1,nosc26);
+        data_spect_6AD35B_histo[j]->SetBinContent(1,cont26);
+        bkgd_spect_6AD35B_histo[j]->SetBinContent(1,bkgd26);
+        nosc_spect_6AD35B_histo[j]->SetBinContent(1,nosc26);
         //std::cout << "Hist35Bins 1: " << data_spect_6AD35B_histoPerMeV[j]->GetBinContent(1) << "\n" << std::endl;
         
         for (int k = 0 ; k < 6 ; k++)
         {
-            cont26 = (4./5.)*data_spect_6AD26B_histoPerMeV[j]->GetBinContent(2+4*k);
-            data_spect_6AD35B_histoPerMeV[j] -> SetBinContent(2+5*k,cont26);
-            bkgd26 = (4./5.)*bkgd_spect_6AD26B_histoPerMeV[j]->GetBinContent(2+4*k);
-            bkgd_spect_6AD35B_histoPerMeV[j] -> SetBinContent(2+5*k,bkgd26);
-            nosc26 = (4./5.)*nosc_spect_6AD26B_histoPerMeV[j]->GetBinContent(2+4*k);
-            nosc_spect_6AD35B_histoPerMeV[j] -> SetBinContent(2+5*k,nosc26);
+            cont26 = (4./5.)*data_spect_6AD26B_histo[j]->GetBinContent(2+4*k);
+            data_spect_6AD35B_histo[j] -> SetBinContent(2+5*k,cont26);
+            bkgd26 = (4./5.)*bkgd_spect_6AD26B_histo[j]->GetBinContent(2+4*k);
+            bkgd_spect_6AD35B_histo[j] -> SetBinContent(2+5*k,bkgd26);
+            nosc26 = (4./5.)*nosc_spect_6AD26B_histo[j]->GetBinContent(2+4*k);
+            nosc_spect_6AD35B_histo[j] -> SetBinContent(2+5*k,nosc26);
 
-            cont26 = (1./5.)*data_spect_6AD26B_histoPerMeV[j]->GetBinContent(2+4*k) + (3./5.)*data_spect_6AD26B_histoPerMeV[j]->GetBinContent(3+4*k);
-            data_spect_6AD35B_histoPerMeV[j] -> SetBinContent(3+5*k,cont26);
-            bkgd26 = (1./5.)*bkgd_spect_6AD26B_histoPerMeV[j]->GetBinContent(2+4*k) + (3./5.)*bkgd_spect_6AD26B_histoPerMeV[j]->GetBinContent(3+4*k);
-            bkgd_spect_6AD35B_histoPerMeV[j] -> SetBinContent(3+5*k,bkgd26);
-            nosc26 = (1./5.)*nosc_spect_6AD26B_histoPerMeV[j]->GetBinContent(2+4*k) + (3./5.)*nosc_spect_6AD26B_histoPerMeV[j]->GetBinContent(3+4*k);
-            nosc_spect_6AD35B_histoPerMeV[j] -> SetBinContent(3+5*k,nosc26);
+            cont26 = (1./5.)*data_spect_6AD26B_histo[j]->GetBinContent(2+4*k) + (3./5.)*data_spect_6AD26B_histo[j]->GetBinContent(3+4*k);
+            data_spect_6AD35B_histo[j] -> SetBinContent(3+5*k,cont26);
+            bkgd26 = (1./5.)*bkgd_spect_6AD26B_histo[j]->GetBinContent(2+4*k) + (3./5.)*bkgd_spect_6AD26B_histo[j]->GetBinContent(3+4*k);
+            bkgd_spect_6AD35B_histo[j] -> SetBinContent(3+5*k,bkgd26);
+            nosc26 = (1./5.)*nosc_spect_6AD26B_histo[j]->GetBinContent(2+4*k) + (3./5.)*nosc_spect_6AD26B_histo[j]->GetBinContent(3+4*k);
+            nosc_spect_6AD35B_histo[j] -> SetBinContent(3+5*k,nosc26);
 
-            cont26 = (2./5.)*data_spect_6AD26B_histoPerMeV[j]->GetBinContent(3+4*k) + (2./5.)*data_spect_6AD26B_histoPerMeV[j]->GetBinContent(4+4*k);
-            data_spect_6AD35B_histoPerMeV[j] -> SetBinContent(4+5*k,cont26);
-            bkgd26 = (2./5.)*bkgd_spect_6AD26B_histoPerMeV[j]->GetBinContent(3+4*k) + (2./5.)*bkgd_spect_6AD26B_histoPerMeV[j]->GetBinContent(4+4*k);
-            bkgd_spect_6AD35B_histoPerMeV[j] -> SetBinContent(4+5*k,bkgd26);
-            nosc26 = (2./5.)*nosc_spect_6AD26B_histoPerMeV[j]->GetBinContent(3+4*k) + (2./5.)*nosc_spect_6AD26B_histoPerMeV[j]->GetBinContent(4+4*k);
-            nosc_spect_6AD35B_histoPerMeV[j] -> SetBinContent(4+5*k,nosc26);
+            cont26 = (2./5.)*data_spect_6AD26B_histo[j]->GetBinContent(3+4*k) + (2./5.)*data_spect_6AD26B_histo[j]->GetBinContent(4+4*k);
+            data_spect_6AD35B_histo[j] -> SetBinContent(4+5*k,cont26);
+            bkgd26 = (2./5.)*bkgd_spect_6AD26B_histo[j]->GetBinContent(3+4*k) + (2./5.)*bkgd_spect_6AD26B_histo[j]->GetBinContent(4+4*k);
+            bkgd_spect_6AD35B_histo[j] -> SetBinContent(4+5*k,bkgd26);
+            nosc26 = (2./5.)*nosc_spect_6AD26B_histo[j]->GetBinContent(3+4*k) + (2./5.)*nosc_spect_6AD26B_histo[j]->GetBinContent(4+4*k);
+            nosc_spect_6AD35B_histo[j] -> SetBinContent(4+5*k,nosc26);
 
-            cont26 = (3./5.)*data_spect_6AD26B_histoPerMeV[j]->GetBinContent(4+4*k) + (1./5.)*data_spect_6AD26B_histoPerMeV[j]->GetBinContent(5+4*k);
-            data_spect_6AD35B_histoPerMeV[j] -> SetBinContent(5+5*k,cont26);
-            bkgd26 = (3./5.)*bkgd_spect_6AD26B_histoPerMeV[j]->GetBinContent(4+4*k) + (1./5.)*bkgd_spect_6AD26B_histoPerMeV[j]->GetBinContent(5+4*k);
-            bkgd_spect_6AD35B_histoPerMeV[j] -> SetBinContent(5+5*k,bkgd26);
-            nosc26 = (3./5.)*nosc_spect_6AD26B_histoPerMeV[j]->GetBinContent(4+4*k) + (1./5.)*nosc_spect_6AD26B_histoPerMeV[j]->GetBinContent(5+4*k);
-            nosc_spect_6AD35B_histoPerMeV[j] -> SetBinContent(5+5*k,nosc26);
+            cont26 = (3./5.)*data_spect_6AD26B_histo[j]->GetBinContent(4+4*k) + (1./5.)*data_spect_6AD26B_histo[j]->GetBinContent(5+4*k);
+            data_spect_6AD35B_histo[j] -> SetBinContent(5+5*k,cont26);
+            bkgd26 = (3./5.)*bkgd_spect_6AD26B_histo[j]->GetBinContent(4+4*k) + (1./5.)*bkgd_spect_6AD26B_histo[j]->GetBinContent(5+4*k);
+            bkgd_spect_6AD35B_histo[j] -> SetBinContent(5+5*k,bkgd26);
+            nosc26 = (3./5.)*nosc_spect_6AD26B_histo[j]->GetBinContent(4+4*k) + (1./5.)*nosc_spect_6AD26B_histo[j]->GetBinContent(5+4*k);
+            nosc_spect_6AD35B_histo[j] -> SetBinContent(5+5*k,nosc26);
 
-            cont26 = (4./5.)*data_spect_6AD26B_histoPerMeV[j]->GetBinContent(5+4*k);
-            data_spect_6AD35B_histoPerMeV[j] -> SetBinContent(6+5*k,cont26);
-            bkgd26 = (4./5.)*bkgd_spect_6AD26B_histoPerMeV[j]->GetBinContent(5+4*k);
-            bkgd_spect_6AD35B_histoPerMeV[j] -> SetBinContent(6+5*k,bkgd26);
-            nosc26 = (4./5.)*nosc_spect_6AD26B_histoPerMeV[j]->GetBinContent(5+4*k);
-            nosc_spect_6AD35B_histoPerMeV[j] -> SetBinContent(6+5*k,nosc26);
+            cont26 = (4./5.)*data_spect_6AD26B_histo[j]->GetBinContent(5+4*k);
+            data_spect_6AD35B_histo[j] -> SetBinContent(6+5*k,cont26);
+            bkgd26 = (4./5.)*bkgd_spect_6AD26B_histo[j]->GetBinContent(5+4*k);
+            bkgd_spect_6AD35B_histo[j] -> SetBinContent(6+5*k,bkgd26);
+            nosc26 = (4./5.)*nosc_spect_6AD26B_histo[j]->GetBinContent(5+4*k);
+            nosc_spect_6AD35B_histo[j] -> SetBinContent(6+5*k,nosc26);
         }
         //- Last four bins of the 35-bins-histograms contain data from the last bin of the
-        //- 26-bins-histograms. Last bin is the biggest (a factor of 86/98) and the previous
+        //- 26-bins-histograms. Last bin is the biggest (a factor of 86/94) and the previous
         //- 3 are equally filled with a factor of (4/98) each
-        cont26 = data_spect_6AD26B_histoPerMeV[j]->GetBinContent(26);
-        bkgd26 = bkgd_spect_6AD26B_histoPerMeV[j]->GetBinContent(26);
-        nosc26 = nosc_spect_6AD26B_histoPerMeV[j]->GetBinContent(26);
+        cont26 = data_spect_6AD26B_histo[j]->GetBinContent(26);
+        bkgd26 = bkgd_spect_6AD26B_histo[j]->GetBinContent(26);
+        nosc26 = nosc_spect_6AD26B_histo[j]->GetBinContent(26);
         //std::cout << "Hist26Bins 26: " << cont26 << std::endl;
-        data_spect_6AD35B_histoPerMeV[j]->SetBinContent(32, 4*cont26/98);
-        bkgd_spect_6AD35B_histoPerMeV[j]->SetBinContent(32, 4*bkgd26/98);
-        nosc_spect_6AD35B_histoPerMeV[j]->SetBinContent(32, 4*nosc26/98);
-        //std::cout << "Hist35Bins 32: " << data_spect_6AD35B_histoPerMeV[j]->GetBinContent(32) << "\n" << std::endl;
-        data_spect_6AD35B_histoPerMeV[j]->SetBinContent(33, 4*cont26/98);
-        bkgd_spect_6AD35B_histoPerMeV[j]->SetBinContent(33, 4*bkgd26/98);
-        nosc_spect_6AD35B_histoPerMeV[j]->SetBinContent(33, 4*nosc26/98);
-        //std::cout << "Hist35Bins 33: " << data_spect_6AD35B_histoPerMeV[j]->GetBinContent(33) << "\n" << std::endl;
-        data_spect_6AD35B_histoPerMeV[j]->SetBinContent(34, 4*cont26/98);
-        bkgd_spect_6AD35B_histoPerMeV[j]->SetBinContent(34, 4*bkgd26/98);
-        nosc_spect_6AD35B_histoPerMeV[j]->SetBinContent(34, 4*nosc26/98);
-        //std::cout << "Hist35Bins 34: " << data_spect_6AD35B_histoPerMeV[j]->GetBinContent(34) << "\n" << std::endl;
-        data_spect_6AD35B_histoPerMeV[j]->SetBinContent(35,86*cont26/98);
-        bkgd_spect_6AD35B_histoPerMeV[j]->SetBinContent(35,86*bkgd26/98);
-        nosc_spect_6AD35B_histoPerMeV[j]->SetBinContent(35,86*nosc26/98);
-        //std::cout << "Hist35Bins 35: " << data_spect_6AD35B_histoPerMeV[j]->GetBinContent(35) << "\n" << std::endl;
+        data_spect_6AD35B_histo[j]->SetBinContent(32, 4*cont26/94);
+        bkgd_spect_6AD35B_histo[j]->SetBinContent(32, 4*bkgd26/94);
+        nosc_spect_6AD35B_histo[j]->SetBinContent(32, 4*nosc26/94);
+        //std::cout << "Hist35Bins 32: " << data_spect_6AD35B_histo[j]->GetBinContent(32) << "\n" << std::endl;
+        data_spect_6AD35B_histo[j]->SetBinContent(33, 4*cont26/94);
+        bkgd_spect_6AD35B_histo[j]->SetBinContent(33, 4*bkgd26/94);
+        nosc_spect_6AD35B_histo[j]->SetBinContent(33, 4*nosc26/94);
+        //std::cout << "Hist35Bins 33: " << data_spect_6AD35B_histo[j]->GetBinContent(33) << "\n" << std::endl;
+        data_spect_6AD35B_histo[j]->SetBinContent(34, 4*cont26/94);
+        bkgd_spect_6AD35B_histo[j]->SetBinContent(34, 4*bkgd26/94);
+        nosc_spect_6AD35B_histo[j]->SetBinContent(34, 4*nosc26/94);
+        //std::cout << "Hist35Bins 34: " << data_spect_6AD35B_histo[j]->GetBinContent(34) << "\n" << std::endl;
+        data_spect_6AD35B_histo[j]->SetBinContent(35,82*cont26/94);
+        bkgd_spect_6AD35B_histo[j]->SetBinContent(35,82*bkgd26/94);
+        nosc_spect_6AD35B_histo[j]->SetBinContent(35,82*nosc26/94);
+        //std::cout << "Hist35Bins 35: " << data_spect_6AD35B_histo[j]->GetBinContent(35) << "\n" << std::endl;
     }
     
-    double sclFac = 1e5;
+    //double sclFac = 1e5;
+    double sclFac = 1.0;
     for (int i = 0 ; i < nEH ; i++) {
-        data_spect_6AD8AD_histoPerMeV[i]->Scale(sclFac);
-        data_spect_8AD35B_histoPerMeV[i]->Add(data_spect_6AD8AD_histoPerMeV[i],data_spect_6AD35B_histoPerMeV[i],1,-1);
+        data_spect_6AD8AD_histo[i]->Scale(sclFac);
+        data_spect_8AD35B_histo[i]->Add(data_spect_6AD8AD_histo[i],data_spect_6AD35B_histo[i],1,-1);
         
-        nosc_spect_6AD8AD_histoPerMeV[i]->Scale(sclFac);
-        nosc_spect_8AD35B_histoPerMeV[i]->Add(nosc_spect_6AD8AD_histoPerMeV[i],nosc_spect_6AD35B_histoPerMeV[i],1,-1);
+        nosc_spect_6AD8AD_histo[i]->Scale(sclFac);
+        nosc_spect_8AD35B_histo[i]->Add(nosc_spect_6AD8AD_histo[i],nosc_spect_6AD35B_histo[i],1,-1);
         
-        bkgd_spect_6AD8AD_histoPerMeV[i]->Scale(sclFac);
-        bkgd_spect_8AD35B_histoPerMeV[i]->Add(bkgd_spect_6AD8AD_histoPerMeV[i],bkgd_spect_6AD35B_histoPerMeV[i],1,-1);
+        bkgd_spect_6AD8AD_histo[i]->Scale(sclFac);
+        bkgd_spect_8AD35B_histo[i]->Add(bkgd_spect_6AD8AD_histo[i],bkgd_spect_6AD35B_histo[i],1,-1);
     }
     
     //-- comparing the total number of events in each spectrum
@@ -244,12 +247,12 @@ void db_PRL112_26to35_rebin()
     double Nbkgd26, Nbkgd35;
     double Nnosc26, Nnosc35;
     for (int l = 0 ; l < nEH ; l++){
-        Nevents26 = data_spect_6AD26B_histoPerMeV[l]->Integral();
-        Nevents35 = data_spect_6AD35B_histoPerMeV[l]->Integral();
-        Nbkgd26   = bkgd_spect_6AD26B_histoPerMeV[l]->Integral();
-        Nbkgd35   = bkgd_spect_6AD35B_histoPerMeV[l]->Integral();
-        Nnosc26   = nosc_spect_6AD26B_histoPerMeV[l]->Integral();
-        Nnosc35   = nosc_spect_6AD35B_histoPerMeV[l]->Integral();
+        Nevents26 = data_spect_6AD26B_histo[l]->Integral();
+        Nevents35 = data_spect_6AD35B_histo[l]->Integral();
+        Nbkgd26   = bkgd_spect_6AD26B_histo[l]->Integral();
+        Nbkgd35   = bkgd_spect_6AD35B_histo[l]->Integral();
+        Nnosc26   = nosc_spect_6AD26B_histo[l]->Integral();
+        Nnosc35   = nosc_spect_6AD35B_histo[l]->Integral();
         std::cout << "26Bins Spectrum EH " << l << ":\t" << Nevents26 << std::endl;
         std::cout << "35Bins Spectrum EH " << l << ":\t" << Nevents35 << std::endl;
         std::cout << std::endl;
@@ -269,41 +272,41 @@ void db_PRL112_26to35_rebin()
 
     for (int i = 0 ; i < nEH ; i++) {
         for (int j = 0 ; j < NB ; j++) {
-            double wid = data_spect_6AD35B_histoPerMeV[i]->GetBinWidth(j+1);
-            double con = data_spect_6AD35B_histoPerMeV[i]->GetBinContent(j+1);
-            data_spect_6AD35B_histo[i]->SetBinContent(j+1,wid*con);
+            double wid = data_spect_6AD35B_histo[i]->GetBinWidth(j+1);
+            double con = data_spect_6AD35B_histo[i]->GetBinContent(j+1);
+            data_spect_6AD35B_histoPerMeV[i]->SetBinContent(j+1,con/wid);
 
-            wid = nosc_spect_6AD35B_histoPerMeV[i]->GetBinWidth(j+1);
-            con = nosc_spect_6AD35B_histoPerMeV[i]->GetBinContent(j+1);
-            nosc_spect_6AD35B_histo[i]->SetBinContent(j+1,wid*con);
+            wid = nosc_spect_6AD35B_histo[i]->GetBinWidth(j+1);
+            con = nosc_spect_6AD35B_histo[i]->GetBinContent(j+1);
+            nosc_spect_6AD35B_histoPerMeV[i]->SetBinContent(j+1,con/wid);
 
-            wid = bkgd_spect_6AD35B_histoPerMeV[i]->GetBinWidth(j+1);
-            con = bkgd_spect_6AD35B_histoPerMeV[i]->GetBinContent(j+1);
-            bkgd_spect_6AD35B_histo[i]->SetBinContent(j+1,wid*con);
+            wid = bkgd_spect_6AD35B_histo[i]->GetBinWidth(j+1);
+            con = bkgd_spect_6AD35B_histo[i]->GetBinContent(j+1);
+            bkgd_spect_6AD35B_histoPerMeV[i]->SetBinContent(j+1,con/wid);
 
-            wid = data_spect_8AD35B_histoPerMeV[i]->GetBinWidth(j+1);
-            con = data_spect_8AD35B_histoPerMeV[i]->GetBinContent(j+1);
-            data_spect_8AD35B_histo[i]->SetBinContent(j+1,wid*con);
+            wid = data_spect_8AD35B_histo[i]->GetBinWidth(j+1);
+            con = data_spect_8AD35B_histo[i]->GetBinContent(j+1);
+            data_spect_8AD35B_histoPerMeV[i]->SetBinContent(j+1,con/wid);
   
-            wid = nosc_spect_8AD35B_histoPerMeV[i]->GetBinWidth(j+1);
-            con = nosc_spect_8AD35B_histoPerMeV[i]->GetBinContent(j+1);
-            nosc_spect_8AD35B_histo[i]->SetBinContent(j+1,wid*con);
+            wid = nosc_spect_8AD35B_histo[i]->GetBinWidth(j+1);
+            con = nosc_spect_8AD35B_histo[i]->GetBinContent(j+1);
+            nosc_spect_8AD35B_histoPerMeV[i]->SetBinContent(j+1,con/wid);
     
-            wid = bkgd_spect_8AD35B_histoPerMeV[i]->GetBinWidth(j+1);
-            con = bkgd_spect_8AD35B_histoPerMeV[i]->GetBinContent(j+1);
-            bkgd_spect_8AD35B_histo[i]->SetBinContent(j+1,wid*con);
+            wid = bkgd_spect_8AD35B_histo[i]->GetBinWidth(j+1);
+            con = bkgd_spect_8AD35B_histo[i]->GetBinContent(j+1);
+            bkgd_spect_8AD35B_histoPerMeV[i]->SetBinContent(j+1,con/wid);
 
-            wid = data_spect_6AD8AD_histoPerMeV[i]->GetBinWidth(j+1);
-            con = data_spect_6AD8AD_histoPerMeV[i]->GetBinContent(j+1);
-            data_spect_6AD8AD_histo[i]->SetBinContent(j+1,wid*con);
+            wid = data_spect_6AD8AD_histo[i]->GetBinWidth(j+1);
+            con = data_spect_6AD8AD_histo[i]->GetBinContent(j+1);
+            data_spect_6AD8AD_histoPerMeV[i]->SetBinContent(j+1,con/wid);
 
-            wid = nosc_spect_6AD8AD_histoPerMeV[i]->GetBinWidth(j+1);
-            con = nosc_spect_6AD8AD_histoPerMeV[i]->GetBinContent(j+1);
-            nosc_spect_6AD8AD_histo[i]->SetBinContent(j+1,wid*con);
+            wid = nosc_spect_6AD8AD_histo[i]->GetBinWidth(j+1);
+            con = nosc_spect_6AD8AD_histo[i]->GetBinContent(j+1);
+            nosc_spect_6AD8AD_histoPerMeV[i]->SetBinContent(j+1,con/wid);
 
-            wid = bkgd_spect_6AD8AD_histoPerMeV[i]->GetBinWidth(j+1);
-            con = bkgd_spect_6AD8AD_histoPerMeV[i]->GetBinContent(j+1);
-            bkgd_spect_6AD8AD_histo[i]->SetBinContent(j+1,wid*con);
+            wid = bkgd_spect_6AD8AD_histo[i]->GetBinWidth(j+1);
+            con = bkgd_spect_6AD8AD_histo[i]->GetBinContent(j+1);
+            bkgd_spect_6AD8AD_histoPerMeV[i]->SetBinContent(j+1,con/wid);
         }
     }
 
