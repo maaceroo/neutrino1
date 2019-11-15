@@ -72,6 +72,7 @@ void ldist()
     TH1F *histo_ldist = new TH1F("histo_ldist","",nb,lo,hi);
     histo_ldist->Sumw2();
     TH1F *histo_ldist_eh3 = new TH1F("histo_ldist_eh3","",nb,lo,hi);
+    TH1F *histo_ldist_6Det = new TH1F("histo_ldist_6Det","",nb,lo,hi);
 
     for (int id=0; id<nDet; id++){
         for (int ir=0; ir<nRea; ir++){
@@ -87,6 +88,9 @@ void ldist()
             if (id>=4){
                 histo_ldist_eh3->SetBinContent(ii+1,wgt);
             }
+            if (id != 3 && id != 7){
+                histo_ldist_6Det->SetBinContent(ii+1,wgt);
+            }
         } //for ir
     } //for id
     
@@ -96,10 +100,14 @@ void ldist()
     double integ_eh3 = histo_ldist_eh3->Integral();
     histo_ldist_eh3->Scale(1.0/integ_eh3);
     
+    double integ_6Det = histo_ldist_6Det->Integral();
+    histo_ldist_6Det->Scale(1.0/integ_6Det);
+    
     TFile *fout = new TFile("files_data/daya-bay-ldist.root","recreate");
     fout->cd();
     histo_ldist->Write();
     histo_ldist_eh3->Write();
+    histo_ldist_6Det->Write();
 
     //Test generation of baselines
     TH1F *histo_ldist_gen = new TH1F("histo_ldist_gen","",nb,lo,hi);

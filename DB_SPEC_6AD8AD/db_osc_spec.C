@@ -1,4 +1,4 @@
-//-- db_osc_spec.C  -  M.A.Acero O. - A.A.Alexis A. --//
+//-- db_osc_spec.C  -  M.A.Acero O. - A.A.Alexis A. - 08.11.2019 --//
 //For the 6AD+8AD spectral analysis, using information from
 //F.P. An et al., PRD 95 072006 (2017)
 #include "constants.h"
@@ -22,9 +22,10 @@ void db_osc_spec()
     //---------------------------------------------------
     // Open  file to read simulated data
     TFile *fntuple = new TFile("files_data/db-ntuple.root","READ");
-    TTree *T = (TTree*)fntuple->Get("T");
-    TCut cutBF_6AD; //-- For the 217-days (6AD) period
-    TCut cutBF_6AD8AD; //-- For the 1230-days (6AD+8AD) period
+    TTree *T6AD    = (TTree*)fntuple->Get("T6AD");    //-- Events for the 6AD period
+    TTree *T6AD8AD = (TTree*)fntuple->Get("T6AD8AD"); //-- Events for the 6AD+8AD period
+    TCut cutBF_6AD;    //-- For the 217-days (6AD) period
+    TCut cutBF_6AD8AD; //-- For the 1013-days (6AD+8AD) period
     //---------------------------------------------------
     // histogram binning for the simulated data
     //double    NB = 35;
@@ -40,39 +41,45 @@ void db_osc_spec()
     xbins[35] = hi;
     //---------------------------------------------------
     //const int nAD = 8; //Number of Antineutrino detectors
-    TH1F *nu_nosc_spect_histo[nAD];
-    TH1F *BFit_spect_histo[nAD];
-    TH1F *Posc_AD_BF[nAD];
-    TH1F *Posc_AD_surv[nAD];
+    TH1F *nu_nosc_spect_histo_1013[nAD];
+    TH1F *BFit_spect_histo_1013[nAD];
+    TH1F *Posc_AD_BF_1230[nAD];
+    TH1F *Posc_AD_surv_1230[nAD];
+    TH1F *nu_nosc_spect_histo_217[nAD];
+    TH1F *BFit_spect_histo_217[nAD];
     for (int i = 0 ; i < nAD ; i++)
     {
         //no-oscillation Ep spectra - histograms
-        nu_nosc_spect_histo[i] = new TH1F(Form("nu_nosc_spect_histo_%d",i),"",NB,xbins);// info from db-ntuple.root
-        nu_nosc_spect_histo[i]->SetLineColor(i+3);
+        nu_nosc_spect_histo_1013[i] = new TH1F(Form("nu_nosc_spect_histo_1013_%d",i),"",NB,xbins);// info from db-ntuple.root
+        nu_nosc_spect_histo_1013[i]->SetLineColor(i+3);
+        nu_nosc_spect_histo_217[i] = new TH1F(Form("nu_nosc_spect_histo_217_%d",i),"",NB,xbins);// info from db-ntuple.root
+        nu_nosc_spect_histo_217[i]->SetLineColor(i+4);
         //BF-oscillation Ep spectra - histograms
-        BFit_spect_histo[i] = new TH1F(Form("BFit_spect_histo_%d",i),"",NB,xbins);// info from db-ntuple.root
-        BFit_spect_histo[i]->SetLineColor(i+1);
+        BFit_spect_histo_1013[i] = new TH1F(Form("BFit_spect_histo_1013_%d",i),"",NB,xbins);// info from db-ntuple.root
+        BFit_spect_histo_1013[i]->SetLineColor(i+1);
+        BFit_spect_histo_217[i] = new TH1F(Form("BFit_spect_histo_217_%d",i),"",NB,xbins);// info from db-ntuple.root
+        BFit_spect_histo_217[i]->SetLineColor(i+1);
 
         //Ocillation prpbability at BF - histograms
-        Posc_AD_BF[i]       = new TH1F(Form("Posc_AD_BF_%d",i),"",1000,0,1);//to store <POsc(BF)>
-        Posc_AD_BF[i]->SetLineColor(i+1);
+        Posc_AD_BF_1230[i]       = new TH1F(Form("Posc_AD_BF_1230_%d",i),"",1000,0,1);//to store <POsc(BF)>
+        Posc_AD_BF_1230[i]->SetLineColor(i+1);
 
         //Oscillation prpbability at (s2th,dm2) - histograms
-        Posc_AD_surv[i]     = new TH1F(Form("Posc_AD_surv_%d",i),"",1000,0,1);//to store <POsc(s2th,dm2)>
+        Posc_AD_surv_1230[i]     = new TH1F(Form("Posc_AD_surv_1230_%d",i),"",1000,0,1);//to store <POsc(s2th,dm2)>
     }
     //---------------------------------------------------
     //IBD rat (per day) (PRD 95 072006 (2017))
     //EH1(AD1, AD2),EH2(AD3,AD8),EH3(AD4, AD5, AD6, AD7)
-    double IBDrate_perday[nAD][2] =
+    double IBDrate_perday_1230[nAD][2] =
     {
         {653.03,1.37},{665.42,1.38},
         {599.71,1.12},{593.82,1.18},
         { 74.25,0.28},{ 74.60,0.28},{73.98,0.28},{74.73,0.30}
     };
-    IBDrate_perday[4][0] = 1.002*IBDrate_perday[4][0];
-    IBDrate_perday[5][0] = 1.002*IBDrate_perday[5][0];
-    IBDrate_perday[6][0] = 1.002*IBDrate_perday[6][0];
-    IBDrate_perday[7][0] = 1.002*IBDrate_perday[7][0];
+    IBDrate_perday_1230[4][0] = 1.0*IBDrate_perday_1230[4][0];
+    IBDrate_perday_1230[5][0] = 1.0*IBDrate_perday_1230[5][0];
+    IBDrate_perday_1230[6][0] = 1.0*IBDrate_perday_1230[6][0];
+    IBDrate_perday_1230[7][0] = 1.0*IBDrate_perday_1230[7][0];
 
     //Computing <POsc(s2t_BF,dm2_31)> for each AD
     // AD1 -> id = 0; AD2 -> id = 1; AD3 -> id = 2; AD4 -> id = 4; AD5 -> id = 5; AD6 -> id = 6
@@ -88,51 +95,60 @@ void db_osc_spec()
 
     FILE *file_IBDrates8AD;
     FILE *file_IBDrates6AD;
-    file_IBDrates8AD = fopen("files_data/db_noOsc_IBDrates_perday_8AD.txt","w");
-    file_IBDrates6AD = fopen("files_data/db_noOsc_IBDrates_perday_6AD.txt","w");
+    file_IBDrates8AD = fopen("files_data/db_noOsc_IBDrates_perday_1230.txt","w");
+    file_IBDrates6AD = fopen("files_data/db_noOsc_IBDrates_perday_217.txt","w");
 
     int sel;
-    double TotNosc[nAD];
-    double avgPosc_AD[nAD]; //<POsc(s2t_BF,dm2_31)>
-    double noOsc_IBDrate_perday[nAD];
-    double integ;
+    double TotNosc_1013[nAD];
+    double avgPosc_AD_1230[nAD]; //<POsc(s2t_BF,dm2_31)>
+    double noOsc_IBDrate_perday_1230[nAD];
+    double integ_1230;
+    double integ_1013;
+
+    double TotNosc_217[nAD];
+    double integ_217;
     for (int iAD = 0 ; iAD < nAD ; iAD++)
     {
         sel = iAD;
         //------------------------------------------------
         //Filling Ocillation prpbability at BF - histogram
-        //T->Draw(Form("(1.0 - 0.0841*((sin( 1.267 * 2.50e-3 * Ln/En ))**2) - ((cos(0.5 * asin(sqrt(0.0841))))**4) * 0.841 * (sin( 1.267 * 7.59e-5 * Ln/En ))**2) >> Posc_AD_BF_%d",iAD),Form("id==%d",sel));
-        T->Draw(Form("(1.0 - 0.0841*((sin( 1.267 * 2.50e-3 * Ln/En ))**2) - ((cos(0.5 * asin(sqrt(0.0841))))**4) * 0.844 * (sin( 1.267 * 7.53e-5 * Ln/En ))**2) >> Posc_AD_BF_%d",iAD),Form("id==%d",sel));
-        integ = Posc_AD_BF[iAD]->Integral();
-        Posc_AD_BF[iAD]->Scale(1.0/integ); //Used to plot the Survival Probabilities for each AD with BF parameters (normalized)
+        T6AD8AD->Draw(Form("(1.0 - 0.0841*((sin( 1.267 * 2.50e-3 * Ln/En ))**2) - ((cos(0.5 * asin(sqrt(0.0841))))**4) * 0.846 * (sin( 1.267 * 7.53e-5 * Ln/En ))**2) >> Posc_AD_BF_1230_%d",iAD),Form("id==%d",sel));
+        integ_1230 = Posc_AD_BF_1230[iAD]->Integral();
+        Posc_AD_BF_1230[iAD]->Scale(1.0/integ_1230); //Used to plot the Survival Probabilities for each AD with BF parameters (normalized)
         //Average oscillation Probability
-        avgPosc_AD[iAD] = Posc_AD_BF[iAD]->GetMean();
+        avgPosc_AD_1230[iAD] = Posc_AD_BF_1230[iAD]->GetMean();
         //No-oscillation IDB rate (per day)
-        noOsc_IBDrate_perday[iAD] = IBDrate_perday[iAD][0]/avgPosc_AD[iAD];
+        noOsc_IBDrate_perday_1230[iAD] = IBDrate_perday_1230[iAD][0]/avgPosc_AD_1230[iAD];
         //Printing results
-        cout << "(avgPosc_AD,noOsc_IBDrate_perday)_" << sel << " = (" << avgPosc_AD[iAD]
-        << ", " << noOsc_IBDrate_perday[iAD] << ") " << endl;
-        fprintf(file_IBDrates,"%f \n", noOsc_IBDrate_perday[iAD]);
+        cout << "(avgPosc_AD,noOsc_IBDrate_perday_1230)_" << sel << " = (" << avgPosc_AD_1230[iAD]
+        << ", " << noOsc_IBDrate_perday_1230[iAD] << ") " << endl;
+        fprintf(file_IBDrates8AD,"%f \n", noOsc_IBDrate_perday_1230[iAD]);
 
         //------------------------------------------------
 
         //------------------------------------------------
         //Filling the non-oscillated Ep spectra
-        T->Draw(Form("Ep >> nu_nosc_spect_histo_%d",iAD),Form("(id==%d)",sel),"");
-        TotNosc[iAD] =  nu_nosc_spect_histo[iAD]->Integral();
+        T6AD8AD->Draw(Form("Ep >> nu_nosc_spect_histo_1013_%d",iAD),Form("id==%d && per==2",sel),"");
+        TotNosc_1013[iAD] =  nu_nosc_spect_histo_1013[iAD]->Integral();
+        T6AD8AD->Draw(Form("Ep >> nu_nosc_spect_histo_217_%d",iAD),Form("id==%d && per==1",sel),"");
+        TotNosc_217[iAD] =  nu_nosc_spect_histo_217[iAD]->Integral();
         //nu_nosc_spect_histo[iAD]->Scale(noOsc_IBDrate_perday[iAD]/TotNosc[iAD]); //normalize per day HERE? (2017-07-13)
         
         //condition to fill BF-oscillation- Ep spectra
         //cutBF = Form("(1.0 - 0.0841*((sin( 1.267 * 2.50e-3 * Ln/En ))**2) - ((cos(0.5 * asin(sqrt(0.0841))))**4) * 0.841 * (sin( 1.267 * 7.59e-5 * Ln/En ))**2)*(id==%d)",iAD);
-        cutBF = Form("(1.0 - 0.0841*((sin( 1.267 * 2.50e-3 * Ln/En ))**2) - ((cos(0.5 * asin(sqrt(0.0841))))**4) * 0.846 * (sin( 1.267 * 7.53e-5 * Ln/En ))**2)*(id==%d)",iAD);
+        cutBF_6AD8AD = Form("(1.0 - 0.0841*((sin( 1.267 * 2.50e-3 * Ln/En ))**2) - ((cos(0.5 * asin(sqrt(0.0841))))**4) * 0.846 * (sin( 1.267 * 7.53e-5 * Ln/En ))**2)*(id==%d && per==2)",iAD);
+        cutBF_6AD = Form("(1.0 - 0.0841*((sin( 1.267 * 2.50e-3 * Ln/En ))**2) - ((cos(0.5 * asin(sqrt(0.0841))))**4) * 0.846 * (sin( 1.267 * 7.53e-5 * Ln/En ))**2)*(id==%d && per==1)",iAD);
 
         //Filling and normalizing BF-oscillation Ep spectra
-        T->Draw(Form("Ep >> BFit_spect_histo_%d",sel),cutBF,"");
-        integ = BFit_spect_histo[iAD]->Integral();
-        BFit_spect_histo[iAD]->Scale(1.0/integ);
+        T6AD8AD->Draw(Form("Ep >> BFit_spect_histo_1013_%d",sel),cutBF_6AD8AD,"");
+        integ_1013 = BFit_spect_histo_1013[iAD]->Integral();
+        BFit_spect_histo_1013[iAD]->Scale(1.0/integ_1013);
+        T6AD8AD->Draw(Form("Ep >> BFit_spect_histo_217_%d",sel),cutBF_6AD,"");
+        integ_217 = BFit_spect_histo_217[iAD]->Integral();
+        BFit_spect_histo_217[iAD]->Scale(1.0/integ_217);
         //------------------------------------------------
     }
-    fclose(file_IBDrates);
+    fclose(file_IBDrates8AD);
     
 
     //---------------------------------------------------
@@ -167,17 +183,24 @@ void db_osc_spec()
     printf("---------------------------\n");
     printf("\n");
 
-    TCut cut;
+    TCut posc_wgt1,posc_wgt2;
     
     const int dim = N_s2t*N_dm2;
-    double TotWosc[dim];
-    TH1F *wosc_spect_histo[dim];
+    double TotWosc_1013[dim];
+    double TotWosc_217[dim];
+    TH1F *wosc_spect_histo_1013[dim];
+    TH1F *wosc_spect_histo_217[dim];
     for (int i = 0 ; i < dim ; i++)
     {
-        wosc_spect_histo[i] = new TH1F(Form("wosc_spect_histo_%d",i),"",NB,xbins);
-        wosc_spect_histo[i]->SetLineWidth(2);
-        wosc_spect_histo[i]->SetLineColor(i+2);
-        wosc_spect_histo[i]->SetLineStyle(2);
+        wosc_spect_histo_1013[i] = new TH1F(Form("wosc_spect_histo_1013_%d",i),"",NB,xbins);
+        wosc_spect_histo_1013[i]->SetLineWidth(2);
+        wosc_spect_histo_1013[i]->SetLineColor(i+2);
+        wosc_spect_histo_1013[i]->SetLineStyle(2);
+
+        wosc_spect_histo_217[i] = new TH1F(Form("wosc_spect_histo_217_%d",i),"",NB,xbins);
+        wosc_spect_histo_217[i]->SetLineWidth(3);
+        wosc_spect_histo_217[i]->SetLineColor(i+3);
+        wosc_spect_histo_217[i]->SetLineStyle(3);
     }
 
     //File to print the oscillation paramenter, the survival prob. and oscilated spectra
@@ -186,8 +209,9 @@ void db_osc_spec()
     //file.open (result.c_str());
     //file << setprecision(5);
     
-    FILE *file;
-    file = fopen("files_data/db_gridOscSpectra.txt","w");
+    FILE *file1013,*file217;
+    file1013 = fopen("files_data/db_gridOscSpectra_1013.txt","w");
+    file217  = fopen("files_data/db_gridOscSpectra_217.txt","w");
 
     //write non-oscillated spectra for each AD to file
     for (int iAD = 0 ; iAD < nAD ; iAD++)
@@ -196,19 +220,25 @@ void db_osc_spec()
        //---------------------------------------------------------
 
       //file << iAD + 1 << " " << s2t_pt << "\t" << dm2_pt;
-       fprintf(file,"%d %8.2e %8.2e",iAD+1,s2t_pt,dm2_pt);
+        fprintf(file1013,"%d %8.2e %8.2e",iAD+1,s2t_pt,dm2_pt);
+        fprintf(file217, "%d %8.2e %8.2e",iAD+1,s2t_pt,dm2_pt);
       //print bin-content of non-oscilated spectra per day
-      for (int ib = 0 ; ib < NB ; ib++)
-      {
-         double contNO   = nu_nosc_spect_histo[iAD]->GetBinContent(ib+1);
-         //file << "\t" << contNO;
-          fprintf(file," %10.2f",contNO);
-      }
+        for (int ib = 0 ; ib < NB ; ib++)
+        {
+            double contNO_1013   = nu_nosc_spect_histo_1013[iAD]->GetBinContent(ib+1);
+            double contNO_217    = nu_nosc_spect_histo_217[iAD] ->GetBinContent(ib+1);
+            //file << "\t" << contNO;
+            fprintf(file1013," %10.2f",contNO_1013);
+            if (iAD==3 || iAD==7) contNO_217 = 0.0; //-- Zero content for detector 3 and 7 for the 6AD run
+            fprintf(file217, " %10.2f",contNO_217);
+        }
       //file << " \t" << TotNosc[iAD] /*<< "\t" << "1.00000"*/ << endl;
-        fprintf(file," %10.2f\n",TotNosc[iAD]);
+        fprintf(file1013," %10.2f\n",TotNosc_1013[iAD]);
+        fprintf(file217," %10.2f\n",TotNosc_217[iAD]);
     } // for iAD
     //file << endl;
-    fprintf(file,"\n");
+    fprintf(file1013,"\n");
+    fprintf(file217,"\n");
 
 
     for (int is2t = 0 ; is2t < N_s2t ; is2t++)
@@ -226,33 +256,34 @@ void db_osc_spec()
                 //else if (iAD >= 3) sel = iAD +1;
                 sel = iAD;    
                 // Condition to fill oscilated spectra for (s2t_pt,dm2_pt), i.e. wosc_spect_histo[iAD]
-                //cut = Form("(1.0 - %e*((sin( 1.267 * %e * Ln/En ))**2) - (0.25*(1 + sqrt(1 - %e))**2) * 0.861 * (sin( 1.267 * 7.59e-5 * Ln/En ))**2)*(id==%d)" ,s2t_pt,dm2_pt,s2t_pt,sel);
-                cut = Form("(1.0 - %e*((sin( 1.267 * %e * Ln/En ))**2) - (0.25*(1 + sqrt(1 - %e))**2) * 0.846 * (sin( 1.267 * 7.53e-5 * Ln/En ))**2)*(id==%d)" ,s2t_pt,dm2_pt,s2t_pt,sel);
+                posc_wgt1 = Form("(1.0 - %e*((sin( 1.267 * %e * Ln/En ))**2) - (0.25*(1 + sqrt(1 - %e))**2) * 0.846 * (sin( 1.267 * 7.53e-5 * Ln/En ))**2)*(id==%d && per==1)" ,s2t_pt,dm2_pt,s2t_pt,sel);
+                posc_wgt2 = Form("(1.0 - %e*((sin( 1.267 * %e * Ln/En ))**2) - (0.25*(1 + sqrt(1 - %e))**2) * 0.846 * (sin( 1.267 * 7.53e-5 * Ln/En ))**2)*(id==%d && per==2)" ,s2t_pt,dm2_pt,s2t_pt,sel);
                 // Filling oscilated spectra for (s2t_pt,dm2_pt)
                 int ih = is2t*N_dm2 + idm2;
                 //cout << "AD " << iAD + 1 << "\t s2t_pt =  " << s2t_pt << "\t dm2_pt =  " << dm2_pt  << "\t ih = " << ih << endl;
                 //cout << "cut computed" << endl;
                 //cout << "Test No. " << idm2 << endl;
-                T->Draw(Form("Ep >> wosc_spect_histo_%d",ih),cut,"");
-                TotWosc[ih] =  wosc_spect_histo[ih]->Integral();
-
-                // Survival probability for (s2t_pt,dm2_pt) to fill histogram at each detector, i.e. Posc_AD_surv[iAD]
-                //T->Draw(Form("(1.0 - %e*((sin( 1.267 * %e * Ln/En ))**2) - (0.25*(1 + sqrt(1 - %e))**2) * 0.861 * (sin( 1.267 * 7.59e-5 * Ln/En ))**2) >> Posc_AD_surv_%d",s2t_pt,dm2_pt,s2t_pt,iAD),Form("id==%d",sel));
-                //Average survival probability for (s2t_pt,dm2_pt) at each detector
-                //SurvP = Posc_AD_surv[iAD]->GetMean();
+                T6AD8AD->Draw(Form("Ep >> wosc_spect_histo_1013_%d",ih),posc_wgt2,"");
+                TotWosc_1013[ih] =  wosc_spect_histo_1013[ih]->Integral();
+                T6AD8AD->Draw(Form("Ep >> wosc_spect_histo_217_%d", ih),posc_wgt1,"");
+                TotWosc_217[ih] =   wosc_spect_histo_217[ih]->Integral();
 
                 //file << iAD + 1 << " " << s2t_pt << "\t" << dm2_pt;
-                fprintf(file,"%d %8.2e %8.2e",iAD+1,s2t_pt,dm2_pt);
+                fprintf(file1013,"%d %8.2e %8.2e",iAD+1,s2t_pt,dm2_pt);
+                fprintf(file217, "%d %8.2e %8.2e",iAD+1,s2t_pt,dm2_pt);
                 //Printing bin-content for the oscilated spectra for (s2t_pt,dm2_pt)
                 for (int ib = 0 ; ib < NB ; ib++)
                 {
-                    double cont   = wosc_spect_histo[ih]->GetBinContent(ib+1);
+                    double cont1013   = wosc_spect_histo_1013[ih]->GetBinContent(ib+1);
+                    double cont217    = wosc_spect_histo_217[ih] ->GetBinContent(ib+1);
                     //file << "\t" << cont;
-                    fprintf(file," %10.2f",cont);
+                    fprintf(file1013," %10.2f",cont1013);
+                    fprintf(file217, " %10.2f",cont217);
                 }
                 //file << " \t" << TotWosc[ih] << endl;
-                fprintf(file," %10.2f\n",TotWosc[ih]);
-                
+                fprintf(file1013," %10.2f\n",TotWosc_1013[ih]);
+                fprintf(file217, " %10.2f\n",TotWosc_217[ih]);
+
                 //Printing check-points info
                 if (ih%10 == 0)
                 {
@@ -262,25 +293,30 @@ void db_osc_spec()
 
                 //Normalizing the oscilated spectra for (s2t_pt,dm2_pt)
                 //*CHECK if this is nneded .. guess is NO 
-                integ = wosc_spect_histo[ih]->Integral();
-                wosc_spect_histo[ih]->Scale(1.0/integ);
+                integ_1013 = wosc_spect_histo_1013[ih]->Integral();
+                wosc_spect_histo_1013[ih]->Scale(1.0/integ_1013);
+                integ_217  = wosc_spect_histo_217[ih]->Integral();
+                wosc_spect_histo_217[ih]->Scale(1.0/integ_217);
             } // for idm2
             //file << endl;
-            fprintf(file,"\n");
+            fprintf(file1013,"\n");
+            fprintf(file217, "\n");
         }//for is2t
         //cout << "  Done with detector " << iAD+1 << endl;
         //file << endl;
-        fprintf(file,"\n");
+        fprintf(file1013,"\n");
+        fprintf(file217, "\n");
     }//for iAD
 
     //file.close();
-    fclose(file);
-    
+    fclose(file1013);
+    fclose(file217);
+
     //break;
     //---------------------------------------------------
     //---------------------------------------------------
     
-    
+/*
     //---------------------------------------------------
     // Drawing section
 
@@ -350,5 +386,6 @@ void db_osc_spec()
     
     canv1->Print("files_plots/POsc_avg.pdf");
     //---------------------------------------------------
+ */
 
 } //end

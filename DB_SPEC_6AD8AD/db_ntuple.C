@@ -16,12 +16,6 @@
 void db_ntuple()
 { // begin
 
-    //Tenemos que hacer tres n-tuplas
-    //una para 6AD (para obtener el número de enventos no oscilado en ese periodo) - Nosc_217
-    //Una para 2130 dias (para obtener el número de enventos no oscilado en ese análisis -combinado-) - Nosc_2130.
-    //Con Nosc_217 y Nosc_2130, se debe poder calcular Nosc_1913
-    //Una para solo 8AD
-    
     //-------------------
     // Energy Histograms
     //-------------------
@@ -31,7 +25,7 @@ void db_ntuple()
     TFile *fenergy = new TFile("histos_6AD217Days_8AD1913Days_data.root","read");
     //Three sets of histograms one for each Experimental Hall
     const int nEH = 3;
-    //2130 days
+    //1230 days
     std::cout << "Creating histograms" << std::endl;
     TH1F *nosc_spect_histo[nEH];
     TH1F *bkgd_spect_histo[nEH];
@@ -70,6 +64,8 @@ void db_ntuple()
     TFile *fpathl = new TFile("files_data/daya-bay-ldist.root","read");
     //8 detectors (PRD95 072006, 2017)
     TH1F *histo_ldist = (TH1F*) fpathl->Get("histo_ldist");
+    //6 detectors (PRL112 )
+    TH1F *histo_ldist_6Det = (TH1F*) fpathl->Get("histo_ldist_6Det");
 
     //const int nDet = 8;
     //const int nRea = 6;
@@ -98,17 +94,19 @@ void db_ntuple()
     TTree *T6AD8AD = new TTree("T6AD8AD","Monte Carlo neutrino events 6AD+8AD");
     TTree *T6AD    = new TTree("T6AD","Monte Carlo neutrino events 6AD");
 
-    frac6AD = 217.0/2130.; // fraction of the total corresponding to 6AD only
+    double frac6AD = 217.0/1230.; // fraction of the total corresponding to 6AD only
 
     float Ep, En, Ln;
     int   blid,ir,id,ad;
+    int   per;
     T6AD8AD->Branch("Ep"  ,&Ep  ,"Ep/F");	  //prompt reconstructed energy
     T6AD8AD->Branch("En"  ,&En  ,"En/F");	  //neutrino energy
     T6AD8AD->Branch("Ln"  ,&Ln  ,"Ln/F");	  //neutrino baseline
     T6AD8AD->Branch("blid",&blid,"blid/s"); //Baseline id (0-47)
-    
+
     T6AD8AD->Branch("ir", &ir, "ir/s"); //reactor
     T6AD8AD->Branch("id", &id, "id/s"); //detector
+    T6AD8AD->Branch("per",&per,"per/s"); //period
 
     T6AD->Branch("Ep"  ,&Ep  ,"Ep/F");	  //prompt reconstructed energy
     T6AD->Branch("En"  ,&En  ,"En/F");	  //neutrino energy
@@ -117,6 +115,7 @@ void db_ntuple()
     
     T6AD->Branch("ir", &ir, "ir/s"); //reactor
     T6AD->Branch("id", &id, "id/s"); //detector
+    T6AD->Branch("per",&per,"per/s"); //period
 
     int Nevents = 5000000; // CAUTION!! This must be commented out when using the script
     //int Nevents = atoi(getenv("NTUPLE_EVENTS")); // This must be uncommented when using the script
@@ -133,18 +132,20 @@ void db_ntuple()
     for (int i = 0 ; i < Nevents ; i++)
         {
             // generate a baseline (blid uniquely identifies the baseline)
-            blid = histo_ldist->GetRandom();
+            blid = histo_ldist_6Det->GetRandom();
             id =   (blid/nRea);
             ir =   (blid - id*nRea);
             Ln = baselines[id][ir] + gau->GetRandom();
             //Ln =   baselines[id][ir];
+            per = 1;
 
             // generate a neutrino energy
             //if (id is 0 or 1, EH1 spectrum; id is 2, EH2 spectrum; id is 4 to 6, EH3 spectrum) this is for Ep
             if (id < 2)       ad = 0;
             else if (id == 2) ad = 1;
-            else if (id > 3 && id < 7) ad = 2;
-     
+            else if ((id > 3) && (id < 7)) ad = 2;
+            //else continue;
+            
             Ep = nu_nosc_spect_histo6AD[ad]->GetRandom();
             En = Ep*1.03 + avg_nRecoilE + avg_constE;
 
@@ -159,7 +160,13 @@ void db_ntuple()
     for (int i = 0 ; i < Nevents ; i++)
         {
             // generate a baseline (blid uniquely identifies the baseline)
-            blid = histo_ldist->GetRandom();
+            if (i < frac6AD*Nevents) {
+                blid = histo_ldist_6Det->GetRandom();
+                per = 1;
+            } else {
+                blid = histo_ldist->GetRandom();
+                per = 2;
+            }
             id =   (blid/nRea);
             ir =   (blid - id*nRea);
             Ln = baselines[id][ir] + gau->GetRandom();
