@@ -94,9 +94,9 @@ TMatrixD fracCovaMatrix_matrix(NBx_cov,NBy_cov);  //Se llena en la función prin
 TMatrixD fullCovaMatrix_matrix(NBx_cov,NBy_cov);
 TMatrixD inv_fullCovaMatrix_matrix(NBx_cov,NBy_cov);
 TMatrixD one_matrix(NBx_cov,NBy_cov);
-TMatrixD delta_vector(NBx_cov,NBy_cov);
-TMatrixD transp_delta_vector(NBx_cov,NBy_cov);
-TMatrixD predi_vector(NBx_cov,NBy_cov);
+TMatrixD delta_vector(NBx_cov,1);
+TMatrixD transp_delta_vector(1,NBy_cov);
+TMatrixD predi_vector(NBx_cov,1);
 
 //---*****************************************************---//
 //-- Chi-square function to be minimized --------------------//
@@ -156,8 +156,15 @@ double chi2(const double *xx)
             int index  = iAD*NB + iBIN;
             int index2 = index + nAD*NB;
             //-- Predicted IBD from neutrino oscillations of the dth Antineutrino Detector
+            Td6AD = 0;
+            if (NoscTot6AD[iAD]!=0)
             Td6AD = spc6AD[iAD][iBIN]*(SurvPavg6AD*noOsc_IBDrate_perday_6AD[iAD]/NoscTot6AD[iAD])*emuem_6AD[iAD]*daqTime_6AD[iAD];
+            Td8AD = 0;
+            if (NoscTot8AD[iAD]!=0)
             Td8AD = spc8AD[iAD][iBIN]*(SurvPavg8AD*noOsc_IBDrate_perday_8AD[iAD]/NoscTot8AD[iAD])*emuem_8AD[iAD]*daqTime_8AD[iAD];
+            //cout << "Td6AD = " << Td6AD << endl;
+            //cout << "Td8AD = " << Td8AD << endl;           
+
             //-- Measured IDB events of the dth Antineutrino Detector (background is substracted)
             int idx = -1;
             if (iAD < 2) {
@@ -181,6 +188,8 @@ double chi2(const double *xx)
             sqrerror6AD = Md6AD + Bd6AD;
             sqrerror8AD = Md8AD + Bd8AD;
 
+            if (sqrerror6AD==0) sqrerror6AD = 1e7;
+
             //Statistics Error matrix
             statErroMatrix_matrix(index,index)   = sqrerror6AD;
             statErroMatrix_matrix(index2,index2) = sqrerror8AD;
@@ -193,20 +202,25 @@ double chi2(const double *xx)
         
             predi_vector(index,0)  = Td6AD*(1.0 + epsilon + eps_d[iAD] + wrd) - eta_d[iAD];
             predi_vector(index2,0) = Td8AD*(1.0 + epsilon + eps_d[iAD] + wrd) - eta_d[iAD];
+            //cout << "predi_vector(index2,0)" << index2 << " " << predi_vector(index2,0) << endl;
             delta_vector(index,0)  = Md6AD - Td6AD*(1.0 + epsilon + eps_d[iAD] + wrd) + eta_d[iAD];
             delta_vector(index2,0) = Md8AD - Td8AD*(1.0 + epsilon + eps_d[iAD] + wrd) + eta_d[iAD];
+            //cout << "delta_vector(index2,0)" << index2 << " " << delta_vector(index2,0) << endl;
             transp_delta_vector(0,index)  = delta_vector(index,0);
             transp_delta_vector(0,index2) = delta_vector(index2,0);
+            //cout << "transp_delta_vector(0,index2)" << index2 << " " << transp_delta_vector(0,index2) << endl;
+            //cout << endl;
         }
     }
 
     for (int i = 0 ; i < NBx_cov ; i++) {
         for (int j = 0 ; j < NBy_cov ; j++) {
-            fullCovaMatrix_matrix(i,j) = statErroMatrix_matrix(i,j) + predi_vector(i,0)*predi_vector(j,0)*fracCovaMatrix_matrix(i,j);
+            fullCovaMatrix_matrix(i,j) = statErroMatrix_matrix(i,j) + 0*predi_vector(i,0)*predi_vector(j,0)*fracCovaMatrix_matrix(i,j);
         }
     }
-    //predi_vector->Print();
+    predi_vector.Print();
     //fullCovaMatrix_matrix.Print();
+    //exit(); //debug
 
     if(fullCovaMatrix_matrix.Determinant() != 0){
         inv_fullCovaMatrix_matrix = fullCovaMatrix_matrix;
@@ -217,6 +231,7 @@ double chi2(const double *xx)
         cout << "Singular fullCovaMatrix!" << endl;
         cout << "Execution aborted!" << endl;
         //break;
+        exit(1);
     }
     
     for (int i = 0 ; i < NBx_cov ; i++) {
@@ -291,9 +306,9 @@ int db_minuit_spec_CovMat(const char * minName = "Minuit",
         }
     }
 
-    //cout << "Done with the matrix!" << endl;
-    //fracCovaMatrix_matrix->Print();
-    //break;
+    cout << "Done with the matrix!" << endl;
+    //fracCovaMatrix_matrix.Print();
+    //exit(0); //debug
 
     TFile *wrd_File = new TFile("files_data/daya-bay-ldist.root","READ");
     TH1F *wrd_histo = (TH1F*)(wrd_File->Get("histo_ldist"));
@@ -448,6 +463,8 @@ int db_minuit_spec_CovMat(const char * minName = "Minuit",
             //cout << endl;
             iad = 0;
             
+            //cout << "test " << s2th_13 << "\t" << dm2_31 << endl;
+
             //This is executed for every 6 lines of the file
             const int N_params = 23; //-- Number of parameter of the chi² function --//
             ROOT::Math::Functor f(&chi2,N_params); //-- Setting the function to be minimized by using Minuit --//
@@ -536,7 +553,8 @@ int db_minuit_spec_CovMat(const char * minName = "Minuit",
         
             if (chi2Min < 0.0) {
                 cout << "Critical error: chi2Min is negative!  " << chi2Min << endl;
-                break;
+                //break;
+                exit(1);
             }
                 
             minimPullT_file  << s2th_13 << "\t" << dm2_31 << "\t" << xs[0]  << "\t" << xs[1]

@@ -22,7 +22,7 @@ void db_ntuple()
     //TFile *fenergy8AD = new TFile("PRD95_1230days_data.root","read");
     //TFile *fenergy6AD = new TFile("PRL112_217days_data.root","read");
     std::cout << "Calling the root file" << std::endl;
-    TFile *fenergy = new TFile("histos_6AD217Days_8AD1913Days_data.root","read");
+    TFile *fenergy = new TFile("histos_6AD217Days_8AD1013Days_data.root","read");
     //Three sets of histograms one for each Experimental Hall
     const int nEH = 3;
     //1230 days

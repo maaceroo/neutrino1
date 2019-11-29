@@ -32,29 +32,29 @@ echo
 echo
 
 # Construct L distribution
-#echo '=========================================='
-#echo '1) Running ldist.C'
-#echo '=========================================='
-#echo
+echo '=========================================='
+echo '1) Running ldist.C'
+echo '=========================================='
+echo
 #echo '1.1) Running for 6AD'
 #time root -b -l -n -q ../DB_SPEC_6AD/ldist.C
 #echo '1.2) Running for 8AD'
-#time root -b -l -n -q ../DB_SPEC_8AD/ldist.C
+#time root -b -l -n -q ldist.C
 
 echo
 
 #-----------------------------------------------------------------------------
 # Construct ntuple
-#echo '=========================================='
-#echo '2) Running ntuple.C'
-#echo '=========================================='
-#echo
-#export NTUPLE_EVENTS=1000000
+echo '=========================================='
+echo '2) Running ntuple.C'
+echo '=========================================='
+echo
+export NTUPLE_EVENTS=1000000
 #echo $NTUPLE_EVENTS ntuple events
 #echo '2.1) Running for 8AD'
 #time root -b -l -n -q ../DB_SPEC_6AD/db_ntuple.C
 #echo '2.2) Running for 8AD'
-#time root -b -l -n -q ../DB_SPEC_8AD/db_ntuple.C
+#time root -b -l -n -q db_ntuple.C
 
 echo
 
@@ -64,17 +64,17 @@ echo '=========================================='
 echo '3) Running db_osc_spec.C'
 echo '=========================================='
 echo
-#echo '3.1) Running for 6AD'
+#echo '3.1) Running for 6AD8AD'
 #time root -b -l -n -q db_osc_spec.C
 #echo '3.1) Running for 8AD'
 #time root -b -l -n -q ../DB_SPEC_8AD/db_osc_spec.C
 
 #-----------------------------------------------------------------------------
 # run minimization
-#echo '=========================================='
-#echo '3) Running db_minuit.C'
-#echo '=========================================='
-#echo
+echo '=========================================='
+echo '3) Running db_minuit.C'
+echo '=========================================='
+echo
 #time root -b -l -n -q db_minuit_spec.C
 time root -b -l -n -q db_minuit_spec_CovMat.C
 
