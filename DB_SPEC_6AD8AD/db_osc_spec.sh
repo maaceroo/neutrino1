@@ -64,8 +64,8 @@ echo '=========================================='
 echo '3) Running db_osc_spec.C'
 echo '=========================================='
 echo
-echo '3.1) Running for 6AD'
-time root -b -l -n -q db_osc_spec.C
+#echo '3.1) Running for 6AD'
+#time root -b -l -n -q db_osc_spec.C
 #echo '3.1) Running for 8AD'
 #time root -b -l -n -q ../DB_SPEC_8AD/db_osc_spec.C
 
@@ -76,7 +76,7 @@ time root -b -l -n -q db_osc_spec.C
 #echo '=========================================='
 #echo
 #time root -b -l -n -q db_minuit_spec.C
-#time root -b -l -n -q db_minuit_spec_CovMat.C
+time root -b -l -n -q db_minuit_spec_CovMat.C
 
 #echo
 

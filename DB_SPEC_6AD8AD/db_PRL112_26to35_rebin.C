@@ -312,7 +312,7 @@ void db_PRL112_26to35_rebin()
 
     //---------------------------------------------------------
     // write to output file
-    TFile *fout = new TFile("histos_6AD217Days_8AD1913Days_data.root","recreate");
+    TFile *fout = new TFile("histos_6AD217Days_8AD1013Days_data.root","recreate");
     fout->cd();
     for (int j = 0 ; j < nEH ; j++) {
         data_spect_6AD8AD_histoPerMeV[j]->Write();

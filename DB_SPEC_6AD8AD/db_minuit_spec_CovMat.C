@@ -1,4 +1,4 @@
-//--------------------------------------------------------------------------------------//
+    //--------------------------------------------------------------------------------------//
 //--   db_minuit_spec_CovMat.C  -  By M.A. Acero O. & A.A. Aquilar-A. -  2019-07-05   --//
 //--------------------------------------------------------------------------------------//
 //--     Analysis of the Daya Bay data from F.P. An et al., PRD 95 072006 (2017)      --//
@@ -26,6 +26,7 @@ double IBDrate_data_Total[nAD][2] = { {534.93,0.69},{542.75,0.70},{509.00,0.68},
 //IBD rate (per day), total background (8AD) and efficiencies (PRD 95 072006 (2017))
 double totalBgd_Total[nAD][2]     = { {11.94,1.07},{11.94,1.07},{ 8.76,0.78},{ 8.69,0.78},{ 1.56,0.07},{ 1.47,0.07},{ 1.48,0.07},{ 1.28,0.07} };
 double emuem_Total[nAD]           = {0.8044,0.8013,0.8365,0.8363,0.9587,0.9585,0.9581,0.9588};
+double noOsc_IBDrate_perday_6AD8AD[nAD]; // Information obtained by executing the script "db_osc_spec.C"
 //---*****************************************************---//
 //-- Information for 6AD
 double daqTime_6AD[nAD]           = {191.001, 191.001, 189.645, 0.0, 189.779, 189.779, 189.779, 0.0};
@@ -33,7 +34,8 @@ double IBDrate_data_6AD[nAD][2]   = { {530.31,1.67},{536.75,1.68},{489.93,1.61},
 double totalBgd_6AD[nAD][2]       = { {13.20,0.98}, { 13.01,0.98},{  9.57,0.71},{0,0},        {  3.52,0.14},{ 3.48,0.14},{ 3.43,0.14},{0,0}        };
 double emuem_6AD[nAD]             = {0.7957,0.7927,0.8282,0.0,0.9577,0.9568,0.9566,0.0};
 //IBD rate per day w/o oscillations
-double noOsc_IBDrate_perday_6AD[nAD];
+//Need to claculate from the ntuple for the 217-days Period - TO BE DONE!
+double noOsc_IBDrate_perday_6AD[nAD] = {664.718016,675.560234,593.574780,0.0,79.048929,78.748559,77.848677,0.0};
 //---*****************************************************---//
 //---*****************************************************---//
 //-- Information for 8AD
@@ -42,7 +44,7 @@ double IBDrate_data_8AD[nAD][2]; //-- (IBDTotalPerDay*DAQTimeTotal - IBD6ADPerDa
 double totalBgd_8AD[nAD][2];     //-- (TotalPerDay*DAQTimeTotal - 6ADPerDay*DAQTime6AD) / DAQTime8AD
 double emuem_8AD[nAD];           //-- = emuem_Total[nAD];
 //IBD rate per day w/o oscillations
-double noOsc_IBDrate_perday_8AD[nAD]; // Information obtained by executing the script "db_osc_spec.C"
+double noOsc_IBDrate_perday_8AD[nAD] = {0.0};
 //---*****************************************************---//
 //---*****************************************************---//
 //const int dim = N_s2t*N_dm2;
@@ -85,16 +87,16 @@ TH1F *bfit_spect_hist6AD[nAD];
 //** Declarar la matriz de covarianza fraccionaria como un TH2F
 //TFile *fracCovaMatrix_File = new TFile("files_data/db_CovaMatrix_6AD_6x26bins.root","READ");
 TH2F *fracCovaMatrix_hist;    //Se carga dentro de la función principal db_minuot_spec()
-int NBx_cov;
-int NBy_cov;
-TMatrixD *statErroMatrix_matrix;
-TMatrixD *fracCovaMatrix_matrix;  //Se llena en la función principal db_minuit_spec()
-TMatrixD *fullCovaMatrix_matrix;
-TMatrixD *inv_fullCovaMatrix_matrix;
-TMatrixD *one_matrix;
-TMatrixD *delta_vector;
-TMatrixD *transp_delta_vector;
-TMatrixD *predi_vector;
+int NBx_cov = 2*NB*nAD;
+int NBy_cov = 2*NB*nAD;
+TMatrixD statErroMatrix_matrix(NBx_cov,NBy_cov);
+TMatrixD fracCovaMatrix_matrix(NBx_cov,NBy_cov);  //Se llena en la función principal db_minuit_spec()
+TMatrixD fullCovaMatrix_matrix(NBx_cov,NBy_cov);
+TMatrixD inv_fullCovaMatrix_matrix(NBx_cov,NBy_cov);
+TMatrixD one_matrix(NBx_cov,NBy_cov);
+TMatrixD delta_vector(NBx_cov,NBy_cov);
+TMatrixD transp_delta_vector(NBx_cov,NBy_cov);
+TMatrixD predi_vector(NBx_cov,NBy_cov);
 
 //---*****************************************************---//
 //-- Chi-square function to be minimized --------------------//
@@ -206,15 +208,15 @@ double chi2(const double *xx)
     //predi_vector->Print();
     //fullCovaMatrix_matrix.Print();
 
-    if(fullCovaMatrix_matrix->Determinant() != 0){
+    if(fullCovaMatrix_matrix.Determinant() != 0){
         inv_fullCovaMatrix_matrix = fullCovaMatrix_matrix;
-        inv_fullCovaMatrix_matrix->Invert();
+        inv_fullCovaMatrix_matrix.Invert();
     }
     else {
-        cout << "Determinant = " << fullCovaMatrix_matrix->Determinant() << endl;
+        cout << "Determinant = " << fullCovaMatrix_matrix.Determinant() << endl;
         cout << "Singular fullCovaMatrix!" << endl;
         cout << "Execution aborted!" << endl;
-        break;
+        //break;
     }
     
     for (int i = 0 ; i < NBx_cov ; i++) {
@@ -256,28 +258,28 @@ int db_minuit_spec_CovMat(const char * minName = "Minuit",
     TFile *fracCovaMatrix_File = new TFile("CombCovaMat/db_CovaMatrix_6AD8AD_16x16Det.root","READ");
     fracCovaMatrix_hist = (TH2F*)(fracCovaMatrix_File->Get("covaMat_histo_16x16"));
     //-- Creating the Rebinned Matrix with root tools.
-    NBx_cov = 2*NB*nAD;
-    NBy_cov = 2*NB*nAD;
+    //NBx_cov = 2*NB*nAD;
+    //NBy_cov = 2*NB*nAD;
     cout << NBx_cov << "  " << NBy_cov << endl;
-    statErroMatrix_matrix = new TMatrixD(NBx_cov,NBy_cov);
-    fracCovaMatrix_matrix = new TMatrixD(NBx_cov,NBy_cov);
-    fullCovaMatrix_matrix = new TMatrixD(NBx_cov,NBy_cov);
-    inv_fullCovaMatrix_matrix = new TMatrixD(NBx_cov,NBy_cov);
+    //statErroMatrix_matrix = TMatrixD(NBx_cov,NBy_cov);
+    //fracCovaMatrix_matrix = TMatrixD(NBx_cov,NBy_cov);
+    //fullCovaMatrix_matrix = TMatrixD(NBx_cov,NBy_cov);
+    //inv_fullCovaMatrix_matrix = TMatrixD(NBx_cov,NBy_cov);
     
-    one_matrix = new TMatrixD(NBx_cov,NBy_cov);
+    //one_matrix = TMatrixD(NBx_cov,NBy_cov);
     
-    delta_vector        = new TMatrixD(NBx_cov,1);
-    transp_delta_vector = new TMatrixD(1,NBx_cov);
-    predi_vector        = new TMatrixD(NBx_cov,1);
+    //delta_vector        = TMatrixD(NBx_cov,1);
+    //transp_delta_vector = TMatrixD(1,NBx_cov);
+    //predi_vector        = TMatrixD(NBx_cov,1);
     
-    fracCovaMatrix_matrix->Zero();
-    statErroMatrix_matrix->Zero();
-    fullCovaMatrix_matrix->Zero();
-    inv_fullCovaMatrix_matrix->Zero();
-    one_matrix->Zero();
-    delta_vector->Zero();
-    transp_delta_vector->Zero();
-    predi_vector->Zero();
+    fracCovaMatrix_matrix.Zero();
+    statErroMatrix_matrix.Zero();
+    fullCovaMatrix_matrix.Zero();
+    inv_fullCovaMatrix_matrix.Zero();
+    one_matrix.Zero();
+    delta_vector.Zero();
+    transp_delta_vector.Zero();
+    predi_vector.Zero();
     
     int i_block = 0;
     int j_block = 0;
@@ -301,28 +303,28 @@ int db_minuit_spec_CovMat(const char * minName = "Minuit",
     //-------------------
     //TFile *fenergy0217 = new TFile("./PRL112_217days_data.root","read");
     //TFile *fenergy1230 = new TFile("./PRD95_1230days_data.root","read");
-    TFile *fenergy = new TFile("./histos_6AD217Days_8AD1913Days_data.root","read");
+    TFile *fenergy = new TFile("./histos_6AD217Days_8AD1013Days_data.root","read");
     //Three sets of histograms one for each Experimental Hall
     double bfactor[nEH];
     for (int i = 0 ; i < nEH ; i++)
         {
-            //Data 217
+            //Data 217 days
             //data_spect_histo6AD[i] = (TH1F*) fenergy0217->Get(Form("data_spect_histo_%d",i));
             data_spect_histo6AD[i] = (TH1F*) fenergy->Get(Form("data_spect_6AD35B_histo_%d",i));
             double dfactor = 1.0/data_spect_histo6AD[i]->Integral();
             data_spect_histo6AD[i]->Scale(dfactor);
-            //Background 6AD
+            //Background 217 days
             //bkgd_spect_histo6AD[i] = (TH1F*) fenergy0217->Get(Form("bkgd_spect_histo_%d",i));
             bkgd_spect_histo6AD[i] = (TH1F*) fenergy->Get(Form("bkgd_spect_6AD35B_histo_%d",i));
             bfactor[i] = 1.0/bkgd_spect_histo6AD[i]->Integral();
             bkgd_spect_histo6AD[i]->Scale(bfactor[i]);
 
-            //Data 1230
+            //Data 1013 days
             //data_spect_histo8AD[i] = (TH1F*) fenergy1230->Get(Form("data_spect_histo_%d",i));
             data_spect_histo8AD[i] = (TH1F*) fenergy->Get(Form("data_spect_8AD35B_histo_%d",i));
-            double dfactor = 1.0/data_spect_histo8AD[i]->Integral();
+            dfactor = 1.0/data_spect_histo8AD[i]->Integral();
             data_spect_histo8AD[i]->Scale(dfactor);
-            //Background 1230
+            //Background 1013 days
             //bkgd_spect_histo8AD[i] = (TH1F*) fenergy1230->Get(Form("bkgd_spect_histo_%d",i));
             bkgd_spect_histo8AD[i] = (TH1F*) fenergy->Get(Form("bkgd_spect_8AD35B_histo_%d",i));
             bfactor[i] = 1.0/bkgd_spect_histo8AD[i]->Integral();
@@ -340,14 +342,14 @@ int db_minuit_spec_CovMat(const char * minName = "Minuit",
     xbins[35] = hi;
     for(int iAD = 0 ; iAD < nAD ; iAD++)
     {
-        //1230
+        //1013
         nosc_spect_hist8AD[iAD]    = new TH1F(Form("nosc_spect_hist8AD_%d",iAD),   "",NB,xbins);
         nu_nosc_spect_hist8AD[iAD] = new TH1F(Form("nu_nosc_spect_hist8AD_%d",iAD),"",NB,xbins);
         wosc_spect_hist8AD[iAD]    = new TH1F(Form("wosc_spect_hist8AD_%d",iAD),   "",NB,xbins);
         nu_wosc_spect_hist8AD[iAD] = new TH1F(Form("nu_wosc_spect_hist8AD_%d",iAD),"",NB,xbins);
         bfit_spect_hist8AD[iAD]    = new TH1F(Form("bfit_spect_hist8AD_%d",iAD),   "",NB,xbins);
         //217
-        nosc_spect_hist6AD         = new TH1F(Form("nosc_spect_hist6AD_%d",iAD),   "",NB,xbins);
+        nosc_spect_hist6AD[iAD]    = new TH1F(Form("nosc_spect_hist6AD_%d",iAD),   "",NB,xbins);
         nu_nosc_spect_hist6AD[iAD] = new TH1F(Form("nu_nosc_spect_hist6AD_%d",iAD),"",NB,xbins);
         wosc_spect_hist6AD[iAD]    = new TH1F(Form("wosc_spect_hist6AD_%d",iAD),   "",NB,xbins);
         nu_wosc_spect_hist6AD[iAD] = new TH1F(Form("nu_wosc_spect_hist6AD_%d",iAD),"",NB,xbins);
@@ -376,14 +378,16 @@ int db_minuit_spec_CovMat(const char * minName = "Minuit",
   
     //-- File to get noOsc normalizations
     ifstream IBDrates_file1230("files_data/db_noOsc_IBDrates_perday_1230.txt");
-    ifstream IBDrates_file0217("files_data/db_noOsc_IBDrates_perday_217.txt");
+    //ifstream IBDrates_file0217("files_data/db_noOsc_IBDrates_perday_217.txt");
     cout << "Reading noOsc normalizations file ..." << endl;
     for (int i=0; i< nAD; i ++)
 	{
-        IBDrates_file1230 >> noOsc_IBDrate_perday_8AD[i];
-            cout << "noOscIBD_rates_perday_8AD " << i << ": " << noOsc_IBDrate_perday_8AD[i] << endl;
-        IBDrates_file217 >> noOsc_IBDrate_perday_6AD[i];
-            cout << "noOscIBD_rates_perday_6AD " << i << ": " << noOsc_IBDrate_perday_6AD[i] << endl;
+        IBDrates_file1230 >> noOsc_IBDrate_perday_6AD8AD[i];
+        cout << "noOscIBD_rates_perday_6AD8AD " << i << ": " << noOsc_IBDrate_perday_6AD8AD[i] << endl;
+        daqTime_8AD[i]         = daqTime_Total[i] - daqTime_6AD[i];
+        noOsc_IBDrate_perday_8AD[i] = ((noOsc_IBDrate_perday_6AD8AD[i]*daqTime_Total[i]) - (noOsc_IBDrate_perday_6AD[i]*daqTime_6AD[i]))/daqTime_8AD[i];
+        cout << "noOscIBD_rates_perday_6AD " << i << ": " << noOsc_IBDrate_perday_6AD[i] << endl;
+        cout << "noOscIBD_rates_perday_8AD " << i << ": " << noOsc_IBDrate_perday_8AD[i] << endl;
     }//for
  
     //-- File to print oscillation parameters and chi2 values
@@ -396,37 +400,26 @@ int db_minuit_spec_CovMat(const char * minName = "Minuit",
     string PullT = "files_data/chi2_pullT_surface.txt";
     minimPullT_file.open((PullT).c_str());
   
-    ifstream file("files_data/db_gridOscSpectra.txt");
+    //ifstream  file("files_data/db_gridOscSpectra_1230.txt");
+    string grid_spectra = "files_data/db_gridOscSpectra_1230.txt";
+    ifstream file;
+    file.open((grid_spectra).c_str());
     cout << "Reading file - Loop in progress..." << endl;
     int iad = 0;
-    int first16 = 1;
-    
+    int first8 = 1;
+    std::cout << "Is the file open?  " << file.is_open() << "\n" << std::endl;
+
     for (int iAD ; iAD < nAD ; iAD++) {
-        daqTime_8AD[iAD]         = daqTime_Total[iAD] - daqTime_6AD[iAD];
-        IBDrate_data_8AD[nAD][2] = (IBDrate_data_Total[iAD]*daqTime_Total[iAD] - IBDrate_data_6AD[iAD]*daqTime_6AD[iAD]) / daqTime_8AD[ia];
-        totalBgd_8AD[nAD][2]     = (totalBgd_Total[iAD]*daqTime_Total[iAD]     - totalBgd_6AD[iAD]*daqTime_6AD[iAD]) / daqTime_8AD[ia];
-        emuem_8AD[nAD]           = emuem_Total[nAD];
+        //daqTime_8AD[iAD]         = daqTime_Total[iAD] - daqTime_6AD[iAD];
+        IBDrate_data_8AD[iAD][0] = (IBDrate_data_Total[iAD][0]*daqTime_Total[iAD] - IBDrate_data_6AD[iAD][0]*daqTime_6AD[iAD]) / daqTime_8AD[iAD];
+        totalBgd_8AD[iAD][0]     = (totalBgd_Total[iAD][0]*daqTime_Total[iAD]     - totalBgd_6AD[iAD][0]*daqTime_6AD[iAD]) / daqTime_8AD[iAD];
+        emuem_8AD[iAD]           = emuem_Total[iAD];
     }
     
-    while (file >> iAD >> s2th_13 >> dm2_31 >>
-           spc6AD[iad][0]  >> spc6AD[iad][1]  >> spc6AD[iad][2]  >> spc6AD[iad][3]  >> spc6AD[iad][4]  >> spc6AD[iad][5]  >>
-           spc6AD[iad][6]  >> spc6AD[iad][7]  >> spc6AD[iad][8]  >> spc6AD[iad][9]  >> spc6AD[iad][10] >> spc6AD[iad][11] >>
-           spc6AD[iad][12] >> spc6AD[iad][13] >> spc6AD[iad][14] >> spc6AD[iad][15] >> spc6AD[iad][16] >> spc6AD[iad][17] >>
-           spc6AD[iad][18] >> spc6AD[iad][19] >> spc6AD[iad][20] >> spc6AD[iad][21] >> spc6AD[iad][22] >> spc6AD[iad][23] >>
-           spc6AD[iad][24] >> spc6AD[iad][25] >> spc6AD[iad][26] >> spc6AD[iad][27] >> spc6AD[iad][28] >> spc6AD[iad][29] >>
-           spc6AD[iad][30] >> spc6AD[iad][31] >> spc6AD[iad][32] >> spc6AD[iad][33] >> spc6AD[iad][34] >>
-           NoscTot6AD[iad] >>
-           //----
-           spc8AD[iad][0]  >> spc8AD[iad][1]  >> spc8AD[iad][2]  >> spc8AD[iad][3]  >> spc8AD[iad][4]  >> spc8AD[iad][5]  >>
-           spc8AD[iad][6]  >> spc8AD[iad][7]  >> spc8AD[iad][8]  >> spc8AD[iad][9]  >> spc8AD[iad][10] >> spc8AD[iad][11] >>
-           spc8AD[iad][12] >> spc8AD[iad][13] >> spc8AD[iad][14] >> spc8AD[iad][15] >> spc8AD[iad][16] >> spc8AD[iad][17] >>
-           spc8AD[iad][18] >> spc8AD[iad][19] >> spc8AD[iad][20] >> spc8AD[iad][21] >> spc8AD[iad][22] >> spc8AD[iad][23] >>
-           spc8AD[iad][24] >> spc8AD[iad][25] >> spc8AD[iad][26] >> spc8AD[iad][27] >> spc8AD[iad][28] >> spc8AD[iad][29] >>
-           spc8AD[iad][30] >> spc8AD[iad][31] >> spc8AD[iad][32] >> spc8AD[iad][33] >> spc8AD[iad][34] >>
-           NoscTot8AD[iad] )
+    while (file >> iAD >> s2th_13 >> dm2_31 >> spc6AD[iad][0]  >> spc6AD[iad][1]  >> spc6AD[iad][2]  >> spc6AD[iad][3]  >> spc6AD[iad][4]  >> spc6AD[iad][5]  >> spc6AD[iad][6]  >> spc6AD[iad][7]  >> spc6AD[iad][8]  >> spc6AD[iad][9]  >> spc6AD[iad][10] >> spc6AD[iad][11] >> spc6AD[iad][12] >> spc6AD[iad][13] >> spc6AD[iad][14] >> spc6AD[iad][15] >> spc6AD[iad][16] >> spc6AD[iad][17] >> spc6AD[iad][18] >> spc6AD[iad][19] >> spc6AD[iad][20] >> spc6AD[iad][21] >> spc6AD[iad][22] >> spc6AD[iad][23] >> spc6AD[iad][24] >> spc6AD[iad][25] >> spc6AD[iad][26] >> spc6AD[iad][27] >> spc6AD[iad][28] >> spc6AD[iad][29] >> spc6AD[iad][30] >> spc6AD[iad][31] >> spc6AD[iad][32] >> spc6AD[iad][33] >> spc6AD[iad][34] >> NoscTot6AD[iad] >> spc8AD[iad][0]  >> spc8AD[iad][1]  >> spc8AD[iad][2]  >> spc8AD[iad][3]  >> spc8AD[iad][4]  >> spc8AD[iad][5]  >> spc8AD[iad][6]  >> spc8AD[iad][7]  >> spc8AD[iad][8]  >> spc8AD[iad][9]  >> spc8AD[iad][10] >> spc8AD[iad][11] >> spc8AD[iad][12] >> spc8AD[iad][13] >> spc8AD[iad][14] >> spc8AD[iad][15] >> spc8AD[iad][16] >> spc8AD[iad][17] >> spc8AD[iad][18] >> spc8AD[iad][19] >> spc8AD[iad][20] >> spc8AD[iad][21] >> spc8AD[iad][22] >> spc8AD[iad][23] >> spc8AD[iad][24] >> spc8AD[iad][25] >> spc8AD[iad][26] >> spc8AD[iad][27] >> spc8AD[iad][28] >> spc8AD[iad][29] >> spc8AD[iad][30] >> spc8AD[iad][31] >> spc8AD[iad][32] >> spc8AD[iad][33] >> spc8AD[iad][34] >> NoscTot8AD[iad])
     {//file loop
         //cout << s2th_13 << "\t" << dm2_31 << endl;
-        if(first16 <= 16)
+        if(first8 <= 8)
         {
             double bincont6AD = 0.0;
             double bincont8AD = 0.0;
@@ -439,17 +432,18 @@ int db_minuit_spec_CovMat(const char * minName = "Minuit",
                 bincont8AD = spc8AD[iad][ibin-1]*(noOsc_IBDrate_perday_8AD[iAD-1]/NoscTot8AD[iad])*emuem_8AD[iAD-1]*daqTime_8AD[iAD-1];
                 nu_nosc_spect_hist8AD[iAD-1]->SetBinContent(ibin,bincont8AD);
             }
-            cout << "iad = " << iad << "   iAD = " << iAD  << "   first16 = " << first16 << endl;
+            cout << "iad = " << iad << "   iAD = " << iAD  << "   first8 = " << first8 << endl;
             cout << "Number of events 6AD: " << nu_nosc_spect_hist6AD[iAD-1]->Integral() << endl;
             cout << "Number of events 8AD: " << nu_nosc_spect_hist8AD[iAD-1]->Integral() << endl;
-            noNoscTot[iad] = NoscTot[iad];
-            first16++;
-        }//if first16 loop END
+            noNoscTot6AD[iad] = NoscTot6AD[iad];
+            noNoscTot8AD[iad] = NoscTot8AD[iad];
+            first8++;
+        }//if first8 loop END
         
         iad++;
         
-        //At this point, we have read the 16 AD spectra (16 lines) for one point (s2th_13,dm2_31) in the grid
-        if (iad == 16)
+        //At this point, we have read the 16 AD spectra (8 lines) for one point (s2th_13,dm2_31) in the grid
+        if (iad == 8)
         {//if iad BEGIN
             //cout << endl;
             iad = 0;

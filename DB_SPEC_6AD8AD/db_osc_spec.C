@@ -94,9 +94,9 @@ void db_osc_spec()
        */
 
     FILE *file_IBDrates8AD;
-    FILE *file_IBDrates6AD;
+    //FILE *file_IBDrates6AD;
     file_IBDrates8AD = fopen("files_data/db_noOsc_IBDrates_perday_1230.txt","w");
-    file_IBDrates6AD = fopen("files_data/db_noOsc_IBDrates_perday_217.txt","w");
+    //file_IBDrates6AD = fopen("files_data/db_noOsc_IBDrates_perday_217.txt","w");
 
     int sel;
     double TotNosc_1013[nAD];
@@ -209,36 +209,37 @@ void db_osc_spec()
     //file.open (result.c_str());
     //file << setprecision(5);
     
-    FILE *file1013,*file217;
-    file1013 = fopen("files_data/db_gridOscSpectra_1013.txt","w");
-    file217  = fopen("files_data/db_gridOscSpectra_217.txt","w");
+    //FILE *file1013,*file217;
+    //file1013 = fopen("files_data/db_gridOscSpectra_1013.txt","w");
+    //file217  = fopen("files_data/db_gridOscSpectra_217.txt","w");
+    FILE *file;
+    file = fopen("files_data/db_gridOscSpectra_1230.txt","w");
 
     //write non-oscillated spectra for each AD to file
     for (int iAD = 0 ; iAD < nAD ; iAD++)
     {
-       sel = iAD;
+        sel = iAD;
        //---------------------------------------------------------
 
-      //file << iAD + 1 << " " << s2t_pt << "\t" << dm2_pt;
-        fprintf(file1013,"%d %8.2e %8.2e",iAD+1,s2t_pt,dm2_pt);
-        fprintf(file217, "%d %8.2e %8.2e",iAD+1,s2t_pt,dm2_pt);
-      //print bin-content of non-oscilated spectra per day
+        fprintf(file,"%d %8.2e %8.2e",iAD+1,s2t_pt,dm2_pt);
+        //print bin-content of non-oscilated spectra per day
+        for (int ib = 0 ; ib < NB ; ib++)
+        {
+            double contNO_217    = nu_nosc_spect_histo_217[iAD] ->GetBinContent(ib+1);
+            //fprintf(file," %10.2f",contNO_217);
+            if (iAD==3 || iAD==7) contNO_217 = 0.0; //-- Zero content for detector 3 and 7 for the 6AD run
+            fprintf(file, " %10.2f",contNO_217);
+        }
+        fprintf(file," %10.2f\n",TotNosc_217[iAD]);
         for (int ib = 0 ; ib < NB ; ib++)
         {
             double contNO_1013   = nu_nosc_spect_histo_1013[iAD]->GetBinContent(ib+1);
-            double contNO_217    = nu_nosc_spect_histo_217[iAD] ->GetBinContent(ib+1);
-            //file << "\t" << contNO;
-            fprintf(file1013," %10.2f",contNO_1013);
-            if (iAD==3 || iAD==7) contNO_217 = 0.0; //-- Zero content for detector 3 and 7 for the 6AD run
-            fprintf(file217, " %10.2f",contNO_217);
+            fprintf(file," %10.2f",contNO_1013);
         }
-      //file << " \t" << TotNosc[iAD] /*<< "\t" << "1.00000"*/ << endl;
-        fprintf(file1013," %10.2f\n",TotNosc_1013[iAD]);
-        fprintf(file217," %10.2f\n",TotNosc_217[iAD]);
+        fprintf(file," %10.2f\n",TotNosc_1013[iAD]);
     } // for iAD
     //file << endl;
-    fprintf(file1013,"\n");
-    fprintf(file217,"\n");
+    fprintf(file,"\n");
 
 
     for (int is2t = 0 ; is2t < N_s2t ; is2t++)
@@ -269,20 +270,24 @@ void db_osc_spec()
                 TotWosc_217[ih] =   wosc_spect_histo_217[ih]->Integral();
 
                 //file << iAD + 1 << " " << s2t_pt << "\t" << dm2_pt;
-                fprintf(file1013,"%d %8.2e %8.2e",iAD+1,s2t_pt,dm2_pt);
-                fprintf(file217, "%d %8.2e %8.2e",iAD+1,s2t_pt,dm2_pt);
+                fprintf(file,"%d %8.2e %8.2e",iAD+1,s2t_pt,dm2_pt);
                 //Printing bin-content for the oscilated spectra for (s2t_pt,dm2_pt)
                 for (int ib = 0 ; ib < NB ; ib++)
                 {
-                    double cont1013   = wosc_spect_histo_1013[ih]->GetBinContent(ib+1);
                     double cont217    = wosc_spect_histo_217[ih] ->GetBinContent(ib+1);
                     //file << "\t" << cont;
-                    fprintf(file1013," %10.2f",cont1013);
-                    fprintf(file217, " %10.2f",cont217);
+                    fprintf(file, " %10.2f",cont217);
                 }
                 //file << " \t" << TotWosc[ih] << endl;
-                fprintf(file1013," %10.2f\n",TotWosc_1013[ih]);
-                fprintf(file217, " %10.2f\n",TotWosc_217[ih]);
+                fprintf(file, " %10.2f\n",TotWosc_217[ih]);
+                for (int ib = 0 ; ib < NB ; ib++)
+                {
+                    double cont1013   = wosc_spect_histo_1013[ih]->GetBinContent(ib+1);
+                    //file << "\t" << cont;
+                    fprintf(file," %10.2f",cont1013);
+                }
+                //file << " \t" << TotWosc[ih] << endl;
+                fprintf(file," %10.2f\n",TotWosc_1013[ih]);
 
                 //Printing check-points info
                 if (ih%10 == 0)
@@ -299,18 +304,15 @@ void db_osc_spec()
                 wosc_spect_histo_217[ih]->Scale(1.0/integ_217);
             } // for idm2
             //file << endl;
-            fprintf(file1013,"\n");
-            fprintf(file217, "\n");
+            fprintf(file,"\n");
         }//for is2t
         //cout << "  Done with detector " << iAD+1 << endl;
         //file << endl;
-        fprintf(file1013,"\n");
-        fprintf(file217, "\n");
+        fprintf(file,"\n");
     }//for iAD
 
     //file.close();
-    fclose(file1013);
-    fclose(file217);
+    fclose(file);
 
     //break;
     //---------------------------------------------------
