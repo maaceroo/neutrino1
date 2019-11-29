@@ -230,7 +230,8 @@ void db_osc_spec()
             if (iAD==3 || iAD==7) contNO_217 = 0.0; //-- Zero content for detector 3 and 7 for the 6AD run
             fprintf(file, " %10.2f",contNO_217);
         }
-        fprintf(file," %10.2f\n",TotNosc_217[iAD]);
+        //fprintf(file," %10.2f\n",TotNosc_217[iAD]);
+        fprintf(file," %10.2f",TotNosc_217[iAD]); // no line break
         for (int ib = 0 ; ib < NB ; ib++)
         {
             double contNO_1013   = nu_nosc_spect_histo_1013[iAD]->GetBinContent(ib+1);
@@ -279,7 +280,8 @@ void db_osc_spec()
                     fprintf(file, " %10.2f",cont217);
                 }
                 //file << " \t" << TotWosc[ih] << endl;
-                fprintf(file, " %10.2f\n",TotWosc_217[ih]);
+                //fprintf(file, " %10.2f\n",TotWosc_217[ih]);
+                fprintf(file, " %10.2f",TotWosc_217[ih]); // no line break
                 for (int ib = 0 ; ib < NB ; ib++)
                 {
                     double cont1013   = wosc_spect_histo_1013[ih]->GetBinContent(ib+1);
