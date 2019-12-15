@@ -52,9 +52,6 @@ double s2th_13;     //oscillation parameter to be fitted
 double dm2_31;      //oscillation parameter to be fitted
 double wrd_array[nAD][nNR];
 double epsilon;     //normalization factor
-double alpha[nNR];  //'uncorrelated reactor uncertainty' pull term
-double eps_d[nAD];  //'uncorrelated detection uncertainty' pull term
-double eta_d[nAD];  //'background' pull term
 double spc8AD[nAD][NB];
 double NoscTot8AD[nAD];
 double noNoscTot8AD[nAD];
@@ -106,29 +103,7 @@ TMatrixD predi_vector(NBx_cov,1);
 double chi2(const double *xx)
 {
     //Pull parameters considered in the chi² function
-    eps_d[0] = xx[0];
-    eps_d[1] = xx[1];
-    eps_d[2] = xx[2];
-    eps_d[3] = xx[3];
-    eps_d[4] = xx[4];
-    eps_d[5] = xx[5];
-    eps_d[6] = xx[6];
-    eps_d[7] = xx[7];
-    eta_d[0] = xx[8];
-    eta_d[1] = xx[9];
-    eta_d[2] = xx[10];
-    eta_d[3] = xx[11];
-    eta_d[4] = xx[12];
-    eta_d[5] = xx[13];
-    eta_d[6] = xx[14];
-    eta_d[7] = xx[15];
-    alpha[0] = xx[16];
-    alpha[1] = xx[17];
-    alpha[2] = xx[18];
-    alpha[3] = xx[19];
-    alpha[4] = xx[20];
-    alpha[5] = xx[21];
-    epsilon  = xx[22];
+    epsilon  = xx[0];
   
     //---*****************************************************---//
     int iNR;
@@ -188,36 +163,37 @@ double chi2(const double *xx)
             double data_sigplusbg_6AD = (data_spect_histo6AD[idx]->GetBinContent(iBIN+1))*IBDrate_data_6AD[iAD][0];
             double simu_bg_6AD = (bkgd_spect_histo6AD[idx]->GetBinContent(iBIN+1))*totalBgd_6AD[iAD][0]*emuem_6AD[iAD];
             Md6AD = (data_sigplusbg_6AD - simu_bg_6AD)*daqTime_6AD[iAD];
+            
             double data_sigplusbg_8AD = (data_spect_histo8AD[idx]->GetBinContent(iBIN+1))*IBDrate_data_8AD[iAD][0];
             double simu_bg_8AD = (bkgd_spect_histo8AD[idx]->GetBinContent(iBIN+1))*totalBgd_8AD[iAD][0]*emuem_8AD[iAD];
             Md8AD = (data_sigplusbg_8AD - simu_bg_8AD)*daqTime_8AD[iAD];
+            //std::cout << "Inside chi2 func: iAD = " << iAD << "  idx = " << idx <<  "\n";
+            //std::cout << "data_spect_histo8AD[idx] = " << data_spect_histo8AD[idx]->GetBinContent(iBIN+1) << "  IBDrate_data_8AD[iAD][0] = " << IBDrate_data_8AD[iAD][0] << std::endl;
+            //std::cout << "data_sigplusbg_8AD = " << data_sigplusbg_8AD << "  simu_bg_8AD = " << simu_bg_8AD << std::endl;
+            //std::cout << "IBDrate_data_8AD[iAD][0] = " << IBDrate_data_8AD[iAD][0] << "  totalBgd_8AD[iAD][0] = " << totalBgd_8AD[iAD][0] << std::endl;
             //-- Background of the dth Antineutrino Detector
             Bd6AD = simu_bg_6AD*daqTime_6AD[iAD];
             Bd8AD = simu_bg_8AD*daqTime_8AD[iAD];
+            //std::cout << "Bd6AD = " << Bd6AD << "  Bd8AD = " << Bd8AD << std::endl;
 
             sqrerror6AD = Md6AD + Bd6AD;
             sqrerror8AD = Md8AD + Bd8AD;
 
             if (sqrerror6AD==0) sqrerror6AD = 1e7;
+            //std::cout << "sqrerror6AD = " << sqrerror6AD << "  sqrerror8AD = " << sqrerror8AD << std::endl;
 
             //Statistics Error matrix
             statErroMatrix_matrix(index,index)   = sqrerror6AD;
             statErroMatrix_matrix(index2,index2) = sqrerror8AD;
-
-            //-- Fraction of IBD contribution of the rth reactor to the dth AD
-            //-- determined by baselines and reactor fluxes
-            double wrd = 0.0;
-            for (iNR = 0 ; iNR < nNR ; iNR++)
-                wrd += wrd_array[iAD][iNR]*alpha[iNR];
         
-            predi_vector(index,0)  = Td6AD*(1.0 + epsilon + eps_d[iAD] + wrd) - eta_d[iAD];
-            predi_vector(index2,0) = Td8AD*(1.0 + epsilon + eps_d[iAD] + wrd) - eta_d[iAD];
+            predi_vector(index,0)  = Td6AD*(1.0 + epsilon);
+            predi_vector(index2,0) = Td8AD*(1.0 + epsilon);
             //std::cout << "iAD = " << iAD << "\t";
             //std::cout << index << "  " << index2 << "  epsilon "  << " " << epsilon << std::endl;
-            //cout << "predi_vector(index ,0)" << index  << " " << predi_vector(index,0) << endl;
-            //cout << "predi_vector(index2,0)" << index2 << " " << predi_vector(index2,0) << endl;
-            delta_vector(index,0)  = Md6AD - Td6AD*(1.0 + epsilon + eps_d[iAD] + wrd) + eta_d[iAD];
-            delta_vector(index2,0) = Md8AD - Td8AD*(1.0 + epsilon + eps_d[iAD] + wrd) + eta_d[iAD];
+            //cout << "predi_vector(index ,0) " << index  << " " << predi_vector(index,0) << endl;
+            //cout << "predi_vector(index2,0) " << index2 << " " << predi_vector(index2,0) << endl;
+            delta_vector(index,0)  = Md6AD - Td6AD*(1.0 + epsilon);
+            delta_vector(index2,0) = Md8AD - Td8AD*(1.0 + epsilon);
             //cout << "delta_vector(index2,0)" << index2 << " " << delta_vector(index2,0) << endl;
             transp_delta_vector(0,index)  = delta_vector(index,0);
             transp_delta_vector(0,index2) = delta_vector(index2,0);
@@ -256,26 +232,14 @@ double chi2(const double *xx)
         }
     }
 
-   for (iAD = 0 ; iAD < nAD ; iAD++)
-       {
-           //-- Background error of the dth Antineutrino Detector
-           sB6AD = totalBgd_6AD[iAD][1]*emuem_6AD[iAD]*daqTime_6AD[iAD];
-           sB8AD = totalBgd_8AD[iAD][1]*emuem_8AD[iAD]*daqTime_8AD[iAD];
-
-           sqr_chi += pow(eps_d[iAD]/seps_d,2) + pow(eta_d[iAD]/(sB6AD+sB8AD),2);
-       }
-    
-    for (iNR = 0 ; iNR < nNR ; iNR++)
-         sqr_chi += pow(alpha[iNR]/salph_r,2);
-    
     //cout << "AD " << iAD << "  chi2 = " << sqr_chi << endl;
     return sqr_chi;
 }
 //---*****************************************************---//
 
-int db_minuit_spec_CovMat(const char * minName = "Minuit",
-                          const char *algoName = "" ,
-                          int randomSeed = +10)
+int db_minuit_spec_CovMat_1par(const char * minName = "Minuit",
+                               const char *algoName = "" ,
+                               int randomSeed = +10)
     //int randomSeed = -1)
 {
     cout << "Let's begin..." << endl;
@@ -441,6 +405,10 @@ int db_minuit_spec_CovMat(const char * minName = "Minuit",
     for (int iAD = 0 ; iAD < nAD ; iAD++) {
         //daqTime_8AD[iAD]         = daqTime_Total[iAD] - daqTime_6AD[iAD];
         IBDrate_data_8AD[iAD][0] = (IBDrate_data_Total[iAD][0]*daqTime_Total[iAD] - IBDrate_data_6AD[iAD][0]*daqTime_6AD[iAD]) / daqTime_8AD[iAD];
+        //std::cout << "iAD = " << iAD << std::endl;
+        //std::cout << "IBDrate_data_Total[iAD][0] = " << IBDrate_data_Total[iAD][0] << ", IBDrate_data_6AD[iAD][0] = " << IBDrate_data_6AD[iAD][0] << std::endl;
+        //std::cout << "daqTime_Total[iAD] = " << daqTime_Total[iAD] << ", daqTime_6AD[iAD] = " << daqTime_6AD[iAD] << std::endl;
+        //std::cout << "IBDrate_data_8AD[iAD][0] = " << IBDrate_data_8AD[iAD][0] << "\n" << std::endl;
         totalBgd_8AD[iAD][0]     = (totalBgd_Total[iAD][0]*daqTime_Total[iAD]     - totalBgd_6AD[iAD][0]*daqTime_6AD[iAD]) / daqTime_8AD[iAD];
         emuem_8AD[iAD]           = emuem_Total[iAD];
     }
@@ -481,79 +449,22 @@ int db_minuit_spec_CovMat(const char * minName = "Minuit",
             //cout << "test " << s2th_13 << "\t" << dm2_31 << endl;
 
             //This is executed for every 6 lines of the file
-            const int N_params = 23; //-- Number of parameter of the chi² function --//
+            const int N_params = 1; //-- Number of parameter of the chi² function --//
             ROOT::Math::Functor f(&chi2,N_params); //-- Setting the function to be minimized by using Minuit --//
             //-- Steps
             double stp = 1.0e-3;
-            double step[N_params] = {stp,stp,stp,stp,stp,stp,stp,stp,
-                                        stp,stp,stp,stp,stp,stp,stp,stp,
-                                        stp,stp,stp,stp,stp,stp,stp};
+            double step[N_params] = {stp};
             //-- Initial parameter values
-            double start[N_params] = {0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,
-                                        0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,
-                                        0.0,0.0,0.0,0.0,0.0,0.0,0.0};
+            double start[N_params] = {0.0};
             
             //-- Calling Minuit function setting
             min->SetFunction(f);
                 
             //-- Setting variables
             double lim = 1.0e-1;
-            /*
-            min->SetLimitedVariable(0,  "e_1", start[0],  step[0],  -lim, lim);
-            min->SetLimitedVariable(1,  "e_2", start[1],  step[1],  -lim, lim);
-            min->SetLimitedVariable(2,  "e_3", start[2],  step[2],  -lim, lim);
-            min->SetLimitedVariable(3,  "e_4", start[3],  step[3],  -lim, lim);
-            min->SetLimitedVariable(4,  "e_5", start[4],  step[4],  -lim, lim);
-            min->SetLimitedVariable(5,  "e_6", start[5],  step[5],  -lim, lim);
-            min->SetLimitedVariable(6,  "e_7", start[6],  step[6],  -lim, lim);
-            min->SetLimitedVariable(7,  "e_8", start[7],  step[7],  -lim, lim);
-                */
-            /*
-            min->SetLimitedVariable(8,  "n_1", start[8],  step[8],  -lim, lim);
-            min->SetLimitedVariable(9,  "n_2", start[9],  step[9],  -lim, lim);
-            min->SetLimitedVariable(10, "n_3", start[10], step[10], -lim, lim);
-            min->SetLimitedVariable(11, "n_4", start[11], step[11], -lim, lim);
-            min->SetLimitedVariable(12, "n_5", start[12], step[12], -lim, lim);
-            min->SetLimitedVariable(13, "n_6", start[13], step[13], -lim, lim);
-            min->SetLimitedVariable(14, "n_7", start[14], step[14], -lim, lim);
-            min->SetLimitedVariable(15, "n_8", start[15], step[15], -lim, lim);
-                */
-            /*
-            min->SetLimitedVariable(16, "a_1", start[16], step[16], -lim, lim);
-            min->SetLimitedVariable(17, "a_2", start[17], step[17], -lim, lim);
-            min->SetLimitedVariable(18, "a_3", start[18], step[18], -lim, lim);
-            min->SetLimitedVariable(19, "a_4", start[19], step[19], -lim, lim);
-            min->SetLimitedVariable(20, "a_5", start[20], step[20], -lim, lim);
-            min->SetLimitedVariable(21, "a_6", start[21], step[21], -lim, lim);
-            */
-            min->SetLimitedVariable(22, "eps", start[22], 0.1*step[22], -lim, lim);
+            min->SetLimitedVariable(0, "eps", start[0], step[0], -lim, lim);
             //-----------------------------------------------------------------//
 		
-            min->SetFixedVariable(0,  "e_1", start[0]);
-            min->SetFixedVariable(1,  "e_2", start[1]);
-            min->SetFixedVariable(2,  "e_3", start[2]);
-            min->SetFixedVariable(3,  "e_4", start[3]);
-            min->SetFixedVariable(4,  "e_5", start[4]);
-            min->SetFixedVariable(5,  "e_6", start[5]);
-            min->SetFixedVariable(6,  "e_7", start[6]);
-            min->SetFixedVariable(7,  "e_8", start[7]);
-                
-            min->SetFixedVariable(8,  "n_1", start[8]);
-            min->SetFixedVariable(9,  "n_2", start[9]);
-            min->SetFixedVariable(10, "n_3", start[10]);
-            min->SetFixedVariable(11, "n_4", start[11]);
-            min->SetFixedVariable(12, "n_5", start[12]);
-            min->SetFixedVariable(13, "n_6", start[13]);
-            min->SetFixedVariable(14, "n_7", start[14]);
-            min->SetFixedVariable(15, "n_8", start[15]);
-                
-            min->SetFixedVariable(16, "a_1", start[16]);
-            min->SetFixedVariable(17, "a_2", start[17]);
-            min->SetFixedVariable(18, "a_3", start[18]);
-            min->SetFixedVariable(19, "a_4", start[19]);
-            min->SetFixedVariable(20, "a_5", start[20]);
-            min->SetFixedVariable(21, "a_6", start[21]);
-                
             //min->SetFixedVariable(22, "eps", start[22]);
             min->SetErrorDef(2.3);
             
@@ -572,13 +483,7 @@ int db_minuit_spec_CovMat(const char * minName = "Minuit",
                 exit(1);
             }
                 
-            minimPullT_file  << s2th_13 << "\t" << dm2_31 << "\t" << xs[0]  << "\t" << xs[1]
-                << "\t" << xs[2]  << "\t" << xs[3]  << "\t" << xs[4]  << "\t" << xs[5]
-                << "\t" << xs[6]  << "\t" << xs[7]  << "\t" << xs[8]  << "\t" << xs[9]
-                << "\t" << xs[10] << "\t" << xs[11] << "\t" << xs[12] << "\t" << xs[13]
-                << "\t" << xs[14] << "\t" << xs[15] << "\t" << xs[16] << "\t" << xs[17]
-                << "\t" << xs[18] << "\t" << xs[19] << "\t" << xs[20] << "\t" << xs[21]
-                << "\t" << xs[22] << "\t" << min->MinValue() << endl;
+            minimPullT_file  << s2th_13 << "\t" << dm2_31 << "\t" << xs[0] << "\t" << min->MinValue() << endl;
                 //}
             if (dm2_31 == hi_dm2)
             {
