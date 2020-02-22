@@ -138,6 +138,10 @@ void RENO_ntuple_noosc_spect()
     //-- in order to account for the reactor and detector sizes
     TF1 *gau = new TF1("gau","exp(-0.5*(x/[0])^2)",-5.0,5.0);
     gau->SetParameter(0,1);
+    //-- Energy resolution function (1610.04326) - 21.02.2020
+    TF1 *gauE = new TF1("gauE","exp(-0.5*(x/[0])^2)",-2.0,2.0);
+    double sigEp   = 0.0;
+    double deltaEp = 0.0;
     int Nevents = 5000000;
     for (int i = 0 ; i < Nevents ; i++){
         // generate a baseline (blid uniquely identifies the baseline)
@@ -149,6 +153,13 @@ void RENO_ntuple_noosc_spect()
         if(id==0)  ad=0;
         else if (id==1) ad=1;
         Ep = MC_spect_histo[ad]->GetRandom();
+        sigEp = Ep*(0.079/sqrt(Ep + 0.3));
+        gauE->SetParameter(0,sigEp);
+        deltaEp = gauE->GetRandom();
+        Ep = Ep + deltaEp;
+        if (i%10000 == 0) {
+            std::cout << "Event " << i << "   Ep = " << Ep << std::endl;
+        }
         //-- We apply a incremental factor to the energy aiming to account
         //-- for an additional uncertainty on the neutrino energy and improve
         //-- our fit compared to the Collaboration's one

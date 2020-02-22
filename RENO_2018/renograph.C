@@ -20,11 +20,11 @@ void renograph()
 	// READING FILES.  //
 
     //Antineutrino detector #1- near detector. Data (point) and Monte Carlo (histogram).
-    TGraph *reno_data_neardet     = new TGraph("data/ND_data.csv","%lg,%lg","");
+    TGraph *reno_data_neardet     = new TGraph("data/ND_Data.csv","%lg,%lg","");
     TGraph *reno_mc_neardet       = new TGraph("data/ND_MC.csv","%lg,%lg","");
 
     //Antineutrino detector #2- far detector. Data (point) and Monte Carlo (histogram).
-    TGraph *reno_data_fardet      = new TGraph("data/FD_data.csv","%lg,%lg","");
+    TGraph *reno_data_fardet      = new TGraph("data/FD_Data.csv","%lg,%lg","");
     TGraph *reno_mc_fardet        = new TGraph("data/FD_MC.csv","%lg,%lg","");
 
     // Background near detector
