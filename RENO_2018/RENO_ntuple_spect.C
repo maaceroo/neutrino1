@@ -107,6 +107,8 @@ void RENO_ntuple_spect()
             //-- for an additional uncertainty on the neutrino energy and improve
             //-- our fit compared to the Collaboration's one
             En = fFac*Ep + avg_nRecoilE + avg_constE;
+            if (i%10000 == 0)
+                std::cout << " Oscillated Event " << i << "   Ep = " << Ep << std::endl;
             //En = Mn + Ep - Mp ; // Neutrino energy. Where Mp and Mn are the proton and neutron masses
             
             T->Fill();

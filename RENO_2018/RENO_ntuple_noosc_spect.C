@@ -158,7 +158,7 @@ void RENO_ntuple_noosc_spect()
         deltaEp = gauE->GetRandom();
         Ep = Ep + deltaEp;
         if (i%10000 == 0) {
-            std::cout << "Event " << i << "   Ep = " << Ep << std::endl;
+            std::cout << "NoOsc Event " << i << "   Ep = " << Ep << std::endl;
         }
         //-- We apply a incremental factor to the energy aiming to account
         //-- for an additional uncertainty on the neutrino energy and improve
