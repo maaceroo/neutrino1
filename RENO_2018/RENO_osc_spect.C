@@ -15,48 +15,48 @@
 void RENO_osc_spect()
 { //begin
   
-  //------------- Style --------------
-  gROOT->SetStyle("Plain");
-  gStyle->SetOptStat(0);
-  //------------- Style --------------
-  //----------  Text Style  ---------
-  //ft = 10 * fontID + precision
-  Int_t ft = 10 * 4 + 2;
-  Double_t sz = 0.04;
-  //----------  Text Style  ---------
+    //------------- Style --------------
+    gROOT->SetStyle("Plain");
+    gStyle->SetOptStat(0);
+    //------------- Style --------------
+    //----------  Text Style  ---------
+    //ft = 10 * fontID + precision
+    Int_t ft = 10 * 4 + 2;
+    Double_t sz = 0.04;
+    //----------  Text Style  ---------
   
-  // Open ntuple file to read simulated data
-  TFile *fntuple = new TFile("files_root/RENO-ntuple.root","READ");
-  TTree *T = (TTree*)fntuple->Get("T");
-  TCut cutBF;
-  //const int nDet = 2; //Number of Antineutrino detectors
-  //const int nRea = 6; //Number of Nuclear Reactors
+    // Open ntuple file to read simulated data
+    TFile *fntuple = new TFile("files_root/RENO-ntuple.root","READ");
+    //-- 2020.02.28 - RENOplots_noosc.root already has the necessary information for the analysis.
+    //TFile *fntuple = new TFile("files_root/RENO-ntuple_noosc.root","read");
+    TTree *T = (TTree*)fntuple->Get("T");
+    TCut cutBF;
+    //const int nDet = 2; //Number of Antineutrino detectors
+    //const int nRea = 6; //Number of Nuclear Reactors
   
-  double daqTime[nDet] = {1807.88,2193.04};
+    double daqTime[nDet] = {1807.88,2193.04};
   
-  double wrd_array_near[nRea];
-  double wrd_array_far[nRea];
+    double wrd_array_near[nRea];
+    double wrd_array_far[nRea];
   
-  TFile *wrd_File = new TFile("files_root/ldist_RENO.root","READ");
-  TH1F *wrd_histo_near = ((TH1F*)(wrd_File->Get("histo_ldist_RENO_near")));;
-  TH1F *wrd_histo_far = ((TH1F*)(wrd_File->Get("histo_ldist_RENO_far")));;
+    TFile *wrd_File = new TFile("files_root/ldist_RENO.root","READ");
+    TH1F *wrd_histo_near = ((TH1F*)(wrd_File->Get("histo_ldist_RENO_near")));;
+    TH1F *wrd_histo_far = ((TH1F*)(wrd_File->Get("histo_ldist_RENO_far")));;
     
-  for (int ir = 0 ; ir < nRea ; ir++)
+    for (int ir = 0 ; ir < nRea ; ir++)
     {
-      
-      wrd_array_near[ir] = wrd_histo_near->GetBinContent(ir+1);
-      // std::cout << blid << "  " << wrd_array_near[ir]  << std::endl;
-      wrd_array_far[ir] = wrd_histo_far->GetBinContent(ir+1);
-      // std::cout << blid << "  " << wrd_array_far[ir]  << std::endl;
-      
+        wrd_array_near[ir] = wrd_histo_near->GetBinContent(ir+1);
+        // std::cout << blid << "  " << wrd_array_near[ir]  << std::endl;
+        wrd_array_far[ir] = wrd_histo_far->GetBinContent(ir+1);
+        // std::cout << blid << "  " << wrd_array_far[ir]  << std::endl;
     }
 
-  //---------------------------------------------------
-  // histogram binning for the simulated data
-  //const double    NB = 26;
-  //const double    lo = 1.2;  
-  //const double    hi = 8.4;
-  double xbins[NB+1];
+    //---------------------------------------------------
+    // histogram binning for the simulated data
+    //const double    NB = 26;
+    //const double    lo = 1.2;
+    //const double    hi = 8.4;
+    double xbins[NB+1];
     double delta_bins2 = (5.6 - 1.2)/22; // 0.2 MeV/bin
   
     for (int i = 0 ; i < (NB-3) ; i++){

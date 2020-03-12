@@ -61,7 +61,7 @@ echo '=========================================='
 echo
 export NTUPLE_EVENTS=5000000
 echo $NTUPLE_EVENTS ntuple events
-time root -b -l -n -q RENO_ntuple_noosc_spect.C
+#time root -b -l -n -q RENO_ntuple_noosc_spect.C
 time root -b -l -n -q RENO_ntuple_spect.C
 
 echo
@@ -136,6 +136,7 @@ echo '=========================================='
 echo
 gnuplot multi_plot_margin_spect_RENO.gnu
 gnuplot plot.gnu
+rm *.gnu-e
 
 echo
 
@@ -145,4 +146,5 @@ gv Plots/RENO_plots_SPEC.eps &
 gv Plots/plot_SPEC.eps &
 
 #----------------------------------------------------------------------------
+
 echo Done!

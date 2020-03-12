@@ -139,9 +139,9 @@ void RENO_ntuple_noosc_spect()
     TF1 *gau = new TF1("gau","exp(-0.5*(x/[0])^2)",-5.0,5.0);
     gau->SetParameter(0,1);
     //-- Energy resolution function (1610.04326) - 21.02.2020
-    TF1 *gauE = new TF1("gauE","exp(-0.5*(x/[0])^2)",-2.0,2.0);
-    double sigEp   = 0.0;
-    double deltaEp = 0.0;
+    //TF1 *gauE = new TF1("gauE","exp(-0.5*(x/[0])^2)",-2.0,2.0);
+    //double sigEp   = 0.0;
+    //double deltaEp = 0.0;
     int Nevents = 5000000;
     for (int i = 0 ; i < Nevents ; i++){
         // generate a baseline (blid uniquely identifies the baseline)
@@ -153,18 +153,18 @@ void RENO_ntuple_noosc_spect()
         if(id==0)  ad=0;
         else if (id==1) ad=1;
         Ep = MC_spect_histo[ad]->GetRandom();
-        sigEp = Ep*(0.079/sqrt(Ep + 0.3));
-        gauE->SetParameter(0,sigEp);
-        deltaEp = gauE->GetRandom();
-        Ep = Ep + deltaEp;
+        //sigEp = Ep*(0.079/sqrt(Ep + 0.3));
+        //gauE->SetParameter(0,sigEp);
+        //deltaEp = gauE->GetRandom();
+        //Ep = Ep + deltaEp;
         if (i%10000 == 0) {
             std::cout << "NoOsc Event " << i << "   Ep = " << Ep << std::endl;
         }
         //-- We apply a incremental factor to the energy aiming to account
         //-- for an additional uncertainty on the neutrino energy and improve
         //-- our fit compared to the Collaboration's one
-        En = fFac*Ep + avg_nRecoilE + avg_constE;
-        //En = Ep + avg_nRecoilE + avg_constE;
+        //En = fFac*Ep + avg_nRecoilE + avg_constE;
+        En = Ep + avg_nRecoilE + avg_constE;
         //En = Mn + Ep - Mp ; // Neutrino energy. Where Mp and Mn are the proton and neutron masses
         
         //Using values from PRL121,201801 (2018) by RENO Coll.
@@ -174,15 +174,16 @@ void RENO_ntuple_noosc_spect()
         //-- dmsq21   =[7.53   +/- 0.18] x 10^{-5} eV^2
         Prob_surv = 1.0 - ssq2th13*pow(sin( 1.267 * dmsqee * Ln/En ),2) - pow(cos(0.5 * asin(sqrt(ssq2th13))),4) * ssq2th12 * pow(sin( 1.267 * dmsq21 * Ln/En ),2);
         
-        if (id == 0) {
-            osc_prob_nd_allBins += Prob_surv;
-            N_events_allBins_nd++;
+        if( (xbins[0] <= Ep) && (Ep < xbins[NB]) ){
+            if (id == 0) {
+                osc_prob_nd_allBins += Prob_surv;
+                N_events_allBins_nd++;
+            }
+            else {
+                osc_prob_fd_allBins += Prob_surv;
+                N_events_allBins_fd++;
+            }
         }
-        else {
-            osc_prob_fd_allBins += Prob_surv;
-            N_events_allBins_fd++;
-        }
-      
         // Computing the average of the oscillation probability per bin
         for (int j = 0 ; j < NB ; j++){
             if( (xbins[j] <= Ep) && (Ep < xbins[j+1]) ){
@@ -222,21 +223,14 @@ void RENO_ntuple_noosc_spect()
     std::cout << "Osc Prob. ND = " << osc_prob_nd_allBins << std::endl;
     std::cout << "Osc Prob. FD = " << osc_prob_fd_allBins << std::endl;
 
-    //Adding artificial noise to the no-osccilated spectra
-    TF1 *gauNoise = new TF1("gauNoise","exp(-0.5*((x)/[0])^2)",-5.0,5.0);
-    gauNoise->SetParameter(0,1);
     //-----------------------------
     for(int ib = 0; ib < NB; ib++){
-        //double noise = gauNoise->GetRandom();
-        
         double binW2 = MC_spect_histo[1]->GetBinWidth(ib+1);
         double cont_nd = MC_spect_histo[0]->GetBinContent(ib+1);
-        //double cont_nd = MC_spect_histo[0]->GetBinContent(ib+1) + noise;
         noosc_spect_histo[0]->SetBinContent(ib+1,cont_nd/osc_prob_nd[ib]);
         noosc_spect_histo_perMeV[0]->SetBinContent(ib+1,cont_nd/(0.2*binW2*osc_prob_nd[ib]));
       
         double cont_fd = MC_spect_histo[1]->GetBinContent(ib+1);
-        //double cont_fd = MC_spect_histo[1]->GetBinContent(ib+1) + noise;
         noosc_spect_histo[1]->SetBinContent(ib+1,cont_fd/osc_prob_fd[ib]);
         noosc_spect_histo_perMeV[1]->SetBinContent(ib+1,cont_fd/(0.2*binW2*osc_prob_fd[ib]));
     }
