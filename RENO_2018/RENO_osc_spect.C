@@ -26,13 +26,9 @@ void RENO_osc_spect()
     //----------  Text Style  ---------
   
     // Open ntuple file to read simulated data
-    TFile *fntuple = new TFile("files_root/RENO-ntuple.root","READ");
-    //-- 2020.02.28 - RENOplots_noosc.root already has the necessary information for the analysis.
-    //TFile *fntuple = new TFile("files_root/RENO-ntuple_noosc.root","read");
+    TFile *fntuple = new TFile("files_root/RENO-ntuple_BFosc.root","READ");
     TTree *T = (TTree*)fntuple->Get("T");
     TCut cutBF;
-    //const int nDet = 2; //Number of Antineutrino detectors
-    //const int nRea = 6; //Number of Nuclear Reactors
   
     double daqTime[nDet] = {1807.88,2193.04};
   
@@ -70,32 +66,31 @@ void RENO_osc_spect()
   
     TH1F *nosc_spect_histo[nDet];
     TH1F *BFit_spect_histo[nDet];
-    //TH1F *Posc_AD_BF[nDet][nRea];
     TH1F *Posc_AD_BF[nDet];
     TH1F *Posc_AD_surv[nDet][nRea];
     TH1F *BFit_spect_histo_d[nDet];
-    TH1F *Nevtexp[nDet];
     for (int i = 0 ; i < nDet ; i++)
         {
-            Nevtexp[i] = new TH1F(Form("Nevtexp_%d",i),"",NB,xbins);// info from db-ntuple.root
-            Nevtexp[i]->SetLineColor(i+3);
-      
             //BF-oscillation Ep spectra
-            BFit_spect_histo[i] = new TH1F(Form("BFit_spect_histo_%d",i),"",NB,xbins);// info from RENO-ntuple.root
-            BFit_spect_histo[i]->SetLineColor(i+1);
+            //- This is taken directly from the n-tuple: 5e7 events simulated following
+            //- the RENO MC spectra with the BF oscillation parameters
+            BFit_spect_histo[i] = new TH1F(Form("BFit_spect_histo_%d",i),"",NB,xbins);// info from RENO-ntuple_BFosc.root
+            BFit_spect_histo[i]->SetLineColor(kGreen+i);
       
             //BF-oscillation Ep spectra
             BFit_spect_histo_d[i] = new TH1F(Form("BFit_spect_histo_d_%d",i),"",NB,xbins);//
-            BFit_spect_histo_d[i]->SetLineColor(i+1);
+            BFit_spect_histo_d[i]->SetLineColor(kGreen+i);
       
             //no-oscillation Ep spectra - histograms
-            nosc_spect_histo[i] = new TH1F(Form("nosc_spect_histo_%d",i),"",NB,xbins);// info from db-ntuple.root
-            nosc_spect_histo[i]->SetLineColor(i+3);
+            //- This histogram is built by "un-oscillating" the BF spectra (using RENO BF parameters)
+            nosc_spect_histo[i] = new TH1F(Form("nosc_spect_histo_%d",i),"",NB,xbins);// info from RENO-ntuple_BFosc.root
+            nosc_spect_histo[i]->SetLineColor(kRed+i);
       
             //Oscillation probability at BF - histogram
-            Posc_AD_BF[i]  = new TH1F(Form("Posc_AD_BF_%d",i),"",1000,0,1);//to store <POsc(BF)>
+            //to store <POsc(BF)>
+            Posc_AD_BF[i]  = new TH1F(Form("Posc_AD_BF_%d",i),"",1000,0,1);
             Posc_AD_BF[i]->SetLineColor(i+1);
-        
+
             for (int j = 0 ; j < nRea ; j++)
             {
                 //Oscillation probability at (s2th,dm2) - histogram
@@ -121,59 +116,69 @@ void RENO_osc_spect()
     
     //int iAD = 2;
     //std::cout << "\n Checking the oscillation Probability" << std::endl;
-    //printf("(1.0 - %e*((sin( 1.267 * %e * Ln/En ))**2) - ((cos(0.5 * asin(sqrt(%e))))**4) * %e * (sin( 1.267 * %e * Ln/En ))**2) >> Posc_AD_BF_%d \n \n",ssq2th13,dmsqee,ssq2th13,ssq2th12,dmsq21,iAD);
+    //printf("(1.0 - %e*((sin( 1.267 * %e * Ln/En ))**2) - ((cos(0.5 * asin(sqrt(%e))))**4) * %e * (sin( 1.267 * %e * Ln/En ))**2) >> Posc_AD_BF_%d \n \n",ssq2th13RENO,dmsqeeRENO,ssq2th13RENO,ssq2th12RENO,dmsq21RENO,iAD);
     
     for (int iAD = 0 ; iAD < nDet ; iAD++)
     {
         //------------------------------------------------
-        //Filling Oscillation probability at BF - histogram
-        //T->Draw(Form("(1.0 - 0.087*((sin( 1.267 * 2.49e-3 * Ln/En ))**2) - ((cos(0.5 * asin(sqrt(0.087))))**4) * 0.846 * (sin( 1.267 * 7.53e-5 * Ln/En ))**2) >> Posc_AD_BF_%d_%d",iAD,iNR),Form("id==%d  && ir==%d",iAD,iNR));
-        T->Draw(Form("(1.0 - %e*((sin( 1.267 * %e * Ln/En ))**2) - ((cos(0.5 * asin(sqrt(%e))))**4) * %e * (sin( 1.267 * %e * Ln/En ))**2) >> Posc_AD_BF_%d",ssq2th13,dmsqee,ssq2th13,ssq2th12,dmsq21,iAD),Form("id==%d",iAD));
-        //integ = Posc_AD_BF[iAD][iNR]->Integral();
-        integ = Posc_AD_BF[iAD]->Integral();
-        //std::cout << "integ = " << integ <<std::endl;
-        Posc_AD_BF[iAD]->Scale(1.0/integ); //Used to plot the Survival Probabilities for each AD and each NR with BF parameters (normalized)
-        //Average oscillation Probability
-        avgPosc[iAD] = Posc_AD_BF[iAD]->GetMean();
-        //No-oscillation IDB rate (per day)
-        noOsc_IBDrate_perday[iAD] = IBDrate_perday[iAD][0]/avgPosc[iAD];
-        //Printing results
-        std::cout << "(avgPosc,noOsc_IBDrate_perday)_" << iAD << " = (" << avgPosc[iAD]
-                  << ", " << noOsc_IBDrate_perday[iAD] << ") " << std::endl;
-        fprintf(file_IBDrates,"%f \n", noOsc_IBDrate_perday[iAD]);
-        //------------------------------------------------
-    
-        //Filling the non-oscillated Ep spectra
-        T->Draw(Form("Ep >> nosc_spect_histo_%d",iAD),Form("(id==%d)",iAD),"");
+        //Filling the un-oscillated number of events (using the BF histogram and the oscillation Probability at BF)
+        //T->Draw(Form("(1.0 - %e*((sin( 1.267 * %e * Ln/En ))**2) - ((cos(0.5 * asin(sqrt(%e))))**4) * %e * (sin( 1.267 * %e * Ln/En ))**2) >> Posc_AD_BF_%d",ssq2th13RENO,dmsqeeRENO,ssq2th13RENO,ssq2th12RENO,dmsq21RENO,iAD),Form("id==%d",iAD));
+        //-- 03-04-2020
+        T->Draw(Form("Ep >> nosc_spect_histo_%d",iAD),Form("(1.0/(1.0 - %e*((sin( 1.267 * %e * Ln/En ))**2) - ((cos(0.5 * asin(sqrt(%e))))**4) * %e * (sin( 1.267 * %e * Ln/En ))**2))*(id==%d)",ssq2th13RENO,dmsqeeRENO,ssq2th13RENO,ssq2th12RENO,dmsq21RENO,iAD));
         TotNosc[iAD] =  nosc_spect_histo[iAD]->Integral();
-    
+        std::cout << "TEST1:\t TotNosc[" << iAD << "] = " << TotNosc[iAD] << std::endl;
+        //------------------------------------------------
         //------------------------------------------------
         //(BF-oscillation probability) condition to fill BF-oscillation- Ep spectra
-        cutBF = Form("(1.0 - %e*((sin( 1.267 * %e * Ln/En ))**2) - ((cos(0.5 * asin(sqrt(%e))))**4) * %e * (sin( 1.267 * %e * Ln/En ))**2)*(id==%d)",ssq2th13,dmsqee,ssq2th13,ssq2th12,dmsq21,iAD);
+        //cutBF = Form("(1.0 - %e*((sin( 1.267 * %e * Ln/En ))**2) - ((cos(0.5 * asin(sqrt(%e))))**4) * %e * (sin( 1.267 * %e * Ln/En ))**2)*(id==%d)",ssq2th13RENO,dmsqeeRENO,ssq2th13RENO,ssq2th12RENO,dmsq21RENO,iAD);
+        //Filling BF-oscillation Ep spectra
+        cutBF = Form("(id==%d)",iAD);
         //Filling and normalizing BF-oscillation Ep spectra
         T->Draw(Form("Ep >> BFit_spect_histo_%d",iAD),cutBF,"");
         integ = BFit_spect_histo[iAD]->Integral();
+        std::cout << "TEST2:\t BFit_spect_histo[" << iAD << "] = " << integ << std::endl;
         //Filling and normalizing BF-oscillation Ep spectra
         T->Draw(Form("Ep >> BFit_spect_histo_d_%d",iAD),cutBF,"");
         integ = BFit_spect_histo_d[iAD]->Integral();
+        std::cout << "TEST3:\t BFit_spect_histo_d[" << iAD << "] = " << integ << std::endl;
         //std::cout << "integ = " << integ <<std::endl;
         BFit_spect_histo[iAD]->Scale(1.0/integ);
         //BFit_spect_histo_d[iAD]->Scale(integ);
         //------------------------------------------------
+        //------------------------------------------------
+        //Average oscillation Probability - I CHANGED THIS HERE TO CORRECTLY COMPUTE THE AVG. OSCILLATION PROBABILITY 2020.04.07
+        avgPosc[iAD] = integ/TotNosc[iAD];
+        //No-oscillation IDB rate (per day)
+        //- We are using the measured IBD rate per day, given that RENO does not provide the IBD rate per day at the BF.
+        noOsc_IBDrate_perday[iAD] = IBDrate_data[iAD][0]/avgPosc[iAD];
+        //Printing results
+        std::cout << "(avgPosc,noOsc_IBDrate_perday)_" << iAD << " = (" << avgPosc[iAD] << ", " << noOsc_IBDrate_perday[iAD] << ") " << std::endl;
+        fprintf(file_IBDrates,"%f \n", noOsc_IBDrate_perday[iAD]);
+        //------------------------------------------------
     
     }
     fclose(file_IBDrates);
-    
-    //std::cout << "\n Checking the oscillation Probability" << std::endl;
-    //printf("(1.0 - %e*((sin( 1.267 * %e * Ln/En ))**2) - ((cos(0.5 * asin(sqrt(%e))))**4) * %e * (sin( 1.267 * %e * Ln/En ))**2)*(id==%d)",ssq2th13,dmsqee,ssq2th13,ssq2th12,dmsq21,iAD);
+    TCanvas *canv0 = new TCanvas("canv0","AD1");
+    canv0->cd();
+    nosc_spect_histo[0]->Draw("histo");
+    BFit_spect_histo_d[0]->Draw("same histo");
+    TCanvas *canv1 = new TCanvas("canv1","AD2");
+    canv1->cd();
+    nosc_spect_histo[1]->Draw("histo");
+    BFit_spect_histo_d[1]->Draw("same histo");
+//    std::cout << "\n Checking the oscillation Probability" << std::endl;
+//    for (int iAD = 0 ; iAD < nDet ; iAD++)
+//    {
+//        printf("(1.0 - %e*((sin( 1.267 * %e * Ln/En ))**2) - ((cos(0.5 * asin(sqrt(%e))))**4) * %e * (sin( 1.267 * %e * Ln/En ))**2)*(id==%d)",ssq2th13RENO,dmsqeeRENO,ssq2th13RENO,ssq2th12RENO,dmsq21RENO,iAD);
+//    }
 
-  
+
     //---------------------------------------------------
     //Definition of the grid of oscillation parameters
     double s2t_pt, dm2_pt;
     double DeltaLin_s2t = (hi_s2t - lo_s2t)/double(N_s2t-1);
     double DeltaLin_dm2 = (hi_dm2 - lo_dm2)/double(N_dm2-1);
-  
+
     printf("\n");
     printf("Grid definition db_osc_spec.C\n");
     printf("---------------------------\n");
@@ -191,7 +196,7 @@ void RENO_osc_spect()
 
     const int dim = N_s2t*N_dm2;
     double TotWosc[dim];
-  
+
     TH1F *wosc_spect_histo[dim];
     for (int i = 0 ; i < dim ; i++)
     {
@@ -200,21 +205,8 @@ void RENO_osc_spect()
         wosc_spect_histo[i]->SetLineColor(i+2);
         wosc_spect_histo[i]->SetLineStyle(2);
     }
-    
-    double nebf = 0.0;
-    double neno = 0.0;
-    for (int iAD = 0 ; iAD < nDet ; iAD++)
-    {
-        for (int ib = 0 ; ib < NB ; ib++)
-        {
-            nebf = BFit_spect_histo_d[iAD]->GetBinContent(ib+1);
-            //neno = nebf/avgPosc_AD[iAD]/*IBDrate_perday[iAD][0]*daqTime[iAD]*/;
-            neno = nebf/avgPosc[iAD]/*IBDrate_perday[iAD][0]*daqTime[iAD]*/;
-            //std::cout << " neno = " << neno <<std::endl;
-            Nevtexp[iAD]->SetBinContent(ib+1,neno);
-        }
-    }
-  
+
+
     ofstream file;
     string grid_name = "files/RENO_gridOscSpectra_test.txt";
     file.open((grid_name).c_str());
@@ -234,9 +226,9 @@ void RENO_osc_spect()
             file << "\t" << contNO;
             //std::cout <<  contNO << "  ";
         }
-      
+
         file << "\t" << TotNosc[iAD] << std::endl;
-      
+
     }// for iAD
 
     file << std::endl;
@@ -244,16 +236,19 @@ void RENO_osc_spect()
     for (int is2t = 0 ; is2t < N_s2t ; is2t++)
         {
             s2t_pt = lo_s2t + double(is2t)*DeltaLin_s2t;
-      
+
             for (int idm2 = 0 ; idm2 < N_dm2 ; idm2++)
             {
                 dm2_pt = lo_dm2 + double(idm2)*DeltaLin_dm2;
-	  
+
                 for (int iAD = 0 ; iAD < nDet ; iAD++)
                 {
                     // Condition to fill oscillated spectra for (s2t_pt,dm2_pt), i.e. wosc_spect_histo[iAD]
-                    cut = Form("((1.0 - %e*((sin( 1.267 * %e * Ln/En ))**2) - (0.25*(1 + sqrt(1 - %e))**2) * %e * (sin( 1.267 * %e * Ln/En ))**2))*((id==%d))",s2t_pt,dm2_pt,s2t_pt,ssq2th12,dmsq21,iAD);
-	      
+                    //cut = Form("((1.0 - %e*((sin( 1.267 * %e * Ln/En ))**2) - (0.25*(1 + sqrt(1 - %e))**2) * %e * (sin( 1.267 * %e * Ln/En ))**2))*((id==%d))",s2t_pt,dm2_pt,s2t_pt,ssq2th12RENO,dmsq21RENO,iAD);
+
+                    //- 2020.04.09 - There was an error with the denominator, as it was written exactly as the numerator, which is not correct because of the ssq2th13RENO term should be used as in the BF cut (line 127)
+                    cut = Form("((1.0 - %e*((sin( 1.267 * %e * Ln/En ))**2) - (0.25*(1 + sqrt(1 - %e))**2) * %e * (sin( 1.267 * %e * Ln/En ))**2))*(1.0/(1.0 - %e*((sin( 1.267 * %e * Ln/En ))**2) - ((cos(0.5 * asin(sqrt(%e))))**4) * %e * (sin( 1.267 * %e * Ln/En ))**2))*(id==%d)",s2t_pt,dm2_pt,s2t_pt,ssq2th12RENO,dmsq21RENO,ssq2th13RENO,dmsqeeRENO,ssq2th13RENO,ssq2th12RENO,dmsq21RENO,iAD);
+
                     // Filling oscilated spectra for (s2t_pt,dm2_pt)
                     int ih = is2t*N_dm2 + idm2;
                     //std::cout << "AD " << iAD + 1 << "\t s2t_pt =  " << s2t_pt << "\t dm2_pt =  " << dm2_pt  << "\t ih = " << ih << std::endl;
@@ -262,11 +257,7 @@ void RENO_osc_spect()
                     T->Draw(Form("Ep >> wosc_spect_histo_%d",ih),cut,"");
                     TotWosc[ih] =  wosc_spect_histo[ih]->Integral();
                     //std::cout << TotWosc1[10] <<std::endl;
-                    // Survival probability for (s2t_pt,dm2_pt) to fill histogram at each detector, i.e. Posc_AD_surv[iAD]
-                    //T->Draw(Form("(1.0 - %e*((sin( 1.267 * %e * Ln/En ))**2) - (0.25*(1 + sqrt(1 - %e))**2) * 0.861 * (sin( 1.267 * 7.53e-5 * Ln/En ))**2) >> Posc_AD_surv_%d",s2t_pt,dm2_pt,s2t_pt,iAD),Form("id==%d",sel));
-                    //Average survival probability for (s2t_pt,dm2_pt) at each detector
-                    //SurvP = Posc_AD_surv[iAD]->GetMean();
-	      
+
                     file << iAD + 1 << "\t" << s2t_pt << "\t" << dm2_pt;
                     //fprintf(file,"%d %8.2e %8.2e",iAD+1,s2t_pt,dm2_pt);
                     //Printing bin-content for the oscilated spectra for (s2t_pt,dm2_pt)
@@ -274,24 +265,23 @@ void RENO_osc_spect()
                     {
                         double cont   = wosc_spect_histo[ih]->GetBinContent(ib+1);
                         //std::cout << " cont = " << cont << " ih = " << ih <<std::endl;
-		  
+
                         file << "\t" << cont;
                         //fprintf(file," %10.5f",cont);
                         //std::cout << "cont =  " << cont1 <<std::endl;
                     }
-                    
+
                     file << " \t" << TotWosc[ih] << std::endl;
                     //fprintf(file," %10.2f\n",TotWosc[ih]);
-	      
+
                     //Printing check-points info
                     if (ih%10 == 0)
                     {
                         std::cout << ih << "  Done with detector " << iAD+1  << " for "<< s2t_pt << "\t" << dm2_pt << std::endl;
                         // std::cout << " \t" << TotNosc[iAD] << std::endl;
                     }
-	      
+
                     //Normalizing the oscilated spectra for (s2t_pt,dm2_pt)
-                    //*CHECK if this is nneded .. guess is NO
                     integ = wosc_spect_histo[ih]->Integral();
                     wosc_spect_histo[ih]->Scale(1.0/integ);
                 }//for iAD
@@ -302,8 +292,8 @@ void RENO_osc_spect()
             file << std::endl;
             //fprintf(file,"");
         }//for is2t
-  
+
     file.close();
     //fclose(file);
-  
+
 } //end

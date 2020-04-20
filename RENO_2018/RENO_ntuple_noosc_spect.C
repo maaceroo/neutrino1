@@ -73,7 +73,7 @@ void RENO_ntuple_noosc_spect()
     TH1F *noosc_spect_histo[nDet];
     TH1F *noosc_spect_histo_perMeV[nDet];
     for(int n = 0 ; n < nDet ; n++){
-        MC_spect_histo_perMeV[n] = (TH1F*) fenergy->Get(Form("mc_histo_%d",n));  // Get data
+        MC_spect_histo_perMeV[n] = (TH1F*) fenergy->Get(Form("mc_histo_%d",n));  // Get data (events per MeV)
         MC_spect_histo_perMeV[n]->SetLineColor(kBlue);
         MC_spect_histo[n] = new TH1F(Form("MC_spect_histo_%d",n),"",NB,xbins);
         MC_spect_histo[n]->SetLineColor(kBlue);
@@ -82,13 +82,13 @@ void RENO_ntuple_noosc_spect()
         noosc_spect_histo_perMeV[n] = new TH1F(Form("noosc_spect_histo_perMeV_%d",n),"",NB,xbins);
         noosc_spect_histo_perMeV[n]->SetLineColor(kRed);
     }
-    
+    //- This is ti buid the number of events histogram -//
     int NumB = MC_spect_histo_perMeV[1]->GetNbinsX();
     for(int n = 0 ; n < nDet ; n++){
         for(int ib = 0; ib < NB; ib++){
             double binW = MC_spect_histo[1]->GetBinWidth(ib+1);
             double cont =  MC_spect_histo_perMeV[n]->GetBinContent(ib+1);
-            MC_spect_histo[n]->SetBinContent(ib+1,cont*binW*0.2);  // Get data
+            MC_spect_histo[n]->SetBinContent(ib+1,cont*binW*0.2);  // Get data (events)
         }
     }
   
@@ -110,7 +110,8 @@ void RENO_ntuple_noosc_spect()
     };
   
     //make ntuple
-    TFile *fout = new TFile("files_root/RENO-ntuple_noosc.root","RECREATE");
+    //TFile *fout = new TFile("files_root/RENO-ntuple_noosc.root","RECREATE");
+    TFile *fout = new TFile("files_root/RENO-ntuple_BFosc.root","RECREATE");
     TTree *T = new TTree("T","Monte Carlo neutrino events");
   
     //Dfining some important quantities and variables
@@ -139,10 +140,10 @@ void RENO_ntuple_noosc_spect()
     TF1 *gau = new TF1("gau","exp(-0.5*(x/[0])^2)",-5.0,5.0);
     gau->SetParameter(0,1);
     //-- Energy resolution function (1610.04326) - 21.02.2020
-    //TF1 *gauE = new TF1("gauE","exp(-0.5*(x/[0])^2)",-2.0,2.0);
-    //double sigEp   = 0.0;
-    //double deltaEp = 0.0;
-    int Nevents = 5000000;
+    TF1 *gauE = new TF1("gauE","exp(-0.5*(x/[0])^2)",-2.0,2.0);
+    double sigEp   = 0.0;
+    double deltaEp = 0.0;
+    int Nevents = atoi(getenv("NTUPLE_EVENTS"));
     for (int i = 0 ; i < Nevents ; i++){
         // generate a baseline (blid uniquely identifies the baseline)
         blid = histo_ldist_RENO_2x6->GetRandom();
@@ -153,26 +154,26 @@ void RENO_ntuple_noosc_spect()
         if(id==0)  ad=0;
         else if (id==1) ad=1;
         Ep = MC_spect_histo[ad]->GetRandom();
-        //sigEp = Ep*(0.079/sqrt(Ep + 0.3));
-        //gauE->SetParameter(0,sigEp);
-        //deltaEp = gauE->GetRandom();
-        //Ep = Ep + deltaEp;
+        sigEp = Ep*(0.079/sqrt(Ep + 0.3));
+        gauE->SetParameter(0,sigEp);
+        deltaEp = gauE->GetRandom();
+        Ep = Ep + deltaEp;
         if (i%10000 == 0) {
             std::cout << "NoOsc Event " << i << "   Ep = " << Ep << std::endl;
         }
         //-- We apply a incremental factor to the energy aiming to account
         //-- for an additional uncertainty on the neutrino energy and improve
         //-- our fit compared to the Collaboration's one
-        //En = fFac*Ep + avg_nRecoilE + avg_constE;
-        En = Ep + avg_nRecoilE + avg_constE;
+        En = fFac*Ep + avg_nRecoilE + avg_constE;
+        //En = Ep + avg_nRecoilE + avg_constE;
         //En = Mn + Ep - Mp ; // Neutrino energy. Where Mp and Mn are the proton and neutron masses
         
         //Using values from PRL121,201801 (2018) by RENO Coll.
-        //-- ssq2th13 = 0.0896 +/- 0.0048(stat) +/- 0.0047(syst)
-        //-- |dmsqee| =[2.68   +/- 0.12(stat)   +/- 0.07(syst)] x 10^{-3} eV^2
-        //-- ssqth12  = 0.307  +/- 0.013
-        //-- dmsq21   =[7.53   +/- 0.18] x 10^{-5} eV^2
-        Prob_surv = 1.0 - ssq2th13*pow(sin( 1.267 * dmsqee * Ln/En ),2) - pow(cos(0.5 * asin(sqrt(ssq2th13))),4) * ssq2th12 * pow(sin( 1.267 * dmsq21 * Ln/En ),2);
+        //-- ssq2th13RENO = 0.0896 +/- 0.0048(stat) +/- 0.0047(syst)
+        //-- |dmsqeeRENO| =[2.68   +/- 0.12(stat)   +/- 0.07(syst)] x 10^{-3} eV^2
+        //-- ssq2th12RENO = 0.307  +/- 0.013
+        //-- dmsq21RENO   =[7.53   +/- 0.18] x 10^{-5} eV^2
+        Prob_surv = 1.0 - ssq2th13RENO*pow(sin( 1.267 * dmsqeeRENO * Ln/En ),2) - pow(cos(0.5 * asin(sqrt(ssq2th13RENO))),4) * ssq2th12RENO * pow(sin( 1.267 * dmsq21RENO * Ln/En ),2);
         
         if( (xbins[0] <= Ep) && (Ep < xbins[NB]) ){
             if (id == 0) {

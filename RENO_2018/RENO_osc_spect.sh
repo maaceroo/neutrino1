@@ -30,14 +30,14 @@ echo
 
 
 #-----------------------------------------------------------------------------
-echo
-
+#echo
+#
 # Construct L distribution
 echo '=========================================='
 echo '1) Running renograph.C'
 echo '=========================================='
-echo 
-#time root -b -l -n -q renograph.C
+echo
+time root -b -l -n -q renograph.C
 
 echo
 
@@ -48,8 +48,8 @@ echo
 echo '=========================================='
 echo '2) Running ldist_2x6_RENO.C'
 echo '=========================================='
-echo 
-#time root -b -l -n -q ldist_2x6_RENO.C
+echo
+time root -b -l -n -q ldist_2x6_RENO.C
 
 echo
 
@@ -61,8 +61,7 @@ echo '=========================================='
 echo
 export NTUPLE_EVENTS=5000000
 echo $NTUPLE_EVENTS ntuple events
-#time root -b -l -n -q RENO_ntuple_noosc_spect.C
-time root -b -l -n -q RENO_ntuple_spect.C
+time root -b -l -n -q RENO_ntuple_noosc_spect.C
 
 echo
 
@@ -73,6 +72,7 @@ echo '4) Running RENO_osc_spect.C'
 echo '=========================================='
 echo
 time root -b -l -n -q RENO_osc_spect.C
+#time root -l -n RENO_osc_spect.C
 
 #-----------------------------------------------------------------------------
 # run minimization
@@ -85,7 +85,7 @@ time root -b -l -n -q RENO_minuit_spect.C
 echo
 
 #-----------------------------------------------------------------------------
-#Remove first line from file 
+#Remove first line from file
 tail -n +2 files/chi2_s2t-dm2_surface_spect.txt > files/chi2_s2t-dm2_surface_spect-noFL.txt
 
 #-----------------------------------------------------------------------------

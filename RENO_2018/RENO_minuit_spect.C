@@ -66,7 +66,6 @@ double xbins[NB+1];
 TH1F *data_spect_histo[nDet];
 //---*****************************************************---//
 TH1F *nosc_spect_hist[nDet];
-TH1F *nosc_spect_hist_1[nDet];
 TH1F *nosc_spect_hist_bf[nDet];
 //---*****************************************************---//
 //-- Chi-square function to be minimized --------------------//
@@ -271,7 +270,6 @@ int RENO_minuit_spect(const char * minName = "Minuit",
     for(int iAD = 0 ; iAD < nDet ; iAD++)
     {
         nosc_spect_hist[iAD] = new TH1F(Form("nosc_spect_hist_%d",iAD),"",NB,xbins);
-        nosc_spect_hist_1[iAD] = new TH1F(Form("nosc_spect_hist_1_%d",iAD),"",NB,xbins);
         nosc_spect_hist_bf[iAD] = new TH1F(Form("nosc_spect_hist_bf_%d",iAD),"",NB,xbins);
     }
   
@@ -332,7 +330,6 @@ int RENO_minuit_spect(const char * minName = "Minuit",
                 //double bincont = spc[iad][ibin-1]*(noOsc_IBDrate_perday[iAD-1]/NoscTot[iad])*1.0*daqTime[iAD-1];
                 double bincontent = bincont/0.2;
                 nosc_spect_hist[iAD-1]->SetBinContent(ibin,bincont);
-                nosc_spect_hist_1[iAD-1]->SetBinContent(ibin,bincontent);
             }
 	  
             cout << " iAD = " << iAD  /*<< " iNR = " << iNR */ << "  first2 = " << first2 << endl;
@@ -423,25 +420,11 @@ int RENO_minuit_spect(const char * minName = "Minuit",
             }
         }
     }
-  //
     
     std::cout << "Succesful run!!" << endl;
     grid_file.close();
-
-    /*
-     // Drawing section
-     TCanvas *c1 = new TCanvas("c1");
-     nosc_spect_hist_1[0]->Draw();
-     //nosc_spect_hist_1[1]->Draw("same");
-     c1->Print("Plots/nosc_near.pdf");
-  
-     TCanvas *c2 = new TCanvas("c2");
-     //nosc_spect_hist_1[0]->Draw();
-     nosc_spect_hist_1[1]->Draw();
-     c2->Print("Plots/nosc_far.pdf");
-     */
-     // Chi2 minimun value //
     
+    // Chi2 minimun value //
     ofstream chi2min;
     string chiminima = "files/chi2_minimun_spect.txt";
     chi2min.open((chiminima).c_str());
@@ -475,69 +458,7 @@ int RENO_minuit_spect(const char * minName = "Minuit",
         << " chi2 = " << matr[2][n]  << " n = " << n  << endl;
     chi2min  << matr[0][n]   <<  "\t" << matr[1][n]  << "\t" << matr[2][n]  << endl;
     chi2min <<endl;
-    //-----------
-    /*
-    int m;
-    const int rows3 = nDet*ran + nDet;
-    const int columns3 = 31;
-    ifstream matriz3("files/RENO_gridOscSpectra_test.txt");
-    double ** matr3;
-    double bfit[rows3];
-    matr3 = new double*[rows3];
-    for(int k = 0 ; k < rows3 ; k++){
-        matr3[k] = new double[columns3];
-    }
-  
-    for(int j = 0 ; j < rows3 ; j++){
-        for(int l = 0 ; l < columns3 ; l++){
-            matriz3 >> matr3[j][l];
-        }
-    }
-  
-    for(int i = 0 ; i < rows3 ; i++){
-        if(matr3[i][2] == matr[1][n] && matr3[i][1] == matr[0][n] ){
-            m = i;
-        }
-    }
-    
-    double best_fit[nDet][NB];
-    double NoscTot_bf[nDet];
-  
-    NoscTot_bf[0] = matr3[m-1][30];
-    NoscTot_bf[1] = matr3[m][30];
-  
-    for(int i=0 ; i < NB ; i++ ){
-    
-    best_fit[0][i] = matr3[m-1][i+3];
-    best_fit[1][i] = matr3[m][i+3];
-    
-    //  cout << "near = " << best_fit[0][i] << " far = " << best_fit[1][i] << endl; 
-    
-  }
-     */
-/*
-  for(int iAD = 0 ; iAD < nDet ; iAD++)
-    {
-      for(int ibin = 0 ; ibin < NB ; ibin++)
-	{
-	  double bincont = best_fit[iAD][ibin]*(noOsc_IBDrate_perday[iAD]/NoscTot_bf[iAD])*emuem[iAD]*daqTime[iAD];
-	  double bincontent = bincont/xbins[ibin];
-	  nosc_spect_hist_bf[iAD]->SetBinContent(ibin,bincontent);
-	  //nosc_spect_hist_bf[iAD]->SetBinContent(ibin,bincontent);
-	}
-    }
-  
-  TCanvas *c3 = new TCanvas("c3");
-  nosc_spect_hist_bf[0]->Draw();
-  //nosc_spect_hist_1[1]->Draw("same");
-  c3->Print("Plots/nosc_near_bestfit.pdf");
-  
-  TCanvas *c4 = new TCanvas("c4");
-  //frame_spectrafd->Draw();
-  nosc_spect_hist_bf[1]->Draw();
-  //nosc_spect_hist_1[1]->Draw("same");
-  c4->Print("Plots/nosc_far_bestfit.pdf");
-  */
     
   return 0;
-}
+
+}//-END
