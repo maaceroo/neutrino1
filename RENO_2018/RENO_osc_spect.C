@@ -150,7 +150,7 @@ void RENO_osc_spect()
         avgPosc[iAD] = integ/TotNosc[iAD];
         //No-oscillation IDB rate (per day)
         //- We are using the measured IBD rate per day, given that RENO does not provide the IBD rate per day at the BF.
-        noOsc_IBDrate_perday[iAD] = IBDrate_data[iAD][0]/avgPosc[iAD];
+        noOsc_IBDrate_perday[iAD] = BFtoObs[iAD]*IBDrate_data[iAD][0]/avgPosc[iAD];
         //Printing results
         std::cout << "(avgPosc,noOsc_IBDrate_perday)_" << iAD << " = (" << avgPosc[iAD] << ", " << noOsc_IBDrate_perday[iAD] << ") " << std::endl;
         fprintf(file_IBDrates,"%f \n", noOsc_IBDrate_perday[iAD]);

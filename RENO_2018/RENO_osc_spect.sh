@@ -59,7 +59,7 @@ echo '=========================================='
 echo '3) Running RENO_ntuple_spect.C'
 echo '=========================================='
 echo
-export NTUPLE_EVENTS=5000000
+export NTUPLE_EVENTS=1000000
 echo $NTUPLE_EVENTS ntuple events
 time root -b -l -n -q RENO_ntuple_noosc_spect.C
 

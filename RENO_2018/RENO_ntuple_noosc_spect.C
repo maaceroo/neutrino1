@@ -158,13 +158,15 @@ void RENO_ntuple_noosc_spect()
         gauE->SetParameter(0,sigEp);
         deltaEp = gauE->GetRandom();
         Ep = Ep + deltaEp;
+        Ep = fFac1*Ep;
         if (i%10000 == 0) {
             std::cout << "NoOsc Event " << i << "   Ep = " << Ep << std::endl;
         }
         //-- We apply a incremental factor to the energy aiming to account
         //-- for an additional uncertainty on the neutrino energy and improve
         //-- our fit compared to the Collaboration's one
-        En = fFac*Ep + avg_nRecoilE + avg_constE;
+        //En = fFac*Ep + avg_nRecoilE + avg_constE;
+        En = fFac2*Ep + avg_nRecoilE + avg_constE;
         //En = Ep + avg_nRecoilE + avg_constE;
         //En = Mn + Ep - Mp ; // Neutrino energy. Where Mp and Mn are the proton and neutron masses
         
