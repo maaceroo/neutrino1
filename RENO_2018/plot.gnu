@@ -2,11 +2,11 @@
 
 ########################################################################################
 
-set terminal postscript color "CharterBT-Roman" 12 enhanced size 6,6
+set terminal pdfcairo enhanced color font "CharterBT-Roman,12" size 6,6
 
 ########################################################################################
 ## Figure File
-set output "Plots/plot_SPEC.eps"
+set output "Plots/plot_SPEC_fudge_1.00_fFac1_1.03_fFac2_1.10.pdf"
 ########################################################################################
 
 set multiplot
@@ -39,7 +39,7 @@ set mxtics
 set label 2 "sin^{2}2{/Symbol q}_{13}" at 0.1,1.55 center
 
 ## y-axis settings
-set ytics offset -54.0
+set ytics offset -85.0
 ymin = +1.7
 ymax = +3.5
 set yrange[ymin:ymax]
@@ -48,9 +48,9 @@ set mytics
 set label 4 "{/Symbol D}m^{2}_{ee} (10^{-3} eV^2)" at -0.022,2.6 center rotate by 90
 
 ## Mark at the BF
-set label 35 '+' at 0.088687,0.002718*1e3 center font 'CharterBT-Roman,15'
+set label 35 '+' at 0.090606,0.002664*1e3 center font 'CharterBT-Roman,15'
 ## Minimum chi2 value
-min = 168.984
+min = 27.4139
 
 unset ztics
 set clabel

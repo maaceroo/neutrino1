@@ -2,11 +2,11 @@
 #-----------------------------------------------------------------------------
 
 #-----------------------------------------------------------------------------
-#Define grid 
+#Define grid
 echo '=========================================='
 echo '0) Define Grid'
 echo '=========================================='
-echo 
+echo
 
 export NS2T=100
 export NDM2=100
@@ -29,29 +29,29 @@ echo 'HI_DM2='$HI_DM2
 echo
 
 
-#-----------------------------------------------------------------------------
+##-----------------------------------------------------------------------------
+#echo
+##
+## Construct L distribution
+#echo '=========================================='
+#echo '1) Running renograph.C'
+#echo '=========================================='
+#echo
+#time root -b -l -n -q renograph.C
+#
 #echo
 #
-# Construct L distribution
-echo '=========================================='
-echo '1) Running renograph.C'
-echo '=========================================='
-echo
-time root -b -l -n -q renograph.C
-
-echo
-
-#-----------------------------------------------------------------------------
-echo
-
-# Construct L distribution
-echo '=========================================='
-echo '2) Running ldist_2x6_RENO.C'
-echo '=========================================='
-echo
-time root -b -l -n -q ldist_2x6_RENO.C
-
-echo
+##-----------------------------------------------------------------------------
+#echo
+#
+## Construct L distribution
+#echo '=========================================='
+#echo '2) Running ldist_2x6_RENO.C'
+#echo '=========================================='
+#echo
+#time root -b -l -n -q ldist_2x6_RENO.C
+#
+#echo
 
 #-----------------------------------------------------------------------------
 # Construct ntuple
@@ -111,20 +111,35 @@ echo
 #Extract BF_CHI2, BF_S2T, BF_DM2 from chi2_minumum_SPEC.txt
 read BF_S2T BF_DM2 BF_CHI2 <<< `cat files/chi2_minimun_spect.txt`
 
+#Extract fudge, fFac1 and fFac2 from constants.h
+fudge=$(awk 'NR == 36 {print $4}' constants.h)
+fFac1=$(awk 'NR == 37 {print $4}' constants.h)
+fFac2=$(awk 'NR == 38 {print $4}' constants.h)
+echo 'fudge = ' $fudge
+echo 'fFac1 = ' $fFac1
+echo 'fFac2 = ' $fFac2
+
 #----------------------------------------------------------------------------
 #----------------------------------------------------------------------------
 # Form gnuplot script
 echo '=========================================='
 echo 'Editting gnu plot script ...'
 echo '=========================================='
-echo
+echo 'Multiplot Script... Done!'
+echo '-------------------------'
 sed -i'' -e "136s/.*/set label 35 '+' at $BF_S2T,$BF_DM2*1e3 center font 'CharterBT-Roman,15'/" multi_plot_margin_spect_RENO.gnu
 
 sed -i'' -e "138s/.*/min = $BF_CHI2/" multi_plot_margin_spect_RENO.gnu
 
+sed -i'' -e "12s/.*/set output \"Plots\/RENO_plots_SPEC_fudge_$fudge\_fFac1_$fFac1\_fFac2_$fFac2.pdf\"/" multi_plot_margin_spect_RENO.gnu
+
+echo 'Comparisson plot Script... Done!'
+echo '--------------------------------'
 sed -i'' -e "51s/.*/set label 35 '+' at $BF_S2T,$BF_DM2*1e3 center font 'CharterBT-Roman,15'/" plot.gnu
 
 sed -i'' -e "53s/.*/min = $BF_CHI2/" plot.gnu
+
+sed -i'' -e "9s/.*/set output \"Plots\/plot_SPEC_fudge_$fudge\_fFac1_$fFac1\_fFac2_$fFac2.pdf\"/" plot.gnu
 
 echo
 
@@ -142,9 +157,8 @@ echo
 
 #----------------------------------------------------------------------------
 #Open in ghostview
-gv Plots/RENO_plots_SPEC.eps &
-gv Plots/plot_SPEC.eps &
-
+#gv Plots/RENO_plots_SPEC.eps &
+#gv Plots/plot_SPEC.eps &
 #----------------------------------------------------------------------------
 
 echo Done!

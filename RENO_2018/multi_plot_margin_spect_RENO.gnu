@@ -5,11 +5,11 @@
 
 ########################################################################################
 
-set terminal postscript color "CharterBT-Roman" 12 enhanced size 7,7
+set terminal pdfcairo enhanced color font "CharterBT-Roman,14" size 7,7
 
 ########################################################################################
 ## Figure File
-set output "Plots/RENO_plots_SPEC.eps"
+set output "Plots/RENO_plots_SPEC_fudge_1.00_fFac1_1.03_fFac2_1.10.pdf"
 ########################################################################################
 
 set multiplot
@@ -48,7 +48,7 @@ set arrow 3 from  4.00,ymin to 4.00,ymax nohead lt 3 lw 2
 set arrow 5 from  9.00,ymin to 9.00,ymax nohead lt 2 lw 2
 set arrow 7 from 16.00,ymin to 16.00,ymax nohead lt 6 lw 2
 
-plot 'files/RENO_dm2_chi2_SPEC.txt' u 2:(10**3*($1)) w l lw 1
+plot 'files/RENO_dm2_chi2_SPEC.txt' u 2:(10**3*($1)) w l lw 2
 
 reset
 
@@ -76,9 +76,9 @@ ymax =  17
 set yrange[ymin:ymax]
 set ylabel "{/Symbol D}{/Symbol c}^{2}"
 
-set key at 0.31,9.0
+set key at 0.29,7.0
 
-plot 'files/RENO_s2t_chi2_SPEC.txt' u 1:2 w l lw 1 t "Spectral", \
+plot 'files/RENO_s2t_chi2_SPEC.txt' u 1:2 w l lw 2 t "Spectral", \
 16.0 lt 6 lw 2 t "99.99% C.L. (4{/Symbol s})", \
 9.0 lt 2 lw 2 t "99.73% C.L. (3{/Symbol s})", \
 4.0 lt 3 lw 2 t "95.45% C.L. (2{/Symbol s})", \
@@ -118,7 +118,7 @@ set label 2 "sin^{2}2{/Symbol q}_{13}" at 0.1,1.50 center
 
 ## y-axis settings
 #set logscale y
-set ytics offset -43.0
+set ytics offset -58.0
 #ymin = +1.7e-3
 #ymax = +3.5e-3
 ymin = 1.7
@@ -126,16 +126,16 @@ ymax = 3.5
 set yrange[ymin:ymax]
 set ytics 1.5,0.5,3.4
 #set format y "10^{%T}"
-set label 4 "{/Symbol D}m^{2}_{ee} (10^{-3} eV^2)" at -0.027,2.6 center rotate by 90
+set label 4 "{/Symbol D}m^{2}_{ee} (10^{-3} eV^2)" at -0.021,2.6 center rotate by 90
 #set label 4 "{/Symbol D}m^{2}_{31} (10^{-3} eV^2)" at 0.006,2.5 center rotate by 90
 
 #set label 5 "{+ Best-fit}" at 0.12,0.0038 center
 #set label 6 "{* Best-fit}" at 0.12,0.0037 center 
 
 ## Mark at the BF
-set label 35 '+' at 0.088687,0.002718*1e3 center font 'CharterBT-Roman,15'
+set label 35 '+' at 0.090606,0.002664*1e3 center font 'CharterBT-Roman,15'
 ## Minimum chi2 value
-min = 168.984
+min = 27.4139
 
 unset ztics
 set clabel
@@ -143,7 +143,7 @@ unset key
 set grid ytics lc rgb "#bbbbbb" lw 1 lt 0
 set grid xtics lc rgb "#bbbbbb" lw 1 lt 0
 
-splot 'files/chi2_s2t-dm2_surface_spect-noFL.txt' u 1:(($2)*1e3):(($3)-min) w l lw 2
+splot 'files/chi2_s2t-dm2_surface_spect-noFL.txt' u 1:(($2)*1e3):(($3)-min) w l lw 3
 
 unset xtics
 unset ytics
@@ -151,14 +151,14 @@ unset label 4
 unset label 2
 
 set arrow 11 from 0.11,3.35 to 0.135,3.35 nohead lw 3
-set label 11 'This work ({/Symbol \053} BF)' at 0.14,3.35 font 'CharterBT-Roman,11'
-set arrow 22 from 0.11,3.2 to 0.135,3.2 nohead lw 1 dt (2,8,2,8)
-set label 22 'RENO ({/Symbol \264} BF)' at 0.14,3.2 font 'CharterBT-Roman,11'
+set label 11 'This work ({/Symbol \053} BF)' at 0.14,3.35 font 'CharterBT-Roman,13'
+set arrow 22 from 0.11,3.2 to 0.135,3.2 nohead lw 2 dt (2,8,2,8)
+set label 22 'RENO ({/Symbol \264} BF)' at 0.14,3.2 font 'CharterBT-Roman,13'
 set label 25 '{/Symbol \264}' at 0.0896,2.68 center font 'CharterBT-Roman,15'
 
-plot  'files/2018_RENO_68CL.txt' u 1:2 w l lt 4 lw 1 dt (2,8,2,8), \
-'files/2018_RENO_95CL.txt' u 1:2 w l lt 3 lw 1 dt (2,8,2,8), \
-'files/2018_RENO_99CL.txt' u 1:2 w l lt 2 lw 1 dt (2,8,2,8)
+plot  'files/2018_RENO_68CL.txt' u 1:2 w l lt 4 lw 2 dt (2,8,2,8), \
+'files/2018_RENO_95CL.txt' u 1:2 w l lt 3 lw 2 dt (2,8,2,8), \
+'files/2018_RENO_99CL.txt' u 1:2 w l lt 2 lw 2 dt (2,8,2,8)
 
 ########################################################################################
 
