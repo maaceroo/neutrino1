@@ -97,12 +97,12 @@ TMatrixD predi_vector(NBx_cov,1);
 
 //---*****************************************************---//
 //-- Chi-square function to be minimized --------------------//
-//-- It has 19 pull parameters and 2 oscillation parameter --//
-//-- which are to be fitted.                                -//
+//-- It has 1 pull parameter and 2 oscillation parameters  --//
+//-- which are to be fitted.                               --//
 //---*****************************************************---//
 double chi2(const double *xx)
 {
-    //Pull parameters considered in the chi² function
+    //Pull parameter considered in the chi² function
     epsilon  = xx[0];
   
     //---*****************************************************---//
@@ -120,8 +120,6 @@ double chi2(const double *xx)
     double sB8AD        = 0.0;
     double sqrerror8AD  = 0.0;
     double sqr_chi      = 0.0;
-    double seps_d       = 1.0*0.002;
-    double salph_r      = 1.0*0.008;
     //cout << "ChiSq function... " << endl;
     for (iAD = 0 ; iAD < nAD ; iAD++){
         if (noNoscTot6AD[iAD] == 0) noNoscTot6AD[iAD] = 1e7;
@@ -204,7 +202,7 @@ double chi2(const double *xx)
 
     for (int i = 0 ; i < NBx_cov ; i++) {
         for (int j = 0 ; j < NBy_cov ; j++) {
-            fullCovaMatrix_matrix(i,j) = statErroMatrix_matrix(i,j) + 0*predi_vector(i,0)*predi_vector(j,0)*fracCovaMatrix_matrix(i,j);
+            fullCovaMatrix_matrix(i,j) = statErroMatrix_matrix(i,j) + covMatAct*predi_vector(i,0)*predi_vector(j,0)*fracCovaMatrix_matrix(i,j);
         }
     }
     //predi_vector.Print();
@@ -250,19 +248,7 @@ int db_minuit_spec_CovMat_1par(const char * minName = "Minuit",
     TFile *fracCovaMatrix_File = new TFile("CombCovaMat/db_CovaMatrix_6AD8AD_16x16Det.root","READ");
     fracCovaMatrix_hist = (TH2F*)(fracCovaMatrix_File->Get("covaMat_histo_16x16"));
     //-- Creating the Rebinned Matrix with root tools.
-    //NBx_cov = 2*NB*nAD;
-    //NBy_cov = 2*NB*nAD;
     cout << NBx_cov << "  " << NBy_cov << endl;
-    //statErroMatrix_matrix = TMatrixD(NBx_cov,NBy_cov);
-    //fracCovaMatrix_matrix = TMatrixD(NBx_cov,NBy_cov);
-    //fullCovaMatrix_matrix = TMatrixD(NBx_cov,NBy_cov);
-    //inv_fullCovaMatrix_matrix = TMatrixD(NBx_cov,NBy_cov);
-    
-    //one_matrix = TMatrixD(NBx_cov,NBy_cov);
-    
-    //delta_vector        = TMatrixD(NBx_cov,1);
-    //transp_delta_vector = TMatrixD(1,NBx_cov);
-    //predi_vector        = TMatrixD(NBx_cov,1);
     
     fracCovaMatrix_matrix.Zero();
     statErroMatrix_matrix.Zero();
@@ -293,31 +279,25 @@ int db_minuit_spec_CovMat_1par(const char * minName = "Minuit",
     //-------------------
     // Energy Histograms
     //-------------------
-    //TFile *fenergy0217 = new TFile("./PRL112_217days_data.root","read");
-    //TFile *fenergy1230 = new TFile("./PRD95_1230days_data.root","read");
     TFile *fenergy = new TFile("./histos_6AD217Days_8AD1013Days_data.root","read");
     //Three sets of histograms one for each Experimental Hall
     double bfactor[nEH];
     for (int i = 0 ; i < nEH ; i++)
         {
             //Data 217 days
-            //data_spect_histo6AD[i] = (TH1F*) fenergy0217->Get(Form("data_spect_histo_%d",i));
             data_spect_histo6AD[i] = (TH1F*) fenergy->Get(Form("data_spect_6AD35B_histo_%d",i));
             double dfactor = 1.0/data_spect_histo6AD[i]->Integral();
             data_spect_histo6AD[i]->Scale(dfactor);
             //Background 217 days
-            //bkgd_spect_histo6AD[i] = (TH1F*) fenergy0217->Get(Form("bkgd_spect_histo_%d",i));
             bkgd_spect_histo6AD[i] = (TH1F*) fenergy->Get(Form("bkgd_spect_6AD35B_histo_%d",i));
             bfactor[i] = 1.0/bkgd_spect_histo6AD[i]->Integral();
             bkgd_spect_histo6AD[i]->Scale(bfactor[i]);
 
             //Data 1013 days
-            //data_spect_histo8AD[i] = (TH1F*) fenergy1230->Get(Form("data_spect_histo_%d",i));
             data_spect_histo8AD[i] = (TH1F*) fenergy->Get(Form("data_spect_8AD35B_histo_%d",i));
             dfactor = 1.0/data_spect_histo8AD[i]->Integral();
             data_spect_histo8AD[i]->Scale(dfactor);
             //Background 1013 days
-            //bkgd_spect_histo8AD[i] = (TH1F*) fenergy1230->Get(Form("bkgd_spect_histo_%d",i));
             bkgd_spect_histo8AD[i] = (TH1F*) fenergy->Get(Form("bkgd_spect_8AD35B_histo_%d",i));
             bfactor[i] = 1.0/bkgd_spect_histo8AD[i]->Integral();
             bkgd_spect_histo8AD[i]->Scale(bfactor[i]);
@@ -371,7 +351,6 @@ int db_minuit_spec_CovMat_1par(const char * minName = "Minuit",
 
     //-- File to get noOsc normalizations
     ifstream IBDrates_file1230("files_data/db_noOsc_IBDrates_perday_1230.txt");
-    //ifstream IBDrates_file0217("files_data/db_noOsc_IBDrates_perday_217.txt");
     cout << "Reading noOsc normalizations file ..." << endl;
     for (int i=0; i< nAD; i ++)
 	{
@@ -403,7 +382,6 @@ int db_minuit_spec_CovMat_1par(const char * minName = "Minuit",
     std::cout << "Is the file open?  " << file.is_open() << "\n" << std::endl;
 
     for (int iAD = 0 ; iAD < nAD ; iAD++) {
-        //daqTime_8AD[iAD]         = daqTime_Total[iAD] - daqTime_6AD[iAD];
         IBDrate_data_8AD[iAD][0] = (IBDrate_data_Total[iAD][0]*daqTime_Total[iAD] - IBDrate_data_6AD[iAD][0]*daqTime_6AD[iAD]) / daqTime_8AD[iAD];
         //std::cout << "iAD = " << iAD << std::endl;
         //std::cout << "IBDrate_data_Total[iAD][0] = " << IBDrate_data_Total[iAD][0] << ", IBDrate_data_6AD[iAD][0] = " << IBDrate_data_6AD[iAD][0] << std::endl;
@@ -416,7 +394,6 @@ int db_minuit_spec_CovMat_1par(const char * minName = "Minuit",
     while (file >> iAD >> s2th_13 >> dm2_31 >> spc6AD[iad][0]  >> spc6AD[iad][1]  >> spc6AD[iad][2]  >> spc6AD[iad][3]  >> spc6AD[iad][4]  >> spc6AD[iad][5]  >> spc6AD[iad][6]  >> spc6AD[iad][7]  >> spc6AD[iad][8]  >> spc6AD[iad][9]  >> spc6AD[iad][10] >> spc6AD[iad][11] >> spc6AD[iad][12] >> spc6AD[iad][13] >> spc6AD[iad][14] >> spc6AD[iad][15] >> spc6AD[iad][16] >> spc6AD[iad][17] >> spc6AD[iad][18] >> spc6AD[iad][19] >> spc6AD[iad][20] >> spc6AD[iad][21] >> spc6AD[iad][22] >> spc6AD[iad][23] >> spc6AD[iad][24] >> spc6AD[iad][25] >> spc6AD[iad][26] >> spc6AD[iad][27] >> spc6AD[iad][28] >> spc6AD[iad][29] >> spc6AD[iad][30] >> spc6AD[iad][31] >> spc6AD[iad][32] >> spc6AD[iad][33] >> spc6AD[iad][34] >> NoscTot6AD[iad] >> spc8AD[iad][0]  >> spc8AD[iad][1]  >> spc8AD[iad][2]  >> spc8AD[iad][3]  >> spc8AD[iad][4]  >> spc8AD[iad][5]  >> spc8AD[iad][6]  >> spc8AD[iad][7]  >> spc8AD[iad][8]  >> spc8AD[iad][9]  >> spc8AD[iad][10] >> spc8AD[iad][11] >> spc8AD[iad][12] >> spc8AD[iad][13] >> spc8AD[iad][14] >> spc8AD[iad][15] >> spc8AD[iad][16] >> spc8AD[iad][17] >> spc8AD[iad][18] >> spc8AD[iad][19] >> spc8AD[iad][20] >> spc8AD[iad][21] >> spc8AD[iad][22] >> spc8AD[iad][23] >> spc8AD[iad][24] >> spc8AD[iad][25] >> spc8AD[iad][26] >> spc8AD[iad][27] >> spc8AD[iad][28] >> spc8AD[iad][29] >> spc8AD[iad][30] >> spc8AD[iad][31] >> spc8AD[iad][32] >> spc8AD[iad][33] >> spc8AD[iad][34] >> NoscTot8AD[iad])
     {//file loop
         //cout << s2th_13 << "\t" << dm2_31 << endl;
-        //std::cout << iAD << "  " << s2th_13 << "  " << dm2_31 << "  " << spc6AD[iad][0]  << "  " << spc6AD[iad][1]  << "  " << spc6AD[iad][2]  << "  " << spc6AD[iad][3]  << "  " << spc6AD[iad][4]  << "  " << spc6AD[iad][5]  << "  " << spc6AD[iad][6]  << "  " << spc6AD[iad][7]  << "  " << spc6AD[iad][8]  << "  " << spc6AD[iad][9]  << "  " << spc6AD[iad][10] << "  " << spc6AD[iad][11] << "  " << spc6AD[iad][12] << "  " << spc6AD[iad][13] << "  " << spc6AD[iad][14] << "  " << spc6AD[iad][15] << "  " << spc6AD[iad][16] << "  " << spc6AD[iad][17] << "  " << spc6AD[iad][18] << "  " << spc6AD[iad][19] << "  " << spc6AD[iad][20] << "  " << spc6AD[iad][21] << "  " << spc6AD[iad][22] << "  " << spc6AD[iad][23] << "  " << spc6AD[iad][24] << "  " << spc6AD[iad][25] << "  " << spc6AD[iad][26] << "  " << spc6AD[iad][27] << "  " << spc6AD[iad][28] << "  " << spc6AD[iad][29] << "  " << spc6AD[iad][30] << "  " << spc6AD[iad][31] << "  " << spc6AD[iad][32] << "  " << spc6AD[iad][33] << "  " << spc6AD[iad][34] << "  " << NoscTot6AD[iad] << "  " << spc8AD[iad][0]  << "  " << spc8AD[iad][1]  << "  " << spc8AD[iad][2]  << "  " << spc8AD[iad][3]  << "  " << spc8AD[iad][4]  << "  " << spc8AD[iad][5]  << "  " << spc8AD[iad][6]  << "  " << spc8AD[iad][7]  << "  " << spc8AD[iad][8]  << "  " << spc8AD[iad][9]  << "  " << spc8AD[iad][10] << "  " << spc8AD[iad][11] << "  " << spc8AD[iad][12] << "  " << spc8AD[iad][13] << "  " << spc8AD[iad][14] << "  " << spc8AD[iad][15] << "  " << spc8AD[iad][16] << "  " << spc8AD[iad][17] << "  " << spc8AD[iad][18] << "  " << spc8AD[iad][19] << "  " << spc8AD[iad][20] << "  " << spc8AD[iad][21] << "  " << spc8AD[iad][22] << "  " << spc8AD[iad][23] << "  " << spc8AD[iad][24] << "  " << spc8AD[iad][25] << "  " << spc8AD[iad][26] << "  " << spc8AD[iad][27] << "  " << spc8AD[iad][28] << "  " << spc8AD[iad][29] << "  " << spc8AD[iad][30] << "  " << spc8AD[iad][31] << "  " << spc8AD[iad][32] << "  " << spc8AD[iad][33] << "  " << spc8AD[iad][34] << "  " << NoscTot8AD[iad] << std::endl;
         if(first8 <= 8)
         {
             double bincont6AD = 0.0;
@@ -448,7 +425,7 @@ int db_minuit_spec_CovMat_1par(const char * minName = "Minuit",
             
             //cout << "test " << s2th_13 << "\t" << dm2_31 << endl;
 
-            //This is executed for every 6 lines of the file
+            //This is executed for every 8 lines of the file
             const int N_params = 1; //-- Number of parameter of the chi² function --//
             ROOT::Math::Functor f(&chi2,N_params); //-- Setting the function to be minimized by using Minuit --//
             //-- Steps

@@ -9,23 +9,15 @@ double mel = 0.510998928;   //Electron mass in(MeV)
 double avg_nRecoilE = 10.0e-3; //MeV
 double avg_constE = 0.78; //MeV
 
+//Number of Antineutrino Detectors
+const int nAD = 8;
+//Number of Nuclear Reactors
+const int nNR = 6;
+
 // histogram binning for the simulated data
 const int  NB = 35;
 double  lo = 0.7;
 double  hi = 12.0;
-
-//Number of Antineutrino Detectors
-const int nAD = 8;
-
-//Number of Nuclear Reactors
-const int nNR = 6;
-
-//Fixed neutrino oscillations parameters
-//double   dm2_21 = 7.59e-5; //eV^2,                //PRL 108 171803 (2012)
-//double s22th_12 = 0.861;
-double   dm2_21 = 7.53e-5; //eV^2,                //PRD 95 072006 (2017) - DB1230Days
-double s22th_12 = 0.846;
-
 
 //Grid of oscillation parameters.
 const int     N_s2t = atoi(getenv("NS2T"));
@@ -37,3 +29,14 @@ double       hi_s2t = atof(getenv("HI_S2T"));
 double       lo_dm2 = atof(getenv("LO_DM2"));
 double       hi_dm2 = atof(getenv("HI_DM2"));
 
+//Fixed neutrino oscillations parameters
+//double   dm2_21 = 7.59e-5; //eV^2,       //PRL 108 171803 (2012)
+//double s22th_12 = 0.861;
+double   dm2_21 = 7.53e-5; //eV^2,         //PRD 95 072006 (2017) - DB1230Days
+double s22th_12 = 0.846;
+
+//double      fudge   = 1.00 ; //Adjust to Far/Near relative normalization
+double      fFac6AD   = 1.03 ;  //Energy scale factor - Vertical displacement
+double      fFac8AD   = 1.10 ;  //Energy scale factor - Vertical widening
+
+double covMatAct = 1.0; // Set the CovMatirx On (1.0) or Off (0.0)

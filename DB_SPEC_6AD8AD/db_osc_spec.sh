@@ -66,13 +66,14 @@ echo '=========================================='
 echo '3) Running db_minuit.C'
 echo '=========================================='
 echo
+#time root -b -l -n -q db_minuit_spec_CovMat_9pars.C
 time root -b -l -n -q db_minuit_spec_CovMat_1par.C
 #time root -b -l -n -q db_minuit_spec_CovMat.C
 
-#echo
+echo
 
 #-----------------------------------------------------------------------------
-#Remove first line from file
+#Remove first line from file 
 tail -n +2 files_data/chi2_s2t-dm2_surface_SPEC.txt > files_data/chi2_s2t-dm2_surface_SPEC-noFL.txt
 
 #-----------------------------------------------------------------------------
@@ -109,10 +110,15 @@ echo '=========================================='
 echo 'Editting gnu plot script ...'
 echo '=========================================='
 echo
-Create temporary file with new line in place
+#Editing the multiplot file - Contours and marginalizatins
 sed -i'' -e "132s/.*/set label 35 '+' at $BF_S2T,$BF_DM2*1e3 center font 'CharterBT-Roman,15'/" multi_plot_margin_SPEC.gnu
 
 sed -i'' -e "134s/.*/min = $BF_CHI2/" multi_plot_margin_SPEC.gnu
+
+#Editing the plot file - Contours comparison
+sed -i'' -e "42s/.*/set label 5 '+' at $BF_S2T,$BF_DM2*1e3 center font 'CharterBT-Roman,15'/" plot.gnu
+
+sed -i'' -e "44s/.*/min = $BF_CHI2/" plot.gnu
 
 echo
 
@@ -123,12 +129,19 @@ echo 'Runnign gnuplot macro'
 echo '=========================================='
 echo
 gnuplot multi_plot_margin_SPEC.gnu
+gnuplot plot.gnu
+rm *.gnu-e
 
 echo
-
+echo '=========================================='
+echo 'A new plot has been generated. Look at it '
+echo 'in the files_plots/ directory.'
+echo '=========================================='
+echo
 #----------------------------------------------------------------------------
 #Open in ghostview
-gv files_plots/db_plots_SPEC.eps &
+#gv files_plots/db_plots_SPEC.eps &
+#gv files_plots/db_plot_COMPARE.eps &
 
 #----------------------------------------------------------------------------
 echo Done!

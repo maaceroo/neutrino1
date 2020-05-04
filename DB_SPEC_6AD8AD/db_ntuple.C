@@ -72,8 +72,7 @@ void db_ntuple()
     const int nDet = nAD;
     const int nRea = nNR;
     //Baseline Distances (cm)
-    const char  *detNames[nDet] = {"EH1-AD1", "EH1-AD2", "EH2-AD1", "EH2-AD2",
-          	                   "EH3-AD1", "EH3-AD2", "EH3-AD3", "EH3-AD4"};
+    const char  *detNames[nDet] = {"EH1-AD1", "EH1-AD2", "EH2-AD1", "EH2-AD2", "EH3-AD1", "EH3-AD2", "EH3-AD3", "EH3-AD4"};
     //The 48 baselines in Daya-Bay ()
     double baselines[nDet][nRea] =
     {
@@ -86,8 +85,6 @@ void db_ntuple()
         {1925.255,1899.861,1538.930,1539.468,1556.344,1530.078},
         {1923.149,1897.507,1540.667,1540.872,1559.721,1533.179}
     };
-
-
 
     //make ntuple
     TFile *fout = new TFile("files_data/db-ntuple.root","RECREATE");
@@ -130,76 +127,74 @@ void db_ntuple()
     std::cout << "\n";
     std::cout << "Filling ntuple for 6AD analysis only\n";
     for (int i = 0 ; i < Nevents ; i++)
-        {
-            // generate a baseline (blid uniquely identifies the baseline)
-            blid = histo_ldist_6Det->GetRandom();
-            id =   (blid/nRea);
-            ir =   (blid - id*nRea);
-            Ln = baselines[id][ir] + gau->GetRandom();
-            //Ln =   baselines[id][ir];
-            per = 1;
+    {
+        // generate a baseline (blid uniquely identifies the baseline)
+        blid = histo_ldist_6Det->GetRandom();
+        id =   (blid/nRea);
+        ir =   (blid - id*nRea);
+        Ln = baselines[id][ir] + gau->GetRandom();
+        //Ln =   baselines[id][ir];
+        per = 1;
+        
+        // generate a neutrino energy
+        //if (id is 0 or 1, EH1 spectrum; id is 2, EH2 spectrum; id is 4 to 6, EH3 spectrum) this is for Ep
+        if (id < 2)       ad = 0;
+        else if (id == 2) ad = 1;
+        else if ((id > 3) && (id < 7)) ad = 2;
+        //else continue;
+            
+        Ep = nu_nosc_spect_histo6AD[ad]->GetRandom();
+        En = fFac6AD*Ep + avg_nRecoilE + avg_constE;
 
+        T6AD->Fill();
+            
+        if(i%1000000 == 0)
+            cout << "Number of events 6AD ntuple " << i << " done!" << endl;
+    }
+    std::cout << "\n";
+    std::cout << "Filling ntuple for 6AD+8AD combined analysis\n";
+    //- Fill Ntuple for 6AD+8AD combined analysis
+    for (int i = 0 ; i < Nevents ; i++)
+    {
+        // generate a baseline (blid uniquely identifies the baseline)
+        if (i < frac6AD*Nevents) {
+            blid = histo_ldist_6Det->GetRandom();
+            per = 1;
+        } else {
+            blid = histo_ldist->GetRandom();
+            per = 2;
+        }
+        id =   (blid/nRea);
+        ir =   (blid - id*nRea);
+        Ln = baselines[id][ir] + gau->GetRandom();
+        //Ln =   baselines[id][ir];
+
+        if ( i<frac6AD*Nevents ) {
             // generate a neutrino energy
             //if (id is 0 or 1, EH1 spectrum; id is 2, EH2 spectrum; id is 4 to 6, EH3 spectrum) this is for Ep
             if (id < 2)       ad = 0;
             else if (id == 2) ad = 1;
-            else if ((id > 3) && (id < 7)) ad = 2;
-            //else continue;
-            
+            else if (id > 3 && id < 7) ad = 2;
+     
             Ep = nu_nosc_spect_histo6AD[ad]->GetRandom();
-            En = Ep*1.03 + avg_nRecoilE + avg_constE;
-
-            T6AD->Fill();
-            
-            if(i%1000000 == 0)
-                cout << "Number of events 6AD ntuple " << i << " done!" << endl;
-        }
-   std::cout << "\n";
-   std::cout << "Filling ntuple for 6AD+8AD combined analysis\n";
-   //- Fill Ntuple for 6AD+8AD combined analysis
-    for (int i = 0 ; i < Nevents ; i++)
-        {
-            // generate a baseline (blid uniquely identifies the baseline)
-            if (i < frac6AD*Nevents) {
-                blid = histo_ldist_6Det->GetRandom();
-                per = 1;
-            } else {
-                blid = histo_ldist->GetRandom();
-                per = 2;
-            }
-            id =   (blid/nRea);
-            ir =   (blid - id*nRea);
-            Ln = baselines[id][ir] + gau->GetRandom();
-            //Ln =   baselines[id][ir];
-
-            if ( i<frac6AD*Nevents ) {
-            
-               // generate a neutrino energy
-               //if (id is 0 or 1, EH1 spectrum; id is 2, EH2 spectrum; id is 4 to 6, EH3 spectrum) this is for Ep
-               if (id < 2)       ad = 0;
-               else if (id == 2) ad = 1;
-               else if (id > 3 && id < 7) ad = 2;
-     
-               Ep = nu_nosc_spect_histo6AD[ad]->GetRandom();
-               En = Ep*1.03 + avg_nRecoilE + avg_constE;
-            } //if 6AD period events
-            else {
-               // generate a neutrino energy
-               //if (id is 0 or 1, EH1 spectrum; id is 2 or 3, EH2 spectrum; id is 4 to 7, EH3 spectrum) this is for Ep
-               if (id < 2)       ad = 0;
-               else if (id == 2 || id == 3) ad = 1;
-               else if (id > 3) ad = 2;
-     
-               Ep = nu_nosc_spect_histo[ad]->GetRandom();
-               En = Ep*1.03 + avg_nRecoilE + avg_constE;
-            }
-
-            T6AD8AD->Fill();
-            
-            if(i%1000000 == 0)
-                cout << "Number of events 6AD+8AD ntuple " << i << " done!" << endl;
+            En = fFac8AD*Ep + avg_nRecoilE + avg_constE;
+        } //if 6AD period events
+        else {
+            // generate a neutrino energy
+            //if (id is 0 or 1, EH1 spectrum; id is 2 or 3, EH2 spectrum; id is 4 to 7, EH3 spectrum) this is for Ep
+            if (id < 2)       ad = 0;
+            else if (id == 2 || id == 3) ad = 1;
+            else if (id > 3) ad = 2;
+    
+            Ep = nu_nosc_spect_histo[ad]->GetRandom();
+            En = fFac8AD*Ep + avg_nRecoilE + avg_constE;
         }
 
+        T6AD8AD->Fill();
+            
+        if(i%1000000 == 0)
+            cout << "Number of events 6AD+8AD ntuple " << i << " done!" << endl;
+    }
     
     fout->Write();
 

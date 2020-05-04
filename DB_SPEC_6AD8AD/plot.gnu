@@ -2,11 +2,11 @@
 
 ########################################################################################
 
-set terminal postscript color "CharterBT-Roman" 12 enhanced size 6,6
+set terminal pdfcairo enhanced color font "CharterBT-Roman,14" size 6,6
 
 ########################################################################################
 ## Figure File
-set output "files_plots/plot_SPEC.eps"
+set output "files_plots/db_plot_COMPARE.pdf"
 ########################################################################################
 
 set multiplot
@@ -27,21 +27,21 @@ xmax = 0.12
 set xrange[xmin:xmax]
 set xtics 0.05,0.01,0.12
 set mxtics
-set label 2 "sin^{2}2{/Symbol q}_{13}" at 0.085,2.0 center
+set label 2 "sin^{2}2{/Symbol q}_{13}" at 0.085,2.03 center
 
 ## y-axis settings
-set ytics offset -53
+set ytics offset -72
 ymin = +2.1
 ymax = +2.92
 set yrange[ymin:ymax]
 set ytics 2.1,0.1,2.9
 set mytics
-set label 4 "{/Symbol |D}m^{2}_{ee}| (10^{-3} eV^2)" at 0.04,2.5 center rotate by 90
+set label 4 "{/Symbol |D}m^{2}_{ee}| (10^{-3} eV^2)" at 0.042,2.5 center rotate by 90
 
 ## Mark at the BF
-set label 5 '+' at 0.0829,0.00253*1e3 center font 'CharterBT-Roman,15'
+set label 5 '+' at 0.0850000000,0.0025000000*1e3 center font 'CharterBT-Roman,15'
 ## Minimum chi2 value
-min = 204.307
+min = 797.0700000000
 
 unset ztics
 set clabel
@@ -50,10 +50,10 @@ set grid ytics lc rgb "#bbbbbb" lw 1 lt 0
 set grid xtics lc rgb "#bbbbbb" lw 1 lt 0
 
 ## Set Legend information
-set arrow 11 from 0.09,2.85 to 0.1,2.85 nohead lw 2
-set label 11 'Our Ana. (+ BF)' at 0.102,2.85 font 'CharterBT-Roman,11'
-set arrow 22 from 0.09,2.8 to 0.1,2.8 nohead lw 2 dt 4
-set label 22 'DB Ana. (* BF)' at 0.102,2.8 font 'CharterBT-Roman,11'
+set arrow 11 from 0.09,2.85 to 0.1,2.85 nohead lw 3
+set label 11 'Our Ana. (+ BF)' at 0.102,2.85 font 'CharterBT-Roman,13'
+set arrow 22 from 0.09,2.8 to 0.1,2.8 nohead lw 3 dt 4
+set label 22 'DB Ana. (* BF)' at 0.102,2.8 font 'CharterBT-Roman,13'
 set label 35 '*' at 0.0841,2.50 center font 'CharterBT-Roman,15'
 
 ## Contour settings - Our Results
@@ -66,7 +66,7 @@ set cntrparam order 10
 set cntrparam levels discret 2.30,6.18,11.83
 
 ## Our Result - Surface
-splot 'files_data/chi2_s2t-dm2_surface_SPEC-noFL.txt' u 1:(1e3*($2)):(($3)-min) w l lw 2
+splot 'files_data/chi2_s2t-dm2_surface_SPEC-noFL.txt' u 1:(1e3*($2)):(($3)-min) w l lw 3
 
 ## Contour settings - DB 1230-Days Results
 #--Contour color and dashtype--
@@ -84,7 +84,7 @@ set cntrparam levels discret 2.30,6.18,11.83
 set cntrparam firstlinetype 101
 
 ## DB1230 Result - Surface
-splot 'files_data/DB_DeltaChiSq_1230days.txt' u 1:(1e3*($2)):3 w l lw 2
+splot 'files_data/DB_DeltaChiSq_1230days.txt' u 1:(1e3*($2)):3 w l lw 3
 
 ########################################################################################
 
