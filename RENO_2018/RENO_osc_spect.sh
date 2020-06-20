@@ -8,8 +8,8 @@ echo '0) Define Grid'
 echo '=========================================='
 echo
 
-export NS2T=100
-export NDM2=100
+export NS2T=20
+export NDM2=20
 
 export LO_S2T=0.01
 export HI_S2T=0.20
@@ -61,7 +61,7 @@ echo '=========================================='
 echo
 export NTUPLE_EVENTS=1000000
 echo $NTUPLE_EVENTS ntuple events
-time root -b -l -n -q RENO_ntuple_noosc_spect.C
+#time root -b -l -n -q RENO_ntuple_noosc_spect.C
 
 echo
 
@@ -71,7 +71,7 @@ echo '=========================================='
 echo '4) Running RENO_osc_spect.C'
 echo '=========================================='
 echo
-time root -b -l -n -q RENO_osc_spect.C
+#time root -b -l -n -q RENO_osc_spect.C
 #time root -l -n RENO_osc_spect.C
 
 #-----------------------------------------------------------------------------
@@ -80,7 +80,8 @@ echo '=========================================='
 echo '5) Running RENO_minuit_spect.C'
 echo '=========================================='
 echo
-time root -b -l -n -q RENO_minuit_spect.C
+#time root -b -l -n -q RENO_minuit_spect.C
+time root -b -l -n -q RENO_minuit_spect_EScale.C
 
 echo
 
