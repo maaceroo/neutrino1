@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------------------------//
-//--        RENO_minuit.C - By M.A. Acero O., A.A. Aguilar-A. - 2020-06-20         --//
+//--  RENO_minuit_spect_EScale.C - By M.A. Acero O., A.A. Aguilar-A. - 2020-06-20  --//
 //-----------------------------------------------------------------------------------//
 //-------- Using 'NumericalMinimization.C' macro example to minimize a chi2  --------//
 //-------- function. It uses a Minimizer class in ROOT.                      --------//
@@ -120,14 +120,14 @@ double chi2(const double *xx)
         //std::cout << "error = " << sqrerror << std::endl;
 
         //-- Energy resolution uncertainty implementation
-        double binCenter; delta_spc, avgSurvProb_bin;
+        double binCenter, delta_spc, avgSurvProb_bin;
         binCenter = 0.5*(xbins[iBIN] + xbins[iBIN+1]);
         //-- Near Detector
-        delta_spc = e*(fFit4_0->Eval(binCenter));
+        delta_spc = e*(fFit7_0->Eval(binCenter));
         avgSurvProb_bin = spc[0][iBIN]/spcNoOsc[0][iBIN];
         spcNew[0][iBIN] = spc[0][iBIN] + delta_spc*avgSurvProb_bin;
         //-- Far Detector
-        delta_spc = e*(fFit4_1->Eval(binCenter));
+        delta_spc = e*(fFit7_1->Eval(binCenter));
         avgSurvProb_bin = spc[1][iBIN]/spcNoOsc[1][iBIN];
         spcNew[1][iBIN] = spc[1][iBIN] + delta_spc*avgSurvProb_bin;
 

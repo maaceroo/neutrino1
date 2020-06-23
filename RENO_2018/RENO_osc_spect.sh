@@ -72,7 +72,6 @@ echo '4) Running RENO_osc_spect.C'
 echo '=========================================='
 echo
 #time root -b -l -n -q RENO_osc_spect.C
-#time root -l -n RENO_osc_spect.C
 
 #-----------------------------------------------------------------------------
 # run minimization
@@ -80,8 +79,19 @@ echo '=========================================='
 echo '5) Running RENO_minuit_spect.C'
 echo '=========================================='
 echo
+
 #time root -b -l -n -q RENO_minuit_spect.C
-time root -b -l -n -q RENO_minuit_spect_EScale.C
+#time root -b -l -n -q RENO_minuit_spect_EScale.C
+
+sel=2 #RENO_minuit_spect.C
+#sel = 2 #RENO_minuit_spect_EScale.C
+if [ $sel = 1 ]
+then
+    #echo "sel = " $sel
+    time root -b -l -n -q RENO_minuit_spect.C
+    else    #echo "sel = " $sel
+    time root -b -l -n -q RENO_minuit_spect_EScale.C
+fi
 
 echo
 
@@ -142,6 +152,15 @@ sed -i'' -e "53s/.*/min = $BF_CHI2/" plot.gnu
 
 sed -i'' -e "9s/.*/set output \"Plots\/plot_SPEC_fudge_$fudge\_fFac1_$fFac1\_fFac2_$fFac2.pdf\"/" plot.gnu
 
+if [ $sel -eq 1 ]
+then
+    echo "sel = " $sel
+    sed -i'' -e "75s/.*/set label 55 'Minuit Normal' at 0.145,1.75 font 'CharterBT-Roman,15'/" plot.gnu
+else
+    echo "sel = " $sel
+    sed -i'' -e "75s/.*/set label 55 'Minuit EScale' at 0.145,1.75 font 'CharterBT-Roman,15'/" plot.gnu
+fi
+
 echo
 
 #----------------------------------------------------------------------------
@@ -150,7 +169,7 @@ echo '=========================================='
 echo 'Runnign gnuplot macro'
 echo '=========================================='
 echo
-gnuplot multi_plot_margin_spect_RENO.gnu
+#gnuplot multi_plot_margin_spect_RENO.gnu
 gnuplot plot.gnu
 rm *.gnu-e
 

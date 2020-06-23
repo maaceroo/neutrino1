@@ -6,7 +6,7 @@ set terminal pdfcairo enhanced color font "CharterBT-Roman,12" size 6,6
 
 ########################################################################################
 ## Figure File
-set output "Plots/plot_SPEC_fudge_1.00_fFac1_1.03_fFac2_1.10.pdf"
+set output "Plots/plot_SPEC_fudge_1.00_fFac1_1.00_fFac2_1.05.pdf"
 ########################################################################################
 
 set multiplot
@@ -48,9 +48,9 @@ set mytics
 set label 4 "{/Symbol D}m^{2}_{ee} (10^{-3} eV^2)" at -0.022,2.6 center rotate by 90
 
 ## Mark at the BF
-set label 35 '+' at 0.090606,0.002664*1e3 center font 'CharterBT-Roman,15'
+set label 35 '+' at 0.09,0.002742*1e3 center font 'CharterBT-Roman,15'
 ## Minimum chi2 value
-min = 27.4139
+min = 28.3484
 
 unset ztics
 set clabel
@@ -71,6 +71,8 @@ set label 11 'This work ({/Symbol \053} BF)' at 0.145,3.35 font 'CharterBT-Roman
 set arrow 22 from 0.11,3.2 to 0.14,3.2 nohead lw 1 dt 4
 set label 22 'RENO ({/Symbol \264} BF)' at 0.145,3.2 font 'CharterBT-Roman,11'
 set label 25 '{/Symbol \264}' at 0.0896,2.68 center font 'CharterBT-Roman,15'
+
+set label 55 'Minuit EScale' at 0.145,1.75 font 'CharterBT-Roman,15'
 
 plot  'files/2018_RENO_68CL.txt' u 1:2 w l lt 4 lw 1 dt 4, \
       'files/2018_RENO_95CL.txt' u 1:2 w l lt 3 lw 1 dt 4, \
