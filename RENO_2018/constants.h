@@ -33,9 +33,9 @@ double     dmsqeeRENO   = 2.68e-3;// +/- 0.12(stat)   +/- 0.07(syst) x 10^{-3} e
 double     ssq2th12RENO = 0.851;
 double     dmsq21RENO   = 7.53e-5;// +/- 0.18 x 10^{-5} eV^2
 
-double      fudge   = 1.00; //Adjust to Far/Near relative normalization
-double      fFac1   = 0.98;  //Energy scale factor - Vertical displacement
-double      fFac2   = 1.05;  //Energy scale factor - Vertical widening
+double      fudge   = 1.00 ;  //Adjust to Far/Near relative normalization
+double      fFac1   = 1.00 ;  //Energy scale factor - Vertical displacement
+double      fFac2   = 1.00 ;  //Energy scale factor - Vertical widening
 
 double      BFtoObs[2] = {1.0,1.0};  //Correction to the BF IBD Rate per day
 
