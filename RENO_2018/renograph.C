@@ -454,6 +454,8 @@ void renograph()
 	reno_bg_far_acci_histo->Write();
 	reno_bg_far_cf_histo->Write();
 	reno_bg_far_fast_histo->Write();
+        bkgd_histo[0]->Write();
+        bkgd_histo[1]->Write();
 	
 	fout->Close();
 	

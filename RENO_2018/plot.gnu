@@ -6,7 +6,7 @@ set terminal pdfcairo enhanced color font "CharterBT-Roman,12" size 6,6
 
 ########################################################################################
 ## Figure File
-set output "Plots/plot_SPEC_fudge_1.00_fFac1_1.00_fFac2_1.05.pdf"
+set output "Plots/plot_SPEC_fudge_1.00_fFac1_1.00_fFac2_1.00.pdf"
 ########################################################################################
 
 set multiplot
@@ -50,7 +50,7 @@ set label 4 "{/Symbol D}m^{2}_{ee} (10^{-3} eV^2)" at -0.022,2.6 center rotate b
 ## Mark at the BF
 set label 35 '+' at 0.09,0.002742*1e3 center font 'CharterBT-Roman,15'
 ## Minimum chi2 value
-min = 28.3484
+min = 17.189
 
 unset ztics
 set clabel

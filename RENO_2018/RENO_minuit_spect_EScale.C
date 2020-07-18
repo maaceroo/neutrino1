@@ -35,7 +35,7 @@ double ran = N_dm2 * N_s2t;
 //(IBD candidates)/(DAQ live time -days-) from PRL128 (2018)
 //double IBDrate_data[nDet][2] = { {470.53,0.51},{47.06,0.15} };
 //double IBDrate_data[nDet][2] = { {461.00,0.58},{44.82,0.18} };
-//IBD rate (per day), total background and efficiencies (PRL128 (2018))
+//IBD rate (per day), total background and efficiencies (PRL121 (2018))
 double totalBgd[nDet][2] = { {9.53,0.28},{2.24,0.10} };
 double emuem[nDet] ={0.7647,0.7647};
 double daqTime[nDet] = {1807.88,2193.04};
@@ -71,6 +71,8 @@ TF1 *fFit7_0;
 TF1 *fFit4_1;
 TF1 *fFit7_1;
 //---*****************************************************---//
+TH1F  *reno_bg_total_histo[nDet];
+//---*****************************************************---//
 //-- Chi-square function to be minimized --------------------//
 //-- It has 9 pull parameters, 2 oscillation parameters and--//
 //-- a normalization factor.                               --//
@@ -95,6 +97,8 @@ double chi2(const double *xx)
     double SurvPavg2        = 0.0;
     double Nexp1            = 0.0;
     double Nexp2            = 0.0;
+    double Nbg1             = 0.0;
+    double Nbg2             = 0.0;
     double sqr_chi          = 0.0;
     double sqrerror         = 0.0;
     double Nobs1            = 0.0;
@@ -123,11 +127,12 @@ double chi2(const double *xx)
         double binCenter, delta_spc, avgSurvProb_bin;
         binCenter = 0.5*(xbins[iBIN] + xbins[iBIN+1]);
         //-- Near Detector
-        delta_spc = e*(fFit7_0->Eval(binCenter));
+        //delta_spc = e*(fFit7_0->Eval(binCenter));
+        delta_spc = 0.001*(fFit7_0->Eval(binCenter));
         avgSurvProb_bin = spc[0][iBIN]/spcNoOsc[0][iBIN];
         spcNew[0][iBIN] = spc[0][iBIN] + delta_spc*avgSurvProb_bin;
         //-- Far Detector
-        delta_spc = e*(fFit7_1->Eval(binCenter));
+        delta_spc = (0.001+e)*(fFit7_1->Eval(binCenter));
         avgSurvProb_bin = spc[1][iBIN]/spcNoOsc[1][iBIN];
         spcNew[1][iBIN] = spc[1][iBIN] + delta_spc*avgSurvProb_bin;
 
@@ -140,9 +145,13 @@ double chi2(const double *xx)
         }
         Nexp1 = fudge*Nexp1; //fudge normalization factor defined in 'constants.h'
 
+        // Number of background events
+        Nbg1 = (reno_bg_total_histo[0]->GetBinContent(iBIN+1))*totalBgd[0][0]*emuem[0]*daqTime[0];
+        Nbg2 = (reno_bg_total_histo[1]->GetBinContent(iBIN+1))*totalBgd[1][0]*emuem[1]*daqTime[1];
+
         // Compute of the ratios of Data and expect spectra
         OFN = Nobs2/Nobs1;
-        TFN = ( (1.0 + epsilon)*Nexp2 - b_d[1] )/( (1.0 + epsilon)*Nexp1 - b_d[0]);
+        TFN = ( (1.0 + epsilon)*Nexp2 - b_d[1]*Nbg2 )/( (1.0 + epsilon)*Nexp1 - b_d[0]*Nbg1);
         //cout << " OFN = " << OFN << " Nobs = " << Nobs <<endl;
 
         // Chi^2 funtion
@@ -200,6 +209,14 @@ int RENO_minuit_spect_EScale(const char * minName = "Minuit",
         double dfactor = 1.0/data_spect_histo[n]->Integral();
         data_spect_histo[n]->Scale(dfactor);
     }
+    //background histograms (0-near , 1-far)
+    reno_bg_total_histo[0] = (TH1F*) fenergy->Get("bkgd_histo_0");
+    reno_bg_total_histo[1] = (TH1F*) fenergy->Get("bkgd_histo_1");
+    for (int n = 0 ; n < nDet ; n++){
+        double bfactor = 1.0/reno_bg_total_histo[n]->Integral();
+        reno_bg_total_histo[n]->Scale(bfactor);
+     }// for n
+
 
     //--Histogrms binning
     double delta_bins2 = (5.6 - 1.2)/22; // 0.2 MeV/bin

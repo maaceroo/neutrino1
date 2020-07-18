@@ -157,7 +157,7 @@ void RENO_ntuple_noosc_spect()
         sigEp = Ep*(0.079/sqrt(Ep + 0.3));
         gauE->SetParameter(0,sigEp);
         deltaEp = gauE->GetRandom();
-        Ep = Ep + deltaEp;
+        Ep = Ep+ deltaEp;
         Ep = fFac1*Ep;
         if (i%10000 == 0) {
             std::cout << "NoOsc Event " << i << "   Ep = " << Ep << std::endl;
