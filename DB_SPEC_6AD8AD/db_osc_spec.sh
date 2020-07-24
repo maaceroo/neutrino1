@@ -8,8 +8,8 @@ echo '0) Define Grid'
 echo '=========================================='
 echo 
 
-export NS2T=5
-export NDM2=5
+export NS2T=10
+export NDM2=10
 
 export LO_S2T=0.05
 export HI_S2T=0.12
@@ -128,7 +128,7 @@ echo '=========================================='
 echo 'Runnign gnuplot macro'
 echo '=========================================='
 echo
-gnuplot multi_plot_margin_SPEC.gnu
+#gnuplot multi_plot_margin_SPEC.gnu
 gnuplot plot.gnu
 rm *.gnu-e
 

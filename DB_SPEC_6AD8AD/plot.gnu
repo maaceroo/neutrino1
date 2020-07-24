@@ -39,9 +39,9 @@ set mytics
 set label 4 "{/Symbol |D}m^{2}_{ee}| (10^{-3} eV^2)" at 0.042,2.5 center rotate by 90
 
 ## Mark at the BF
-set label 5 '+' at 0.0850000000,0.0025000000*1e3 center font 'CharterBT-Roman,15'
+set label 5 '+' at 0.0888890000,0.0024440000*1e3 center font 'CharterBT-Roman,15'
 ## Minimum chi2 value
-min = 797.0700000000
+min = 1626.8500000000
 
 unset ztics
 set clabel
@@ -81,7 +81,6 @@ set contour base
 set cntrparam bspline
 set cntrparam order 10
 set cntrparam levels discret 2.30,6.18,11.83
-set cntrparam firstlinetype 101
 
 ## DB1230 Result - Surface
 splot 'files_data/DB_DeltaChiSq_1230days.txt' u 1:(1e3*($2)):3 w l lw 3

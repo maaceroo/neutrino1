@@ -36,6 +36,7 @@ double     dmsq21RENO   = 7.53e-5;// +/- 0.18 x 10^{-5} eV^2
 double      fudge   = 1.00 ;  //Adjust to Far/Near relative normalization
 double      fFac1   = 1.00 ;  //Energy scale factor - Vertical displacement
 double      fFac2   = 1.00 ;  //Energy scale factor - Vertical widening
+double      eEscl   = 0.00 ;  //Energy scale factor for near det (alternative)
 
 double      BFtoObs[2] = {1.0,1.0};  //Correction to the BF IBD Rate per day
 

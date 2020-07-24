@@ -114,15 +114,18 @@ void db_ntuple()
     T6AD->Branch("id", &id, "id/s"); //detector
     T6AD->Branch("per",&per,"per/s"); //period
 
-    int Nevents = 5000000; // CAUTION!! This must be commented out when using the script
-    //int Nevents = atoi(getenv("NTUPLE_EVENTS")); // This must be uncommented when using the script
+    //int Nevents = 5000000; // CAUTION!! This must be commented out when using the script
+    int Nevents = atoi(getenv("NTUPLE_EVENTS")); // This must be uncommented when using the script
     printf("Ntuple Events: %d \n",Nevents);
     
     //-- 2018.12.21 -
     //-- Gaussian distribution to include the effect of the detectors and reactors dimensions
     TF1 *gau = new TF1("gau","exp(-0.5*(x/[0])^2)",-30.0,30.0);
     gau->SetParameter(0,5);
-
+    //-- Energy resolution function different
+    TF1 *gauE = new TF1("gauE","exp(-0.5*(x/[0])^2)",-2.0,2.0);
+    double sigEp   = 0.0;
+    double deltaEp = 0.0;
     //- Fill Ntuple for 6AD analysis only
     std::cout << "\n";
     std::cout << "Filling ntuple for 6AD analysis only\n";
@@ -144,6 +147,10 @@ void db_ntuple()
         //else continue;
             
         Ep = nu_nosc_spect_histo6AD[ad]->GetRandom();
+        //sigEp = Ep*(0.075/sqrt(Ep + 0.3));   //Chin.Phys.C37,2013
+        //gauE->SetParameter(0,sigEp);
+        //deltaEp = gauE->GetRandom();
+        //Ep = Ep + deltaEp;
         En = fFac6AD*Ep + avg_nRecoilE + avg_constE;
 
         T6AD->Fill();
@@ -177,6 +184,10 @@ void db_ntuple()
             else if (id > 3 && id < 7) ad = 2;
      
             Ep = nu_nosc_spect_histo6AD[ad]->GetRandom();
+            //sigEp = Ep*(sqrt(pow(0.016,2) + pow(0.081,2)/Ep + pow(0.026/Ep,2))) //PRD 95,2017
+            //gauE->SetParameter(0,sigEp);
+            //deltaEp = gauE->GetRandom();
+            //Ep = Ep+ deltaEp;
             En = fFac8AD*Ep + avg_nRecoilE + avg_constE;
         } //if 6AD period events
         else {
@@ -187,6 +198,10 @@ void db_ntuple()
             else if (id > 3) ad = 2;
     
             Ep = nu_nosc_spect_histo[ad]->GetRandom();
+            //sigEp = Ep*(sqrt(pow(0.016,2) + pow(0.081,2)/Ep + pow(0.026/Ep,2))) //PRD 95,2017
+            //gauE->SetParameter(0,sigEp);
+            //deltaEp = gauE->GetRandom();
+            //Ep = Ep+ deltaEp;
             En = fFac8AD*Ep + avg_nRecoilE + avg_constE;
         }
 
