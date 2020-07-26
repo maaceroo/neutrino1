@@ -122,10 +122,14 @@ void db_ntuple()
     //-- Gaussian distribution to include the effect of the detectors and reactors dimensions
     TF1 *gau = new TF1("gau","exp(-0.5*(x/[0])^2)",-30.0,30.0);
     gau->SetParameter(0,5);
+
     //-- Energy resolution function different
     TF1 *gauE = new TF1("gauE","exp(-0.5*(x/[0])^2)",-2.0,2.0);
     double sigEp   = 0.0;
     double deltaEp = 0.0;
+
+
+
     //- Fill Ntuple for 6AD analysis only
     std::cout << "\n";
     std::cout << "Filling ntuple for 6AD analysis only\n";
@@ -147,10 +151,13 @@ void db_ntuple()
         //else continue;
             
         Ep = nu_nosc_spect_histo6AD[ad]->GetRandom();
-        //sigEp = Ep*(0.075/sqrt(Ep + 0.3));   //Chin.Phys.C37,2013
-        //gauE->SetParameter(0,sigEp);
-        //deltaEp = gauE->GetRandom();
-        //Ep = Ep + deltaEp;
+////      The energy resolution is ~8% at 1 MeV (PRL112, 061801, 2014)
+////        //sigEp = Ep*(0.075/sqrt(Ep + 0.3));   //Chin.Phys.C37,2013 - This is not correct
+//        sigEp = Ep*((0.075/sqrt(Ep)) + 0.009);   //Chin.Phys.C37,011001,2013 - See Sec. 3.4
+//        gauE->SetParameter(0,sigEp);
+//        deltaEp = gauE->GetRandom();
+//        Ep = Ep + deltaEp;
+        
         En = fFac6AD*Ep + avg_nRecoilE + avg_constE;
 
         T6AD->Fill();
@@ -158,6 +165,9 @@ void db_ntuple()
         if(i%1000000 == 0)
             cout << "Number of events 6AD ntuple " << i << " done!" << endl;
     }
+    sigEp = 0.0;
+    deltaEp = 0.0;
+    
     std::cout << "\n";
     std::cout << "Filling ntuple for 6AD+8AD combined analysis\n";
     //- Fill Ntuple for 6AD+8AD combined analysis
@@ -184,10 +194,11 @@ void db_ntuple()
             else if (id > 3 && id < 7) ad = 2;
      
             Ep = nu_nosc_spect_histo6AD[ad]->GetRandom();
-            //sigEp = Ep*(sqrt(pow(0.016,2) + pow(0.081,2)/Ep + pow(0.026/Ep,2))) //PRD 95,2017
-            //gauE->SetParameter(0,sigEp);
-            //deltaEp = gauE->GetRandom();
-            //Ep = Ep+ deltaEp;
+//            sigEp = Ep*(sqrt(pow(0.016,2) + pow(0.081,2)/Ep + pow(0.026/Ep,2))); //PRD 95,072006,2017
+//            gauE->SetParameter(0,sigEp);
+//            deltaEp = gauE->GetRandom();
+//            Ep = Ep + deltaEp;
+
             En = fFac8AD*Ep + avg_nRecoilE + avg_constE;
         } //if 6AD period events
         else {
@@ -198,10 +209,11 @@ void db_ntuple()
             else if (id > 3) ad = 2;
     
             Ep = nu_nosc_spect_histo[ad]->GetRandom();
-            //sigEp = Ep*(sqrt(pow(0.016,2) + pow(0.081,2)/Ep + pow(0.026/Ep,2))) //PRD 95,2017
-            //gauE->SetParameter(0,sigEp);
-            //deltaEp = gauE->GetRandom();
-            //Ep = Ep+ deltaEp;
+//            sigEp = Ep*(sqrt(pow(0.016,2) + pow(0.081,2)/Ep + pow(0.026/Ep,2))); //PRD 95,072006,2017
+//            gauE->SetParameter(0,sigEp);
+//            deltaEp = gauE->GetRandom();
+//            Ep = Ep + deltaEp;
+
             En = fFac8AD*Ep + avg_nRecoilE + avg_constE;
         }
 

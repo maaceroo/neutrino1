@@ -36,7 +36,7 @@ echo '=========================================='
 echo '1) Running ldist.C'
 echo '=========================================='
 echo
-time root -b -l -n -q ldist.C
+#time root -b -l -n -q ldist.C
 
 echo
 
@@ -103,22 +103,34 @@ echo
 
 read BF_CHI2 BF_S2T BF_DM2 <<< `cat files_data/chi2_minumum_SPEC.txt`
 
+#Extract fudge, fFac1 and fFac2 from constants.h
+fFac1=$(awk 'NR == 39 {print $4}' constants.h)
+fFac2=$(awk 'NR == 40 {print $4}' constants.h)
+echo 'fFac1 = ' $fFac1
+echo 'fFac2 = ' $fFac2
+
 #----------------------------------------------------------------------------
 #----------------------------------------------------------------------------
 # Form gnuplot script
 echo '=========================================='
 echo 'Editting gnu plot script ...'
 echo '=========================================='
+echo 'Multiplot Script... Done!'
+echo '-------------------------'
 echo
 #Editing the multiplot file - Contours and marginalizatins
 sed -i'' -e "132s/.*/set label 35 '+' at $BF_S2T,$BF_DM2*1e3 center font 'CharterBT-Roman,15'/" multi_plot_margin_SPEC.gnu
 
 sed -i'' -e "134s/.*/min = $BF_CHI2/" multi_plot_margin_SPEC.gnu
+echo 'Comparisson plot Script... Done!'
+echo '--------------------------------'
 
 #Editing the plot file - Contours comparison
 sed -i'' -e "42s/.*/set label 5 '+' at $BF_S2T,$BF_DM2*1e3 center font 'CharterBT-Roman,15'/" plot.gnu
 
 sed -i'' -e "44s/.*/min = $BF_CHI2/" plot.gnu
+
+sed -i'' -e "9s/.*/set output \"files_plots\/db_plot_COMPARE_fFac6AD_$fFac1\_fFac8AD_$fFac2.pdf\"/" plot.gnu
 
 echo
 
