@@ -36,7 +36,7 @@ echo '=========================================='
 echo '1) Running ldist.C'
 echo '=========================================='
 echo
-#time root -b -l -n -q ldist.C
+time root -b -l -n -q ldist.C
 
 echo
 
@@ -46,7 +46,7 @@ echo '=========================================='
 echo '2) Running ntuple.C'
 echo '=========================================='
 echo
-export NTUPLE_EVENTS=1000000
+export NTUPLE_EVENTS=100000
 echo $NTUPLE_EVENTS ntuple events
 time root -b -l -n -q db_ntuple.C
 
@@ -73,7 +73,7 @@ time root -b -l -n -q db_minuit_spec_CovMat_1par.C
 echo
 
 #-----------------------------------------------------------------------------
-#Remove first line from file 
+#Remove first line from file
 tail -n +2 files_data/chi2_s2t-dm2_surface_SPEC.txt > files_data/chi2_s2t-dm2_surface_SPEC-noFL.txt
 
 #-----------------------------------------------------------------------------
@@ -130,7 +130,7 @@ sed -i'' -e "42s/.*/set label 5 '+' at $BF_S2T,$BF_DM2*1e3 center font 'CharterB
 
 sed -i'' -e "44s/.*/min = $BF_CHI2/" plot.gnu
 
-sed -i'' -e "9s/.*/set output \"files_plots\/db_plot_COMPARE_fFac6AD_$fFac1\_fFac8AD_$fFac2.pdf\"/" plot.gnu
+sed -i'' -e "9s/.*/set output \"files_plots\/db_plot_COMPARE_fFac6AD_$fFac1\_fFac8AD_$fFac2\_blDev_EpRes_new.pdf\"/" plot.gnu
 
 echo
 

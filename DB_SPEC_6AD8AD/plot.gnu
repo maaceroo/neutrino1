@@ -6,7 +6,7 @@ set terminal pdfcairo enhanced color font "CharterBT-Roman,14" size 6,6
 
 ########################################################################################
 ## Figure File
-set output "files_plots/db_plot_COMPARE_fFac6AD_1.03_fFac8AD_1.10.pdf"
+set output "files_plots/db_plot_COMPARE_fFac6AD_1.00_fFac8AD_1.00_blDev_EpRes_new.pdf"
 ########################################################################################
 
 set multiplot
@@ -39,9 +39,9 @@ set mytics
 set label 4 "{/Symbol |D}m^{2}_{ee}| (10^{-3} eV^2)" at 0.042,2.5 center rotate by 90
 
 ## Mark at the BF
-set label 5 '+' at 0.0733330000,0.0023330000*1e3 center font 'CharterBT-Roman,15'
+set label 5 '+' at 0.1044440000,0.0020000000*1e3 center font 'CharterBT-Roman,15'
 ## Minimum chi2 value
-min = 4053.6000000000
+min = 11793.1000000000
 
 unset ztics
 set clabel

@@ -9,7 +9,7 @@ set terminal pdfcairo enhanced color font "CharterBT-Roman,14" size 7,7
 
 ########################################################################################
 ## Figure File
-set output "Plots/RENO_plots_SPEC_fudge_1.00_fFac1_1.00_fFac2_1.00.pdf"
+set output "Plots/RENO_plots_SPEC_fudge_0.995_fFac1_0.995_fFac2_1.00.pdf"
 ########################################################################################
 
 set multiplot
@@ -133,9 +133,9 @@ set label 4 "{/Symbol D}m^{2}_{ee} (10^{-3} eV^2)" at -0.021,2.6 center rotate b
 #set label 6 "{* Best-fit}" at 0.12,0.0037 center 
 
 ## Mark at the BF
-set label 35 '+' at 0.09,0.002837*1e3 center font 'CharterBT-Roman,15'
+set label 35 '+' at 0.094444,0.002682*1e3 center font 'CharterBT-Roman,15'
 ## Minimum chi2 value
-min = 28.7118
+min = 18.6787
 
 unset ztics
 set clabel

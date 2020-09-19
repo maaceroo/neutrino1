@@ -145,8 +145,9 @@ double chi2(const double *xx)
             Td8AD = 0;
             if (NoscTot8AD[iAD]!=0)
             Td8AD = spc8AD[iAD][iBIN]*(SurvPavg8AD*noOsc_IBDrate_perday_8AD[iAD]/NoscTot8AD[iAD])*emuem_8AD[iAD]*daqTime_8AD[iAD];
-            //std::cout << "Td6AD = " << Td6AD << " SurvPavg6AD = " << SurvPavg6AD << std::endl;
-            //std::cout << "Td8AD = " << Td8AD << " SurvPavg8AD = " << SurvPavg8AD << std::endl;
+//            std::cout << "AD      " << iAD   << " - bin  "        << iBIN  << std::endl;
+//            std::cout << "Td6AD = " << Td6AD << " SurvPavg6AD = " << SurvPavg6AD << std::endl;
+//            std::cout << "Td8AD = " << Td8AD << " SurvPavg8AD = " << SurvPavg8AD << std::endl;
 
             //-- Measured IDB events of the dth Antineutrino Detector (background is substracted)
             int idx = -1;
@@ -169,6 +170,13 @@ double chi2(const double *xx)
             //std::cout << "data_spect_histo8AD[idx] = " << data_spect_histo8AD[idx]->GetBinContent(iBIN+1) << "  IBDrate_data_8AD[iAD][0] = " << IBDrate_data_8AD[iAD][0] << std::endl;
             //std::cout << "data_sigplusbg_8AD = " << data_sigplusbg_8AD << "  simu_bg_8AD = " << simu_bg_8AD << std::endl;
             //std::cout << "IBDrate_data_8AD[iAD][0] = " << IBDrate_data_8AD[iAD][0] << "  totalBgd_8AD[iAD][0] = " << totalBgd_8AD[iAD][0] << std::endl;
+            
+//            std::cout << std::endl;
+//            std::cout << "AD      " << iAD   << " - bin  "    << iBIN  << std::endl;
+//            std::cout << "Td6AD = " << Td6AD << "   Md6AD = " << Md6AD << std::endl;
+//            std::cout << "Td8AD = " << Td8AD << "   Md8AD = " << Md8AD << std::endl;
+//            std::cout << std::endl;
+            
             //-- Background of the dth Antineutrino Detector
             Bd6AD = simu_bg_6AD*daqTime_6AD[iAD];
             Bd8AD = simu_bg_8AD*daqTime_8AD[iAD];
@@ -220,6 +228,9 @@ double chi2(const double *xx)
         //break;
         exit(1);
     }
+
+//    std::cout << "Vector: " << std::endl;
+//    delta_vector.Print();
     
     for (int i = 0 ; i < NBx_cov ; i++) {
         for (int j = 0 ; j < NBy_cov ; j++) {

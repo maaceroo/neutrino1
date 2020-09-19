@@ -109,7 +109,7 @@ double chi2(const double *xx)
     double seps             = 0.0021;          //from PRL128 (2018)
     double sfr_r            = 0.009;           //from PRL128 (2018)
     double sesc             = 0.0015;          //from PRL128 (2018)
-  
+
     double spcNew[nDet][NB];
     SurvPavg1 = NoscTot[0]/noNoscTot[0];
     SurvPavg2 = NoscTot[1]/noNoscTot[1];

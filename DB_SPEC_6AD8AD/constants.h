@@ -36,7 +36,7 @@ double   dm2_21 = 7.53e-5; //eV^2,         //PRD 95 072006 (2017) - DB1230Days
 double s22th_12 = 0.846;
 
 //double      fudge   = 1.00 ; //Adjust to Far/Near relative normalization
-double      fFac6AD   = 1.03 ;  //Energy scale factor -
-double      fFac8AD   = 1.10 ;  //Energy scale factor - 
+double      fFac6AD   = 1.00 ;  //Energy scale factor -
+double      fFac8AD   = 1.00 ;  //Energy scale factor - 
 
 double covMatAct = 1.0; // Set the CovMatirx On (1.0) or Off (0.0)

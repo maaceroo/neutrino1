@@ -108,20 +108,35 @@ void RENO_ntuple_noosc_spect()
         { 667.9, 451.8, 304.8, 336.1, 513.9, 739.1},
         {1556.5,1456.2,1395.9,1381.3,1413.8,1490.1}
     };
-  
+  //-- 18-09-2020 Trying to add different uncertainties for each baseline --
+  TFile *fBLsdev = new TFile("files_root/reno_BL_deviations.root","read");
+  TH1F *bldist[nDet][nRea];
+  for (int ii = 0 ; ii < nDet ; ii++) {
+      for (int jj = 0 ; jj < nRea ; jj++) {
+          bldist[ii][jj] = (TH1F*) fBLsdev->Get(Form("bldist_%d_%d",ii,jj));
+          //std::cout << "\t Mean Distance" << "(" << ii << ", " << jj << ") = " << bldist[ii][jj]->GetMean()
+          //<< "\t Deviation" << "(" << ii << ", " << jj << ") = " << bldist[ii][jj]->GetStdDev() << std::endl;
+      }
+  }
+  //-- 18-09-2020 Independent Gaussian fluctuation for each baseline with different StdDev
+  TF1 *gauL[nDet][nRea];
+  for (int iD = 0 ; iD < nDet ; iD++)
+      for (int iR = 0 ; iR < nRea ; iR++){
+          gauL[iD][iR] = new TF1(Form("gauL_%d_%d",iD,iR),"exp(-0.5*(x/[0])^2)",-10.0,10.0);
+          gauL[iD][iR]->SetParameter(0,bldist[iD][iR]->GetStdDev());
+      }
+
     //make ntuple
     //TFile *fout = new TFile("files_root/RENO-ntuple_noosc.root","RECREATE");
     TFile *fout = new TFile("files_root/RENO-ntuple_BFosc.root","RECREATE");
     TTree *T = new TTree("T","Monte Carlo neutrino events");
   
-    //Dfining some important quantities and variables
-    //double avg_nRecoilE = 10.0e-3; //MeV
-    //double avg_constE = 0.78; //MeV
-    float Ep, En, Ln; //Promt and neutrino energies; Baseline
+    float Ep, Ee, En, Ln; //Promt and neutrino energies; Baseline
     int   blid,ir,id,ad;
     float Prob_surv;
 
-    T->Branch("Ep"  ,&Ep  ,"Ep/F");	  //prompt energy
+    T->Branch("Ep"  ,&Ep  ,"Ep/F");      //prompt energy
+    T->Branch("Ee"  ,&Ee  ,"Ee/F");      //positron energy
     T->Branch("En"  ,&En  ,"En/F");	  //neutrino energy
     T->Branch("Ln"  ,&Ln  ,"Ln/F");	  //neutrino baseline
     T->Branch("blid",&blid,"blid/s"); //Baseline id (0-11)
@@ -135,30 +150,37 @@ void RENO_ntuple_noosc_spect()
     double osc_prob_fd_allBins = 0.0;
     double N_events_allBins_fd = 0.0;
 
-    //-- A normal distribution to add a random quantity to the baseline Ln
-    //-- in order to account for the reactor and detector sizes
-    TF1 *gau = new TF1("gau","exp(-0.5*(x/[0])^2)",-5.0,5.0);
-    gau->SetParameter(0,1);
     //-- Energy resolution function (1610.04326) - 21.02.2020
     TF1 *gauE = new TF1("gauE","exp(-0.5*(x/[0])^2)",-2.0,2.0);
     double sigEp   = 0.0;
     double deltaEp = 0.0;
+    
     int Nevents = atoi(getenv("NTUPLE_EVENTS"));
     for (int i = 0 ; i < Nevents ; i++){
         // generate a baseline (blid uniquely identifies the baseline)
         blid = histo_ldist_RENO_2x6->GetRandom();
         id =   (blid/nRea);
         ir =   (blid - id*nRea);
-        Ln = baselines[id][ir] + gau->GetRandom();
+        Ln = baselines[id][ir] + gauL[id][ir]->GetRandom();
       
         if(id==0)  ad=0;
         else if (id==1) ad=1;
-        Ep = MC_spect_histo[ad]->GetRandom();
-        sigEp = Ep*(0.079/sqrt(Ep + 0.3));
-        gauE->SetParameter(0,sigEp);
-        deltaEp = gauE->GetRandom();
-        Ep = Ep+ deltaEp;
-        Ep = fFac1*Ep;
+//        Ep = MC_spect_histo[ad]->GetRandom();
+//        sigEp = Ep*(0.079/sqrt(Ep + 0.3));
+//        gauE->SetParameter(0,sigEp);
+//        deltaEp = gauE->GetRandom();
+//        Ep = Ep+ deltaEp;
+//        Ep = fFac1*Ep;
+        do {
+            Ep = MC_spect_histo[ad]->GetRandom();
+            Ep = fFac1*Ep;
+            sigEp = resFac*Ep*(0.079/sqrt(Ep + 0.3));
+            gauE->SetParameter(0,sigEp);
+            Ep = Ep + gauE->GetRandom();
+        //            std::cout << "Cicle " << cicle << "\t 6AD: Ep After = " << Ep << std::endl;
+                    //} while (Ep < 0.7);
+        } while (Ep < 2*mel);
+
         if (i%10000 == 0) {
             std::cout << "NoOsc Event " << i << "   Ep = " << Ep << std::endl;
         }
@@ -166,9 +188,9 @@ void RENO_ntuple_noosc_spect()
         //-- for an additional uncertainty on the neutrino energy and improve
         //-- our fit compared to the Collaboration's one
         //En = fFac*Ep + avg_nRecoilE + avg_constE;
-        En = fFac2*Ep + avg_nRecoilE + avg_constE;
+        //En = fFac2*Ep + avg_nRecoilE + avg_constE;
+        En = Ep + avg_nRecoilE + avg_constE;
         //En = Ep + avg_nRecoilE + avg_constE;
-        //En = Mn + Ep - Mp ; // Neutrino energy. Where Mp and Mn are the proton and neutron masses
         
         //Using values from PRL121,201801 (2018) by RENO Coll.
         //-- ssq2th13RENO = 0.0896 +/- 0.0048(stat) +/- 0.0047(syst)
