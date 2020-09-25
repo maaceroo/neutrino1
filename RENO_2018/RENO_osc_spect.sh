@@ -56,7 +56,7 @@ echo
 #-----------------------------------------------------------------------------
 # Construct ntuple
 echo '=========================================='
-echo '3) Running RENO_ntuple_spect.C'
+echo '3) Running RENO_ntuple_noosc_spect.C'
 echo '=========================================='
 echo
 export NTUPLE_EVENTS=5000000
@@ -74,9 +74,19 @@ echo
 time root -b -l -n -q RENO_osc_spect.C
 
 #-----------------------------------------------------------------------------
+# Construct ntuple
+echo '=========================================='
+echo '5) Running RENO_EScaleDeriv_ntuple.C'
+echo '=========================================='
+echo
+time root -b -l -n -q RENO_ntuple_noosc_spect.C
+
+echo
+
+#-----------------------------------------------------------------------------
 # run minimization
 echo '=========================================='
-echo '5) Running RENO_minuit_spect.C'
+echo '6) Running RENO_minuit_spect.C'
 echo '=========================================='
 echo
 

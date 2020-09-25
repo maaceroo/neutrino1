@@ -5,7 +5,7 @@
 //-- energy resolution uncertainty. The result is stored as a function giving the  --//
 //-- corresponding derivative to be used in the minumization process.              --//
 //-----------------------------------------------------------------------------------//
-#include "EnergyS_constants.h"
+#include "constants.h"
 #include <math.h>
 #include <iostream>
 #include <string>
