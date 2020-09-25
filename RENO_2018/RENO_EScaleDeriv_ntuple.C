@@ -39,7 +39,7 @@ TH1F *nosc_spect_hist_diff[nDet][de];
 TH1F *nosc_spect_hist_deri[nDet][de];
 //---*****************************************************---//
 
-int RENO_test_EnergyS_ntuple()
+int RENO_EScaleDeriv_ntuple()
 {
     //------------- Style --------------
     //gROOT->SetStyle("Plain");
