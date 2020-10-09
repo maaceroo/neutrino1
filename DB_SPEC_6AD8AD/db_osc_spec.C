@@ -21,11 +21,12 @@ void db_osc_spec()
 
     //---------------------------------------------------
     // Open  file to read simulated data
-    TFile *fntuple = new TFile("files_data/db-ntuple.root","READ");
-    TTree *T6AD    = (TTree*)fntuple->Get("T6AD");    //-- Events for the 6AD period
+    TFile *fntuple = new TFile("files_data/db-ntuple_0.7-1.3_noER_50M.root","READ"); //-No ERF, 1st bin 0.7-1.3 MeV
+    //TFile *fntuple = new TFile("files_data/db-ntuple_noER_50M.root","READ");         //-No ERF, 1st bin mel-1.3 MeV
+    //TFile *fntuple = new TFile("files_data/db-ntuple_unPhys_noER_50M.root","READ");  //-No ERF, 1st bin w/o restrictions
     TTree *T6AD8AD = (TTree*)fntuple->Get("T6AD8AD"); //-- Events for the 6AD+8AD period
-    TCut cutBF_6AD;    //-- For the 217-days (6AD) period
     TCut cutBF_6AD8AD; //-- For the 1013-days (6AD+8AD) period
+    TCut cutBF_6AD;    //-- For the  217-days (6AD) period
     //---------------------------------------------------
     // histogram binning for the simulated data
     //double    NB = 35;
@@ -94,9 +95,7 @@ void db_osc_spec()
        */
 
     FILE *file_IBDrates8AD;
-    //FILE *file_IBDrates6AD;
     file_IBDrates8AD = fopen("files_data/db_noOsc_IBDrates_perday_1230.txt","w");
-    //file_IBDrates6AD = fopen("files_data/db_noOsc_IBDrates_perday_217.txt","w");
 
     int sel;
     double TotNosc_1013[nAD];
@@ -123,7 +122,6 @@ void db_osc_spec()
         cout << "(avgPosc_AD,noOsc_IBDrate_perday_1230)_" << sel << " = (" << avgPosc_AD_1230[iAD]
         << ", " << noOsc_IBDrate_perday_1230[iAD] << ") " << endl;
         fprintf(file_IBDrates8AD,"%f \n", noOsc_IBDrate_perday_1230[iAD]);
-
         //------------------------------------------------
 
         //------------------------------------------------
@@ -169,7 +167,6 @@ void db_osc_spec()
     //double DeltaLog_dm2 = (log10(hi_dm2)-log10(lo_dm2))/double(N_dm2-1);
     double Delta_dm2 = (hi_dm2 - lo_dm2)/double(N_dm2-1);
     
-
     printf("\n");
     printf("Grid definition db_osc_spec.C\n");
     printf("---------------------------\n");
@@ -204,13 +201,6 @@ void db_osc_spec()
     }
 
     //File to print the oscillation paramenter, the survival prob. and oscilated spectra
-    //ofstream file;
-    //string result = "db_SurvParams_V2.txt";
-    //file.open (result.c_str());
-    //file << setprecision(5);
-    
-    //FILE *file1013,*file217;
-    //file = fopen("files_data/db_gridOscSpectra_1230.txt","w");
     ofstream file;
     string grid_name = "files_data/db_gridOscSpectra_1230.txt";
     file.open((grid_name).c_str());
@@ -226,31 +216,23 @@ void db_osc_spec()
        //---------------------------------------------------------
 
         file << iAD + 1 << "\t" << s2t_pt << "\t" << dm2_pt;
-        //fprintf(file,"%d %8.2e %8.2e",iAD+1,s2t_pt,dm2_pt);
         //print bin-content of non-oscilated spectra per day
         for (int ib = 0 ; ib < NB ; ib++)
         {
             double contNO_217    = nu_nosc_spect_histo_217[iAD] ->GetBinContent(ib+1);
-            //fprintf(file," %10.2f",contNO_217);
             if (iAD==3 || iAD==7) contNO_217 = 0.0; //-- Zero content for detector 3 and 7 for the 6AD run
             file << "\t" << contNO_217;
             //fprintf(file, " %10.2f",contNO_217);
         }
-        //fprintf(file," %10.2f\n",TotNosc_217[iAD]);
-        //fprintf(file," %10.2f",TotNosc_217[iAD]); // no line break
         file << " \t" << TotNosc_217[iAD];
         for (int ib = 0 ; ib < NB ; ib++)
         {
             double contNO_1013   = nu_nosc_spect_histo_1013[iAD]->GetBinContent(ib+1);
-                    //fprintf(file," %10.2f",contNO_1013);
                     file << "\t" << contNO_1013;
                 }
                 file << " \t" << TotNosc_1013[iAD] << endl;
-                //fprintf(file," %10.2f\n",TotNosc_1013[iAD]);
             } // for iAD
             file << endl;
-            //fprintf(file,"\n");
-
 
     for (int is2t = 0 ; is2t < N_s2t ; is2t++)
     {
@@ -280,25 +262,19 @@ void db_osc_spec()
                 TotWosc_217[ih] =   wosc_spect_histo_217[ih]->Integral();
 
                 file << iAD + 1 << " " << s2t_pt << "\t" << dm2_pt;
-                //fprintf(file,"%d %8.2e %8.2e",iAD+1,s2t_pt,dm2_pt);
                 //Printing bin-content for the oscilated spectra for (s2t_pt,dm2_pt)
                 for (int ib = 0 ; ib < NB ; ib++)
                 {
                     double cont217    = wosc_spect_histo_217[ih] ->GetBinContent(ib+1);
                     file << "\t" << cont217;
-                    //fprintf(file, " %10.2f",cont217);
                 }
                 file << " \t" << TotWosc_217[ih];
-                //fprintf(file, " %10.2f\n",TotWosc_217[ih]);
-                //fprintf(file, " %10.2f",TotWosc_217[ih]); // no line break
                 for (int ib = 0 ; ib < NB ; ib++)
                 {
                     double cont1013   = wosc_spect_histo_1013[ih]->GetBinContent(ib+1);
                     file << "\t" << cont1013;
-                    //fprintf(file," %10.2f",cont1013);
                 }
                 file << " \t" << TotWosc_1013[ih] << endl;
-                //fprintf(file," %10.2f\n",TotWosc_1013[ih]);
 
                 //Printing check-points info
                 if (ih%10 == 0)
@@ -308,23 +284,18 @@ void db_osc_spec()
                 }
 
                 //Normalizing the oscilated spectra for (s2t_pt,dm2_pt)
-                //*CHECK if this is nneded .. guess is NO 
                 integ_1013 = wosc_spect_histo_1013[ih]->Integral();
                 wosc_spect_histo_1013[ih]->Scale(1.0/integ_1013);
                 integ_217  = wosc_spect_histo_217[ih]->Integral();
                 wosc_spect_histo_217[ih]->Scale(1.0/integ_217);
             } // for idm2
             file << endl;
-            //fprintf(file,"\n");
         }//for is2t
         //cout << "  Done with detector " << iAD+1 << endl;
         file << endl;
-        //fprintf(file,"\n");
     }//for iAD
 
     file.close();
-    //fclose(file);
-
     //break;
     //---------------------------------------------------
     //---------------------------------------------------

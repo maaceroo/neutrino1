@@ -8,8 +8,8 @@ echo '0) Define Grid'
 echo '=========================================='
 echo 
 
-export NS2T=10
-export NDM2=10
+export NS2T=20
+export NDM2=20
 
 export LO_S2T=0.05
 export HI_S2T=0.12
@@ -29,29 +29,29 @@ echo
 
 
 #-----------------------------------------------------------------------------
-echo
+#echo
+#
+## Construct L distribution
+#echo '=========================================='
+#echo '1) Running ldist.C'
+#echo '=========================================='
+#echo
+#time root -b -l -n -q ldist.C
+#
+#echo
 
-# Construct L distribution
-echo '=========================================='
-echo '1) Running ldist.C'
-echo '=========================================='
-echo
-time root -b -l -n -q ldist.C
-
-echo
-
-#-----------------------------------------------------------------------------
-# Construct ntuple
-echo '=========================================='
-echo '2) Running ntuple.C'
-echo '=========================================='
-echo
-export NTUPLE_EVENTS=100000
-echo $NTUPLE_EVENTS ntuple events
-time root -b -l -n -q db_ntuple.C
-
-echo
-
+##-----------------------------------------------------------------------------
+## Construct ntuple
+#echo '=========================================='
+#echo '2) Running ntuple.C'
+#echo '=========================================='
+#echo
+#export NTUPLE_EVENTS=50000000
+#echo $NTUPLE_EVENTS ntuple events
+#time root -b -l -n -q db_ntuple.C
+#
+#echo
+#
 #-----------------------------------------------------------------------------
 # construct oscillated spectra for all points in the grid
 echo '=========================================='
@@ -103,11 +103,11 @@ echo
 
 read BF_CHI2 BF_S2T BF_DM2 <<< `cat files_data/chi2_minumum_SPEC.txt`
 
-#Extract fudge, fFac1 and fFac2 from constants.h
-fFac1=$(awk 'NR == 39 {print $4}' constants.h)
-fFac2=$(awk 'NR == 40 {print $4}' constants.h)
-echo 'fFac1 = ' $fFac1
-echo 'fFac2 = ' $fFac2
+##Extract fudge, fFac1 and fFac2 from constants.h
+#fFac1=$(awk 'NR == 39 {print $4}' constants.h)
+#fFac2=$(awk 'NR == 40 {print $4}' constants.h)
+#echo 'fFac1 = ' $fFac1
+#echo 'fFac2 = ' $fFac2
 
 #----------------------------------------------------------------------------
 #----------------------------------------------------------------------------
@@ -130,7 +130,9 @@ sed -i'' -e "42s/.*/set label 5 '+' at $BF_S2T,$BF_DM2*1e3 center font 'CharterB
 
 sed -i'' -e "44s/.*/min = $BF_CHI2/" plot.gnu
 
-sed -i'' -e "9s/.*/set output \"files_plots\/db_plot_COMPARE_fFac6AD_$fFac1\_fFac8AD_$fFac2\_blDev_EpRes_new.pdf\"/" plot.gnu
+#sed -i'' -e "9s/.*/set output \"files_plots\/db_plot_COMPARE_1stbin_in_0.7_noER.pdf\"/" plot.gnu
+sed -i'' -e "9s/.*/set output \"files_plots\/db_plot_COMPARE_1stbin_in_mel_noER_15M.pdf\"/" plot.gnu
+#sed -i'' -e "9s/.*/set output \"files_plots\/db_plot_COMPARE_1stbin_unPhys_noER.pdf\"/" plot.gnu
 
 echo
 

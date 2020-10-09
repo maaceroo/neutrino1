@@ -383,7 +383,6 @@ int db_minuit_spec_CovMat_1par(const char * minName = "Minuit",
     string PullT = "files_data/chi2_pullT_surface.txt";
     minimPullT_file.open((PullT).c_str());
   
-    //ifstream  file("files_data/db_gridOscSpectra_1230.txt");
     string grid_spectra = "files_data/db_gridOscSpectra_1230.txt";
     ifstream file;
     file.open((grid_spectra).c_str());

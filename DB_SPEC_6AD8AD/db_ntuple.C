@@ -104,9 +104,8 @@ void db_ntuple()
         }
 
     //make ntuple
-    TFile *fout = new TFile("files_data/db-ntuple.root","RECREATE");
+    TFile *fout = new TFile("files_data/db-ntuple_unPhys_noER_50M.root","RECREATE");
     TTree *T6AD8AD = new TTree("T6AD8AD","Monte Carlo neutrino events 6AD+8AD");
-    TTree *T6AD    = new TTree("T6AD","Monte Carlo neutrino events 6AD");
 
     double frac6AD = 217.0/1230.; // fraction of the total corresponding to 6AD only
 
@@ -114,7 +113,6 @@ void db_ntuple()
     int   blid,ir,id,ad;
     int   per;
     T6AD8AD->Branch("Ep"  ,&Ep  ,"Ep/F");      //prompt reconstructed energy
-//    T6AD8AD->Branch("Ee"  ,&Ee  ,"Ee/F");      //Positron energy energy
     T6AD8AD->Branch("En"  ,&En  ,"En/F");	  //neutrino energy
     T6AD8AD->Branch("Ln"  ,&Ln  ,"Ln/F");	  //neutrino baseline
     T6AD8AD->Branch("blid",&blid,"blid/s"); //Baseline id (0-47)
@@ -123,112 +121,17 @@ void db_ntuple()
     T6AD8AD->Branch("id", &id, "id/s"); //detector
     T6AD8AD->Branch("per",&per,"per/s"); //period
 
-    T6AD->Branch("Ep"  ,&Ep  ,"Ep/F");	  //prompt reconstructed energy
-//    T6AD->Branch("Ee"  ,&Ee  ,"Ee/F");      //Positron energy energy
-    T6AD->Branch("En"  ,&En  ,"En/F");	  //neutrino energy
-    T6AD->Branch("Ln"  ,&Ln  ,"Ln/F");	  //neutrino baseline
-    T6AD->Branch("blid",&blid,"blid/s"); //Baseline id (0-47)
-    
-    T6AD->Branch("ir", &ir, "ir/s"); //reactor
-    T6AD->Branch("id", &id, "id/s"); //detector
-    T6AD->Branch("per",&per,"per/s"); //period
-
     //int Nevents = 5000000; // CAUTION!! This must be commented out when using the script
     int Nevents = atoi(getenv("NTUPLE_EVENTS")); // This must be uncommented when using the script
     printf("Ntuple Events: %d \n",Nevents);
     
-    //-- 29-08-2020 This function is not used anymore, as the 'fluctuation' is applied differently. Letting this here for a while, for later references.
-    //-- 07-08-2020 Neutrino Energy Gaussian Fluctuation
-    //TF1 *gauEnu = new TF1("gauEnu","exp(-0.5*(x/[0])^2)",-2.0,2.0);
-    //double sigEnu;//   = 0.01;//(-8.5e-4 + 62e-4*Enu)*Enu
-    //gauEnu->SetParameter(0,sigEnu);
-
     //-- Prompt Energy resolution function
     TF1 *gauE = new TF1("gauE","exp(-0.5*(x/[0])^2)",-2.0,2.0);
     double sigEp   = 0.0;
     double deltaEp = 0.0;
     
-    //-- 28-08-2020 Angular distribution for the positron (By A.A.A.A). And this is the current way to add the 'fluctuation' on the neutrino energy, though it is not really a 'fluctuation'.
-    //-- Based on Vogel and Beacom, PRD60,053003(1999)
-    double sig0 = 1.0;  // temp Gf²costheta(cabibbo)²/pi(1+0.024)
-    double f    = 1.0;  //vector coupling constant 
-    double g    = 1.26; //axial coupling constant
-    TF1 *fangd = new TF1("fangd","0.5*[0]*(([1]**2+3*[2]**2)+([1]**2-[2]**2)*[3]*x)*[4]*[5]",-1,1);
-    fangd->SetParameter(0,sig0);
-    fangd->SetParameter(1,f);
-    fangd->SetParameter(2,g);
-    
-    TF1 *Unif = new TF1("Unif","1",0.7,1.3);
-    //TF1 *Unif = new TF1("Unif","1",0.7,2*mel);
-    //TF1 *Unif = new TF1("Unif","1",2*mel,1.3);
-
-    //- Fill Ntuple for 6AD analysis only
-    std::cout << "\n";
-    std::cout << "Filling ntuple for 6AD analysis only\n";
-    for (int i = 0 ; i < Nevents ; i++)
-    {
-        // generate a baseline (blid uniquely identifies the baseline)
-        blid = histo_ldist_6Det->GetRandom();
-        id =   (blid/nRea);
-        ir =   (blid - id*nRea);
-        Ln = baselines[id][ir] + gauL[id][ir]->GetRandom();
-        //Ln =   baselines[id][ir];
-        per = 1;
-        
-        // generate a neutrino energy
-        //if (id is 0 or 1, EH1 spectrum; id is 2, EH2 spectrum; id is 4 to 6, EH3 spectrum) this is for Ep
-        if (id < 2)       ad = 0;
-        else if (id == 2) ad = 1;
-        else if ((id > 3) && (id < 7)) ad = 2;
-        //else continue;
-        
-        Ep = nu_nosc_spect_histo6AD[ad]->GetRandom();
-//        sigEp = Ep*((0.075/sqrt(Ep)) + 0.009);   //Chin.Phys.C37,011001,2013 - See Sec. 3.4
-//        gauE->SetParameter(0,sigEp);
-//        Ep = Ep + gauE->GetRandom();
-        while (Ep < 2*mel){
-            Ep = Unif->GetRandom();
-//            sigEp = Ep*((0.075/sqrt(Ep)) + 0.009);   //Chin.Phys.C37,011001,2013 - See Sec. 3.4
-//            gauE->SetParameter(0,sigEp);
-//            Ep = Ep + gauE->GetRandom();
-        }
-        sigEp = Ep*((0.075/sqrt(Ep)) + 0.009);   //Chin.Phys.C37,011001,2013 - See Sec. 3.4
-        gauE->SetParameter(0,sigEp);
-        Ep = Ep + gauE->GetRandom();
-        while (Ep < 2*mel)
-            Ep = Ep + gauE->GetRandom();
-
-        
-//        do {
-//            Ep = nu_nosc_spect_histo6AD[ad]->GetRandom();
-//            sigEp = Ep*((0.075/sqrt(Ep)) + 0.009);   //Chin.Phys.C37,011001,2013 - See Sec. 3.4
-//            gauE->SetParameter(0,sigEp);
-//            Ep = Ep + gauE->GetRandom();
-////            std::cout << "Cicle " << cicle << "\t 6AD: Ep After = " << Ep << std::endl;
-//            //} while (Ep < 0.7);
-//        } while (Ep < 2*mel);
-
-        //-- 29-08-2020 Compute the Positron energy, Ee. It is this energy the one related to En as in L199, and taken form Eq. (5) [Vogel and Beacom, PRD60(1999)]
-//        Ee = Ep - mel;
-        //Ee = Ep;
-        //-- Sample a positron scattering angle
-//        double Ve = sqrt(pow(Ee,2)-pow(mel,2))/Ee;
-//        double Pe = sqrt(pow(Ee,2)-pow(mel,2));
-//        fangd->SetParameter(3,Ve);
-//        fangd->SetParameter(4,Ee);
-//        fangd->SetParameter(5,Pe);
-//        double costheta = fangd->GetRandom();
-//
-//        En = ( pow(Mn,2)-pow(Mp,2) - pow(mel,2) + 2*Mp*Ee)/(2*Mp-2*Ee*(1-Ve*costheta));
-        En = Ep + avg_nRecoilE + avg_constE;
-
-        T6AD->Fill();
-            
-        if(i%(Nevents/20) == 0)
-            cout << "Number of events 6AD ntuple " << i << " done!" << endl;
-    }
-    sigEp = 0.0;
-    deltaEp = 0.0;
+    //TF1 *Unif = new TF1("Unif","1",0.7,1.3);
+    TF1 *Unif = new TF1("Unif","1",2*mel,1.3);
     
     std::cout << "\n";
     std::cout << "Filling ntuple for 6AD+8AD combined analysis\n";
@@ -246,7 +149,6 @@ void db_ntuple()
         id =   (blid/nRea);
         ir =   (blid - id*nRea);
         Ln = baselines[id][ir] + gauL[id][ir]->GetRandom();
-        //Ln =   baselines[id][ir];
 
         if ( i<frac6AD*Nevents ) {
             // generate a neutrino energy
@@ -268,30 +170,9 @@ void db_ntuple()
             sigEp = Ep*(sqrt(pow(0.016,2) + pow(0.081,2)/Ep + pow(0.026/Ep,2))); //PRD 95,072006,2017
             gauE->SetParameter(0,sigEp);
             Ep = Ep + gauE->GetRandom();
-            while (Ep < 2*mel)
-                Ep = Ep + gauE->GetRandom();
-
-//            do {
-//                Ep = nu_nosc_spect_histo6AD[ad]->GetRandom();
-//                sigEp = Ep*(sqrt(pow(0.016,2) + pow(0.081,2)/Ep + pow(0.026/Ep,2))); //PRD 95,072006,2017
-//                gauE->SetParameter(0,sigEp);
+//            while (Ep < 2*mel)
 //                Ep = Ep + gauE->GetRandom();
-//                //std::cout << "Ep = " << Ep << std::endl;
-//            //} while (Ep < 0.7);
-//            } while (Ep < 2*mel);
 
-            //-- 29-08-2020 Compute the Positron energy, Ee.
-//            Ee = Ep - mel;
-            //Ee = Ep;
-            //-- Sample a positron scattering angle
-//            double Ve = sqrt(pow(Ee,2)-pow(mel,2))/Ee; /* NOTE: If Ee=Ep-mel, (pow(Ee,2)-pow(mel,2))<0 for some Ee */
-//            double Pe = sqrt(pow(Ee,2)-pow(mel,2));
-//            fangd->SetParameter(3,Ve);
-//            fangd->SetParameter(4,Ee);
-//            fangd->SetParameter(5,Pe);
-//            double costheta = fangd->GetRandom();
-//
-//            En = ( pow(Mn,2)-pow(Mp,2) - pow(mel,2) + 2*Mp*Ee)/(2*Mp-2*Ee*(1-Ve*costheta));
             En = Ep + avg_nRecoilE + avg_constE;
 
         } //if 6AD period events
@@ -302,45 +183,18 @@ void db_ntuple()
             else if (id == 2 || id == 3) ad = 1;
             else if (id > 3) ad = 2;
     
-//            Ep = nu_nosc_spect_histo[ad]->GetRandom();
             Ep = nu_nosc_spect_histo8AD[ad]->GetRandom();
             //Here: Apply fFac
 //            sigEp = Ep*(sqrt(pow(0.016,2) + pow(0.081,2)/Ep + pow(0.026/Ep,2))); //PRD 95,072006,2017
 //            gauE->SetParameter(0,sigEp);
 //            Ep = Ep + gauE->GetRandom();
-            while (Ep < 2*mel){
-                Ep = Unif->GetRandom();
+//            while (Ep < 2*mel){
+//                Ep = Unif->GetRandom();
 //                sigEp = Ep*(sqrt(pow(0.016,2) + pow(0.081,2)/Ep + pow(0.026/Ep,2))); //PRD 95,072006,2017
 //                gauE->SetParameter(0,sigEp);
 //                Ep = Ep + gauE->GetRandom();
-            }
-            sigEp = Ep*(sqrt(pow(0.016,2) + pow(0.081,2)/Ep + pow(0.026/Ep,2))); //PRD 95,072006,2017
-            gauE->SetParameter(0,sigEp);
-            Ep = Ep + gauE->GetRandom();
-            while (Ep < 2*mel)
-                Ep = Ep + gauE->GetRandom();
-
-//            do {
-//                Ep = nu_nosc_spect_histo[ad]->GetRandom();
-//                sigEp = Ep*(sqrt(pow(0.016,2) + pow(0.081,2)/Ep + pow(0.026/Ep,2))); //PRD 95,072006,2017
-//                gauE->SetParameter(0,sigEp);
-//                Ep = Ep + gauE->GetRandom();
-//                //std::cout << "Ep = " << Ep << std::endl;
-//                //} while (Ep < 0.7);
-//            } while (Ep < 2*mel);
-
-            //-- 29-08-2020 Compute the Positron energy, Ee.
-//            Ee = Ep - mel;
-            //Ee = Ep;
-            //-- Sample a positron scattering angle
-//            double Ve = sqrt(pow(Ee,2)-pow(mel,2))/Ee;
-//            double Pe = sqrt(pow(Ee,2)-pow(mel,2));
-//            fangd->SetParameter(3,Ve);
-//            fangd->SetParameter(4,Ee);
-//            fangd->SetParameter(5,Pe);
-//            double costheta = fangd->GetRandom();
+//            }
 //
-//            En = ( pow(Mn,2)-pow(Mp,2) - pow(mel,2) + 2*Mp*Ee)/(2*Mp-2*Ee*(1-Ve*costheta));
             En = Ep + avg_nRecoilE + avg_constE;
 
         }//if 8AD period events
