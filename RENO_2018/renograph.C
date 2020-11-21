@@ -370,7 +370,11 @@ void renograph()
      */
 	
 	// write to output file
-	TFile *fout = new TFile("files_root/RENOplots.root","recreate");
+	//TFile *fout = new TFile("files_root/RENOplots.root","recreate");
+	//const char name = getenv("NS2T");
+	TString filePath = dirName;
+	TString fileName = "/files_root/RENOplots.root";
+	TFile *fout = new TFile(filePath + fileName,"recreate");
 	fout->cd();
 	
     c1->Write();
@@ -424,7 +428,8 @@ void renograph()
     gPad->RedrawAxis();
     gPad->SetTicks(1,1);
     
-    canv0->Print("Plots/RENO_Spectra.pdf");
+    //canv0->Print("Plots/RENO_Spectra.pdf");
+    canv0->Print(filePath + "/Plots/RENO_Spectra.pdf");
     //------------------------------------
 	
     //-- 2019.02.04 - Begin

@@ -21,9 +21,9 @@ void db_osc_spec()
 
     //---------------------------------------------------
     // Open  file to read simulated data
-    TFile *fntuple = new TFile("files_data/db-ntuple_0.7-1.3_noER_50M.root","READ"); //-No ERF, 1st bin 0.7-1.3 MeV
-    //TFile *fntuple = new TFile("files_data/db-ntuple_noER_50M.root","READ");         //-No ERF, 1st bin mel-1.3 MeV
-    //TFile *fntuple = new TFile("files_data/db-ntuple_unPhys_noER_50M.root","READ");  //-No ERF, 1st bin w/o restrictions
+    //TFile *fntuple = new TFile("files_data/db-ntuple_0.7-1.3_noER_100M.root","READ"); //-No ERF, 1st bin 0.7-1.3 MeV
+    TFile *fntuple = new TFile("files_data/db-ntuple_noER_100M.root.root","READ");         //-No ERF, 1st bin mel-1.3 MeV
+    //TFile *fntuple = new TFile("files_data/db-ntuple_unPhys_noER_100M.root","READ");  //-No ERF, 1st bin w/o restrictions
     TTree *T6AD8AD = (TTree*)fntuple->Get("T6AD8AD"); //-- Events for the 6AD+8AD period
     TCut cutBF_6AD8AD; //-- For the 1013-days (6AD+8AD) period
     TCut cutBF_6AD;    //-- For the  217-days (6AD) period
@@ -45,6 +45,7 @@ void db_osc_spec()
     TH1F *nu_nosc_spect_histo_1013[nAD];
     TH1F *BFit_spect_histo_1013[nAD];
     TH1F *Posc_AD_BF_1230[nAD];
+    TH1F *Posc_AD_BF_217[nAD];
     TH1F *Posc_AD_surv_1230[nAD];
     TH1F *nu_nosc_spect_histo_217[nAD];
     TH1F *BFit_spect_histo_217[nAD];
@@ -64,6 +65,8 @@ void db_osc_spec()
         //Ocillation prpbability at BF - histograms
         Posc_AD_BF_1230[i]       = new TH1F(Form("Posc_AD_BF_1230_%d",i),"",1000,0,1);//to store <POsc(BF)>
         Posc_AD_BF_1230[i]->SetLineColor(i+1);
+        Posc_AD_BF_217[i]       = new TH1F(Form("Posc_AD_BF_217_%d",i),"",1000,0,1);//to store <POsc(BF)> for 217 days
+        Posc_AD_BF_217[i]->SetLineColor(i+1);
 
         //Oscillation prpbability at (s2th,dm2) - histograms
         Posc_AD_surv_1230[i]     = new TH1F(Form("Posc_AD_surv_1230_%d",i),"",1000,0,1);//to store <POsc(s2th,dm2)>
@@ -81,6 +84,17 @@ void db_osc_spec()
     IBDrate_perday_1230[5][0] = 1.0*IBDrate_perday_1230[5][0];
     IBDrate_perday_1230[6][0] = 1.0*IBDrate_perday_1230[6][0];
     IBDrate_perday_1230[7][0] = 1.0*IBDrate_perday_1230[7][0];
+    //IBD rat (per day) (PRL 112 061801 (2014))
+    //EH1(AD1, AD2),EH2(AD3),EH3(AD4, AD5, AD6)
+    double IBDrate_perday_217[nAD][2] =
+      {
+        {653.30,2.31},{664.15,2.33},
+        {581.97,2.07},{0.0,0.0},
+        { 73.31,0.66},{ 73.03,0.66},{72.20,0.66},{0.0,0.0}
+      };
+    IBDrate_perday_217[4][0] = 1.0*IBDrate_perday_217[4][0];
+    IBDrate_perday_217[5][0] = 1.0*IBDrate_perday_217[5][0];
+    IBDrate_perday_217[6][0] = 1.0*IBDrate_perday_217[6][0];
 
     //Computing <POsc(s2t_BF,dm2_31)> for each AD
     // AD1 -> id = 0; AD2 -> id = 1; AD3 -> id = 2; AD4 -> id = 4; AD5 -> id = 5; AD6 -> id = 6
@@ -96,6 +110,8 @@ void db_osc_spec()
 
     FILE *file_IBDrates8AD;
     file_IBDrates8AD = fopen("files_data/db_noOsc_IBDrates_perday_1230.txt","w");
+    FILE *file_IBDrates6AD;
+    file_IBDrates6AD = fopen("files_data/db_noOsc_IBDrates_perday_217.txt","w");
 
     int sel;
     double TotNosc_1013[nAD];
@@ -105,6 +121,8 @@ void db_osc_spec()
     double integ_1013;
 
     double TotNosc_217[nAD];
+    double avgPosc_AD_217[nAD]; //<POsc(s2t_BF,dm2_31)> for the 217 days
+    double noOsc_IBDrate_perday_217[nAD];
     double integ_217;
     for (int iAD = 0 ; iAD < nAD ; iAD++)
     {
@@ -122,6 +140,26 @@ void db_osc_spec()
         cout << "(avgPosc_AD,noOsc_IBDrate_perday_1230)_" << sel << " = (" << avgPosc_AD_1230[iAD]
         << ", " << noOsc_IBDrate_perday_1230[iAD] << ") " << endl;
         fprintf(file_IBDrates8AD,"%f \n", noOsc_IBDrate_perday_1230[iAD]);
+        //------------------------------------------------
+        //Filling Ocillation prpbability at BF - histogram (217 days)
+        //--NOTE: The BF oscillation parameters are from the analysis of 217 days (ssq2th13= 0.090, dmsqee=2.59e-3 eV^2)
+        if (iAD != 3 && iAD != 7){
+	  T6AD8AD->Draw(Form("(1.0 - 0.090*((sin( 1.267 * 2.59e-3 * Ln/En ))**2) - ((cos(0.5 * asin(sqrt(0.090))))**4) * 0.857 * (sin( 1.267 * 7.50e-5 * Ln/En ))**2) >> Posc_AD_BF_217_%d",iAD),Form("id==%d && per==1",sel));
+	  integ_217 = Posc_AD_BF_217[iAD]->Integral();
+	  Posc_AD_BF_217[iAD]->Scale(1.0/integ_217); //Used to plot the Survival Probabilities for each AD with BF parameters (normalized)
+	  //Average oscillation Probability
+	  avgPosc_AD_217[iAD] = Posc_AD_BF_217[iAD]->GetMean();
+	  //No-oscillation IDB rate (per day)
+	  noOsc_IBDrate_perday_217[iAD] = IBDrate_perday_217[iAD][0]/avgPosc_AD_217[iAD];
+        }
+        else{
+	  avgPosc_AD_217[iAD] = 0.0;
+	  noOsc_IBDrate_perday_217[iAD] = 0.0;
+        }
+        //Printing results
+        cout << "(avgPosc_AD,noOsc_IBDrate_perday_217)_" << sel << " = (" << avgPosc_AD_217[iAD]
+	     << ", " << noOsc_IBDrate_perday_217[iAD] << ") " << endl;
+        fprintf(file_IBDrates6AD,"%f \n", noOsc_IBDrate_perday_217[iAD]);
         //------------------------------------------------
 
         //------------------------------------------------
@@ -147,6 +185,7 @@ void db_osc_spec()
         //------------------------------------------------
     }
     fclose(file_IBDrates8AD);
+    fclose(file_IBDrates6AD);
     
 
     //---------------------------------------------------

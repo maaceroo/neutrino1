@@ -33,8 +33,9 @@ int main(int argc, char* argv[])
     }
     // path to read/write data
     string path1 = argv[3];
-    string chi_file = "files/chi2_s2t-dm2_surface_spect-noFL.txt";
-    string min_chi = "files/chi2_minimun_spect.txt";
+    //string filePath = dirName;
+    string chi_file = "/files/chi2_s2t-dm2_surface_spect-noFL.txt";
+    string min_chi = "/files/chi2_minimun_spect.txt";
   
     ofstream file,filem;
     ifstream min1((path1 + chi_file).c_str());
@@ -65,8 +66,8 @@ int main(int argc, char* argv[])
       for(int m=0;m<COL;m++)
 	min1 >> matrix[l][m];
     
-    string s2t_file = "files/RENO_s2t_chi2_SPEC.txt";
-    string dmn_file = "files/RENO_dm2_chi2_SPEC.txt";
+    string s2t_file = "/files/RENO_s2t_chi2_SPEC.txt";
+    string dmn_file = "/files/RENO_dm2_chi2_SPEC.txt";
     file.open((path1 + s2t_file).c_str());
     filem.open((path1 + dmn_file).c_str());
     

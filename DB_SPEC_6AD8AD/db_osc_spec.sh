@@ -8,8 +8,8 @@ echo '0) Define Grid'
 echo '=========================================='
 echo 
 
-export NS2T=20
-export NDM2=20
+export NS2T=10
+export NDM2=10
 
 export LO_S2T=0.05
 export HI_S2T=0.12
@@ -29,29 +29,29 @@ echo
 
 
 #-----------------------------------------------------------------------------
-#echo
-#
-## Construct L distribution
-#echo '=========================================='
-#echo '1) Running ldist.C'
-#echo '=========================================='
-#echo
-#time root -b -l -n -q ldist.C
-#
-#echo
+echo
 
-##-----------------------------------------------------------------------------
-## Construct ntuple
-#echo '=========================================='
-#echo '2) Running ntuple.C'
-#echo '=========================================='
-#echo
-#export NTUPLE_EVENTS=50000000
-#echo $NTUPLE_EVENTS ntuple events
-#time root -b -l -n -q db_ntuple.C
-#
-#echo
-#
+# Construct L distribution
+echo '=========================================='
+echo '1) Running ldist.C'
+echo '=========================================='
+echo
+time root -b -l -n -q ldist.C
+
+echo
+
+#-----------------------------------------------------------------------------
+# Construct ntuple
+echo '=========================================='
+echo '2) Running ntuple.C'
+echo '=========================================='
+echo
+export NTUPLE_EVENTS=1000000
+echo $NTUPLE_EVENTS ntuple events
+time root -b -l -n -q db_ntuple.C
+
+echo
+
 #-----------------------------------------------------------------------------
 # construct oscillated spectra for all points in the grid
 echo '=========================================='
@@ -82,10 +82,10 @@ echo '=========================================='
 echo 'compiling  db_chi2_min.cpp and db_margin.cpp'
 echo '=========================================='
 echo
-#g++ -o db_chi2_min.exe db_chi2_min.cpp
-#g++ -o db_margin.exe db_margin.cpp
-clang++ -o db_chi2_min.exe db_chi2_min.cpp
-clang++ -o db_margin.exe db_margin.cpp
+g++ -o db_chi2_min.exe db_chi2_min.cpp
+g++ -o db_margin.exe db_margin.cpp
+#clang++ -o db_chi2_min.exe db_chi2_min.cpp
+#clang++ -o db_margin.exe db_margin.cpp
 
 echo
 #-----------------------------------------------------------------------------
@@ -131,7 +131,7 @@ sed -i'' -e "42s/.*/set label 5 '+' at $BF_S2T,$BF_DM2*1e3 center font 'CharterB
 sed -i'' -e "44s/.*/min = $BF_CHI2/" plot.gnu
 
 #sed -i'' -e "9s/.*/set output \"files_plots\/db_plot_COMPARE_1stbin_in_0.7_noER.pdf\"/" plot.gnu
-sed -i'' -e "9s/.*/set output \"files_plots\/db_plot_COMPARE_1stbin_in_mel_noER_15M.pdf\"/" plot.gnu
+sed -i'' -e "9s/.*/set output \"files_plots\/db_plot_COMPARE_1stbin_in_mel_noER_1M.pdf\"/" plot.gnu
 #sed -i'' -e "9s/.*/set output \"files_plots\/db_plot_COMPARE_1stbin_unPhys_noER.pdf\"/" plot.gnu
 
 echo
@@ -144,7 +144,7 @@ echo '=========================================='
 echo
 #gnuplot multi_plot_margin_SPEC.gnu
 gnuplot plot.gnu
-rm *.gnu-e
+#rm *.gnu-e
 
 echo
 echo '=========================================='

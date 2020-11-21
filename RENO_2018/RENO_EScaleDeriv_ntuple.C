@@ -48,7 +48,8 @@ int RENO_EScaleDeriv_ntuple()
 
     cout << "Let's begin..." << endl;
     //-- File to get noOsc normalizations
-    ifstream IBDrates_file("files/RENO_noOsc_IBDrates_perday.txt");
+    TString filePath = dirName;
+    ifstream IBDrates_file(filePath + "/files/RENO_noOsc_IBDrates_perday.txt");
     cout << "Reading noOsc normalizations file ..." << endl;
     for (int i=0; i< nDet; i ++){
         IBDrates_file >> noOsc_IBDrate_perday[i];
@@ -57,7 +58,7 @@ int RENO_EScaleDeriv_ntuple()
 
     //-- File with the predicted spectra (for different oscillation paramenters)
     cout << "Reading file - Loop in progress..." << endl;
-    TFile *fntuple = new TFile("files_root/RENO-ntuple_BFosc.root","READ");
+    TFile *fntuple = new TFile(filePath + "/files_root/RENO-ntuple_BFosc.root","READ");
     TTree *T = (TTree*)fntuple->Get("T");
     TCut cutES;
 
@@ -153,7 +154,7 @@ int RENO_EScaleDeriv_ntuple()
         nosc_spect_hist_deri[i][1]->Fit(Form("fFit7_%d",i),"r");
     }
     
-    TFile *fEscale = new TFile("files_root/RENO_EScaleDerivative.root","recreate");
+    TFile *fEscale = new TFile(filePath + "/files_root/RENO_EScaleDerivative.root","recreate");
     for (int i = 0 ; i < nDet ; i++) {
         fFit4[i]->Write();
         fFit7[i]->Write();

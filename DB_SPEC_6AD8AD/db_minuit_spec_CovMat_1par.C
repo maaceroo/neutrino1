@@ -35,7 +35,7 @@ double totalBgd_6AD[nAD][2]       = { {13.20,0.98}, { 13.01,0.98},{  9.57,0.71},
 double emuem_6AD[nAD]             = {0.7957,0.7927,0.8282,0.0,0.9577,0.9568,0.9566,0.0};
 //IBD rate per day w/o oscillations
 //Need to claculate from the ntuple for the 217-days Period - TO BE DONE!
-double noOsc_IBDrate_perday_6AD[nAD] = {664.718016,675.560234,593.574780,0.0,79.048929,78.748559,77.848677,0.0};
+double noOsc_IBDrate_perday_6AD[nAD]; //= {664.718016,675.560234,593.574780,0.0,79.048929,78.748559,77.848677,0.0};
 //---*****************************************************---//
 //---*****************************************************---//
 //-- Information for 8AD
@@ -362,10 +362,12 @@ int db_minuit_spec_CovMat_1par(const char * minName = "Minuit",
 
     //-- File to get noOsc normalizations
     ifstream IBDrates_file1230("files_data/db_noOsc_IBDrates_perday_1230.txt");
+    ifstream IBDrates_file217("files_data/db_noOsc_IBDrates_perday_217.txt");
     cout << "Reading noOsc normalizations file ..." << endl;
     for (int i=0; i< nAD; i ++)
 	{
         IBDrates_file1230 >> noOsc_IBDrate_perday_6AD8AD[i];
+        IBDrates_file217 >> noOsc_IBDrate_perday_6AD[i];
         cout << "noOscIBD_rates_perday_6AD8AD " << i << ": " << noOsc_IBDrate_perday_6AD8AD[i] << endl;
         daqTime_8AD[i]         = daqTime_Total[i] - daqTime_6AD[i];
         noOsc_IBDrate_perday_8AD[i] = ((noOsc_IBDrate_perday_6AD8AD[i]*daqTime_Total[i]) - (noOsc_IBDrate_perday_6AD[i]*daqTime_6AD[i]))/daqTime_8AD[i];
@@ -464,7 +466,8 @@ int db_minuit_spec_CovMat_1par(const char * minName = "Minuit",
             double chi2Min = min->MinValue();
             chi2Surface_file << s2th_13 << "\t" << dm2_31 << "\t" << chi2Min << endl;
         
-            if (chi2Min < 0.0 || isnan(chi2Min) ) {
+            //if (chi2Min < 0.0 || isnan(chi2Min) ) {
+            if (chi2Min < 0.0 || std::isnan(chi2Min) ) {
                 cout << "Critical error: chi2Min is negative or NaN!  " << chi2Min << endl;
                 //break;
                 exit(1);

@@ -26,7 +26,8 @@ void RENO_osc_spect()
     //----------  Text Style  ---------
   
     // Open ntuple file to read simulated data
-    TFile *fntuple = new TFile("files_root/RENO-ntuple_BFosc.root","READ");
+    TString filePath = dirName;
+    TFile *fntuple = new TFile(filePath + "/files_root/RENO-ntuple_BFosc.root","READ");
     TTree *T = (TTree*)fntuple->Get("T");
     TCut cutBF;
   
@@ -35,7 +36,7 @@ void RENO_osc_spect()
     double wrd_array_near[nRea];
     double wrd_array_far[nRea];
   
-    TFile *wrd_File = new TFile("files_root/ldist_RENO.root","READ");
+    TFile *wrd_File = new TFile(filePath + "/files_root/ldist_RENO.root","READ");
     TH1F *wrd_histo_near = ((TH1F*)(wrd_File->Get("histo_ldist_RENO_near")));;
     TH1F *wrd_histo_far = ((TH1F*)(wrd_File->Get("histo_ldist_RENO_far")));;
     
@@ -112,7 +113,7 @@ void RENO_osc_spect()
     double integ;
   
     FILE *file_IBDrates;
-    file_IBDrates = fopen("files/RENO_noOsc_IBDrates_perday.txt","w");
+    file_IBDrates = fopen(filePath + "/files/RENO_noOsc_IBDrates_perday.txt","w");
     
     //int iAD = 2;
     //std::cout << "\n Checking the oscillation Probability" << std::endl;
@@ -208,8 +209,8 @@ void RENO_osc_spect()
 
 
     ofstream file;
-    string grid_name = "files/RENO_gridOscSpectra_test.txt";
-    file.open((grid_name).c_str());
+    string grid_name = "/files/RENO_gridOscSpectra_test.txt";
+    file.open(filePath + (grid_name).c_str());
     file << fixed;
     file << setprecision(6);
 

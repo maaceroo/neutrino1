@@ -7,6 +7,7 @@
 // - F.P. An et al., arXiv:1003.1391 (2010)                           		//
 // - F.P. An et al., arXiv:1610.04326 (2017)                       		    //
 //--------------------------------------------------------------------------//
+#include "constants.h"
 
 void ldist_2x6_RENO()
 { // begin
@@ -129,7 +130,8 @@ void ldist_2x6_RENO()
     double integ_far = histo_ldist_RENO_far->Integral();
     histo_ldist_RENO_far->Scale(1.0/integ_far);
     
-    TFile *fout = new TFile("files_root/ldist_RENO.root","recreate");
+    TString filePath = dirName; //--Added 04.Nov.2020 - Path to directory to save files
+    TFile *fout = new TFile(filePath + "/files_root/ldist_RENO.root","recreate");
     fout->cd();
     histo_ldist_RENO_2x6->Write();
     histo_ldist_RENO_near->Write();
@@ -172,7 +174,7 @@ void ldist_2x6_RENO()
     double integ_gen_far = histo_ldist_gen_far->Integral();
     histo_ldist_RENO_far->Scale(integ_gen_far);
     
-    TFile *fout1 = new TFile("files_root/ldist_RENO_gen.root","recreate");
+    TFile *fout1 = new TFile(filePath + "/files_root/ldist_RENO_gen.root","recreate");
     fout1->cd();
     histo_ldist_gen->Write();
     histo_ldist_gen_near->Write();
@@ -191,12 +193,12 @@ void ldist_2x6_RENO()
     histo_ldist_RENO_2x6->Draw("hist");
     histo_ldist_gen->Draw("PE same");
     
-    canv0->Print("Plots/ldist.pdf");
+    canv0->Print(filePath + "/Plots/ldist.pdf");
     TCanvas *canv1 = new TCanvas("canv1","",600,470);
     histo_ldist_RENO_2x6->Draw("hist");
 
     TCanvas *canv2x6 = new TCanvas("canv2x6","",700,500);
     histo_ldist_RENO_2x6->Draw("hist");
-    canv2x6->Print("Plots/ldist_2x6.pdf");
+    canv2x6->Print(filePath + "/Plots/ldist_2x6.pdf");
 
 } //end

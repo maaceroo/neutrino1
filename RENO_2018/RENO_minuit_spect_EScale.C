@@ -181,14 +181,15 @@ int RENO_minuit_spect_EScale(const char * minName = "Minuit",
     cout << "Let's begin..." << endl;
 
     //-- Energy scale derivative function
-    TFile *Esc_File = new TFile("files_root/RENO_EScaleDerivative.root","READ");
+    TString filePath = dirName;
+    TFile *Esc_File = new TFile(filePath + "/files_root/RENO_EScaleDerivative.root","READ");
     fFit4_0 = (TF1*)(Esc_File->Get(Form("fFit4_%d",0)));
     fFit7_0 = (TF1*)(Esc_File->Get(Form("fFit7_%d",0)));
     fFit4_1 = (TF1*)(Esc_File->Get(Form("fFit4_%d",1)));
     fFit7_1 = (TF1*)(Esc_File->Get(Form("fFit7_%d",1)));
     
     //-- Baselines
-    TFile *wrd_File = new TFile("files_root/ldist_RENO.root","READ");
+    TFile *wrd_File = new TFile(filePath + "/files_root/ldist_RENO.root","READ");
     TH1F *wrd_histo0 = ((TH1F*)(wrd_File->Get("histo_ldist_RENO_near")));
     TH1F *wrd_histo1 = ((TH1F*)(wrd_File->Get("histo_ldist_RENO_far")));
     double mm;
@@ -202,7 +203,7 @@ int RENO_minuit_spect_EScale(const char * minName = "Minuit",
     //-------------------
     // Energy Histograms
     //-------------------
-    TFile *fenergy = new TFile("files_root/RENOplots.root","read");
+    TFile *fenergy = new TFile(filePath + "/files_root/RENOplots.root","read");
     //The histogram of near and far data spectra
     for(int n = 0 ; n < nDet ; n++){
         data_spect_histo[n] = (TH1F*) fenergy->Get(Form("data_spect_histo_%d",n));
@@ -243,7 +244,7 @@ int RENO_minuit_spect_EScale(const char * minName = "Minuit",
     min->SetPrintLevel(-1);
   
     //-- File to get noOsc normalizations
-    ifstream IBDrates_file("files/RENO_noOsc_IBDrates_perday.txt");
+    ifstream IBDrates_file(filePath + "/files/RENO_noOsc_IBDrates_perday.txt");
     cout << "Reading noOsc normalizations file ..." << endl;
     for (int i=0; i< nDet; i ++)
         {
@@ -253,17 +254,17 @@ int RENO_minuit_spect_EScale(const char * minName = "Minuit",
 
     //-- File to print oscillation parameters and chi2 values
     ofstream chi2Surface_file;
-    string s2t_dm2 = "files/chi2_s2t-dm2_surface_spect.txt";  //(sin^2(2th13), a, chi^2_min)
-    chi2Surface_file.open((s2t_dm2).c_str());
+    string s2t_dm2 = "/files/chi2_s2t-dm2_surface_spect.txt";  //(sin^2(2th13), a, chi^2_min)
+    chi2Surface_file.open(filePath + (s2t_dm2).c_str());
     //-- File to print pull terms and chi2 values
     ofstream minimPullT_file;
-    string pterms = "files/chi2_pullTerms_spect.txt";
-    minimPullT_file.open((pterms).c_str());
+    string pterms = "/files/chi2_pullTerms_spect.txt";
+    minimPullT_file.open(filePath + (pterms).c_str());
   
     cout << "Reading file - Loop in progress..." << endl;
     //-- File to read the oscillated spectra (at different oscillation parameters values)
     ifstream grid_file;
-    grid_file.open("./files/RENO_gridOscSpectra_test.txt");
+    grid_file.open(filePath + "/files/RENO_gridOscSpectra_test.txt");
     std::cout << "Is the file open? \t";
     if (grid_file.is_open() == 1)
         std::cout << "Yes! \n" << std::endl;
@@ -385,13 +386,13 @@ int RENO_minuit_spect_EScale(const char * minName = "Minuit",
     //-- This part of the code finds the BF point on the parameter space
     //-- File to print the BF point and its Chi2 minimun value
     ofstream chi2min;
-    string chiminima = "files/chi2_minimun_spect.txt";
-    chi2min.open((chiminima).c_str());
+    string chiminima = "/files/chi2_minimun_spect.txt";
+    chi2min.open(filePath + (chiminima).c_str());
 
     int n;
     const int rows = 3;
     const int columns = ran;
-    ifstream matriz("files/chi2_s2t-dm2_surface_spect.txt");
+    ifstream matriz(filePath + "/files/chi2_s2t-dm2_surface_spect.txt");
     double ** matr;
     double minimo[rows];
     matr = new double*[rows];

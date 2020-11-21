@@ -64,7 +64,8 @@ void RENO_ntuple_noosc_spect()
     //-------------------
     // Energy Histograms
     //-------------------
-    TFile *fenergy = new TFile("files_root/RENOplots.root","read");
+    TString filePath = dirName;
+    TFile *fenergy = new TFile(filePath + "/files_root/RENOplots.root","read");
   
     //The ND and FD MC spectra
     //From PRL116 211801 (2016). Figure 2  (Blue lines).
@@ -95,7 +96,7 @@ void RENO_ntuple_noosc_spect()
     //-------------------
     // Distance Histogram
     //-------------------
-    TFile *fpathl = new TFile("files_root/ldist_RENO.root","read");
+    TFile *fpathl = new TFile(filePath + "/files_root/ldist_RENO.root","read");
     // Get histogram - histo_ldist_RENO_2x6
     TH1F *histo_ldist_RENO_2x6 = (TH1F*) fpathl->Get("histo_ldist_RENO_2x6");
   
@@ -128,7 +129,7 @@ void RENO_ntuple_noosc_spect()
 
     //make ntuple
     //TFile *fout = new TFile("files_root/RENO-ntuple_noosc.root","RECREATE");
-    TFile *fout = new TFile("files_root/RENO-ntuple_BFosc.root","RECREATE");
+    TFile *fout = new TFile(filePath + "/files_root/RENO-ntuple_BFosc.root","RECREATE");
     TTree *T = new TTree("T","Monte Carlo neutrino events");
   
     float Ep, Ee, En, Ln; //Promt and neutrino energies; Baseline
@@ -347,7 +348,7 @@ void RENO_ntuple_noosc_spect()
     gPad->RedrawAxis();
     gPad->SetTicks(1,1);
     
-    canv0->Print("Plots/RENO_noosc-perMeV_spectra.pdf");
+    canv0->Print(filePath + "/Plots/RENO_noosc-perMeV_spectra.pdf");
   
     TCanvas *canv1 = new TCanvas("canv1","Events",700,600);
     TGaxis::SetMaxDigits(3);
@@ -376,9 +377,9 @@ void RENO_ntuple_noosc_spect()
     gPad->RedrawAxis();
     gPad->SetTicks(1,1);
     
-    canv1->Print("Plots/RENO_noosc-events_spectra.pdf");
+    canv1->Print(filePath + "/Plots/RENO_noosc-events_spectra.pdf");
 
-     TFile *fout2 = new TFile("files_root/RENOplots_noosc.root","RECREATE");
+     TFile *fout2 = new TFile(filePath + "/files_root/RENOplots_noosc.root","RECREATE");
      for (int j = 0 ; j < nDet ; j++) {
          noosc_spect_histo_perMeV[j]->Write();
          noosc_spect_histo[j]->Write();
