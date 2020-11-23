@@ -3,11 +3,10 @@
 ########################################################################################
 
 set terminal pdfcairo enhanced color font "CharterBT-Roman,14" size 6,6
-#set terminal qt enhanced font "CharterBT-Roman,14" size 100,100
 
 ########################################################################################
 ## Figure File
-set output "files_plots/db_plot_COMPARE_1stbin_in_mel_noER_100M.pdf"
+set output "files_plots/db_plot_COMPARE_1stbin_in_mel_noER_1M.pdf"
 ########################################################################################
 
 set multiplot
@@ -40,9 +39,9 @@ set mytics
 set label 4 "{/Symbol |D}m^{2}_{ee}| (10^{-3} eV^2)" at 0.042,2.5 center rotate by 90
 
 ## Mark at the BF
-set label 5 '+' at 0.0757890000,0.0025260000*1e3 center font 'CharterBT-Roman,15'
+set label 5 '+' at 0.0811110000,0.0023330000*1e3 center font 'CharterBT-Roman,15'
 ## Minimum chi2 value
-min = 496.0120000000
+min = 1462.5800000000
 
 unset ztics
 set clabel

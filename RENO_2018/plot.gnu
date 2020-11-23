@@ -6,7 +6,7 @@ set terminal pdfcairo enhanced color font "CharterBT-Roman,12" size 6,6
 
 ########################################################################################
 ## Figure File
-set output "27406148/Plots/plot_SPEC_fudge_1.000_fFac1_0.990_fFac2_1.00_EScale.pdf"
+set output "27413199/Plots/plot_SPEC_fudge_1.000_fFac1_0.990_fFac2_1.00_EScale.pdf"
 ########################################################################################
 
 set multiplot
@@ -39,7 +39,7 @@ set mxtics
 set label 2 "sin^{2}2{/Symbol q}_{13}" at 0.1,1.55 center
 
 ## y-axis settings
-set ytics offset -85.0
+set ytics offset -75.0
 ymin = +1.7
 ymax = +3.5
 set yrange[ymin:ymax]
@@ -58,7 +58,7 @@ unset key
 set grid ytics lc rgb "#bbbbbb" lw 1 lt 0
 set grid xtics lc rgb "#bbbbbb" lw 1 lt 0
 
-splot 'files/chi2_s2t-dm2_surface_spect-noFL.txt' u 1:(($2)*1e3):(($3)-min) w l lw 3
+splot '27413199/files/chi2_s2t-dm2_surface_spect-noFL.txt' u 1:(($2)*1e3):(($3)-min) w l lw 3
 #splot 'files/test.txt' u 1:2:(($3)-min) w l lw 2
 
 unset xtics

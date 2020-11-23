@@ -104,7 +104,7 @@ void db_ntuple()
         }
 
     //make ntuple
-    TFile *fout = new TFile("files_data/db-ntuple_noER_1M.root.root","RECREATE");
+    TFile *fout = new TFile("files_data/db-ntuple_noER_1M.root","RECREATE");
     TTree *T6AD8AD = new TTree("T6AD8AD","Monte Carlo neutrino events 6AD+8AD");
 
     double frac6AD = 217.0/1230.; // fraction of the total corresponding to 6AD only

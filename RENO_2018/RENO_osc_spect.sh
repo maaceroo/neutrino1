@@ -145,21 +145,22 @@ echo 'fFac2 = ' $fFac2
 echo '=========================================='
 echo 'Editting gnu plot script ...'
 echo '=========================================='
-echo 'Multiplot Script... Done!'
-echo '-------------------------'
-sed -i'' -e "136s/.*/set label 35 '+' at $BF_S2T,$BF_DM2*1e3 center font 'CharterBT-Roman,15'/" multi_plot_margin_spect_RENO.gnu
+#echo '-------------------------'
+#sed -i'' -e "12s/.*/set output \"${JOBID}\/Plots\/RENO_plots_SPEC_fudge_$fudge\_fFac1_$fFac1\_fFac2_$fFac2.pdf\"/" multi_plot_margin_spect_RENO.gnu
 
-sed -i'' -e "138s/.*/min = $BF_CHI2/" multi_plot_margin_spect_RENO.gnu
+#sed -i'' -e "136s/.*/set label 35 '+' at $BF_S2T,$BF_DM2*1e3 center font 'CharterBT-Roman,15'/" multi_plot_margin_spect_RENO.gnu
 
-sed -i'' -e "12s/.*/set output \"${JOBID}\/Plots\/RENO_plots_SPEC_fudge_$fudge\_fFac1_$fFac1\_fFac2_$fFac2.pdf\"/" multi_plot_margin_spect_RENO.gnu
+#sed -i'' -e "138s/.*/min = $BF_CHI2/" multi_plot_margin_spect_RENO.gnu
+#echo 'Multiplot Script... Done!'
 
-echo 'Comparisson plot Script... Done!'
 echo '--------------------------------'
+sed -i'' -e "9s/.*/set output \"${JOBID}\/Plots\/plot_SPEC_fudge_$fudge\_fFac1_$fFac1\_fFac2_$fFac2\_EScale.pdf\"/" plot.gnu
+
 sed -i'' -e "51s/.*/set label 35 '+' at $BF_S2T,$BF_DM2*1e3 center font 'CharterBT-Roman,15'/" plot.gnu
 
 sed -i'' -e "53s/.*/min = $BF_CHI2/" plot.gnu
 
-sed -i'' -e "9s/.*/set output \"${JOBID}\/Plots\/plot_SPEC_fudge_$fudge\_fFac1_$fFac1\_fFac2_$fFac2\_EScale.pdf\"/" plot.gnu
+sed -i'' -e "61s/.*/splot '${JOBID}\/files\/chi2_s2t-dm2_surface_spect-noFL.txt' u 1:((\$2)*1e3):((\$3)-min) w l lw 3/" plot.gnu
 
 if [ $sel -eq 1 ]
 then
@@ -170,6 +171,7 @@ else
     sed -i'' -e "75s/.*/set label 55 'Minuit EScale' at 0.145,1.75 font 'CharterBT-Roman,15'/" plot.gnu
 fi
 
+echo 'Comparisson plot Script... Done!'
 echo
 
 #----------------------------------------------------------------------------
@@ -179,7 +181,7 @@ echo 'Runnign gnuplot macro'
 echo '=========================================='
 echo
 #gnuplot multi_plot_margin_spect_RENO.gnu
-#gnuplot plot.gnu
+gnuplot plot.gnu
 #rm *.gnu-e
 
 echo

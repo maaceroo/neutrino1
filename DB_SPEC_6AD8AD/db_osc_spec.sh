@@ -36,7 +36,7 @@ echo '=========================================='
 echo '1) Running ldist.C'
 echo '=========================================='
 echo
-time root -b -l -n -q ldist.C
+#time root -b -l -n -q ldist.C
 
 echo
 
@@ -48,7 +48,7 @@ echo '=========================================='
 echo
 export NTUPLE_EVENTS=1000000
 echo $NTUPLE_EVENTS ntuple events
-time root -b -l -n -q db_ntuple.C
+#time root -b -l -n -q db_ntuple.C
 
 echo
 

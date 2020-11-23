@@ -22,7 +22,7 @@ void db_osc_spec()
     //---------------------------------------------------
     // Open  file to read simulated data
     //TFile *fntuple = new TFile("files_data/db-ntuple_0.7-1.3_noER_100M.root","READ"); //-No ERF, 1st bin 0.7-1.3 MeV
-    TFile *fntuple = new TFile("files_data/db-ntuple_noER_100M.root.root","READ");         //-No ERF, 1st bin mel-1.3 MeV
+    TFile *fntuple = new TFile("files_data/db-ntuple_noER_1M.root","READ");         //-No ERF, 1st bin mel-1.3 MeV
     //TFile *fntuple = new TFile("files_data/db-ntuple_unPhys_noER_100M.root","READ");  //-No ERF, 1st bin w/o restrictions
     TTree *T6AD8AD = (TTree*)fntuple->Get("T6AD8AD"); //-- Events for the 6AD+8AD period
     TCut cutBF_6AD8AD; //-- For the 1013-days (6AD+8AD) period
