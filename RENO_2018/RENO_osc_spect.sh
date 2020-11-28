@@ -9,8 +9,8 @@ echo '0) Define Grid'
 echo '=========================================='
 echo
 
-export NS2T=5
-export NDM2=5
+export NS2T=40
+export NDM2=40
 
 export LO_S2T=0.01
 export HI_S2T=0.20
@@ -29,6 +29,17 @@ echo 'LO_DM2='$LO_DM2
 echo 'HI_DM2='$HI_DM2
 echo
 
+#Correction factors
+export fudge=$FUDGE
+export fFac1=$FFAC1
+export fFac2=$FFAC2
+
+echo 'Correction factors used in this run:'
+echo '------------------------------------'
+echo 'fudge='$fudge
+echo 'fFac1='$fFac1
+echo 'fFac2='$fFac2
+echo
 
 #-----------------------------------------------------------------------------
 echo
@@ -60,7 +71,7 @@ echo '=========================================='
 echo '3) Running RENO_ntuple_noosc_spect.C'
 echo '=========================================='
 echo
-export NTUPLE_EVENTS=50000
+export NTUPLE_EVENTS=1000000
 echo $NTUPLE_EVENTS ntuple events
 time root -b -l -n -q RENO_ntuple_noosc_spect.C
 
@@ -132,12 +143,11 @@ echo
 read BF_S2T BF_DM2 BF_CHI2 <<< `cat ${JOBID}/files/chi2_minimun_spect.txt`
 
 #Extract fudge, fFac1 and fFac2 from constants.h
-fudge=$(awk 'NR == 36 {print $4}' constants.h)
-fFac1=$(awk 'NR == 37 {print $4}' constants.h)
-fFac2=$(awk 'NR == 38 {print $4}' constants.h)
-echo 'fudge = ' $fudge
-echo 'fFac1 = ' $fFac1
-echo 'fFac2 = ' $fFac2
+#fudge=$(awk 'NR == 36 {print $4}' constants.h)
+#fFac1=$(awk 'NR == 37 {print $4}' constants.h)
+#fFac2=$(awk 'NR == 38 {print $4}' constants.h)
+#echo 'fudge = ' $fudge
+#echo 'fFac1 = ' $fFac1
 
 #----------------------------------------------------------------------------
 #----------------------------------------------------------------------------

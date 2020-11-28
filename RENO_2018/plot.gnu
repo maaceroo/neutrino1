@@ -6,7 +6,7 @@ set terminal pdfcairo enhanced color font "CharterBT-Roman,12" size 6,6
 
 ########################################################################################
 ## Figure File
-set output "27413199/Plots/plot_SPEC_fudge_1.000_fFac1_0.990_fFac2_1.00_EScale.pdf"
+set output "27430293/Plots/plot_SPEC_fudge_1.002_fFac1_0.992_fFac2_1.000_EScale.pdf"
 ########################################################################################
 
 set multiplot
@@ -48,9 +48,9 @@ set mytics
 set label 4 "{/Symbol D}m^{2}_{ee} (10^{-3} eV^2)" at -0.022,2.6 center rotate by 90
 
 ## Mark at the BF
-set label 35 '+' at 0.105,0.00305*1e3 center font 'CharterBT-Roman,15'
+set label 35 '+' at 0.09,0.002553*1e3 center font 'CharterBT-Roman,15'
 ## Minimum chi2 value
-min = 425.419
+min = 29.3818
 
 unset ztics
 set clabel
@@ -58,7 +58,7 @@ unset key
 set grid ytics lc rgb "#bbbbbb" lw 1 lt 0
 set grid xtics lc rgb "#bbbbbb" lw 1 lt 0
 
-splot '27413199/files/chi2_s2t-dm2_surface_spect-noFL.txt' u 1:(($2)*1e3):(($3)-min) w l lw 3
+splot '27430293/files/chi2_s2t-dm2_surface_spect-noFL.txt' u 1:(($2)*1e3):(($3)-min) w l lw 3
 #splot 'files/test.txt' u 1:2:(($3)-min) w l lw 2
 
 unset xtics

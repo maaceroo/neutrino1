@@ -1,0 +1,64 @@
+#!/bin/bash
+# Nombre del trabajo
+#PBS -N RENO
+#
+# Archivos de salida
+#PBS -o RENO_${PBS_JOBID}.out
+#PBS -e RENO_${PBS_JOBID}.err
+#
+# Notificación por correo electrónico
+#PBS -m bea
+#PBS -M alexis@nucleares.unam.mx
+#
+# Cola de ejecucion (-q cola)
+#
+#PBS -q short
+# Recursos solicitados (nodos, cpus, mem, etc)
+#PBS -l nodes=1:ppn=1
+
+# Cargar y/o definir entorno (modulos, variables de ambiente)
+#. /etc/profile.d/modules.sh
+#module load MODULO
+
+module load gnu/4.9
+module load Minuit2/gnu/5.34
+module load python/2.7
+module load Qt/4.8
+module load ROOT/6-18-04
+module load gnuplot/5.2
+
+# Cambiar al directorio actual
+cd $PBS_O_WORKDIR
+
+# Informacion del JOB
+echo ==============================
+echo Ejecutandose en: `hostname`
+echo Fecha: `date`
+echo Directorio: `pwd`
+echo Recursos asignados:
+echo 	`cat $PBS_NODEFILE`
+NPROCS=`wc -l < $PBS_NODEFILE`
+echo Total: $NPROCS cpus
+echo ==============================
+cat $PBS_NODEFILE > $HOME/nodos
+echo ==============================
+echo 		SALIDA
+echo ==============================
+
+# Inicia trabajo
+
+export JOBNUM=`echo $PBS_JOBID | cut -d. -f1`
+
+mkdir ${JOBNUM}
+mkdir ${JOBNUM}/files
+mkdir ${JOBNUM}/files_root
+mkdir ${JOBNUM}/Plots
+
+export FUDGE=1.000
+export FFAC1=1.000
+export FFAC2=1.000
+
+source ${PBS_O_WORKDIR}/RENO_osc_spect.sh
+
+# Termina trabajo
+echo ==============================
