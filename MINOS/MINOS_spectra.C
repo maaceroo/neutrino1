@@ -53,6 +53,30 @@ void MINOS_spectra(){
         minos_nueb_nuebCC[i] = new TGraph(("data/PRL110_nue_FD_antinueCCSignal_"+nueb_name[i]+".csv").c_str(),"%lg,%lg","");
     }
 
+    // READING FILES - Muon (Anti)neutrino PRL110 ------------------
+    //Muon (Anti)Neutrino Data (PRL110).
+    TGraph *minos110_numu_data;
+    TGraph *minos110_numubar_data;
+    //Muon (Anti)Neutrino Background (PRL110)
+    TGraph *minos110_numu_bkgd;
+    TGraph *minos110_numubar_bkgd;
+    //Muon (Anti)Neutrino BF (PRL110)
+    TGraph *minos110_numu_BF;
+    TGraph *minos110_numubar_BF;
+    //Muon (Anti)Neutrino NoOsc Pred (PRL110)
+    TGraph *minos110_numu_noosc;
+    TGraph *minos110_numubar_noosc;
+    //-- Muon neutrinos ---------------------------------------------------------
+    minos110_numu_data  = new TGraph("data/PRL110_numu_FD_Data_numu.csv","%lg,%lg","");
+    minos110_numu_bkgd  = new TGraph("data/PRL110_numu_FD_NCBkgd_numu.csv","%lg,%lg","");
+    minos110_numu_BF    = new TGraph("data/PRL110_numu_FD_BF_numu.csv","%lg,%lg","");
+    minos110_numu_noosc = new TGraph("data/PRL110_numu_FD_NoOscPred_numu.csv","%lg,%lg","");
+    //-- Muon antineutrinos ------------------------------------------------------
+    minos110_numubar_data  = new TGraph("data/PRL110_numu_FD_Data_numubar.csv","%lg,%lg","");
+    minos110_numubar_bkgd  = new TGraph("data/PRL110_numu_FD_NCBkgd_numubar.csv","%lg,%lg","");
+    minos110_numubar_BF    = new TGraph("data/PRL110_numu_FD_BF_numubar.csv","%lg,%lg","");
+    minos110_numubar_noosc = new TGraph("data/PRL110_numu_FD_NoOscPred_numubar.csv","%lg,%lg","");
+
     // define binning for Muon Antineutrinos PRL108
     const int  NB_numubar = 14;
     const double lo = 0.0;
@@ -77,6 +101,34 @@ void MINOS_spectra(){
     
     for (int i = 0 ; i <= (NB_nue) ; i++)
         xbins_nue[i] = loe + delta_binse*i;
+
+    // define binning for Muon Neutrinos PRL110
+    const int  NB_numu110 = 23;
+    const double lo110 = 0.5;
+    const double hi110 = 14.0;
+    double xbins_numu110[NB_numu110+1];
+    double delta_bins110 = (9.0 - 0.5)/17.0; // 0.5 GeV/bin
+
+    for (int i = 0 ; i < (NB_numu110-5) ; i++)
+        xbins_numu110[i] = lo110 + delta_bins110*i;
+
+    xbins_numu110[18] = xbins_numu110[17] + 0.75;
+    xbins_numu110[19] = xbins_numu110[18] + 0.75;
+    xbins_numu110[20] = xbins_numu110[19] + 0.75;
+    xbins_numu110[21] = xbins_numu110[20] + 0.75;
+    xbins_numu110[22] = xbins_numu110[21] + 1.0;
+    xbins_numu110[23] = hi110;
+
+    // define binning for Muon Antineutrinos PRL110
+    const int  NB_numubar110 = 12;
+    const double lob110 = 1.0;
+    const double hib110 = 14.0;
+    double xbins_nub110[NB_numubar110+1];
+    double delta_binsb110 = (12.0 - lob110)/(NB_numubar110-1); // 1.0 GeV/bin
+
+    for (int i = 0 ; i < (NB_numubar110) ; i++)
+        xbins_nub110[i] = lob110 + delta_binsb110*i;
+    xbins_nub110[12] = xbins_nub110[11] + 2.0;
     //------------------------------------------------------------------------------------------//
 
     // define and fill the histograms for Muon Antineutrinos PRL108 ------------------------
@@ -97,6 +149,7 @@ void MINOS_spectra(){
     numubar_bfit_histo->SetLineColor(kBlue);
 
     double ctnt = 0;
+    double width = 0;
     double cont1;
     double sum = 0;
     for (int j = 0 ; j < NB_numubar ; j++)
@@ -183,6 +236,94 @@ void MINOS_spectra(){
             nueb_nuebCC_histo[i]->SetBinContent(j+1,ctnt);
         }
     }
+    // define and fill the histograms for Muon (Anti)neutrinos PRL110 ------------------------
+    TH1F *numu110_dataPerGeV_histo = new TH1F("numu110_dataPerGeV_histo" ,"",NB_numu110,xbins_numu110);
+    TH1F *numu110_data_histo  = new TH1F("numu110_data_histo" ,"",NB_numu110,xbins_numu110);
+    numu110_dataPerGeV_histo->SetLineWidth(2);
+    numu110_dataPerGeV_histo->SetMarkerStyle(8);
+    numu110_dataPerGeV_histo->SetMarkerSize(0.8);
+    numu110_dataPerGeV_histo->SetBinErrorOption(TH1::kPoisson);
+    TH1F *numu110_nooscPerGeV_histo = new TH1F("numu110_nooscPerGeV_histo" ,"",NB_numu110,xbins_numu110);
+    TH1F *numu110_noosc_histo = new TH1F("numu110_noosc_histo","",NB_numu110,xbins_numu110);
+    numu110_nooscPerGeV_histo->SetLineWidth(2);
+    numu110_nooscPerGeV_histo->SetLineColor(kRed);
+    TH1F *numu110_bkgdPerGeV_histo = new TH1F("numu110_bkgdPerGeV_histo" ,"",NB_numu110,xbins_numu110);
+    TH1F *numu110_bkgd_histo  = new TH1F("numu110_bkgd_histo" ,"",NB_numu110,xbins_numu110);
+    numu110_bkgdPerGeV_histo->SetLineWidth(1);
+    numu110_bkgdPerGeV_histo->SetLineColor(kBlack);
+    numu110_bkgdPerGeV_histo->SetFillColor(kGray);
+    TH1F *numu110_bfitPerGeV_histo = new TH1F("numu110_bfitPerGeV_histo" ,"",NB_numu110,xbins_numu110);
+    TH1F *numu110_bfit_histo  = new TH1F("numu110_bfit_histo" ,"",NB_numu110,xbins_numu110);;
+    numu110_bfitPerGeV_histo->SetLineWidth(2);
+    numu110_bfitPerGeV_histo->SetLineColor(kBlue);
+
+    TH1F *numub110_dataPerGeV_histo = new TH1F("numub110_dataPerGeV_histo" ,"",NB_numubar110,xbins_nub110);
+    TH1F *numub110_data_histo  = new TH1F("numub110_data_histo" ,"",NB_numubar110,xbins_nub110);
+    numub110_dataPerGeV_histo->SetLineWidth(2);
+    numub110_dataPerGeV_histo->SetMarkerStyle(8);
+    numub110_dataPerGeV_histo->SetMarkerSize(0.8);
+    numub110_dataPerGeV_histo->SetBinErrorOption(TH1::kPoisson);
+    TH1F *numub110_nooscPerGeV_histo = new TH1F("numub110_nooscPerGeV_histo" ,"",NB_numubar110,xbins_nub110);
+    TH1F *numub110_noosc_histo = new TH1F("numub110_noosc_histo","",NB_numubar110,xbins_nub110);
+    numub110_nooscPerGeV_histo->SetLineWidth(2);
+    numub110_nooscPerGeV_histo->SetLineColor(kRed);
+    TH1F *numub110_bkgdPerGeV_histo = new TH1F("numub110_bkgdPerGeV_histo" ,"",NB_numubar110,xbins_nub110);
+    TH1F *numub110_bkgd_histo  = new TH1F("numub110_bkgd_histo" ,"",NB_numubar110,xbins_nub110);
+    numub110_bkgdPerGeV_histo->SetLineWidth(1);
+    numub110_bkgdPerGeV_histo->SetLineColor(kBlack);
+    numub110_bkgdPerGeV_histo->SetFillColor(kGray);
+    TH1F *numub110_bfitPerGeV_histo = new TH1F("numub110_bfitPerGeV_histo" ,"",NB_numubar110,xbins_nub110);
+    TH1F *numub110_bfit_histo  = new TH1F("numub110_bfit_histo" ,"",NB_numubar110,xbins_nub110);;
+    numub110_bfitPerGeV_histo->SetLineWidth(2);
+    numub110_bfitPerGeV_histo->SetLineColor(kBlue);
+
+    ctnt = 0;
+    cont1;
+    sum = 0;
+    for (int j = 0 ; j < NB_numu110 ; j++)
+    {
+        //Data -------------------//
+        ctnt = minos110_numu_data->GetY()[j];
+        numu110_dataPerGeV_histo->SetBinContent(j+1,ctnt);
+        width = numu110_dataPerGeV_histo->GetBinWidth(j+1);
+        numu110_data_histo->SetBinContent(j+1,ctnt*width);
+        //NoOsc ------------------//
+        ctnt = minos110_numu_noosc->GetY()[j];
+        numu110_nooscPerGeV_histo->SetBinContent(j+1,ctnt);
+        numu110_noosc_histo->SetBinContent(j+1,ctnt*width);
+        //Bkgd _------------------//
+        ctnt = minos110_numu_bkgd->GetY()[j];
+        numu110_bkgdPerGeV_histo->SetBinContent(j+1,ctnt);
+        numu110_bkgd_histo->SetBinContent(j+1,ctnt*width);
+        //BFit _------------------//
+        ctnt = minos110_numu_BF->GetY()[j];
+        numu110_bfitPerGeV_histo->SetBinContent(j+1,ctnt);
+        numu110_bfit_histo->SetBinContent(j+1,ctnt*width);
+    }
+
+    ctnt = 0;
+    cont1;
+    sum = 0;
+    for (int j = 0 ; j < NB_numubar110 ; j++)
+    {
+        //Data -------------------//
+        ctnt = minos110_numubar_data->GetY()[j];
+        numub110_dataPerGeV_histo->SetBinContent(j+1,ctnt);
+        width = numub110_dataPerGeV_histo->GetBinWidth(j+1);
+        numub110_data_histo->SetBinContent(j+1,ctnt*width);
+        //NoOsc ------------------//
+        ctnt = minos110_numubar_noosc->GetY()[j];
+        numub110_nooscPerGeV_histo->SetBinContent(j+1,ctnt);
+        numub110_noosc_histo->SetBinContent(j+1,ctnt*width);
+        //Bkgd _------------------//
+        ctnt = minos110_numubar_bkgd->GetY()[j];
+        numub110_bkgdPerGeV_histo->SetBinContent(j+1,ctnt);
+        numub110_bkgd_histo->SetBinContent(j+1,ctnt*width);
+        //BFit _------------------//
+        ctnt = minos110_numubar_BF->GetY()[j];
+        numub110_bfitPerGeV_histo->SetBinContent(j+1,ctnt);
+        numub110_bfit_histo->SetBinContent(j+1,ctnt*width);
+    }
     //---------------------------------
 	
     //- Frame for Muon Antineutrinos PRL108
@@ -235,6 +376,39 @@ void MINOS_spectra(){
     frame_spectra_nueb->GetYaxis()->SetLabelSize(0.9*sz);
     frame_spectra_nueb->GetYaxis()->SetLabelFont(ft);
 
+    //- Frame for Muon neutrinos PRL110
+    TH2F *frame_spectra_numu = new TH2F("frame_spectra_numu","",NB_numu110,0,hi110,10,0,640.0);
+    frame_spectra_numu->GetXaxis()->SetTitle("Reconstructed Energy (GeV)");
+    frame_spectra_numu->GetXaxis()->SetTitleFont(ft);
+    frame_spectra_numu->GetXaxis()->SetTitleOffset(1.15);
+    frame_spectra_numu->GetXaxis()->CenterTitle();
+    frame_spectra_numu->GetXaxis()->SetTitleSize(1.0*sz);
+    frame_spectra_numu->GetXaxis()->SetLabelSize(0.9*sz);
+    frame_spectra_numu->GetXaxis()->SetLabelFont(ft);
+    frame_spectra_numu->GetYaxis()->SetTitle("Events/GeV");
+    frame_spectra_numu->GetYaxis()->SetTitleFont(ft);
+    frame_spectra_numu->GetYaxis()->SetTitleOffset(1.1);
+    frame_spectra_numu->GetYaxis()->CenterTitle();
+    frame_spectra_numu->GetYaxis()->SetTitleSize(1.0*sz);
+    frame_spectra_numu->GetYaxis()->SetLabelSize(0.9*sz);
+    frame_spectra_numu->GetYaxis()->SetLabelFont(ft);
+    //- Frame for Muon antineutrinos PRL110
+    TH2F *frame_spectra_numub = new TH2F("frame_spectra_numub","",NB_numubar110,0,hib110,10,0,90.0);
+    frame_spectra_numub->GetXaxis()->SetTitle("Reconstructed Energy (GeV)");
+    frame_spectra_numub->GetXaxis()->SetTitleFont(ft);
+    frame_spectra_numub->GetXaxis()->SetTitleOffset(1.15);
+    frame_spectra_numub->GetXaxis()->CenterTitle();
+    frame_spectra_numub->GetXaxis()->SetTitleSize(1.0*sz);
+    frame_spectra_numub->GetXaxis()->SetLabelSize(0.9*sz);
+    frame_spectra_numub->GetXaxis()->SetLabelFont(ft);
+    frame_spectra_numub->GetYaxis()->SetTitle("Events/GeV");
+    frame_spectra_numub->GetYaxis()->SetTitleFont(ft);
+    frame_spectra_numub->GetYaxis()->SetTitleOffset(1.1);
+    frame_spectra_numub->GetYaxis()->CenterTitle();
+    frame_spectra_numub->GetYaxis()->SetTitleSize(1.0*sz);
+    frame_spectra_numub->GetYaxis()->SetLabelSize(0.9*sz);
+    frame_spectra_numub->GetYaxis()->SetLabelFont(ft);
+
     // Drawing section
     //------------------------------------
     TLatex *lat = new TLatex();
@@ -253,6 +427,19 @@ void MINOS_spectra(){
     leg11->AddEntry(numubar_bfit_histo,"Best fit","l");
     leg11->AddEntry(numubar_bkgd_histo,"Background w/ oscillations","f");
 
+    
+    TLegend *leg110 = new TLegend(0.45,0.6,0.90,0.8);
+    leg110->SetTextFont(ft);
+    leg110->SetTextSize(0.8*sz);
+    leg110->SetFillColor(0);
+    leg110->SetLineColor(0);
+    
+    leg110->AddEntry(numu110_dataPerGeV_histo,"MINOS Data","pe0l");
+    leg110->AddEntry(numu110_nooscPerGeV_histo,"No oscillations","l");
+    leg110->AddEntry(numu110_bfitPerGeV_histo,"Best fit oscillations","l");
+    leg110->AddEntry(numu110_bkgdPerGeV_histo,"NC Background","f");
+
+    
     TCanvas *canv0 = new TCanvas("canv0","",700,600);
     TGaxis::SetMaxDigits(3);
     
@@ -349,8 +536,75 @@ void MINOS_spectra(){
     gPad->RedrawAxis();
     gPad->SetTicks(1,1);
 
+    //--
+    
+    TCanvas *canv110 = new TCanvas("canv110","",2*500,600);
+    canv110->Divide(2,1);
+    TGaxis::SetMaxDigits(3);
+    
+    canv110->cd(1);
+    frame_spectra_numu->Draw();
+    numu110_dataPerGeV_histo->Draw("pe1 same");
+    numu110_bfitPerGeV_histo->Draw("h same");
+    numu110_nooscPerGeV_histo->Draw("h same");
+    numu110_bkgdPerGeV_histo->Draw("h same");
+    lat->DrawLatex(0.15,0.82,"#nu_{#mu}-dominated beam");
+    leg110->Draw();
+    gPad->RedrawAxis();
+    gPad->SetTicks(1,1);
+
+    canv110->cd(2);
+    frame_spectra_numub->Draw();
+    numub110_dataPerGeV_histo->Draw("pe1 same");
+    numub110_bfitPerGeV_histo->Draw("h same");
+    numub110_nooscPerGeV_histo->Draw("h same");
+    numub110_bkgdPerGeV_histo->Draw("h same");
+    lat->DrawLatex(0.15,0.82,"#bar{#nu}_{#mu}-enhanced beam");
+    gPad->RedrawAxis();
+    gPad->SetTicks(1,1);
+
 /*
     canv1->Print("Plots/RENO_bump.eps");
     canv1->Print("Plots/RENO_bump.pdf");
 */
+    
+    
+    // write to output file
+    TFile *fout = new TFile("MINOS_spectra_PRL108-PRL110.root","recreate");
+    fout->cd();
+
+    numubar_data_histo->Write();
+    numubar_noosc_histo->Write();
+    numubar_bfit_histo->Write();
+    numubar_bkgd_histo->Write();
+    for (int i = 0 ; i < 3 ; i++) {
+        nue_nueCC_histo[i]->Write();
+        nue_nuebCC_histo[i]->Write();
+        nue_bkgd_histo[i]->Write();
+        nue_data_histo[i]->Write();
+
+        nueb_nueCC_histo[i]->Write();
+        nueb_nuebCC_histo[i]->Write();
+        nueb_bkgd_histo[i]->Write();
+        nueb_data_histo[i]->Write();
+    }
+    numu110_data_histo->Write();
+    numu110_bfit_histo->Write();
+    numu110_noosc_histo->Write();
+    numu110_bkgd_histo->Write();
+    numu110_dataPerGeV_histo->Write();
+    numu110_bfitPerGeV_histo->Write();
+    numu110_nooscPerGeV_histo->Write();
+    numu110_bkgdPerGeV_histo->Write();
+
+    numub110_data_histo->Write();
+    numub110_bfit_histo->Write();
+    numub110_noosc_histo->Write();
+    numub110_bkgd_histo->Write();
+    numub110_dataPerGeV_histo->Write();
+    numub110_bfitPerGeV_histo->Write();
+    numub110_nooscPerGeV_histo->Write();
+    numub110_bkgdPerGeV_histo->Write();
+
+    fout->Close();
 }
