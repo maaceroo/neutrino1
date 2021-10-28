@@ -28,9 +28,9 @@ echo 'HI_DM2='$HI_DM2
 echo
 
 
-#---------------------------------------------------------------
-echo
-# Construct ntuple
+##---------------------------------------------------------------
+#echo
+## Construct ntuple
 #echo '=========================================='
 #echo '1) Running ntuple.C'
 #echo '=========================================='
@@ -40,15 +40,15 @@ echo
 #time root -b -l -n -q MINOS_ntupla.C
 #
 #echo
-
-#---------------------------------------------------------------
-# construct oscillated spectra for all points in the grid
+#
+##---------------------------------------------------------------
+## construct oscillated spectra for all points in the grid
 #echo '=========================================='
 #echo '2) Running MINOS_osc_2nu.C'
 #echo '=========================================='
 #echo
 #time root -b -l -n -q MINOS_osc_2nu.C
-
+#
 #---------------------------------------------------------------
 # run minimization
 echo '=========================================='
@@ -59,68 +59,65 @@ root -b -l -n -q MINOS_minuit.C
 
 echo
 
-##---------------------------------------------------------------
-##Remove first line from file
-#tail -n +2 files_data/chi2_s2t-dm2_surface_SPEC.txt > files_data/chi2_s2t-dm2_surface_SPEC-noFL.txt
+#---------------------------------------------------------------
+#Remove first line from file
+tail -n +2 data/numu_chi2_s2t-dm2_surface.txt > data/numu_chi2_s2t-dm2_surface-noFL.txt
+
+#---------------------------------------------------------------
+#compile routines for minimization and marginalization
+echo '=========================================='
+echo 'compiling  minos_chi2_min.cpp and minos_margin.cpp'
+echo '=========================================='
+echo
+g++ -o minos_chi2_min.exe minos_chi2_min.cpp
+g++ -o minos_margin.exe minos_margin.cpp
+#clang++ -o minos_chi2_min.exe minos_chi2_min.cpp
+#clang++ -o minos_margin.exe minos_margin.cpp
+
+echo
+#---------------------------------------------------------------
+echo '=========================================='
+echo 'executing  db_chi2_min.exe and db_margin.exe'
+echo '=========================================='
+echo
+./minos_chi2_min.exe $NS2T $NDM2 ./
+./minos_margin.exe $NS2T $NDM2 ./
+
+echo
+
+#---------------------------------------------------------------
+#Extract BF_CHI2, BF_S2T, BF_DM2 from chi2_minumum_SPEC.txt
+
+read BF_CHI2 BF_S2T BF_DM2 <<< `cat data/numu_chi2_minumum.txt`
+
+#---------------------------------------------------------------
+#---------------------------------------------------------------
+# Edit gnuplot script
+echo '=========================================='
+echo 'Editting gnu plot script ...'
+echo
+sed -i'' -e "120s/.*/set label 35 '+' at $BF_S2T,$BF_DM2*1e3 center font 'CharterBT-Roman,15'/" multi_plot_margin.gnu
+
+sed -i'' -e "122s/.*/min = $BF_CHI2/" multi_plot_margin.gnu
+
+##Editing the plot file - Contours comparison
+#sed -i'' -e "42s/.*/set label 5 '+' at $BF_S2T,$BF_DM2*1e3 center font 'CharterBT-Roman,15'/" plot.gnu
 #
-##---------------------------------------------------------------
-##compile routines for minimization and marginalization
-#echo '=========================================='
-#echo 'compiling  db_chi2_min.cpp and db_margin.cpp'
-#echo '=========================================='
-#echo
-##g++ -o db_chi2_min.exe db_chi2_min.cpp
-##g++ -o db_margin.exe db_margin.cpp
-#clang++ -o db_chi2_min.exe db_chi2_min.cpp
-#clang++ -o db_margin.exe db_margin.cpp
+#sed -i'' -e "44s/.*/min = $BF_CHI2/" plot.gnu
 #
-#echo
-##---------------------------------------------------------------
-#echo '=========================================='
-#echo 'executing  db_chi2_min.exe and db_margin.exe'
-#echo '=========================================='
-#echo
-#./db_chi2_min.exe $NS2T $NDM2 ./
-#./db_margin.exe $NS2T $NDM2 ./
-#
-#echo
-#
-##---------------------------------------------------------------
-##Extract BF_CHI2, BF_S2T, BF_DM2 from chi2_minumum_SPEC.txt
-#
-#read BF_CHI2 BF_S2T BF_DM2 <<< `cat files_data/chi2_minumum_SPEC.txt`
-#
-##---------------------------------------------------------------
-##---------------------------------------------------------------
-## Form gnuplot script
-#echo '=========================================='
-#echo 'Editting gnu plot script ...'
-#echo
-#sed -i'' -e "133s/.*/set label 35 '+' at $BF_S2T,$BF_DM2*1e3 center font 'CharterBT-Roman,15'/" multi_plot_margin_SPEC.gnu
-#
-#sed -i'' -e "135s/.*/min = $BF_CHI2/" multi_plot_margin_SPEC.gnu
-#
-#sed -i'' -e "132s/.*/set label 35 '+' at $BF_S2T,$BF_DM2*1e3 center font 'CharterBT-Roman,15'/" multi_plot_margin_compare.gnu
-#
-#sed -i'' -e "134s/.*/min = $BF_CHI2/" multi_plot_margin_compare.gnu
-#
-#echo
-#
-##---------------------------------------------------------------
-##Execute gnuplot script
-#echo '=========================================='
-#echo 'Runnign gnuplot macro'
-#echo '=========================================='
-#echo
-#gnuplot multi_plot_margin_SPEC.gnu
+#sed -i'' -e "9s/.*/set output \"files_plots\/minos_plot_COMPARE.pdf\"/" plot.gnu
+
+echo
+
+#---------------------------------------------------------------
+#Execute gnuplot script
+echo '=========================================='
+echo 'Runnign gnuplot macro'
+echo '=========================================='
+echo
+gnuplot multi_plot_margin.gnu
 #gnuplot multi_plot_margin_compare.gnu
-#
-#echo
-#
-##---------------------------------------------------------------
-##Open in ghostview
-#gv files_plots/db_plots_SPEC.eps &
-#gv files_plots/db_plots_COMPARE.eps &
-#
-##---------------------------------------------------------------
+
+echo
+
 echo Done!
