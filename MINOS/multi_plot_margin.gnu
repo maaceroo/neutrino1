@@ -9,7 +9,7 @@ set terminal pdfcairo enhanced color font "CharterBT-Roman,14" size 7,7
 
 ########################################################################################
 ## Figure File
-set output "files_plots/MINOS_plots_2nu.pdf"
+set output "298568/files_plots/MINOS_plots_2nu.pdf"
 ########################################################################################
 
 set multiplot
@@ -117,9 +117,9 @@ set yrange[ymin:ymax]
 set label 4 "{/Symbol D}m^{2}_{32} (10^{-3} eV^2)" at 0.725,2.5 center rotate by 90
 
 ## Mark at the BF
-set label 35 '+' at 1.0000000000,0.0036670000*1e3 center font 'CharterBT-Roman,15'
+set label 35 '+' at ,*1e3 center font 'CharterBT-Roman,15'
 ## Minimum chi2 value
-min = 0.1786220000
+min = 
 
 unset ztics
 set clabel

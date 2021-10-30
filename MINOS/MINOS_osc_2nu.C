@@ -11,6 +11,8 @@
 void MINOS_osc_2nu()
 { //begin
 
+    TString filePath = dirName;
+
     //------------- Style --------------
     gROOT->SetStyle("Plain");
     gStyle->SetOptStat(0);
@@ -23,7 +25,7 @@ void MINOS_osc_2nu()
 
     //---------------------------------------------------
     // Open ntuple file to read simulated data
-    TFile *fntuple = new TFile("data/minos_ntuple.root","READ");
+    TFile *fntuple = new TFile(filePath + "/data/minos_ntuple.root","READ");
     TTree *Tnumu  = (TTree*)fntuple->Get("Tnumu");
     TCut cutBF_numu;
     TTree *Tnumub = (TTree*)fntuple->Get("Tnumub");
@@ -167,14 +169,14 @@ void MINOS_osc_2nu()
     }
 
     ofstream numu_file;
-    string numu_grid_name = "data/minosNuMu_gridOscSpectra.txt";
-    numu_file.open((numu_grid_name).c_str());
+    string numu_grid_name = "/data/minosNuMu_gridOscSpectra.txt";
+    numu_file.open(filePath + (numu_grid_name).c_str());
     numu_file << fixed;
     numu_file << setprecision(6);
 
     ofstream numub_file;
     string numub_grid_name = "data/minosNuMuB_gridOscSpectra.txt";
-    numub_file.open((numub_grid_name).c_str());
+    numub_file.open(filePath + (numub_grid_name).c_str());
     numub_file << fixed;
     numub_file << setprecision(6);
 
@@ -286,7 +288,7 @@ void MINOS_osc_2nu()
 
     cout << endl << "Mean value: " << numu_BFit_spect_histo->GetMean() << endl;
 //
-    canv0->Print("files_plots/MINOS_osc_test.pdf");
+    //canv0->Print("files_plots/MINOS_osc_test.pdf");
 //
 //    //---------------------------------------------------
 //    // Drawing Survival Probabilities at the six ADs

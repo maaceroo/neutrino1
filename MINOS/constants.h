@@ -30,3 +30,7 @@ double       lo_dm2 = atof(getenv("LO_DM2"));
 double       hi_dm2 = atof(getenv("HI_DM2"));
 
 
+//Path for output
+//Directory to save files
+const char *dirVar = getenv("JOBID");
+string dirName = dirVar;

@@ -8,6 +8,11 @@
 // - MINOS Col. PRL 110, 251801 (2013) - NuMu disappearance              //
 //-----------------------------------------------------------------------//
 
+#include "constants.h"
+#include <math.h>
+#include <iostream>
+#include <string>
+
 void MINOS_ntupla()
 { // begin
 
@@ -37,7 +42,8 @@ void MINOS_ntupla()
     
 
     //Root file for the ntuple
-    TFile *fout   = new TFile("minos_ntuple.root","RECREATE");
+    TString filePath = dirName;
+    TFile *fout   = new TFile(filePath + "/data/minos_ntuple.root","RECREATE");
     TTree *Tnumu  = new TTree("Tnumu" ,"MC neutrino events");
     TTree *Tnumub = new TTree("Tnumub","MC neutrino events");
     //-------------------
@@ -70,7 +76,9 @@ void MINOS_ntupla()
     float Ereco, Etrue;
     float Erecob, Etrueb;
     float BL = 735.0; // km
-    int Nevents = 1e7;
+    //int Nevents = 1e7;
+    int Nevents = atoi(getenv("NTUPLE_EVENTS")); // This must be uncommented when using the script
+
 
     Tnumu-> Branch("Ereco", &Ereco, "Ereco/F" );
     Tnumu-> Branch("Etrue", &Etrue, "Etrue/F" );

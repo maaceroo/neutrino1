@@ -43,7 +43,7 @@ double spcNumu[NB_numu110];     //Energy scale numu
 double spcNumuB[NB_numubar110]; //Energy scale numu bar
 double NoscTot;
 double noNoscTot;
-double totalBgd;
+double totalBgd = 8.92;  // integral of bkgd spectrum
 
 //Table I PRL110.251801(2013)
 //{No Osc (Simulated), Oscilated (BF), Observed}
@@ -95,18 +95,20 @@ double chi2(const double *xx)
     SurvPavg = NoscTot/noNoscTot;
     for (int iBIN = 0 ; iBIN < NB_numu110 ; iBIN++)
     {
-        //-- Predicted Number of events from neutrino oscillations of the Far Detector
-        Nmc = spcNumu[iBIN]*(SurvPavg*NuMu_Events[2]/NuMu_Events[0])*eps;
         //-- Measured events of the Far Detector (background is substracted)
-        double numu_data_sigplusbg = (numu_data_spect_histo->GetBinContent(iBIN+1));
+        double numu_data_sigplusbg = (numu_data_spect_histo->GetBinContent(iBIN+1))*NuMu_Events[2];
         double numu_simu_bg        = (numu_bkgd_spect_histo->GetBinContent(iBIN+1))*totalBgd;
-        Nd = (numu_data_sigplusbg - epsNC*numu_simu_bg);
+        Nd = ( numu_data_sigplusbg - (1-epsNC)*numu_simu_bg );
+
+        //-- Predicted Number of events from neutrino oscillations of the Far Detector
+        //Nmc = spcNumu[iBIN]*(SurvPavg*NuMu_Events[2]/NuMu_Events[0])*eps;
+        Nmc = ( (spcNumu[iBIN]/NoscTot)*(NuMu_Events[0]*SurvPavg) - (1-epsNC)*numu_simu_bg )*(1-eps);
         //cout << "iBin = " << iBIN << "  Nmc = " << Nmc << " Nd = " << Nd << endl;
         
         nll += 2*(Nmc - Nd + Nd*log(Nd/Nmc));
     }
     
-    nll = nll + pow(eps,2)/(2*pow(sigeps,2)) + pow(epsNC,2)/(2*pow(sigepsNC,2)) + pow(ensc,2)/(2*pow(sigensc,2));
+    nll = nll + pow(eps,2)/(2*pow(sigeps,2)) + pow(epsNC,2)/(2*pow(sigepsNC,2)); // + pow(ensc,2)/(2*pow(sigensc,2));
     
     return nll;
 }
@@ -121,6 +123,7 @@ int MINOS_minuit(const char * minName = "Minuit",
     //-------------------
     // Energy Histograms
     //-------------------
+    TString filePath = dirName;
     TFile *fenergy = new TFile("./MINOS_spectra_PRL108-PRL110.root","read");
     double bfactor;
     //Data
@@ -163,18 +166,18 @@ int MINOS_minuit(const char * minName = "Minuit",
     
     //-- File to print oscillation parameters and chi2 values
     ofstream numu_chi2Surface_file;
-    string s2t_dm2 = "data/numu_chi2_s2t-dm2_surface.txt";  //(sin^2(2th13), dm2, chi^2_min)
-    numu_chi2Surface_file.open((s2t_dm2).c_str());
+    string s2t_dm2 = "/data/numu_chi2_s2t-dm2_surface.txt";  //(sin^2(2th13), dm2, chi^2_min)
+    numu_chi2Surface_file.open(filePath+(s2t_dm2).c_str());
     
     //-- File to print minimized pull parameters
     ofstream numu_minimPullT_file;
-    string PullT = "data/numu_chi2_pullT_surface.txt";
-    numu_minimPullT_file.open((PullT).c_str());
+    string PullT = "/data/numu_chi2_pullT_surface.txt";
+    numu_minimPullT_file.open(filePath + (PullT).c_str());
 
     //ifstream file("files_data/db_gridOscSpectra_1M.txt"); //50x50 parameter space-grid
-    string numu_grid_spectra = "data/minosNuMu_gridOscSpectra.txt";
+    string numu_grid_spectra = "/data/minosNuMu_gridOscSpectra.txt";
     ifstream numu_grid_file;
-    numu_grid_file.open((numu_grid_spectra).c_str());
+    numu_grid_file.open(filePath + (numu_grid_spectra).c_str());
     cout << "Reading file - Loop in progress..." << endl;
     int first = 1;
     std::cout << "Is the file open?  " << numu_grid_file.is_open() << "\n" << std::endl;
