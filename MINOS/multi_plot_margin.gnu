@@ -9,7 +9,7 @@ set terminal pdfcairo enhanced color font "CharterBT-Roman,14" size 7,7
 
 ########################################################################################
 ## Figure File
-set output "300806/files_plots/MINOS_plots_2nu.pdf"
+set output "301607/files_plots/MINOS_plots_2nu.pdf"
 ########################################################################################
 
 set multiplot
@@ -44,7 +44,7 @@ set arrow 3 from  4.00,ymin to 4.00,ymax nohead lt 3 lw 2
 set arrow 5 from  9.00,ymin to 9.00,ymax nohead lt 2 lw 2
 set arrow 7 from 16.00,ymin to 16.00,ymax nohead lt 6 lw 2
 
-plot '300806/data/numu_dm2_chi2.txt' u 2:(10**3*($1)) w l lw 2
+plot '301607/data/numu_dm2_chi2.txt' u 2:(10**3*($1)) w l lw 2
 
 reset
 
@@ -72,11 +72,7 @@ set ylabel "{/Symbol D}{/Symbol c}^{2}"
 
 set key at 1.12,5.5
 
-plot '300806/data/numu_s2t_chi2.txt' u 1:2 w l lw 2 t "", \
-16.0 lt 6 lw 2 t "99.99% C.L. (4{/Symbol s})", \
-9.0 lt 2 lw 2 t "99.73% C.L. (3{/Symbol s})", \
-4.0 lt 3 lw 2 t "95.45% C.L. (2{/Symbol s})", \
-1.0 lt 4 lw 2 t "68.27% C.L. (1{/Symbol s})"
+plot '301607/data/numu_s2t_chi2.txt' u 1:2 w l lw 2 t "", 16.0 lt 6 lw 2 t "99.99% C.L. (4{/Symbol s})", 9.0 lt 2 lw 2 t "99.73% C.L. (3{/Symbol s})", 4.0 lt 3 lw 2 t "95.45% C.L. (2{/Symbol s})", 1.0 lt 4 lw 2 t "68.27% C.L. (1{/Symbol s})"
 
 reset
 
@@ -108,7 +104,7 @@ set xrange[xmin:xmax]
 set label 2 "sin^{2}2{/Symbol q}_{23}" at 0.875,0.65 center
 
 ## y-axis settings
-set ytics offset -58.3
+set ytics offset -51.1
 ymin = 1.0
 ymax = 4.0
 set yrange[ymin:ymax]
@@ -127,7 +123,7 @@ unset key
 set grid ytics lc rgb "#bbbbbb" lw 1 lt 0
 set grid xtics lc rgb "#bbbbbb" lw 1 lt 0
 
-splot '300806/data/numu_chi2_s2t-dm2_surface-noFL.txt' u 1:(10**3*($2)):(($3)-min) w l lw 2 
+splot '301607/data/numu_chi2_s2t-dm2_surface-noFL.txt' u 1:(10**3*($2)):(($3)-min) w l lw 2 
 
 ########################################################################################
 
