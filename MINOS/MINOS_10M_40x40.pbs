@@ -53,7 +53,7 @@ mkdir ${JOBNUM}
 mkdir ${JOBNUM}/data
 mkdir ${JOBNUM}/files_plots
 
-source ${PBS_O_WORKDIR}/MINOS_osc_ana_10M_40x40.sh
+source ${PBS_O_WORKDIR}/MINOS_osc_ana_10M_80x80.sh
 
 # Termina trabajo
 echo ==============================

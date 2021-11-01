@@ -23,7 +23,7 @@ int main(int argc, char* argv[])
     }
   // path to read/write data
   string path1 = argv[3];
-  string min_chi = "data/numu_chi2_minumum.txt";
+  string min_chi = "/data/numu_chi2_minumum.txt";
 
   ofstream min_file;
   min_file.open((path1 + min_chi).c_str());
@@ -32,7 +32,7 @@ int main(int argc, char* argv[])
   int sn = atoi(argv[1]);
   int dmn= atoi(argv[2]);
   int cols, val;
-  string dat_f = "data/numu_chi2_s2t-dm2_surface-noFL.txt";
+  string dat_f = "/data/numu_chi2_s2t-dm2_surface-noFL.txt";
   ifstream data((path1 + dat_f).c_str());
   
   cols = COLS;
