@@ -5,8 +5,8 @@
 //-- energy resolution uncertainty. The result is stored as a function giving the  --//
 //-- corresponding derivative to be used in the minumization process.              --//
 //-----------------------------------------------------------------------------------//
-//#include "EnergyS_constants.h" //CAUTION - To check
-#include "constants.h"
+#include "EnergyS_constants.h" //CAUTION - To check
+//#include "constants.h"
 #include <math.h>
 #include <iostream>
 #include <string>
@@ -83,9 +83,6 @@ int MINOS_EnergyS_ntuple()
     double Eold_i,Enew_i,Enew_j;
     
     //-- Filling the original/unmodified histogram (no oscillated spectrum)
-    //cutES = Form("(id==%d)",iAD);
-//    cutES = Form("(1.0/(1.0 - %e*((sin( 1.267 * %e * Ln/En ))**2) - ((cos(0.5 * asin(sqrt(%e))))**4) * %e * (sin( 1.267 * %e * Ln/En ))**2))",ssq2th13RENO,dmsqeeRENO,ssq2th13RENO,ssq2th12RENO,dmsq21RENO,iAD);
-//    T->Draw(Form("Ep >> nosc_spect_hist_%d",iAD),cutES,"");
     Tnumu->Draw("Ereco >> nosc_spect_hist");
         
     //-- Filling the corrected/modified histograms
@@ -207,9 +204,6 @@ int MINOS_EnergyS_ntuple()
     fFit4->Draw("same");
     fFit7->Draw("same");
     fFitGD->Draw("same");
-
-
-    
 
     std::cout << "Succesful run!!" << endl;
 

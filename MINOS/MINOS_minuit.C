@@ -40,10 +40,13 @@ double eps;             //normalization factor
 double epsNC;           //NC background pull term
 double ensc;            //Energy sclae pull Term
 double spcNumu[NB_numu110];     //Energy scale numu
+double spcNumuNoOsc[NB_numu110];     //Energy scale numu
 double spcNumuB[NB_numubar110]; //Energy scale numu bar
+double spcNumuBNoOsc[NB_numubar110]; //Energy scale numu bar
 double NoscTot;
 double noNoscTot;
 double totalBgd = 8.92;  // integral of bkgd spectrum
+double xbins_numu110[NB_numu110+1];
 
 //Table I PRL110.251801(2013)
 //{No Osc (Simulated), Oscilated (BF), Observed}
@@ -67,6 +70,9 @@ TH1F *numub_wosc_spect_hist;
 TH1F *numub_nu_wosc_spect_hist;
 TH1F *numub_bfit_spect_hist;
 //-------------------
+TF1 *fFit4;
+TF1 *fFit7;
+TF1 *fFitGD;
 
 //---*****************************************************---//
 //-- Chi-square function to be minimized --------------------//
@@ -91,6 +97,8 @@ double chi2(const double *xx)
     double sigeps       = 0.016;
     double sigepsNC     = 0.20;
     double sigensc      = 0.06;
+
+    double spcNumuNew[NB_numu110];
     
     SurvPavg = NoscTot/noNoscTot;
     for (int iBIN = 0 ; iBIN < NB_numu110 ; iBIN++)
@@ -101,14 +109,22 @@ double chi2(const double *xx)
         Nd = ( numu_data_sigplusbg - (1-epsNC)*numu_simu_bg );
 
         //-- Predicted Number of events from neutrino oscillations of the Far Detector
-        //Nmc = spcNumu[iBIN]*(SurvPavg*NuMu_Events[2]/NuMu_Events[0])*eps;
-        Nmc = ( (spcNumu[iBIN]/NoscTot)*(NuMu_Events[0]*SurvPavg) - (1-epsNC)*numu_simu_bg )*(1-eps);
+
+        //-- Energy resolution uncertainty implementation
+        double binCenter, delta_spc, avgSurvProb_bin;
+        binCenter = 0.5*(xbins_numu110[iBIN] + xbins_numu110[iBIN+1]);
+        delta_spc = ensc*(fFitGD->Eval(binCenter));
+        avgSurvProb_bin = spcNumu[iBIN]/spcNumuNoOsc[iBIN];
+        spcNumuNew[iBIN] = spcNumu[iBIN] + delta_spc*avgSurvProb_bin;
+
+        //Nmc = ( (spcNumu[iBIN]/NoscTot)*(NuMu_Events[0]*SurvPavg) - (1-epsNC)*numu_simu_bg )*(1-eps);
+        Nmc = ( (spcNumuNew[iBIN]/NoscTot)*(NuMu_Events[0]*SurvPavg) - (1-epsNC)*numu_simu_bg )*(1-eps);
         //cout << "iBin = " << iBIN << "  Nmc = " << Nmc << " Nd = " << Nd << endl;
         
         nll += 2*(Nmc - Nd + Nd*log(Nd/Nmc));
     }
     
-    nll = nll + pow(eps,2)/(2*pow(sigeps,2)) + pow(epsNC,2)/(2*pow(sigepsNC,2)); // + pow(ensc,2)/(2*pow(sigensc,2));
+    nll = nll + pow(eps,2)/(2*pow(sigeps,2)) + pow(epsNC,2)/(2*pow(sigepsNC,2)) + pow(ensc,2)/(2*pow(sigensc,2));
     
     return nll;
 }
@@ -120,10 +136,18 @@ int MINOS_minuit(const char * minName = "Minuit",
 //int randomSeed = -1)
 {
     cout << "Let's the minimization begins..." << endl;
+
+    TString filePath = dirName;
+    //-------------------
+    //-- Energy scale derivative function
+    //-------------------
+    TFile *Esc_File = new TFile(filePath + "/data/minos_EScaleDerivative.root","READ");
+    fFit4  = (TF1*)(Esc_File->Get("fFit4"));
+    fFit7  = (TF1*)(Esc_File->Get("fFit7"));
+    fFitGD = (TF1*)(Esc_File->Get("fFitGD"));
     //-------------------
     // Energy Histograms
     //-------------------
-    TString filePath = dirName;
     TFile *fenergy = new TFile("./MINOS_spectra_PRL108-PRL110.root","read");
     double bfactor;
     //Data
@@ -136,7 +160,6 @@ int MINOS_minuit(const char * minName = "Minuit",
     numu_bkgd_spect_histo->Scale(bfactor);
     
     // histogram binning
-    double xbins_numu110[NB_numu110+1];
     double delta_bins110 = (9.0 - 0.5)/17.0; // 0.5 GeV/bin
     for (int i = 0 ; i < (NB_numu110 - 5) ; i++)
         xbins_numu110[i] = lo110 + i*delta_bins110;
@@ -189,6 +212,7 @@ int MINOS_minuit(const char * minName = "Minuit",
         {
             for(int ibin = 1 ; ibin <= 23 ; ibin++)
             {
+	        spcNumuNoOsc[ibin-1] = spcNumu[ibin-1];
                 double bincont = spcNumu[ibin-1]*(NuMu_Events[0]/NoscTot);
                 numu_noosc_spect_hist->SetBinContent(ibin,bincont);
             }
