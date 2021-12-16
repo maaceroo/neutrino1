@@ -125,6 +125,15 @@ set grid xtics lc rgb "#bbbbbb" lw 1 lt 0
 
 splot '362124/data/numu_chi2_s2t-dm2_surface-noFL.txt' u 1:(10**3*($2)):(($3)-min) w l lw 2 
 
+unset xtics
+unset ytics
+unset label 4
+unset label 2
+unset label 35
+
+set label 35 'X' at 0.955,0.00238*1e3 center font 'CharterBT-Roman,15'
+
+plot 'contour90CL_Nu_A_tab.txt' w l lt rgb "black" lw 3, 'contour90CL_Nu_B_tab.txt' w l lt rgb "black" lw 3
 ########################################################################################
 
 unset multiplot
