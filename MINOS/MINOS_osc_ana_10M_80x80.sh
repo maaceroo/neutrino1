@@ -39,7 +39,7 @@ echo '=========================================='
 echo
 export NTUPLE_EVENTS=10000000
 echo $NTUPLE_EVENTS ntuple events
-##time root -b -l -n -q MINOS_ntupla.C
+time root -b -l -n -q MINOS_ntupla.C
 #
 #echo
 #
@@ -51,7 +51,7 @@ echo
 else
 echo "$FILE does not exist."
 echo "Executing MINOS_EnergyS_ntuple.C"
-##time root -b -l -n -q MINOS_EnergyS_ntuple.C
+time root -b -l -n -q MINOS_EnergyS_ntuple.C
 echo "$FILE should exist now!"
 echo "The analysis will continue."
 echo
@@ -62,7 +62,7 @@ echo '=========================================='
 echo '2) Running MINOS_osc_2nu.C'
 echo '=========================================='
 echo
-##time root -b -l -n -q MINOS_osc_2nu.C
+time root -b -l -n -q MINOS_osc_2nu.C
 #
 #---------------------------------------------------------------
 # run minimization
@@ -70,7 +70,7 @@ echo '=========================================='
 echo '3) Running MINOS_minuit.C'
 echo '=========================================='
 echo
-##root -b -l -n -q MINOS_minuit.C
+root -b -l -n -q MINOS_minuit.C
 
 echo
 

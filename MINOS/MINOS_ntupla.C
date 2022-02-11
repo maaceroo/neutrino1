@@ -26,14 +26,16 @@ void MINOS_ntupla()
     //-------------------
     std::cout << "Calling the root file" << std::endl;
     TFile *fenergy = new TFile("MINOS_spectra_PRL108-PRL110.root","read");
+    TFile *feneFit = new TFile("fitMINOS.root","read");
 
     // define and fill the histograms for Muon (Anti)neutrinos PRL110 ------------------------
     std::cout << "Creating and Filling histograms" << std::endl;
     //- Muon neutrinos
     TH1F *numu110_noosc_histo;
     TH1F *numu110_bkgd_histo;
-    numu110_noosc_histo = (TH1F*) fenergy->Get("numu110_noosc_histo");
-    numu110_bkgd_histo  = (TH1F*) fenergy->Get("numu110_bkgd_histo");
+    //numu110_noosc_histo = (TH1F*) fenergy->Get("numu110_noosc_histo");
+    numu110_noosc_histo = (TH1F*) feneFit->Get("MC_spect_histo_fine");
+    numu110_bkgd_histo  = (TH1F*) fenergy->Get("numu110_bkgd_histo"); //Not used now (11.02.22). Should be substracted from the noosc spectrum.
     //- Muon antineutrinos
     TH1F *numub110_noosc_histo;
     TH1F *numub110_bkgd_histo;
@@ -97,6 +99,7 @@ void MINOS_ntupla()
 
     int recoBin;
     for (int i = 0 ; i < Nevents ; i++) {
+	//neutrinos
         Ereco  = numu110_noosc_histo->GetRandom();
         recoBin = int(Ereco/0.25);
         //sigEr  = sig10*sqrt(Ereco/e10);
@@ -109,6 +112,7 @@ void MINOS_ntupla()
         
         histoNu->Fill(Etrue,Ereco);
 
+	//antineutrinos
         Erecob = numub110_noosc_histo->GetRandom();
         //sigEr  = sig10*sqrt(Erecob/e10);
 //        sigEr  = (0.043 + 0.213*Erecob - 0.0051*pow(Erecob,2))/(2*sqrt(2*log(2)));
