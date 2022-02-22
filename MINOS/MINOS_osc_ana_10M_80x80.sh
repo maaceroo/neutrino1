@@ -115,15 +115,15 @@ echo
 echo '--------------------------------'
 sed -i'' -e "12s/.*/set output \"${JOBID}\/files_plots\/MINOS_plots_2nu.pdf\"/" multi_plot_margin.gnu
 
-sed -i'' -e "116s/.*/set label 35 '+' at $BF_S2T,$BF_DM2*1e3 center font 'CharterBT-Roman,15'/" multi_plot_margin.gnu
+sed -i'' -e "117s/.*/set label 35 '+' at $BF_S2T,$BF_DM2*1e3 center font 'CharterBT-Roman,15'/" multi_plot_margin.gnu
 
-sed -i'' -e "118s/.*/min = $BF_CHI2/" multi_plot_margin.gnu
+sed -i'' -e "119s/.*/min = $BF_CHI2/" multi_plot_margin.gnu
 
-sed -i'' -e "47s/.*/plot '${JOBID}\/data\/numu_dm2_chi2.txt' u 2:(10**3*(\$1)) w l lw 2/" multi_plot_margin.gnu
+sed -i'' -e "48s/.*/plot '${JOBID}\/data\/numu_dm2_chi2.txt' u 2:(10**3*(\$1)) w l lw 2/" multi_plot_margin.gnu
 
-sed -i'' -e "75s/.*/plot '${JOBID}\/data\/numu_s2t_chi2.txt' u 1:2 w l lw 2 t \"\", 16.0 lt 6 lw 2 t \"99.99% C.L. (4{\/Symbol s})\", 9.0 lt 2 lw 2 t \"99.73% C.L. (3{\/Symbol s})\", 4.0 lt 3 lw 2 t \"95.45% C.L. (2{\/Symbol s})\", 1.0 lt 4 lw 2 t \"68.27% C.L. (1{\/Symbol s})\"/" multi_plot_margin.gnu
+sed -i'' -e "76s/.*/plot '${JOBID}\/data\/numu_s2t_chi2.txt' u 1:2 w l lw 2 t \"\", 16.0 lt 6 lw 2 t \"99.99% C.L. (4{\/Symbol s})\", 9.0 lt 2 lw 2 t \"99.73% C.L. (3{\/Symbol s})\", 4.0 lt 3 lw 2 t \"95.45% C.L. (2{\/Symbol s})\", 1.0 lt 4 lw 2 t \"68.27% C.L. (1{\/Symbol s})\"/" multi_plot_margin.gnu
 
-sed -i'' -e "126s/.*/splot '${JOBID}\/data\/numu_chi2_s2t-dm2_surface-noFL.txt' u 1:(10**3*(\$2)):((\$3)-min) w l lw 2/" multi_plot_margin.gnu
+sed -i'' -e "127s/.*/splot '${JOBID}\/data\/numu_chi2_s2t-dm2_surface-noFL.txt' u 1:(10**3*(\$2)):((\$3)-min) w l lw 2/" multi_plot_margin.gnu
 
 
 echo
