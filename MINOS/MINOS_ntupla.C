@@ -50,11 +50,16 @@ void MINOS_ntupla()
     TTree *Tnumub = new TTree("Tnumub","MC neutrino events");
     //-------------------
     // True Vs. Reco Energy Matrix
-    //-------------------
+    //--------------------
     std::cout << "Calling the Matrix root file" << std::endl;
     TFile *fmatrix = new TFile("./data/MINOS_Matrix_TvsR_Energy.root","read");
     TH2F *TrueReco_Matrix;
     TrueReco_Matrix = (TH2F*) fmatrix->Get("TRmat_histo");
+    //dirty fix
+    double tt1 = TrueReco_Matrix->GetBinContent(12,12);
+    TrueReco_Matrix->SetBinContent(12,12,tt1*0.90);
+    double tt2 = TrueReco_Matrix->GetBinContent(13,13);
+    TrueReco_Matrix->SetBinContent(13,13,tt2*1.05);
     TH1D *TrueReco_px;
     TH1D *TrueReco_py;
     TrueReco_px = TrueReco_Matrix->ProjectionX("TrueReco_px");
@@ -81,18 +86,11 @@ void MINOS_ntupla()
     //int Nevents = 1e7;
     int Nevents = atoi(getenv("NTUPLE_EVENTS")); // This must be uncommented when using the script
 
-
     Tnumu-> Branch("Ereco", &Ereco, "Ereco/F" );
     Tnumu-> Branch("Etrue", &Etrue, "Etrue/F" );
     Tnumub->Branch("Erecob",&Erecob,"Erecob/F");
     Tnumub->Branch("Etrueb",&Etrueb,"Etrueb/F");
     
-    double e10   = 10.0;
-    double sig10 = 1.2;
-    TF1 *gauE = new TF1("gauE","exp(-0.5*(x/[0])^2)",-20.0,20.0);
-    double sigEr   = 0.0;
-    double deltaEr = 0.0;
-
     double ehi = 14.0;
     TH2F *histoNu  = new TH2F("histoNu", "", 56,0,ehi,56,0,ehi);
     TH2F *histoNub = new TH2F("histoNub", "", 56,0,ehi,56,0,ehi);
@@ -102,25 +100,15 @@ void MINOS_ntupla()
 	//neutrinos
         Ereco  = numu110_noosc_histo->GetRandom();
         recoBin = int(Ereco/0.25);
-        //sigEr  = sig10*sqrt(Ereco/e10);
-//        sigEr  = (0.043 + 0.213*Ereco - 0.0051*pow(Ereco,2))/(2*sqrt(2*log(2)));
-//        gauE->SetParameter(0,sigEr);
-//        deltaEr = gauE->GetRandom();
-//        Etrue   = Ereco + deltaEr;
-        Etrue = True_array[recoBin]->GetRandom();
+        Etrue = fudge1*True_array[recoBin]->GetRandom();
         //std::cout << "Ereco = " << Ereco << "   Etrue = " << Etrue << endl;
         
         histoNu->Fill(Etrue,Ereco);
 
 	//antineutrinos
         Erecob = numub110_noosc_histo->GetRandom();
-        //sigEr  = sig10*sqrt(Erecob/e10);
-//        sigEr  = (0.043 + 0.213*Erecob - 0.0051*pow(Erecob,2))/(2*sqrt(2*log(2)));
-//        gauE->SetParameter(0,sigEr);
-//        deltaEr = gauE->GetRandom();
-//        Etrueb  = Erecob + deltaEr;
         recoBin = int(Erecob/0.25);
-        Etrueb = True_array[recoBin]->GetRandom();
+        Etrueb = fudge1*True_array[recoBin]->GetRandom();
         //std::cout << "Ereco = " << Erecob << "   Etrue = " << Etrueb << endl;
 
         histoNub->Fill(Etrueb,Erecob);

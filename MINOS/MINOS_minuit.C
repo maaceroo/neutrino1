@@ -119,6 +119,7 @@ double chi2(const double *xx)
 
         //Nmc = ( (spcNumu[iBIN]/NoscTot)*(NuMu_Events[0]*SurvPavg) - (1-epsNC)*numu_simu_bg )*(1-eps);
         Nmc = ( (spcNumuNew[iBIN]/NoscTot)*(NuMu_Events[0]*SurvPavg) - (1-epsNC)*numu_simu_bg )*(1-eps);
+	Nmc = fudge2*Nmc;   //2022-04-01 - MAAO
         //cout << "iBin = " << iBIN << "  Nmc = " << Nmc << " Nd = " << Nd << endl;
         
         nll += 2*(Nmc - Nd + Nd*log(Nd/Nmc));

@@ -29,6 +29,8 @@ double       hi_s2t = atof(getenv("HI_S2T"));
 double       lo_dm2 = atof(getenv("LO_DM2"));
 double       hi_dm2 = atof(getenv("HI_DM2"));
 
+double      fudge1  = atof(getenv("FUDGEE"));  //Energy scale factor
+double      fudge2  = atof(getenv("FUDGEN"));  //Normalizaion scale factor
 
 //Path for output
 //Directory to save files
