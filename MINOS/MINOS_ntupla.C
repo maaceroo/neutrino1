@@ -32,15 +32,21 @@ void MINOS_ntupla()
     std::cout << "Creating and Filling histograms" << std::endl;
     //- Muon neutrinos
     TH1F *numu110_noosc_histo;
+    TH1F *numu110_nooscbs_histo;
     TH1F *numu110_bkgd_histo;
     //numu110_noosc_histo = (TH1F*) fenergy->Get("numu110_noosc_histo");
-    numu110_noosc_histo = (TH1F*) feneFit->Get("MC_spect_histo_fine");
-    numu110_bkgd_histo  = (TH1F*) fenergy->Get("numu110_bkgd_histo"); //Not used now (11.02.22). Should be substracted from the noosc spectrum.
+    numu110_noosc_histo   = (TH1F*) feneFit->Get("MC_spect_histo_fine");
+    numu110_bkgd_histo    = (TH1F*) fenergy->Get("numu110_bkgd_histo"); //Not used now (11.02.22). Should be substracted from the noosc spectrum.
+    numu110_nooscbs_histo = (TH1F*)(numu110_noosc_histo->Clone("numu110_nooscbs_histo"));
+    numu110_nooscbs_histo->Add(numu110_bkgd_histo,-1);
     //- Muon antineutrinos
     TH1F *numub110_noosc_histo;
+    TH1F *numub110_nooscbs_histo;
     TH1F *numub110_bkgd_histo;
     numub110_noosc_histo = (TH1F*) fenergy->Get("numub110_noosc_histo");
     numub110_bkgd_histo  = (TH1F*) fenergy->Get("numub110_bkgd_histo");
+    numub110_nooscbs_histo = (TH1F*)(numub110_noosc_histo->Clone("numub110_nooscbs_histo"));
+    numub110_nooscbs_histo->Add(numub110_bkgd_histo,-1);
     
 
     //Root file for the ntuple
@@ -97,16 +103,18 @@ void MINOS_ntupla()
 
     int recoBin;
     for (int i = 0 ; i < Nevents ; i++) {
-	//neutrinos
-        Ereco  = numu110_noosc_histo->GetRandom();
-        recoBin = int(Ereco/0.25);
-        Etrue = fudge1*True_array[recoBin]->GetRandom();
+      //neutrinos
+      //Ereco  = numu110_noosc_histo->GetRandom();
+      Ereco  = numu110_nooscbs_histo->GetRandom();
+      recoBin = int(Ereco/0.25);
+      Etrue = fudge1*True_array[recoBin]->GetRandom();
         //std::cout << "Ereco = " << Ereco << "   Etrue = " << Etrue << endl;
         
         histoNu->Fill(Etrue,Ereco);
 
 	//antineutrinos
-        Erecob = numub110_noosc_histo->GetRandom();
+        //Erecob = numub110_noosc_histo->GetRandom();
+        Erecob = numub110_nooscbs_histo->GetRandom();
         recoBin = int(Erecob/0.25);
         Etrueb = fudge1*True_array[recoBin]->GetRandom();
         //std::cout << "Ereco = " << Erecob << "   Etrue = " << Etrueb << endl;
