@@ -108,21 +108,21 @@ void MINOS_ntupla()
       Ereco  = numu110_nooscbs_histo->GetRandom();
       recoBin = int(Ereco/0.25);
       Etrue = fudge1*True_array[recoBin]->GetRandom();
-        //std::cout << "Ereco = " << Ereco << "   Etrue = " << Etrue << endl;
+      //std::cout << "Ereco = " << Ereco << "   Etrue = " << Etrue << endl;
         
-        histoNu->Fill(Etrue,Ereco);
+      histoNu->Fill(Etrue,Ereco);
 
-	//antineutrinos
-        //Erecob = numub110_noosc_histo->GetRandom();
-        Erecob = numub110_nooscbs_histo->GetRandom();
-        recoBin = int(Erecob/0.25);
-        Etrueb = fudge1*True_array[recoBin]->GetRandom();
-        //std::cout << "Ereco = " << Erecob << "   Etrue = " << Etrueb << endl;
-
-        histoNub->Fill(Etrueb,Erecob);
-
-        Tnumu ->Fill();
-        Tnumub->Fill();
+      //antineutrinos
+      //Erecob = numub110_noosc_histo->GetRandom();
+      Erecob = numub110_nooscbs_histo->GetRandom();
+      recoBin = int(Erecob/0.25);
+      Etrueb = fudge1*True_array[recoBin]->GetRandom();
+      //std::cout << "Ereco = " << Erecob << "   Etrue = " << Etrueb << endl;
+      
+      histoNub->Fill(Etrueb,Erecob);
+      
+      Tnumu ->Fill();
+      Tnumub->Fill();
     }
     
     fout->cd();

@@ -27,9 +27,15 @@ double xbins_numu110[NB_numu110+1];
 const int de = 6;
 //---*****************************************************---//
 TH1F *nosc_spect_hist;
-TH1F *nosc_spect_hist_e[de];
-TH1F *nosc_spect_hist_diff[de];
-TH1F *nosc_spect_hist_deri[de];
+TH1F *nosc_spect_hist_e1[de];
+TH1F *nosc_spect_hist_diff1[de];
+TH1F *nosc_spect_hist_deri1[de];
+TH1F *nosc_spect_hist_e2[de];
+TH1F *nosc_spect_hist_diff2[de];
+TH1F *nosc_spect_hist_deri2[de];
+
+TH1F *nosc_spect_hist_2nd_diff[de];
+TH1F *nosc_spect_hist_2nd_deri[de];
 //---*****************************************************---//
 
 int MINOS_EnergyS_ntuple()
@@ -68,14 +74,16 @@ int MINOS_EnergyS_ntuple()
     nosc_spect_hist->SetLineWidth(2);
     //- Corrected spectra (energy scale)
     for (int j = 0 ; j < de ; j++){
-        nosc_spect_hist_e[j] = new TH1F(Form("nosc_spect_hist_e_%d",j),"",NB_numu110,xbins_numu110);
-        nosc_spect_hist_e[j]->SetLineColor(kBlue+j);
+        nosc_spect_hist_e1[j] = new TH1F(Form("nosc_spect_hist_e1_%d",j),"",NB_numu110,xbins_numu110);
+        nosc_spect_hist_e1[j]->SetLineColor(kBlue-j);
+        nosc_spect_hist_e2[j] = new TH1F(Form("nosc_spect_hist_e2_%d",j),"",NB_numu110,xbins_numu110);
+        nosc_spect_hist_e2[j]->SetLineColor(kBlue-j);
     }
     
     double e;
-    double sesc       = 0.016;          //from J. Mitchell PhD. Thesis
-    double lowe       = -5*sesc;
-    double highe      = +5*sesc;
+    double sesc       = 0.06;          //from J. Mitchell PhD. Thesis
+    double lowe       = -1*sesc;
+    double highe      = +1*sesc;
     double deltae     = (highe - lowe)/(de-1);
     double f_ePos[NB_numu110] = {0.0};
     double f_eNeg[NB_numu110] = {0.0};
@@ -84,69 +92,148 @@ int MINOS_EnergyS_ntuple()
     
     //-- Filling the original/unmodified histogram (no oscillated spectrum)
     Tnumu->Draw("Ereco >> nosc_spect_hist");
-        
+
+    double fdel = 0.7;        
     //-- Filling the corrected/modified histograms
     for (int ee = 0 ; ee < de ; ee++) {
         e = lowe + ee*deltae;
-        Tnumu->Draw(Form("(1+%f)*Ereco >> nosc_spect_hist_e_%d",e,ee));
+        Tnumu->Draw(Form("(1+%f)*Ereco >> nosc_spect_hist_e1_%d",e,ee));
+        Tnumu->Draw(Form("(1+%f)*Ereco >> nosc_spect_hist_e2_%d",e+fdel*deltae,ee)); //scaling twice 
     }//End for(ee)
 
     //-- Computing the difference produced by the energy scale
     //- (Scaled - Original) spectra
     for (int ee = 0 ; ee < de ; ee++) {
         e = lowe + ee*deltae;
-        nosc_spect_hist_diff[ee] = new TH1F(*nosc_spect_hist);
-        nosc_spect_hist_diff[ee] ->SetName(Form("nosc_spec_hist_diff_%d",ee));
-        nosc_spect_hist_deri[ee] = new TH1F(*nosc_spect_hist);
-        nosc_spect_hist_deri[ee] ->SetName(Form("nosc_spec_hist_deri_%d",ee));
-        nosc_spect_hist_diff[ee]->GetYaxis()->SetTitle("Events(Scaled - Original)");
+        nosc_spect_hist_diff1[ee] = new TH1F(*nosc_spect_hist);
+        nosc_spect_hist_diff1[ee] ->SetName(Form("nosc_spec_hist_diff1_%d",ee));
+        nosc_spect_hist_deri1[ee] = new TH1F(*nosc_spect_hist);
+        nosc_spect_hist_deri1[ee] ->SetName(Form("nosc_spec_hist_deri1_%d",ee));
+        nosc_spect_hist_diff1[ee]->GetYaxis()->SetTitle("Events(Scaled - Original) 1 esc");
+
+        nosc_spect_hist_diff2[ee] = new TH1F(*nosc_spect_hist);
+        nosc_spect_hist_diff2[ee] ->SetName(Form("nosc_spec_hist_diff2_%d",ee));
+        nosc_spect_hist_deri2[ee] = new TH1F(*nosc_spect_hist);
+        nosc_spect_hist_deri2[ee] ->SetName(Form("nosc_spec_hist_deri2_%d",ee));
+        nosc_spect_hist_diff2[ee]->GetYaxis()->SetTitle("Events(Scaled - Original) 2 esc");
+
+        nosc_spect_hist_2nd_diff[ee] = new TH1F(*nosc_spect_hist);
+        nosc_spect_hist_2nd_diff[ee] ->SetName(Form("nosc_spec_hist_2nd_diff_%d",ee));
+        nosc_spect_hist_2nd_deri[ee] = new TH1F(*nosc_spect_hist);
+        nosc_spect_hist_2nd_deri[ee] ->SetName(Form("nosc_spec_hist_2nd_deri_%d",ee));
+
         for (int i = 1 ; i <= NB_numu110 ; i++) {
-            double binCont = nosc_spect_hist_e[ee]->GetBinContent(i) - nosc_spect_hist->GetBinContent(i);
-            nosc_spect_hist_diff[ee]->SetBinContent(i,binCont);
-            nosc_spect_hist_deri[ee]->SetBinContent(i,binCont/(e));
-        }
-        nosc_spect_hist_diff[ee]->SetLineColor(kAzure+ee);
-        nosc_spect_hist_deri[ee]->SetLineColor(kAzure+ee);
+            double binCont1 = nosc_spect_hist_e1[ee]->GetBinContent(i) - nosc_spect_hist->GetBinContent(i);
+            nosc_spect_hist_diff1[ee]->SetBinContent(i,binCont1);
+            nosc_spect_hist_deri1[ee]->SetBinContent(i,binCont1/(e));
+            double binCont2 = nosc_spect_hist_e2[ee]->GetBinContent(i) - nosc_spect_hist->GetBinContent(i);
+            nosc_spect_hist_diff2[ee]->SetBinContent(i,binCont2);
+            nosc_spect_hist_deri2[ee]->SetBinContent(i,binCont2/(e+fdel*deltae));
+	}
+
+        //for (int i = 1 ; i <= NB_numu110 ; i++) {
+	//    //double binCont3 = nosc_spect_hist_deri2[ee]->GetBinContent(i) - nosc_spect_hist_deri1[ee]->GetBinContent(i);
+	//    double binCont3 = nosc_spect_hist_deri2[ee]->GetBinContent(i) - nosc_spect_hist_deri1[3]->GetBinContent(i);
+        //    nosc_spect_hist_2nd_diff[ee]->SetBinContent(i,binCont3);
+        //    nosc_spect_hist_2nd_deri[ee]->SetBinContent(i,binCont3/(e));	    
+	// }
+        nosc_spect_hist_diff1[ee]->SetLineColor(kAzure+ee);
+        nosc_spect_hist_deri1[ee]->SetLineColor(kAzure+ee);
+        nosc_spect_hist_diff2[ee]->SetLineColor(kGreen+ee);
+        nosc_spect_hist_deri2[ee]->SetLineColor(kGreen+ee);
+
+        //nosc_spect_hist_2nd_diff[ee]->SetLineColor(kRed-ee);
+        //nosc_spect_hist_2nd_deri[ee]->SetLineColor(kRed-ee);
     }
 
-    TF1 *fFit4;
-    fFit4 = new TF1("fFit4","[0]+[1]*x+[2]*(x**2)+[3]*(x**3)+[4]*(x**4)",xbins_numu110[0],xbins_numu110[NB_numu110]);
-    fFit4->SetParameters(0.0,0.0,0.0,0.0,0.0);
-    nosc_spect_hist_deri[1]->Fit("fFit4","r");
-    fFit4->SetLineStyle(2);
 
-    TF1 *fFit7;
-    fFit7 = new TF1("fFit7","[0]+[1]*x+[2]*(x**2)+[3]*(x**3)+[4]*(x**4)+[5]*(x**5)+[6]*(x**6)+[7]*(x**7)",xbins_numu110[0],xbins_numu110[NB_numu110]);
-    fFit7->SetParameters(0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0);
-    nosc_spect_hist_deri[1]->Fit("fFit7","r");
+    for (int ee = 0 ; ee < de ; ee++) {
+        e = lowe + ee*deltae;
 
-    TF1 *fFitGD;
-    fFitGD = new TF1("fFitGD","[0]+[1]*exp(-0.5*pow((x-[2])/[3],2))+[4]*exp(-0.5*pow((x-[5])/[6],2))",xbins_numu110[0],xbins_numu110[NB_numu110]);
-    fFitGD->SetParameters(0.0,-2e6,3.0, 2.0,1e6,5.0,2.0);
-    fFitGD->SetLineColor(kBlack);
-    nosc_spect_hist_deri[4]->Fit("fFitGD","r");
+        for (int i = 1 ; i <= NB_numu110 ; i++) {
+	    double binCont3 = nosc_spect_hist_deri2[ee]->GetBinContent(i) - nosc_spect_hist_deri1[ee]->GetBinContent(i);
+	    //double binCont3 = nosc_spect_hist_deri2[ee]->GetBinContent(i) - nosc_spect_hist_deri1[3]->GetBinContent(i);
+            nosc_spect_hist_2nd_diff[ee]->SetBinContent(i,binCont3);
+            nosc_spect_hist_2nd_deri[ee]->SetBinContent(i,binCont3/(fdel*deltae));
+        }
 
+        nosc_spect_hist_2nd_diff[ee]->SetLineColor(kRed-ee);
+        nosc_spect_hist_2nd_deri[ee]->SetLineColor(kRed-ee);
+
+    }
+
+
+    TF1 *fFit4_1e;
+    fFit4_1e = new TF1("fFit4_1e","[0]+[1]*x+[2]*(x**2)+[3]*(x**3)+[4]*(x**4)",xbins_numu110[0],xbins_numu110[NB_numu110]);
+    fFit4_1e->SetParameters(0.0,0.0,0.0,0.0,0.0);
+    nosc_spect_hist_deri1[1]->Fit("fFit4_1e","r");
+    fFit4_1e->SetLineStyle(2);
+
+    TF1 *fFit4_2e;
+    fFit4_2e = new TF1("fFit4_2e","[0]+[1]*x+[2]*(x**2)+[3]*(x**3)+[4]*(x**4)",xbins_numu110[0],xbins_numu110[NB_numu110]);
+    fFit4_2e->SetParameters(0.0,0.0,0.0,0.0,0.0);
+    nosc_spect_hist_deri2[1]->Fit("fFit4_2e","r");
+    fFit4_2e->SetLineStyle(2);
+
+    TF1 *fFit7_1e;
+    fFit7_1e = new TF1("fFit7_1e","[0]+[1]*x+[2]*(x**2)+[3]*(x**3)+[4]*(x**4)+[5]*(x**5)+[6]*(x**6)+[7]*(x**7)",xbins_numu110[0],xbins_numu110[NB_numu110]);
+    fFit7_1e->SetParameters(0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0);
+    nosc_spect_hist_deri1[1]->Fit("fFit7_1e","r");
+
+    TF1 *fFit7_2e;
+    fFit7_2e = new TF1("fFit7_2e","[0]+[1]*x+[2]*(x**2)+[3]*(x**3)+[4]*(x**4)+[5]*(x**5)+[6]*(x**6)+[7]*(x**7)",xbins_numu110[0],xbins_numu110[NB_numu110]);
+    fFit7_2e->SetParameters(0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0);
+    nosc_spect_hist_deri2[1]->Fit("fFit7_2e","r");
+
+    TF1 *fFitGD_1e;
+    fFitGD_1e = new TF1("fFitGD_1e","[0]+[1]*exp(-0.5*pow((x-[2])/[3],2))+[4]*exp(-0.5*pow((x-[5])/[6],2))",xbins_numu110[0],xbins_numu110[NB_numu110]);
+    fFitGD_1e->SetParameters(0.0,-2e6,3.0, 2.0,1e6,5.0,2.0);
+    fFitGD_1e->SetLineColor(kBlack);
+    nosc_spect_hist_deri1[4]->Fit("fFitGD_1e","r");
+
+    TF1 *fFitGD_2e;
+    fFitGD_2e = new TF1("fFitGD_2e","[0]+[1]*exp(-0.5*pow((x-[2])/[3],2))+[4]*exp(-0.5*pow((x-[5])/[6],2))",xbins_numu110[0],xbins_numu110[NB_numu110]);
+    fFitGD_2e->SetParameters(0.0,-2e6,3.0, 2.0,1e6,5.0,2.0);
+    fFitGD_2e->SetLineColor(kBlack);
+    nosc_spect_hist_deri2[4]->Fit("fFitGD_2e","r");
+
+    TF1 *fFitGD_2nd;
+    fFitGD_2nd = new TF1("fFitGD_2nd","[0]+[1]*exp(-0.5*pow((x-[2])/[3],2))+[4]*exp(-0.5*pow((x-[5])/[6],2))",xbins_numu110[0],xbins_numu110[NB_numu110]);
+    fFitGD_2nd->SetParameters(0.0,-2e6,3.0, 2.0,1e6,5.0,2.0);
+    fFitGD_2nd->SetLineColor(kBlack);
+    nosc_spect_hist_2nd_deri[4]->Fit("fFitGD_2nd","r");
     
     TFile *fEscale = new TFile(filePath + "/data/minos_EScaleDerivative.root","recreate");
-    fFit4->Write();
-    fFit7->Write();
-    fFitGD->Write();
+    fFit4_1e->Write();
+    fFit7_1e->Write();
+    fFitGD_1e->Write();
+    fFit4_2e->Write();
+    fFit7_2e->Write();
+    fFitGD_2e->Write();
+
+    fFitGD_2nd->Write();
 
     nosc_spect_hist->Write();
-    for (int i = 0; i<de; i++){
-      nosc_spect_hist_e[i]->Write();
-      nosc_spect_hist_diff[i]->Write();
-      nosc_spect_hist_deri[i]->Write();
+    for (int i = 0; i < de; i++){
+      nosc_spect_hist_e1[i]->Write();
+      nosc_spect_hist_diff1[i]->Write();
+      nosc_spect_hist_deri1[i]->Write();
+      nosc_spect_hist_e2[i]->Write();
+      nosc_spect_hist_diff2[i]->Write();
+      nosc_spect_hist_deri2[i]->Write();
+
+      nosc_spect_hist_2nd_diff[i]->Write();
+      nosc_spect_hist_2nd_deri[i]->Write();
     }
 
     //-- Plotting section -----------------------//
     //-- Defining histogram frames --//
     double max_numu = 0.0, min_numu = 0.0;
     for (int ee = 0 ; ee < de ; ee++) {
-        double max_temp = TMath::Max(nosc_spect_hist->GetMaximum(),nosc_spect_hist_e[ee]->GetMaximum());
+        double max_temp = TMath::Max(nosc_spect_hist->GetMaximum(),nosc_spect_hist_e1[ee]->GetMaximum());
         if (max_temp >= max_numu)
             max_numu = max_temp;
-        double min_temp = TMath::Min(nosc_spect_hist->GetMinimum(),nosc_spect_hist_e[ee]->GetMinimum());
+        double min_temp = TMath::Min(nosc_spect_hist->GetMinimum(),nosc_spect_hist_e1[ee]->GetMinimum());
         if (min_temp <= min_numu)
             min_numu = min_temp;
     }
@@ -154,10 +241,10 @@ int MINOS_EnergyS_ntuple()
     
     double max_numudif = 0.0, min_numudif = 0.0;
     for (int ee = 0 ; ee < de ; ee++) {
-        double max_temp = TMath::Max(max_numudif,nosc_spect_hist_diff[ee]->GetMaximum());
+        double max_temp = TMath::Max(max_numudif,nosc_spect_hist_diff1[ee]->GetMaximum());
         if (max_temp >= max_numudif)
             max_numudif = max_temp;
-        double min_temp = TMath::Min(min_numudif,nosc_spect_hist_diff[ee]->GetMinimum());
+        double min_temp = TMath::Min(min_numudif,nosc_spect_hist_diff1[ee]->GetMinimum());
         if (min_temp <= min_numudif)
             min_numudif = min_temp;
     }
@@ -165,10 +252,10 @@ int MINOS_EnergyS_ntuple()
     
     double max_numuder = 0.0, min_numuder = 0.0;
     for (int ee = 0 ; ee < de ; ee++) {
-        double max_temp = TMath::Max(max_numuder,nosc_spect_hist_deri[ee]->GetMaximum());
+        double max_temp = TMath::Max(max_numuder,nosc_spect_hist_deri1[ee]->GetMaximum());
         if (max_temp >= max_numuder)
             max_numuder = max_temp;
-        double min_temp = TMath::Min(min_numuder,nosc_spect_hist_deri[ee]->GetMinimum());
+        double min_temp = TMath::Min(min_numuder,nosc_spect_hist_deri1[ee]->GetMinimum());
         if (min_temp <= min_numuder)
             min_numuder = min_temp;
     }
@@ -181,12 +268,15 @@ int MINOS_EnergyS_ntuple()
     canv1->cd(1);
     framenumu->Draw();
     nosc_spect_hist->Draw("same hist");
-    for (int ee = 0 ; ee < de ; ee++)
-        nosc_spect_hist_e[ee]->Draw("same hist");
-    canv1->cd(2);
+    for (int ee = 0 ; ee < de ; ee++){
+        nosc_spect_hist_e1[ee]->Draw("same hist");
+        nosc_spect_hist_e2[ee]->Draw("same hist");}
+ 
+   canv1->cd(2);
     framenumudif->Draw();
-    for (int ee = 0 ; ee < de ; ee++)
-        nosc_spect_hist_diff[ee]->Draw("same hist");
+    for (int ee = 0 ; ee < de ; ee++){
+      nosc_spect_hist_diff1[ee]->Draw("same hist");
+      nosc_spect_hist_diff1[ee]->Draw("same hist");}
     
     //-- Derivatives --//
     TCanvas *canv2 = new TCanvas("canv2", "MINOS Derivatives", 1*600,2*400);
@@ -195,15 +285,22 @@ int MINOS_EnergyS_ntuple()
     canv2->cd(1);
     framenumu->Draw();
     nosc_spect_hist->Draw("same hist");
-    for (int ee = 0 ; ee < de ; ee++)
-        nosc_spect_hist_e[ee]->Draw("same hist");
+    for (int ee = 0 ; ee < de ; ee++){
+        nosc_spect_hist_e1[ee]->Draw("same hist");
+        nosc_spect_hist_e2[ee]->Draw("same hist");}
     canv2->cd(2);
     framenumuder->Draw();
-    for (int ee = 0 ; ee < de ; ee++)
-        nosc_spect_hist_deri[ee]->Draw("same hist");
-    fFit4->Draw("same");
-    fFit7->Draw("same");
-    fFitGD->Draw("same");
+    for (int ee = 0 ; ee < de ; ee++){
+        nosc_spect_hist_deri1[ee]->Draw("same hist");
+        nosc_spect_hist_deri2[ee]->Draw("same hist");}
+    fFit4_1e->Draw("same");
+    fFit7_1e->Draw("same");
+    fFitGD_1e->Draw("same");
+
+    fFit4_2e->Draw("same");
+    fFit7_2e->Draw("same");
+    fFitGD_2e->Draw("same");
+
 
     std::cout << "Succesful run!!" << endl;
 

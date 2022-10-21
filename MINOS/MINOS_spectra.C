@@ -1,7 +1,7 @@
 // csv files are digitalizations of data plots in the articles, by using Engauge software.
 // Spectra from
 // - MINOS Coll. PRL108, 191801 (2012) - anti_numu        CC events
-// - MINOS Coll. PRL110, 171801 (2013) - nue and anti_nue CC events
+// - MINOS Coll. PRL110, 251801 (2013) - nue and anti_nue CC events
 // This macro can be executed using in root [0] .x MINOS_spectra.C
 // The output from code is a Root file "MINOS_plot.root"
 void MINOS_spectra(){

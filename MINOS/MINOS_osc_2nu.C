@@ -117,22 +117,10 @@ void MINOS_osc_2nu()
     numub_integ = numub_BFit_spect_histo->Integral();
 
     //---------------------------------------------------
-    //Definition of the grid of oscillation parameters
+    //Definition of the grid of oscillation parameters (same for numu and numub)
     double s2t_pt, dm2_pt;
-
-//    const int     N_s2t = 5;
-//    const int     N_dm2 = 5;
-//
-//    double       lo_s2t = 0.75;
-//    double       hi_s2t = 1.0;
-//    double DeltaLog_s2t = (log10(hi_s2t)-log10(lo_s2t))/double(N_s2t-1);
     double Delta_s2t = (hi_s2t - lo_s2t)/double(N_s2t-1);
-
-//    double       lo_dm2 = 1e-3;
-//    double       hi_dm2 = 4e-3;
-//    double DeltaLog_dm2 = (log10(hi_dm2)-log10(lo_dm2))/double(N_dm2-1);
     double Delta_dm2 = (hi_dm2 - lo_dm2)/double(N_dm2-1);
-
 
     printf("\n");
     printf("Grid definition MINOS_osc_2nu.C\n");
@@ -175,7 +163,7 @@ void MINOS_osc_2nu()
     numu_file << setprecision(6);
 
     ofstream numub_file;
-    string numub_grid_name = "data/minosNuMuB_gridOscSpectra.txt";
+    string numub_grid_name = "/data/minosNuMuB_gridOscSpectra.txt";
     numub_file.open(filePath + (numub_grid_name).c_str());
     numub_file << fixed;
     numub_file << setprecision(6);
@@ -286,9 +274,38 @@ void MINOS_osc_2nu()
     leg_spect->Draw();
     //break;
 
-    cout << endl << "Mean value: " << numu_BFit_spect_histo->GetMean() << endl;
-//
-    //canv0->Print("files_plots/MINOS_osc_test.pdf");
+    cout << endl << "Mean value (numu ): " << numu_BFit_spect_histo->GetMean() << endl;
+    canv0->Print(filePath+"/files_plots/MINOS_osc_test.pdf");    
+
+    //
+
+    TH2F *frameb_spectra = new TH2F("frameb_spectra","",NB_numubar110,lob110,hib110,10,0,200e4);
+    frameb_spectra->GetXaxis()->SetTitle("Reco. Energy (GeV)");
+    frameb_spectra->GetYaxis()->SetTitle("Events");
+
+    TCanvas *canv0b = new TCanvas("canv0b","canv0b",775,500);
+
+    TLegend *legb_spect = new TLegend(0.7,0.6,0.9,0.9);
+    legb_spect->SetFillColor(0);
+    legb_spect->AddEntry(numub_BFit_spect_histo,"Best Fit");
+    legb_spect->AddEntry(numub_nosc_spect_histo,"No Osc.");
+    for (int i = 0 ; i < 4 ; i++)
+        legb_spect->AddEntry(numub_wosc_spect_histo[i],Form("Spectra %d ",i));
+
+    numub_BFit_spect_histo->Scale(1.0/(numub_BFit_spect_histo->Integral()));
+    numub_nosc_spect_histo->Scale(1.0/(numub_nosc_spect_histo->Integral()));
+    
+    //frame_spectra->Draw();
+    numub_BFit_spect_histo->Draw("same");
+    numub_nosc_spect_histo->Draw("same");
+    for (int i = 0 ; i < 4 ; i++)
+        numub_wosc_spect_histo[i]->Draw("same");
+    legb_spect->Draw();
+    //break;
+
+    cout << endl << "Mean value (numub): " << numub_BFit_spect_histo->GetMean() << endl;
+    canv0b->Print(filePath+"/files_plots/MINOS_oscb_test.pdf");
+
 //
 //    //---------------------------------------------------
 //    // Drawing Survival Probabilities at the six ADs
