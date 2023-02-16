@@ -57,11 +57,11 @@ void MINOS_ntupla()
     //-------------------
     // True Vs. Reco Energy Matrix
     //--------------------
-    std::cout << "Calling the Matrix root file" << std::endl;
+    std::cout << "Calling the Matrix root file - Neutrinos" << std::endl;
     TFile *fmatrix = new TFile("./data/MINOS_Matrix_TvsR_Energy.root","read");
     TH2F *TrueReco_Matrix;
     TrueReco_Matrix = (TH2F*) fmatrix->Get("TRmat_histo");
-    //dirty fix
+    //dirty fix - Neutrinos
     double tt1 = TrueReco_Matrix->GetBinContent(12,12);
     TrueReco_Matrix->SetBinContent(12,12,tt1*0.90);
     double tt2 = TrueReco_Matrix->GetBinContent(13,13);
@@ -85,7 +85,24 @@ void MINOS_ntupla()
 //        fout->cd();
 //        True_array[j]->Write();
     }
+    //----------------------------------------
+    std::cout << "Calling the Matrix root file - Anti-Neutrinos" << std::endl;
+    TFile *fmatrix_nubar = new TFile("./data/MINOS_Matrix_TvsR_Energy_antiNuMu.root","read");
+    TH2F *TrueReco_Matrix_nubar;
+    TrueReco_Matrix_nubar = (TH2F*) fmatrix_nubar->Get("TRmat_b_histo");
+    Nbins   = 60;
+    n_histo = Nbins;
+    TH1F *True_array_nubar[80];
+    for (int j = 0 ; j < n_histo ; j++) {
+        True_array_nubar[j] = new TH1F(Form("True_array_nubar_%d",j),"",Nbins,0,20);
+        for (int i = 0 ; i < Nbins ; i++) {
+            double value = TrueReco_Matrix_nubar->GetBinContent(i+1,j+1);
+            True_array_nubar[j]->SetBinContent(i+1,value);
+        }
+    }
 
+    //----------------------------------------
+    //----------------------------------------
     float Ereco, Etrue;
     float Erecob, Etrueb;
     float BL = 735.0; // km
@@ -116,7 +133,7 @@ void MINOS_ntupla()
       //Erecob = numub110_noosc_histo->GetRandom();
       Erecob = numub110_nooscbs_histo->GetRandom();
       recoBin = int(Erecob/0.25);
-      Etrueb = fudge1*True_array[recoBin]->GetRandom();
+      Etrueb = fudge1*True_array_nubar[recoBin]->GetRandom();
       //std::cout << "Ereco = " << Erecob << "   Etrue = " << Etrueb << endl;
       
       histoNub->Fill(Etrueb,Erecob);
@@ -133,4 +150,6 @@ void MINOS_ntupla()
     
     fenergy->Close();
     fout->Close();
+    fmatrix->Close();
+    fmatrix_nubar->Close();
 } // end
