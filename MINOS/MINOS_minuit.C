@@ -76,13 +76,13 @@ TH1F *numub_wosc_spect_hist;
 TH1F *numub_nu_wosc_spect_hist;
 TH1F *numub_bfit_spect_hist;
 //-------------------
-TF1 *fFit4;
-TF1 *fFit7;
-TF1 *fFitGD;
+//TF1 *fFit4;
+//TF1 *fFit7;
+TF1 *fFitGD_1st_der;
+TF1 *fFitGD_2nd_der;
 
-TF1 *fbFit4;
-TF1 *fbFit7;
-TF1 *fbFitGD;
+TF1 *fbFitGD_1st_der;
+TF1 *fbFitGD_2nd_der;
 
 int SELECTOR; // 0-numu, 1-numub
 
@@ -130,9 +130,10 @@ double chi2(const double *xx)
       //-- Energy resolution uncertainty implementation
       double binCenter, delta_spc, avgSurvProb_bin;
       binCenter = 0.5*(xbins_numu110[iBIN] + xbins_numu110[iBIN+1]);
-      delta_spc = ensc*(fFitGD->Eval(binCenter));
+      //delta_spc = ensc*(fFitGD->Eval(binCenter));
+      delta_spc = ensc*(fFitGD_1st_der->Eval(binCenter)) + 0.5*pow(ensc,2)*(fFitGD_2nd_der->Eval(binCenter));
       avgSurvProb_bin = spcNumu[iBIN]/spcNumuNoOsc[iBIN];
-      spcNumuNew[iBIN] = spcNumu[iBIN] + delta_spc*avgSurvProb_bin;
+      spcNumuNew[iBIN] = spcNumu[iBIN] + 2.0*delta_spc*avgSurvProb_bin;
       
       Nmc = ( (spcNumuNew[iBIN]/NoscTot)*(NuMu_Events[0]*SurvPavg) )*(1-eps);
       Nmc = fudge2*Nmc;   //2022-04-01 - MAAO
@@ -158,9 +159,10 @@ double chi2(const double *xx)
       //-- Energy resolution uncertainty implementation
       double binCenter, delta_spc, avgSurvProb_bin;
       binCenter = 0.5*(xbins_numubar110[iBIN] + xbins_numubar110[iBIN+1]);
-      delta_spc = ensc*(fFitGD->Eval(binCenter));
+      //delta_spc = ensc*(fbFitGD->Eval(binCenter));
+      delta_spc = ensc*(fbFitGD_1st_der->Eval(binCenter)) + 0.5*pow(ensc,2)*(fbFitGD_2nd_der->Eval(binCenter));
       avgSurvProb_bin = spcNumuB[iBIN]/spcNumuBNoOsc[iBIN];
-      spcNumuBNew[iBIN] = spcNumuB[iBIN] + delta_spc*avgSurvProb_bin;
+      spcNumuBNew[iBIN] = spcNumuB[iBIN] + 2.0*delta_spc*avgSurvProb_bin;
      
 
       Nmc = ( (spcNumuBNew[iBIN]/NoscTotB)*(NuMuB_Events[0]*SurvPavg) )*(1-eps);
@@ -192,13 +194,13 @@ int MINOS_minuit(const char * minName = "Minuit",
   //-- Energy scale derivative function
   //-------------------
   TFile *Esc_File = new TFile(filePath + "/data/minos_EScaleDerivative.root","READ");
-  fFit4  = (TF1*)(Esc_File->Get("fFit4_1e"));
-  fFit7  = (TF1*)(Esc_File->Get("fFit7_1e"));
-  fFitGD = (TF1*)(Esc_File->Get("fFitGD_2nd"));
+  //fFit4  = (TF1*)(Esc_File->Get("fFit4_1e"));
+  //fFit7  = (TF1*)(Esc_File->Get("fFit7_1e"));
+  fFitGD_1st_der = (TF1*)(Esc_File->Get("fFitGD_2e"));
+  fFitGD_2nd_der = (TF1*)(Esc_File->Get("fFitGD_2nd"));
 
-  fbFit4  = (TF1*)(Esc_File->Get("fFit4_1e"));
-  fbFit7  = (TF1*)(Esc_File->Get("fFit7_1e"));
-  fbFitGD = (TF1*)(Esc_File->Get("fFitGD_2nd"));
+  fbFitGD_1st_der = (TF1*)(Esc_File->Get("fbFitGD_2e"));
+  fbFitGD_2nd_der = (TF1*)(Esc_File->Get("fbFitGD_2nd"));
 
   //-------------------
   // Energy Histograms

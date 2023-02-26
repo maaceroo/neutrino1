@@ -87,14 +87,14 @@ void MINOS_ntupla()
     }
     //----------------------------------------
     std::cout << "Calling the Matrix root file - Anti-Neutrinos" << std::endl;
-    TFile *fmatrix_nubar = new TFile("./data/MINOS_Matrix_TvsR_Energy_antiNuMu.root","read");
+    //    TFile *fmatrix_nubar = new TFile("./data/MINOS_Matrix_TvsR_Energy_antiNuMu.root","read");
     TH2F *TrueReco_Matrix_nubar;
-    TrueReco_Matrix_nubar = (TH2F*) fmatrix_nubar->Get("TRmat_b_histo");
+    TrueReco_Matrix_nubar = (TH2F*) fmatrix->Get("TRmat_b_histo");
     Nbins   = 60;
     n_histo = Nbins;
-    TH1F *True_array_nubar[80];
+    TH1F *True_array_nubar[60];
     for (int j = 0 ; j < n_histo ; j++) {
-        True_array_nubar[j] = new TH1F(Form("True_array_nubar_%d",j),"",Nbins,0,20);
+        True_array_nubar[j] = new TH1F(Form("True_array_nubar_%d",j),"",Nbins,0,30);
         for (int i = 0 ; i < Nbins ; i++) {
             double value = TrueReco_Matrix_nubar->GetBinContent(i+1,j+1);
             True_array_nubar[j]->SetBinContent(i+1,value);
@@ -116,7 +116,7 @@ void MINOS_ntupla()
     
     double ehi = 14.0;
     TH2F *histoNu  = new TH2F("histoNu", "", 56,0,ehi,56,0,ehi);
-    TH2F *histoNub = new TH2F("histoNub", "", 56,0,ehi,56,0,ehi);
+    TH2F *histoNub = new TH2F("histoNub", "", 28,0,ehi,28,0,ehi);
 
     int recoBin;
     for (int i = 0 ; i < Nevents ; i++) {
@@ -132,7 +132,7 @@ void MINOS_ntupla()
       //antineutrinos
       //Erecob = numub110_noosc_histo->GetRandom();
       Erecob = numub110_nooscbs_histo->GetRandom();
-      recoBin = int(Erecob/0.25);
+      recoBin = int(Erecob/0.5);
       Etrueb = fudge1*True_array_nubar[recoBin]->GetRandom();
       //std::cout << "Ereco = " << Erecob << "   Etrue = " << Etrueb << endl;
       
@@ -151,5 +151,5 @@ void MINOS_ntupla()
     fenergy->Close();
     fout->Close();
     fmatrix->Close();
-    fmatrix_nubar->Close();
+    //fmatrix_nubar->Close();
 } // end
