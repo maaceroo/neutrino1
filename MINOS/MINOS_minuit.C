@@ -142,8 +142,9 @@ double chi2(const double *xx)
       nllnu += 2*(Nmc - Nd + Nd*log(Nd/Nmc));
     }
   
-  nllnu = nllnu + pow(eps,2)/(2*pow(sigeps,2)) + pow(epsNC,2)/(2*pow(sigepsNC,2)) + pow(ensc,2)/(2*pow(sigensc,2));
- 
+    nllnu = nllnu + pow(eps,2)/(pow(sigeps,2)) + pow(epsNC,2)/(pow(sigepsNC,2)) + pow(ensc,2)/(pow(sigensc,2));
+  //nllnu = nllnu + pow(eps,2)/(2*pow(sigeps,2)) + pow(epsNC,2)/(2*pow(sigepsNC,2)) + pow(ensc,2)/(2*pow(sigensc,2)); 
+
  //-- numubar section
 
   SurvPavg = NoscTotB/noNoscTotB;
@@ -166,13 +167,14 @@ double chi2(const double *xx)
      
 
       Nmc = ( (spcNumuBNew[iBIN]/NoscTotB)*(NuMuB_Events[0]*SurvPavg) )*(1-eps);
-      Nmc = fudge2*Nmc;   //2022-04-01 - MAAO
+      Nmc = fudgeb2*Nmc;   //2023-03-10 - AAAA
       //cout << "iBin = " << iBIN << "  Nmc = " << Nmc << " Nd = " << Nd << endl;
       
       nllnub += 2*(Nmc - Nd + Nd*log(Nd/Nmc));
     }
   
-  nllnub = nllnub + pow(eps,2)/(2*pow(sigeps,2)) + pow(epsNC,2)/(2*pow(sigepsNC,2)) + pow(ensc,2)/(2*pow(sigensc,2));
+  nllnub = nllnub + pow(eps,2)/(pow(sigeps,2)) + pow(epsNC,2)/(pow(sigepsNC,2)) + pow(ensc,2)/(pow(sigensc,2));
+  //nllnub = nllnub + pow(eps,2)/(2*pow(sigeps,2)) + pow(epsNC,2)/(2*pow(sigepsNC,2)) + pow(ensc,2)/(2*pow(sigensc,2));
   
   if      (SELECTOR == 0) nll = nllnu;
   else if (SELECTOR == 1) nll = nllnub;

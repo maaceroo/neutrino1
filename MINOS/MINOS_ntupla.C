@@ -133,7 +133,7 @@ void MINOS_ntupla()
       //Erecob = numub110_noosc_histo->GetRandom();
       Erecob = numub110_nooscbs_histo->GetRandom();
       recoBin = int(Erecob/0.5);
-      Etrueb = fudge1*True_array_nubar[recoBin]->GetRandom();
+      Etrueb = fudgeb1*True_array_nubar[recoBin]->GetRandom();
       //std::cout << "Ereco = " << Erecob << "   Etrue = " << Etrueb << endl;
       
       histoNub->Fill(Etrueb,Erecob);

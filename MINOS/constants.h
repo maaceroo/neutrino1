@@ -29,8 +29,10 @@ double       hi_s2t = atof(getenv("HI_S2T"));
 double       lo_dm2 = atof(getenv("LO_DM2"));
 double       hi_dm2 = atof(getenv("HI_DM2"));
 
-double      fudge1  = atof(getenv("FUDGEE"));  //Energy scale factor
-double      fudge2  = atof(getenv("FUDGEN"));  //Normalizaion scale factor
+double      fudge1  = atof(getenv("FUDGEE"));  //Energy scale factor neutrinos
+double      fudge2  = atof(getenv("FUDGEN"));  //Normalizaion scale factor neutrinos
+double      fudgeb1  = atof(getenv("FUDGEBE"));  //Energy scale factor antineutrinos
+double      fudgeb2  = atof(getenv("FUDGEBN"));  //Normalizaion scale factor antineutrinos
 
 //Path for output
 //Directory to save files
