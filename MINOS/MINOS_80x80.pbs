@@ -57,8 +57,8 @@ export FUDGEE=1.00
 export FUDGEN=1.00
 export FUDGEBE=1.00
 export FUDGEBN=1.00
-export FUDGEBEWS=1.00
-export FUDGEBNWS=1.00
+export FUDGEBWSE=1.00
+export FUDGEBWSN=1.00
 
 export ENSCALE=1.00
 
