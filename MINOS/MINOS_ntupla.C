@@ -38,22 +38,31 @@ void MINOS_ntupla()
     numu110_noosc_histo   = (TH1F*) feneFit->Get("MC_spect_histo_fine");
     numu110_bkgd_histo    = (TH1F*) fenergy->Get("numu110_bkgd_histo"); //Not used now (11.02.22). Should be substracted from the noosc spectrum.
     numu110_nooscbs_histo = (TH1F*)(numu110_noosc_histo->Clone("numu110_nooscbs_histo"));
-    numu110_nooscbs_histo->Add(numu110_bkgd_histo,-1);
+    numu110_nooscbs_histo ->Add(numu110_bkgd_histo,-1);
     //- Muon antineutrinos
     TH1F *numub110_noosc_histo;
     TH1F *numub110_nooscbs_histo;
     TH1F *numub110_bkgd_histo;
-    numub110_noosc_histo = (TH1F*) fenergy->Get("numub110_noosc_histo");
-    numub110_bkgd_histo  = (TH1F*) fenergy->Get("numub110_bkgd_histo");
+    numub110_noosc_histo   = (TH1F*) fenergy->Get("numub110_noosc_histo");
+    numub110_bkgd_histo    = (TH1F*) fenergy->Get("numub110_bkgd_histo");
     numub110_nooscbs_histo = (TH1F*)(numub110_noosc_histo->Clone("numub110_nooscbs_histo"));
-    numub110_nooscbs_histo->Add(numub110_bkgd_histo,-1);
+    numub110_nooscbs_histo ->Add(numub110_bkgd_histo,-1);
+    //- Muon antineutrinos WS
+    TH1F *numubWS110_noosc_histo;
+    TH1F *numubWS110_nooscbs_histo;
+    TH1F *numubWS110_bkgd_histo;
+    numubWS110_noosc_histo   = (TH1F*) fenergy->Get("numubWS110_noosc_histo");
+    numubWS110_bkgd_histo    = (TH1F*) fenergy->Get("numubWS110_bkgd_histo");
+    numubWS110_nooscbs_histo = (TH1F*)(numub110_noosc_histo->Clone("numubWS110_nooscbs_histo"));
+    numubWS110_nooscbs_histo ->Add(numubWS110_bkgd_histo,-1);
     
 
     //Root file for the ntuple
     TString filePath = dirName;
-    TFile *fout   = new TFile(filePath + "/data/minos_ntuple.root","RECREATE");
-    TTree *Tnumu  = new TTree("Tnumu" ,"MC neutrino events");
-    TTree *Tnumub = new TTree("Tnumub","MC neutrino events");
+    TFile *fout     = new TFile(filePath + "/data/minos_ntuple.root","RECREATE");
+    TTree *Tnumu    = new TTree("Tnumu" ,  "MC neutrino events");
+    TTree *Tnumub   = new TTree("Tnumub",  "MC neutrino events");
+    TTree *TnumubWS = new TTree("TnumubWS","MC neutrino events");
     //-------------------
     // True Vs. Reco Energy Matrix
     //--------------------
@@ -105,18 +114,23 @@ void MINOS_ntupla()
     //----------------------------------------
     float Ereco, Etrue;
     float Erecob, Etrueb;
+    float ErecobWS, EtruebWS;
     float BL = 735.0; // km
     //int Nevents = 1e7;
     int Nevents = atoi(getenv("NTUPLE_EVENTS")); // This must be uncommented when using the script
 
-    Tnumu-> Branch("Ereco", &Ereco, "Ereco/F" );
-    Tnumu-> Branch("Etrue", &Etrue, "Etrue/F" );
-    Tnumub->Branch("Erecob",&Erecob,"Erecob/F");
-    Tnumub->Branch("Etrueb",&Etrueb,"Etrueb/F");
+    Tnumu   ->Branch("Ereco",   &Ereco,   "Ereco/F"   );
+    Tnumu   ->Branch("Etrue",   &Etrue,   "Etrue/F"   );
+    Tnumub  ->Branch("Erecob",  &Erecob,  "Erecob/F"  );
+    Tnumub  ->Branch("Etrueb",  &Etrueb,  "Etrueb/F"  );
+    TnumubWS->Branch("ErecobWS",&ErecobWS,"ErecobWS/F");
+    TnumubWS->Branch("EtruebWS",&EtruebWS,"EtruebWS/F");
     
     double ehi = 14.0;
-    TH2F *histoNu  = new TH2F("histoNu", "", 56,0,ehi,56,0,ehi);
-    TH2F *histoNub = new TH2F("histoNub", "", 28,0,ehi,28,0,ehi);
+    TH2F *histoNu    = new TH2F("histoNu",    "", 56,0,ehi,56,0,ehi);
+    TH2F *histoNub   = new TH2F("histoNub",   "", 28,0,ehi,28,0,ehi);
+    double ehiWS = 25.0;
+    TH2F *histoNubWS = new TH2F("histoNubWS", "", 28,0,ehi,28,0,ehi);
 
     int recoBin;
     for (int i = 0 ; i < Nevents ; i++) {
@@ -138,8 +152,17 @@ void MINOS_ntupla()
       
       histoNub->Fill(Etrueb,Erecob);
       
-      Tnumu ->Fill();
-      Tnumub->Fill();
+      //antineutrinos
+      ErecobWS = numubWS110_nooscbs_histo->GetRandom();
+      recoBin = int(ErecobWS/0.5);
+      EtruebWS = fudgebWS1*True_array_nubar[recoBin]->GetRandom();
+      //std::cout << "Ereco = " << Erecob << "   Etrue = " << Etrueb << endl;
+      
+      histoNubWS->Fill(EtruebWS,Erecob);
+      
+      Tnumu   ->Fill();
+      Tnumub  ->Fill();
+      TnumubWS->Fill();
     }
     
     fout->cd();
