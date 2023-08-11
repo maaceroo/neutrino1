@@ -20,6 +20,8 @@ void MINOS_ntupla()
     gROOT->SetStyle("Plain");
     gStyle->SetOptStat(0);
     //------------- Style --------------
+    //TRandom Seed
+    gRandom = new TRandom3(108);
 
     //-------------------
     // Energy Histograms
@@ -35,26 +37,28 @@ void MINOS_ntupla()
     TH1F *numu110_nooscbs_histo;
     TH1F *numu110_bkgd_histo;
     //numu110_noosc_histo = (TH1F*) fenergy->Get("numu110_noosc_histo");
-    numu110_noosc_histo   = (TH1F*) feneFit->Get("MC_spect_histo_fine");
+    numu110_noosc_histo   = (TH1F*) feneFit->Get("numu_spect_histo_fine"); //2023.07.04 - This histogram was built with the bkgd substracted
     numu110_bkgd_histo    = (TH1F*) fenergy->Get("numu110_bkgd_histo"); //Not used now (11.02.22). Should be substracted from the noosc spectrum.
     numu110_nooscbs_histo = (TH1F*)(numu110_noosc_histo->Clone("numu110_nooscbs_histo"));
-    numu110_nooscbs_histo ->Add(numu110_bkgd_histo,-1);
+    //numu110_nooscbs_histo ->Add(numu110_bkgd_histo,-1); //NOTE: 30.06.2023 - there might be an error here!
     //- Muon antineutrinos
     TH1F *numub110_noosc_histo;
     TH1F *numub110_nooscbs_histo;
     TH1F *numub110_bkgd_histo;
-    numub110_noosc_histo   = (TH1F*) fenergy->Get("numub110_noosc_histo");
+    //numub110_noosc_histo   = (TH1F*) fenergy->Get("numub110_noosc_histo");
+    numub110_noosc_histo   = (TH1F*) feneFit->Get("numub_spect_histo_fine"); //2023.07.04 - This histogram was built with the bkgd substracted
     numub110_bkgd_histo    = (TH1F*) fenergy->Get("numub110_bkgd_histo");
     numub110_nooscbs_histo = (TH1F*)(numub110_noosc_histo->Clone("numub110_nooscbs_histo"));
-    numub110_nooscbs_histo ->Add(numub110_bkgd_histo,-1);
+    //numub110_nooscbs_histo ->Add(numub110_bkgd_histo,-1);
     //- Muon antineutrinos WS
     TH1F *numubWS110_noosc_histo;
     TH1F *numubWS110_nooscbs_histo;
     TH1F *numubWS110_bkgd_histo;
-    numubWS110_noosc_histo   = (TH1F*) fenergy->Get("numubWS110_noosc_histo");
+    //numubWS110_noosc_histo   = (TH1F*) fenergy->Get("numubWS110_noosc_histo");
+    numubWS110_noosc_histo   = (TH1F*) feneFit->Get("numubWS_spect_histo_fine"); //2023.07.04 - This histogram was built with the bkgd substracted
     numubWS110_bkgd_histo    = (TH1F*) fenergy->Get("numubWS110_bkgd_histo");
-    numubWS110_nooscbs_histo = (TH1F*)(numub110_noosc_histo->Clone("numubWS110_nooscbs_histo"));
-    numubWS110_nooscbs_histo ->Add(numubWS110_bkgd_histo,-1);
+    numubWS110_nooscbs_histo = (TH1F*)(numubWS110_noosc_histo->Clone("numubWS110_nooscbs_histo"));
+    //numubWS110_nooscbs_histo ->Add(numubWS110_bkgd_histo,-1);
     
 
     //Root file for the ntuple
@@ -71,10 +75,10 @@ void MINOS_ntupla()
     TH2F *TrueReco_Matrix;
     TrueReco_Matrix = (TH2F*) fmatrix->Get("TRmat_histo");
     //dirty fix - Neutrinos
-    double tt1 = TrueReco_Matrix->GetBinContent(12,12);
-    TrueReco_Matrix->SetBinContent(12,12,tt1*0.90);
-    double tt2 = TrueReco_Matrix->GetBinContent(13,13);
-    TrueReco_Matrix->SetBinContent(13,13,tt2*1.05);
+    //double tt1 = TrueReco_Matrix->GetBinContent(12,12);
+    //TrueReco_Matrix->SetBinContent(12,12,tt1*0.90);
+    //double tt2 = TrueReco_Matrix->GetBinContent(13,13);
+    //TrueReco_Matrix->SetBinContent(13,13,tt2*1.05);
     TH1D *TrueReco_px;
     TH1D *TrueReco_py;
     TrueReco_px = TrueReco_Matrix->ProjectionX("TrueReco_px");
@@ -110,8 +114,29 @@ void MINOS_ntupla()
         }
     }
 
+    std::cout << "Calling the Matrix root file - Anti-Neutrinos - WS sample" << std::endl;
+    TH2F *TrueReco_Matrix_nubarWS;
+    TrueReco_Matrix_nubarWS = (TH2F*) fmatrix->Get("TRmat_b_histo_Mod");
+    //dirty fix - Neutrinos
+    //double tt1b = TrueReco_Matrix_nubarWS->GetBinContent(3,10);
+    //TrueReco_Matrix_nubarWS->SetBinContent(10,3,1.0);
+    //double tt2b = TrueReco_Matrix_nubarWS->GetBinContent(3,11);
+    //TrueReco_Matrix_nubarWS->SetBinContent(11,3,1.1);
+
+    Nbins   = 60;
+    n_histo = 15;
+    TH1F *True_array_nubarWS[15];
+    for (int j = 0 ; j < n_histo ; j++) {
+      True_array_nubarWS[j] = new TH1F(Form("True_array_nubarWS_%d",j),"",Nbins,0,30);
+      for (int i = 0 ; i < Nbins ; i++) {
+	double value = TrueReco_Matrix_nubarWS->GetBinContent(i+1,j+1);
+	True_array_nubarWS[j]->SetBinContent(i+1,value);
+      }
+    }
+    
     //----------------------------------------
     //----------------------------------------
+
     float Ereco, Etrue;
     float Erecob, Etrueb;
     float ErecobWS, EtruebWS;
@@ -133,6 +158,7 @@ void MINOS_ntupla()
     TH2F *histoNubWS = new TH2F("histoNubWS", "", 28,0,ehi,28,0,ehi);
 
     int recoBin;
+    TF1 *fFixing = new TF1("fFixing","gaus",-5,5);
     for (int i = 0 ; i < Nevents ; i++) {
       //neutrinos
       //Ereco  = numu110_noosc_histo->GetRandom();
@@ -154,20 +180,38 @@ void MINOS_ntupla()
       
       //antineutrinos
       ErecobWS = numubWS110_nooscbs_histo->GetRandom();
-      recoBin = int(ErecobWS/0.5);
-      EtruebWS = fudgebWS1*True_array_nubar[recoBin]->GetRandom();
+      //recoBin = int(ErecobWS/0.5);
+      recoBin = int(ErecobWS/2.0);
+      EtruebWS = fudgebWS1*True_array_nubarWS[recoBin]->GetRandom();
+      /*      
+      if(recoBin == 1) {
+	fFixing->SetParameters(1,0,1.0);
+	EtruebWS += fFixing->GetRandom();
+      }
+      
+      if(recoBin == 2) {
+	fFixing->SetParameters(1,0,1.0);    
+	EtruebWS += fFixing->GetRandom();
+      }
+      
+      if(recoBin == 3) {
+	fFixing->SetParameters(1,0,1.0);    
+	EtruebWS += fFixing->GetRandom();
+      }
+      */
       //std::cout << "Ereco = " << Erecob << "   Etrue = " << Etrueb << endl;
       
-      histoNubWS->Fill(EtruebWS,Erecob);
+      histoNubWS->Fill(EtruebWS,ErecobWS);
       
-      Tnumu   ->Fill();
-      Tnumub  ->Fill();
-      TnumubWS->Fill();
+      Tnumu   ->Fill(); //- Numu         from numu-dominated beam
+      Tnumub  ->Fill(); //- NumuBar      from numuBar-enhanced beam
+      TnumubWS->Fill(); //- NumuBar (WS) from numu-dominated beam
     }
     
     fout->cd();
     histoNu->Write();
     histoNub->Write();
+    histoNubWS->Write();
 
     fout->Write();
     
@@ -175,4 +219,6 @@ void MINOS_ntupla()
     fout->Close();
     fmatrix->Close();
     //fmatrix_nubar->Close();
+
+    cout << "Exiting ntuple execution." << endl;
 } // end

@@ -303,7 +303,7 @@ void MINOS_spectra(){
   numubWS110_dataPerGeV_histo->SetMarkerStyle(8);
   numubWS110_dataPerGeV_histo->SetMarkerSize(0.8);
   numubWS110_dataPerGeV_histo->SetBinErrorOption(TH1::kPoisson);
-  TH1F *numubWS110_nooscPerGeV_histo = new TH1F("numubWS110_nooscPerGeV_histo" ,"",NB_numubar110,xbins_nubWS110);
+  TH1F *numubWS110_nooscPerGeV_histo = new TH1F("numubWS110_nooscPerGeV_histo" ,"",NB_numubarWS110,xbins_nubWS110);
   TH1F *numubWS110_noosc_histo = new TH1F("numubWS110_noosc_histo","",NB_numubarWS110,xbins_nubWS110);
   numubWS110_nooscPerGeV_histo->SetLineWidth(2);
   numubWS110_nooscPerGeV_histo->SetLineColor(kRed);
@@ -368,7 +368,7 @@ void MINOS_spectra(){
   ctnt = 0;
   cont1;
   sum = 0;
-  for (int j = 0 ; j < NB_numubar110 ; j++)
+  for (int j = 0 ; j < NB_numubarWS110 ; j++)
     {
       //Data -------------------//
       ctnt = minos110_numubar_WS_data->GetY()[j];
@@ -618,8 +618,8 @@ void MINOS_spectra(){
   
   //--
     
-  TCanvas *canv110 = new TCanvas("canv110","",2*500,600);
-  canv110->Divide(2,1);
+  TCanvas *canv110 = new TCanvas("canv110","",3*500,600);
+  canv110->Divide(3,1);
   TGaxis::SetMaxDigits(3);
   
   canv110->cd(1);
@@ -643,10 +643,21 @@ void MINOS_spectra(){
   gPad->RedrawAxis();
   gPad->SetTicks(1,1);
   
+  canv110->cd(3);
+  frame_spectra_numubWS->Draw();
+  numubWS110_dataPerGeV_histo->Draw("pe1 same");
+  numubWS110_bfitPerGeV_histo->Draw("h same");
+  numubWS110_nooscPerGeV_histo->Draw("h same");
+  numubWS110_bkgdPerGeV_histo->Draw("h same");
+  lat->DrawLatex(0.15,0.82,"#bar{#nu}_{#mu} - #nu-beam");
+  gPad->RedrawAxis();
+  gPad->SetTicks(1,1);
+  
   /*
-    canv1->Print("Plots/RENO_bump.eps");
+    canv1->Print("Plots/RENO_bump.eps"); 
     canv1->Print("Plots/RENO_bump.pdf");
-  */
+ */
+    canv110->Print("files_plots/MINOS_spectra.pdf");
   
   
   // write to output file
