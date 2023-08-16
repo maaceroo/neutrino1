@@ -376,7 +376,7 @@ int MINOS_EnergyS_ntuple()
   
   TF1 *fbFitGD_2nd;
   fbFitGD_2nd = new TF1("fbFitGD_2nd","[0]+[1]*exp(-0.5*pow((x-[2])/[3],2))+[4]*exp(-0.5*pow((x-[5])/[6],2))",xbins_numub110[0],xbins_numub110[NB_numubar110]);
-  fbFitGD_2nd->SetParameters(0.0,-3e6,5.0, 1.0,4e6,3.0,1.0);
+  fbFitGD_2nd->SetParameters(0.0,2e6,3.0, 2.0,-1e6,5.0,2.0);
   fbFitGD_2nd->SetLineColor(kBlack);
   numub_nosc_spect_hist_2nd_deri[4]->Fit("fbFitGD_2nd","r");
   
@@ -395,9 +395,9 @@ int MINOS_EnergyS_ntuple()
   
   TF1 *fbWSFitGD_2nd;
   fbWSFitGD_2nd = new TF1("fbWSFitGD_2nd","[0]+[1]*exp(-0.5*pow((x-[2])/[3],2))+[4]*exp(-0.5*pow((x-[5])/[6],2))",xbins_numubWS110[0],xbins_numubWS110[NB_numubarWS110]);
-  fbWSFitGD_2nd->SetParameters(0.0,-3e6,5.0, 1.0,4e6,3.0,1.0);
+  fbWSFitGD_2nd->SetParameters(0.0, 2e6,2.0,5.0,-1e5,7.0,6.0);
   fbWSFitGD_2nd->SetLineColor(kBlack);
-  numubWS_nosc_spect_hist_2nd_deri[4]->Fit("fbWSFitGD_2nd","r");
+  numubWS_nosc_spect_hist_2nd_deri[5]->Fit("fbWSFitGD_2nd","r");
   
   TFile *fEscale = new TFile(filePath + "/data/minos_EScaleDerivative.root","recreate");
   //numu

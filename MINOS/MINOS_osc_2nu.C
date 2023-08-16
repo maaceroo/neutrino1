@@ -1,7 +1,8 @@
 //------------------------------------------------------------------//
 //--       MINOS_osc_2nu.C  -  M.A.Acero O. - A.A.Alexis A.       --//
-//For the MINOS (anti)numu data analysis, using information from  --//
-// - MINOS Col. PRL 110, 251801 (2013) - (Anti)NuMu disappearance --//
+//- For the MINOS (anti)numu data analysis, using information from -//
+//- MINOS Col. PRL 110, 251801 (2013) - (Anti)NuMu disappearance   -//
+//---                 Last update: 2023 - 08 - 15                ---//
 //------------------------------------------------------------------//
 #include "constants.h"
 #include <iostream>
@@ -30,6 +31,8 @@ void MINOS_osc_2nu()
     TCut cutBF_numu;
     TTree *Tnumub = (TTree*)fntuple->Get("Tnumub");
     TCut cutBF_numub;
+    TTree *TnumubWS = (TTree*)fntuple->Get("TnumubWS");
+    TCut cutBF_numubWS;
     //---------------------------------------------------
     //Neutrinos
     double xbins_numu110[NB_numu110+1];
@@ -48,6 +51,12 @@ void MINOS_osc_2nu()
     for (int i = 0 ; i < NB_numubar110 ; i++)
         xbins_nub110[i] = lob110 + delta_binsb110*i;
     xbins_nub110[12] = xbins_nub110[11] + 2.0;
+    //AntiNeutrinos WS
+    double xbins_nubWS110[NB_numubarWS110+1];
+    double delta_binsbWS110 = (20.0 - lobWS110)/(NB_numubarWS110-1); // 1.0 GeV bin
+    for (int i = 0 ; i < NB_numubarWS110 ; i++)
+      xbins_nubWS110[i] = lobWS110 + delta_binsbWS110*i;
+    xbins_nubWS110[11] = xbins_numubWS110[10] + 5.0;
     //---------------------------------------------------
     TH1F *numu_nosc_spect_histo;
     TH1F *numu_BFit_spect_histo;
@@ -57,24 +66,35 @@ void MINOS_osc_2nu()
     TH1F *numub_BFit_spect_histo;
     TH1F *numub_Posc_BF;
     TH1F *numub_Posc_surv;
+    TH1F *numubWS_nosc_spect_histo;
+    TH1F *numubWS_BFit_spect_histo;
+    TH1F *numubWS_Posc_BF;
+    TH1F *numubWS_Posc_surv;
     //no-oscillation RecoE spectra - histograms
     numu_nosc_spect_histo = new TH1F("numu_nosc_spect_histo","",NB_numu110,xbins_numu110);
     numu_nosc_spect_histo->SetLineColor(3);
     numub_nosc_spect_histo = new TH1F("numub_nosc_spect_histo","",NB_numubar110,xbins_nub110);
     numub_nosc_spect_histo->SetLineColor(3);
+    numubWS_nosc_spect_histo = new TH1F("numubWS_nosc_spect_histo","",NB_numubarWS110,xbins_nubWS110);
+    numubWS_nosc_spect_histo->SetLineColor(3);
     //BF-oscillation Ep spectra - histograms
     numu_BFit_spect_histo = new TH1F("numu_BFit_spect_histo","",NB_numu110,xbins_numu110);
     numu_BFit_spect_histo->SetLineColor(1);
     numub_BFit_spect_histo = new TH1F("numub_BFit_spect_histo","",NB_numubar110,xbins_nub110);
     numub_BFit_spect_histo->SetLineColor(1);
+    numubWS_BFit_spect_histo = new TH1F("numubWS_BFit_spect_histo","",NB_numubarWS110,xbins_nubWS110);
+    numubWS_BFit_spect_histo->SetLineColor(1);
     //Ocillation prpbability at BF - histograms
     numu_Posc_BF          = new TH1F("numu_Posc_BF","",1000,0,1);   //to store <POsc(BF)>
     numu_Posc_BF->SetLineColor(1);
     numub_Posc_BF         = new TH1F("numub_Posc_BF","",1000,0,1);   //to store <POsc(BF)>
     numub_Posc_BF->SetLineColor(1);
+    numubWS_Posc_BF       = new TH1F("numubWS_Posc_BF","",1000,0,1);   //to store <POsc(BF)>
+    numubWS_Posc_BF->SetLineColor(1);
     //Oscillation prpbability at (s2th,dm2) - histograms
     numu_Posc_surv        = new TH1F("numu_Posc_surv","",1000,0,1); //to store <POsc(s2th,dm2)>
     numub_Posc_surv       = new TH1F("numub_Posc_surv","",1000,0,1); //to store <POsc(s2th,dm2)>
+    numubWS_Posc_surv     = new TH1F("numubWS_Posc_surv","",1000,0,1); //to store <POsc(s2th,dm2)>
 
     //---------------------------------------------------
     double numu_TotNosc;
@@ -83,6 +103,9 @@ void MINOS_osc_2nu()
     double numub_TotNosc;
     double numub_avgPosc; //<POsc(s2t_BF,dm2_31)>
     double numub_integ;
+    double numubWS_TotNosc;
+    double numubWS_avgPosc; //<POsc(s2t_BF,dm2_31)>
+    double numubWS_integ;
     //------------------------------------------------
     //Filling Ocillation prpbability at BF - neutrinos
     Tnumu->Draw("1.0 - 0.950*((sin( 1.267 * 2.41e-3 * 735.0/Etrue ))**2) >> numu_Posc_BF");
@@ -95,6 +118,7 @@ void MINOS_osc_2nu()
     numu_TotNosc = numu_nosc_spect_histo->Integral();
     //numu_nosc_spect_histo->Scale(1.0/numu_TotNosc);
     //------------------------------------------------
+    //------------------------------------------------
     //Filling Ocillation prpbability at BF - antineutrinos
     Tnumub->Draw("1.0 - 0.97*((sin( 1.267 * 2.50e-3 * 735.0/Etrueb ))**2) >> numub_Posc_BF");
     numub_integ = numub_Posc_BF->Integral();
@@ -105,16 +129,33 @@ void MINOS_osc_2nu()
     //Filling the non-oscillated RecoE spectra
     Tnumub->Draw("Erecob >> numub_nosc_spect_histo");
     numub_TotNosc = numub_nosc_spect_histo->Integral();
+    //------------------------------------------------
+    //------------------------------------------------
+    //Filling Ocillation prpbability at BF - antineutrinos WS
+    TnumubWS->Draw("1.0 - 0.97*((sin( 1.267 * 2.50e-3 * 735.0/EtruebWS ))**2) >> numubWS_Posc_BF");
+    numubWS_integ = numubWS_Posc_BF->Integral();
+    numubWS_Posc_BF->Scale(1.0/numubWS_integ); //Used to plot the Survival Probabilities with BF parameters (normalized)
+    //Average oscillation Probability
+    numubWS_avgPosc = numubWS_Posc_BF->GetMean();
+    //------------------------------------------------
+    //Filling the non-oscillated RecoE spectra
+    TnumubWS->Draw("ErecobWS >> numubWS_nosc_spect_histo");
+    numubWS_TotNosc = numubWS_nosc_spect_histo->Integral();
+    //------------------------------------------------
+    //------------------------------------------------
 
     //condition to fill BF-oscillation- Ereco spectra
-    cutBF_numu  = "1.0 - 0.95*((sin( 1.267 * 2.41e-3 * 735.0/Etrue ))**2)";
-    cutBF_numub = "1.0 - 0.97*((sin( 1.267 * 2.50e-3 * 735.0/Etrueb ))**2)";
+    cutBF_numu    = "1.0 - 0.95*((sin( 1.267 * 2.41e-3 * 735.0/Etrue    ))**2)";
+    cutBF_numub   = "1.0 - 0.97*((sin( 1.267 * 2.50e-3 * 735.0/Etrueb   ))**2)";
+    cutBFWS_numub = "1.0 - 0.97*((sin( 1.267 * 2.50e-3 * 735.0/EtruebWS ))**2)";
 
     //Filling and normalizing BF-oscillation Ereco spectra
-    Tnumu ->Draw("Ereco >>  numu_BFit_spect_histo", cutBF_numu, "");
-    numu_integ  = numu_BFit_spect_histo-> Integral();
-    Tnumub->Draw("Erecob >> numub_BFit_spect_histo",cutBF_numub,"");
-    numub_integ = numub_BFit_spect_histo->Integral();
+    Tnumu   ->Draw("Ereco    >> numu_BFit_spect_histo",   cutBF_numu,   "");
+    numu_integ    = numu_BFit_spect_histo-> Integral();
+    Tnumub  ->Draw("Erecob   >> numub_BFit_spect_histo",  cutBF_numub,  "");
+    numub_integ   = numub_BFit_spect_histo->Integral();
+    TnumubWS->Draw("ErecobWS >> numubWS_BFit_spect_histo",cutBFWS_numub,"");
+    numubWS_integ = numubWS_BFit_spect_histo->Integral();
 
     //---------------------------------------------------
     //Definition of the grid of oscillation parameters (same for numu and numub)
@@ -137,12 +178,15 @@ void MINOS_osc_2nu()
 
     TCut cut_numu;
     TCut cut_numub;
+    TCut cut_numubWS;
 
     const int dim = N_s2t*N_dm2;
     double numu_TotWosc[dim];
     TH1F *numu_wosc_spect_histo[dim];
     double numub_TotWosc[dim];
     TH1F *numub_wosc_spect_histo[dim];
+    double numubWS_TotWosc[dim];
+    TH1F *numubWS_wosc_spect_histo[dim];
     for (int i = 0 ; i < dim ; i++)
     {
         numu_wosc_spect_histo[i] = new TH1F(Form("numu_wosc_spect_histo_%d",i),"",NB_numu110,xbins_numu110);
@@ -154,6 +198,11 @@ void MINOS_osc_2nu()
         numub_wosc_spect_histo[i]->SetLineWidth(2);
         numub_wosc_spect_histo[i]->SetLineColor(i+2);
         numub_wosc_spect_histo[i]->SetLineStyle(2);
+
+        numubWS_wosc_spect_histo[i] = new TH1F(Form("numubWS_wosc_spect_histo_%d",i),"",NB_numubarWS110,xbins_nubWS110);
+        numubWS_wosc_spect_histo[i]->SetLineWidth(2);
+        numubWS_wosc_spect_histo[i]->SetLineColor(i+2);
+        numubWS_wosc_spect_histo[i]->SetLineStyle(2);
     }
 
     ofstream numu_file;
@@ -168,11 +217,18 @@ void MINOS_osc_2nu()
     numub_file << fixed;
     numub_file << setprecision(6);
 
+    ofstream numubWS_file;
+    string numubWS_grid_name = "/data/minosNuMuBWS_gridOscSpectra.txt";
+    numubWS_file.open(filePath + (numubWS_grid_name).c_str());
+    numubWS_file << fixed;
+    numubWS_file << setprecision(6);
+
     s2t_pt = 0.0;
     dm2_pt = 0.0;
     //write non-oscillated spectra
     numu_file << s2t_pt << "\t" << dm2_pt;
     numub_file << s2t_pt << "\t" << dm2_pt;
+    numubWS_file << s2t_pt << "\t" << dm2_pt;
     //print bin-content of non-oscilated spectra per day
     for (int ib = 0 ; ib < 23 ; ib++)
     {
@@ -182,11 +238,17 @@ void MINOS_osc_2nu()
             contNO = numub_nosc_spect_histo->GetBinContent(ib+1);
             numub_file << "\t" << contNO;
         }
+        if (ib < 11) {
+            contNO = numubWS_nosc_spect_histo->GetBinContent(ib+1);
+            numubWS_file << "\t" << contNO;
+        }
     }
-    numu_file  << " \t" << numu_TotNosc  << endl;
-    numu_file  << endl;
-    numub_file << " \t" << numub_TotNosc << endl;
-    numub_file << endl;
+    numu_file    << " \t" << numu_TotNosc    << endl;
+    numu_file    << endl;
+    numub_file   << " \t" << numub_TotNosc   << endl;
+    numub_file   << endl;
+    numubWS_file << " \t" << numubWS_TotNosc << endl;
+    numubWS_file << endl;
 
     for (int is2t = 0 ; is2t < N_s2t ; is2t++)
     {
@@ -196,8 +258,9 @@ void MINOS_osc_2nu()
         {
             dm2_pt = lo_dm2 + (double(idm2)*Delta_dm2);
             // Condition to fill oscilated spectra for (s2t_pt,dm2_pt), i.e. wosc_spect_histo
-            cut_numu  = Form("1.0 - %e*((sin( 1.267 * %e * 735.0/Etrue ))**2)" ,s2t_pt,dm2_pt);
-            cut_numub = Form("1.0 - %e*((sin( 1.267 * %e * 735.0/Etrueb ))**2)" ,s2t_pt,dm2_pt);
+            cut_numu    = Form("1.0 - %e*((sin( 1.267 * %e * 735.0/Etrue    ))**2)" ,s2t_pt,dm2_pt);
+            cut_numub   = Form("1.0 - %e*((sin( 1.267 * %e * 735.0/Etrueb   ))**2)" ,s2t_pt,dm2_pt);
+            cut_numubWS = Form("1.0 - %e*((sin( 1.267 * %e * 735.0/EtruebWS ))**2)" ,s2t_pt,dm2_pt);
             // Filling oscilated spectra for (s2t_pt,dm2_pt)
             int ih = is2t*N_dm2 + idm2;
             //cout "\t s2t_pt =  " << s2t_pt << "\t dm2_pt =  " << dm2_pt  << "\t ih = " << ih << endl;
@@ -207,9 +270,12 @@ void MINOS_osc_2nu()
             numu_TotWosc[ih] =  numu_wosc_spect_histo[ih]->Integral();
             Tnumub->Draw(Form("Erecob >> numub_wosc_spect_histo_%d",ih),cut_numub,"");
             numub_TotWosc[ih] =  numub_wosc_spect_histo[ih]->Integral();
+            TnumubWS->Draw(Form("ErecobWS >> numubWS_wosc_spect_histo_%d",ih),cutWS_numub,"");
+            numubWS_TotWosc[ih] =  numubWS_wosc_spect_histo[ih]->Integral();
 
-            numu_file << s2t_pt << "\t" << dm2_pt;
-            numub_file << s2t_pt << "\t" << dm2_pt;
+            numu_file    << s2t_pt << "\t" << dm2_pt;
+            numub_file   << s2t_pt << "\t" << dm2_pt;
+            numubWS_file << s2t_pt << "\t" << dm2_pt;
             //Printing bin-content for the oscilated spectra for (s2t_pt,dm2_pt)
             for (int ib = 0 ; ib < 23 ; ib++)
             {
@@ -219,9 +285,14 @@ void MINOS_osc_2nu()
                     cont = numub_wosc_spect_histo[ih]->GetBinContent(ib+1);
                     numub_file << "\t" << cont;
                 }
+                if (ib < 11) {
+                    cont = numubWS_wosc_spect_histo[ih]->GetBinContent(ib+1);
+                    numubWS_file << "\t" << cont;
+                }
             }
-            numu_file  << " \t" << numu_TotWosc[ih]  << endl;
-            numub_file << " \t" << numub_TotWosc[ih] << endl;
+            numu_file    << " \t" << numu_TotWosc[ih]    << endl;
+            numub_file   << " \t" << numub_TotWosc[ih]   << endl;
+            numubWS_file << " \t" << numubWS_TotWosc[ih] << endl;
 
             //Printing check-points info
             if (ih%10 == 0)
@@ -235,16 +306,21 @@ void MINOS_osc_2nu()
             numu_wosc_spect_histo[ih]->Scale(1.0/numu_integ);
             numub_integ = numub_wosc_spect_histo[ih]->Integral();
             numub_wosc_spect_histo[ih]->Scale(1.0/numub_integ);
+            numubWS_integ = numubWS_wosc_spect_histo[ih]->Integral();
+            numubWS_wosc_spect_histo[ih]->Scale(1.0/numubWS_integ);
         } // for idm2
         numu_file << endl;
         numub_file << endl;
+        numubWS_file << endl;
         //fprintf(file,"\n");
     }//for is2t
     numu_file << endl;
     numub_file << endl;
+    numubWS_file << endl;
 
     numu_file.close();
     numub_file.close();
+    numubWS_file.close();
 
 
     //---------------------------------------------------
