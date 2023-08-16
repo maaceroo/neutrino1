@@ -9,7 +9,7 @@ set terminal pdfcairo enhanced color font "CharterBT-Roman,14" size 7,7
 
 ########################################################################################
 ## Figure File
-set output "2820332/files_plots/MINOS_plots_numu.pdf"
+set output "2827952/files_plots/MINOS_plots_numu.pdf"
 ########################################################################################
 
 set multiplot
@@ -45,7 +45,7 @@ set arrow 3 from  4.00,ymin to 4.00,ymax nohead lt 4 lw 2
 set arrow 5 from  9.00,ymin to 9.00,ymax nohead lt 3 lw 2
 set arrow 7 from 16.00,ymin to 16.00,ymax nohead lt 2 lw 2
 
-plot '2820332/data/numu_dm2_chi2.txt' u 2:(10**3*($1)) w l lw 2
+plot '2827952/data/numu_dm2_chi2.txt' u 2:(10**3*($1)) w l lw 2
 
 reset
 
@@ -73,7 +73,7 @@ set ylabel "{/Symbol D}{/Symbol c}^{2}"
 
 set key at 1.14,9.0
 
-plot '2820332/data/numu_s2t_chi2.txt' u 1:2 w l lw 2 t "", 16.0 lt 2 lw 2 t "99.99% C.L. (4{/Symbol s})", 9.0 lt 3 lw 2 t "99.73% C.L. (3{/Symbol s})", 4.0 lt 4 lw 2 t "95.45% C.L. (2{/Symbol s})", 2.71 lt 5 lw 2 t "90.00% C.L.", 1.0 lt 6 lw 2 t "68.27% C.L. (1{/Symbol s})"
+plot '2827952/data/numu_s2t_chi2.txt' u 1:2 w l lw 2 t "", 16.0 lt 2 lw 2 t "99.99% C.L. (4{/Symbol s})", 9.0 lt 3 lw 2 t "99.73% C.L. (3{/Symbol s})", 4.0 lt 4 lw 2 t "95.45% C.L. (2{/Symbol s})", 2.71 lt 5 lw 2 t "90.00% C.L.", 1.0 lt 6 lw 2 t "68.27% C.L. (1{/Symbol s})"
 
 reset
 
@@ -114,9 +114,9 @@ set yrange[ymin:ymax]
 set label 4 "{/Symbol D}m^{2}_{32} (10^{-3} eV^2)" at 0.725,2.5 center rotate by 90
 
 ## Mark at the BF
-set label 35 '+' at 0.9873420000,0.0021780000*1e3 center font 'CharterBT-Roman,15'
+set label 35 '+' at 0.0000000000,0.0000000000*1e3 center font 'CharterBT-Roman,15'
 ## Minimum chi2 value
-min = 47.3094000000
+min = 0.0000000000
 
 unset ztics
 set clabel
@@ -124,7 +124,7 @@ unset key
 set grid ytics lc rgb "#bbbbbb" lw 1 lt 0
 set grid xtics lc rgb "#bbbbbb" lw 1 lt 0
 
-splot '2820332/data/numu_chi2_s2t-dm2_surface-noFL.txt' u 1:(10**3*($2)):(($3)-min) w l lw 2
+splot '2827952/data/numu_chi2_s2t-dm2_surface-noFL.txt' u 1:(10**3*($2)):(($3)-min) w l lw 2
 
 unset xtics
 unset ytics

@@ -56,7 +56,7 @@ void MINOS_osc_2nu()
     double delta_binsbWS110 = (20.0 - lobWS110)/(NB_numubarWS110-1); // 1.0 GeV bin
     for (int i = 0 ; i < NB_numubarWS110 ; i++)
       xbins_nubWS110[i] = lobWS110 + delta_binsbWS110*i;
-    xbins_nubWS110[11] = xbins_numubWS110[10] + 5.0;
+    xbins_nubWS110[11] = xbins_nubWS110[10] + 5.0;
     //---------------------------------------------------
     TH1F *numu_nosc_spect_histo;
     TH1F *numu_BFit_spect_histo;
@@ -147,14 +147,14 @@ void MINOS_osc_2nu()
     //condition to fill BF-oscillation- Ereco spectra
     cutBF_numu    = "1.0 - 0.95*((sin( 1.267 * 2.41e-3 * 735.0/Etrue    ))**2)";
     cutBF_numub   = "1.0 - 0.97*((sin( 1.267 * 2.50e-3 * 735.0/Etrueb   ))**2)";
-    cutBFWS_numub = "1.0 - 0.97*((sin( 1.267 * 2.50e-3 * 735.0/EtruebWS ))**2)";
+    cutBF_numubWS = "1.0 - 0.97*((sin( 1.267 * 2.50e-3 * 735.0/EtruebWS ))**2)";
 
     //Filling and normalizing BF-oscillation Ereco spectra
     Tnumu   ->Draw("Ereco    >> numu_BFit_spect_histo",   cutBF_numu,   "");
     numu_integ    = numu_BFit_spect_histo-> Integral();
     Tnumub  ->Draw("Erecob   >> numub_BFit_spect_histo",  cutBF_numub,  "");
     numub_integ   = numub_BFit_spect_histo->Integral();
-    TnumubWS->Draw("ErecobWS >> numubWS_BFit_spect_histo",cutBFWS_numub,"");
+    TnumubWS->Draw("ErecobWS >> numubWS_BFit_spect_histo",cutBF_numubWS,"");
     numubWS_integ = numubWS_BFit_spect_histo->Integral();
 
     //---------------------------------------------------
@@ -270,7 +270,7 @@ void MINOS_osc_2nu()
             numu_TotWosc[ih] =  numu_wosc_spect_histo[ih]->Integral();
             Tnumub->Draw(Form("Erecob >> numub_wosc_spect_histo_%d",ih),cut_numub,"");
             numub_TotWosc[ih] =  numub_wosc_spect_histo[ih]->Integral();
-            TnumubWS->Draw(Form("ErecobWS >> numubWS_wosc_spect_histo_%d",ih),cutWS_numub,"");
+            TnumubWS->Draw(Form("ErecobWS >> numubWS_wosc_spect_histo_%d",ih),cut_numubWS,"");
             numubWS_TotWosc[ih] =  numubWS_wosc_spect_histo[ih]->Integral();
 
             numu_file    << s2t_pt << "\t" << dm2_pt;

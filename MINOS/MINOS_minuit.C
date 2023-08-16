@@ -122,8 +122,9 @@ double chi2(const double *xx)
   //---*****************************************************---//
   double SurvPavg     = 0.0;
   double nll          = 0.0; //nll = -2ln(L)
-  double nllnu          = 0.0; //nll = -2ln(L)
-  double nllnub          = 0.0; //nll = -2ln(L)  
+  double nllnu        = 0.0; //nll = -2ln(L)
+  double nllnub       = 0.0; //nll = -2ln(L)  
+  double nllnubWS     = 0.0; //nll = -2ln(L)  
   double Nd           = 0.0;
   double Nmc          = 0.0;
   //Section 6.2, J. Mitchell PhD Thesis https://minos-docdb.fnal.gov/cgi-bin/sso/RetrieveFile?docid=8704&filename=jessmitchellthesis.pdf&version=1
@@ -401,7 +402,7 @@ int MINOS_minuit(const char * minName = "Minuit",
   while (
          numu_grid_file >> s2th_23 >> dm2_32 >> spcNumu[0] >> spcNumu[1] >> spcNumu[2] >> spcNumu[3] >> spcNumu[4] >> spcNumu[5] >> spcNumu[6] >> spcNumu[7] >> spcNumu[8] >> spcNumu[9] >> spcNumu[10] >> spcNumu[11] >> spcNumu[12] >> spcNumu[13] >> spcNumu[14] >> spcNumu[15] >> spcNumu[16] >> spcNumu[17] >> spcNumu[18] >> spcNumu[19] >> spcNumu[20] >> spcNumu[21] >> spcNumu[22] >> NoscTot 
          && 
-         numub_grid_file >> s2th_23 >> dm2_32 >> spcNumuB[0] >> spcNumuB[1] >> spcNumuB[2] >> spcNumuB[3] >> spcNumuB[4] >> spcNumuB[5] >> spcNumuB[6] >> spcNumuB[7] >> spcNumuB[8] >> spcNumuB[9] >> spcNumuB[10] >> spcNumuB[11] >> NoscTotB  )
+         numub_grid_file >> s2th_23 >> dm2_32 >> spcNumuB[0] >> spcNumuB[1] >> spcNumuB[2] >> spcNumuB[3] >> spcNumuB[4] >> spcNumuB[5] >> spcNumuB[6] >> spcNumuB[7] >> spcNumuB[8] >> spcNumuB[9] >> spcNumuB[10] >> spcNumuB[11] >> NoscTotB 
          && 
          numubWS_grid_file >> s2th_23 >> dm2_32 >> spcNumuBWS[0] >> spcNumuBWS[1] >> spcNumuBWS[2] >> spcNumuBWS[3] >> spcNumuBWS[4] >> spcNumuBWS[5] >> spcNumuBWS[6] >> spcNumuBWS[7] >> spcNumuBWS[8] >> spcNumuBWS[9] >> spcNumuBWS[10] >> NoscTotBWS  )
     {//file loop
