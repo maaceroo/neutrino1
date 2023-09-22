@@ -345,6 +345,12 @@ int MINOS_minuit(const char * minName = "Minuit",
   min2->SetTolerance(0.001);
   min2->SetPrintLevel(-1);
   
+  ROOT::Math::Minimizer* min3 = ROOT::Math::Factory::CreateMinimizer(minName, algoName);
+  min3->SetMaxFunctionCalls(1000000); // for Minuit/Minuit2
+  min3->SetMaxIterations(10000);      // for GSL
+  min3->SetTolerance(0.001);
+  min3->SetPrintLevel(-1);
+  
   //-- File to print oscillation parameters and chi2 values
   string chi2surfname;
   //numu
